@@ -29,7 +29,7 @@ model Tutorial {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  content     String   @db.Text          // Markdown/HTML
+  content     String             // Markdown/HTML
   categoryId  String   @map("category_id")
   category    Category @relation(fields: [categoryId], references: [id])
   difficulty  String   @default("beginner") // beginner, intermediate, advanced
@@ -53,9 +53,9 @@ model Exercise {
   id          String   @id @default(cuid())
   tutorialId  String   @map("tutorial_id")
   tutorial    Tutorial @relation(fields: [tutorialId], references: [id])
-  question    String   @db.Text
-  hint        String?  @db.Text
-  solution    String?  @db.Text
+  question    String
+  hint        String?
+  solution    String?
   language    String   @default("javascript")
   createdAt   DateTime @default(now())
 }
@@ -78,10 +78,10 @@ model QuizQuestion {
   id          String   @id @default(cuid())
   quizId      String   @map("quiz_id")
   quiz        Quiz     @relation(fields: [quizId], references: [id])
-  question    String   @db.Text
-  options     String   @db.Text           // JSON array: ["A", "B", "C", "D"]
+  question    String
+  options     String              // JSON array: ["A", "B", "C", "D"]
   correctIndex Int
-  explanation String?  @db.Text
+  explanation String?
   createdAt   DateTime @default(now())
 }
 
@@ -91,9 +91,9 @@ model QuizQuestion {
 model Challenge {
   id          String   @id @default(cuid())
   title       String
-  description String   @db.Text
+  description String
   language    String   @default("javascript")
-  starterCode String?  @db.Text
+  starterCode String?
   difficulty  String   @default("easy")   // easy, medium, hard
   points      Int      @default(10)
   isActive    Boolean  @default(true)
@@ -106,8 +106,8 @@ model ChallengeTestCase {
   id          String   @id @default(cuid())
   challengeId String   @map("challenge_id")
   challenge   Challenge @relation(fields: [challengeId], references: [id])
-  input       String   @db.Text
-  expectedOutput String @db.Text
+  input       String
+  expectedOutput String
   isHidden    Boolean  @default(false)
 }
 
@@ -118,7 +118,7 @@ model Reference {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  content     String   @db.Text          // বিস্তারিত বর্ণনা + সিনট্যাক্স + উদাহরণ
+  content     String             // বিস্তারিত বর্ণনা + সিনট্যাক্স + উদাহরণ
   categoryId  String?  @map("category_id")
   category    Category? @relation(fields: [categoryId], references: [id])
   language    String                     // html, css, javascript, python, ইত্যাদি
