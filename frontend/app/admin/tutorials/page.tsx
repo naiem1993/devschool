@@ -1,59 +1,74 @@
-import prisma from '@/lib/prisma'
-import Link from 'next/link'
+import AdminHeader from '@/components/admin/AdminHeader'
+import TerminalCard from '@/components/admin/TerminalCard'
+import LogoutButton from '@/components/admin/LogoutButton'
 import DeleteButton from '@/components/admin/DeleteButton'
+import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
-
-export default async function AdminTutorials() {
-  const tutorials = await prisma.tutorial.findMany({
-    include: {
-      category: true,
-      _count: { select: { contents: true, quizzes: true, challenges: true } },
-    },
+export default async function TutorialsPage() {
+  const items = await prisma.tutorial.findMany({
     orderBy: { createdAt: 'desc' },
+    take: 100,
+    include: { category: { select: { name: true } } },
   })
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">📚 টিউটোরিয়াল</h1>
-        <Link href="/admin/tutorials/new" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm">
-          + নতুন টিউটোরিয়াল
-        </Link>
-      </div>
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              {['শিরোনাম', 'ক্যাটাগরি', 'চ্যাপ্টার', 'কুইজ', 'চ্যালেঞ্জ', 'ভিউ', 'স্ট্যাটাস', 'অ্যাকশন'].map((h) => (
-                <th key={h} className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">{h}</th>
-              ))}
+    <div>
+      <AdminHeader
+        title="Tutorials"
+        subtitle={`${items.length} records`}
+        action={
+          <div className="flex gap-2">
+            <Link href="/admin/tutorials/new" className="admin-btn">
+              + new
+            </Link>
+            <LogoutButton />
+          </div>
+        }
+      />
+
+      <TerminalCard cmd='psql devschool -c "SELECT * FROM tutorials"'>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">
+              <th className="text-left px-4 py-2">title</th>
+              <th className="text-left px-4 py-2">category</th>
+              <th className="text-left px-4 py-2">difficulty</th>
+              <th className="text-left px-4 py-2">published</th>
+              <th className="text-right px-4 py-2">actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-            {tutorials.map((t) => (
-              <tr key={t.id}>
-                <td className="p-4 text-sm text-gray-900 dark:text-white font-medium">{t.title}</td>
-                <td className="p-4 text-sm text-gray-500">{t.category?.name}</td>
-                <td className="p-4 text-sm">{t._count.contents}</td>
-                <td className="p-4 text-sm">{t._count.quizzes}</td>
-                <td className="p-4 text-sm">{t._count.challenges}</td>
-                <td className="p-4 text-sm">{t.viewCount}</td>
-                <td className="p-4 text-sm">
-                  <span className={`px-2 py-1 rounded text-xs ${t.isPublished ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                    {t.isPublished ? 'প্রকাশিত' : 'ড্রাফট'}
-                  </span>
+          <tbody>
+            {items.map((it) => (
+              <tr key={it.id} className="border-b border-[#00ff88]/10 hover:bg-[#00ff88]/5 transition">
+                <td className="px-4 py-2 text-[#00ff88]">{it.title}</td>
+                <td className="px-4 py-2 text-cyan-400/70">{it.category.name}</td>
+                <td className="px-4 py-2 text-[#00ff88]/60">{it.difficulty}</td>
+                <td className="px-4 py-2">
+                  {it.isPublished ? (
+                    <span className="text-[#00ff88]">● live</span>
+                  ) : (
+                    <span className="text-red-500/70">○ draft</span>
+                  )}
                 </td>
-                <td className="p-4 flex gap-3 text-sm">
-                  <Link href={`/admin/tutorials/${t.id}/edit`} className="text-indigo-600 hover:underline">এডিট</Link>
-                  <DeleteButton url={`/api/admin/tutorials/${t.id}`} />
+                <td className="px-4 py-2 text-right space-x-3">
+                  <Link href={`/admin/tutorials/${it.id}`} className="text-cyan-400 hover:text-[#00ff88]">
+                    edit →
+                  </Link>
+                  <DeleteButton endpoint={`/api/admin/tutorials/${it.id}`} />
                 </td>
               </tr>
             ))}
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-[#00ff88]/40">
+                  -- no records found --
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
-        {tutorials.length === 0 && <p className="p-8 text-center text-gray-500">কোনো টিউটোরিয়াল নেই।</p>}
-      </div>
+      </TerminalCard>
     </div>
   )
 }

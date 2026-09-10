@@ -1,115 +1,89 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-interface Option { text: string; isCorrect: boolean }
+type Tutorial = { id: string; title: string }
+type Option = { text: string; isCorrect: boolean }
 
-interface Props {
-  initial?: {
-    id?: string
-    tutorialId: string
-    question: string
-    explanation: string
-    orderIndex: number
-    options: Option[]
-  }
-}
-
-export default function QuizForm({ initial }: Props) {
+export default function QuizForm({
+  initial,
+  tutorials,
+  mode = 'create',
+}: {
+  initial?: any
+  tutorials: Tutorial[]
+  mode?: 'create' | 'edit'
+}) {
   const router = useRouter()
-  const isEdit = !!initial?.id
-  const [tutorialId, setTutorialId] = useState(initial?.tutorialId || '')
-  const [question, setQuestion] = useState(initial?.question || '')
-  const [explanation, setExplanation] = useState(initial?.explanation || '')
-  const [orderIndex, setOrderIndex] = useState(initial?.orderIndex ?? 0)
+  const [form, setForm] = useState({
+    tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
+    question: initial?.question || '',
+    explanation: initial?.explanation || '',
+  })
   const [options, setOptions] = useState<Option[]>(
-    initial?.options?.length ? initial.options : [
-      { text: '', isCorrect: true },
-      { text: '', isCorrect: false },
-      { text: '', isCorrect: false },
-      { text: '', isCorrect: false },
-    ]
+    initial?.options?.length
+      ? initial.options.map((o: any) => ({ text: o.text, isCorrect: o.isCorrect }))
+      : [{ text: '', isCorrect: true }, { text: '', isCorrect: false }]
   )
-  const [tutorials, setTutorials] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetch('/api/tutorials?limit=100').then((r) => r.json()).then((d) => setTutorials(d.tutorials || d || []))
-  }, [])
-
-  const updateOption = (i: number, patch: Partial<Option>) => {
-    const copy = [...options]
-    copy[i] = { ...copy[i], ...patch }
-    setOptions(copy)
-  }
-
-  const setCorrect = (i: number) => {
-    setOptions(options.map((o, idx) => ({ ...o, isCorrect: idx === i })))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const url = isEdit ? `/api/admin/quiz/${initial!.id}` : '/api/admin/quiz'
-    const method = isEdit ? 'PUT' : 'POST'
+    const url = mode === 'edit' ? `/api/admin/quiz/${initial?.id}` : '/api/admin/quiz'
     const res = await fetch(url, {
-      method,
+      method: mode === 'edit' ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tutorialId, question, explanation, orderIndex, options }),
+      body: JSON.stringify({ ...form, options }),
     })
-    if (res.ok) router.push('/admin/quizzes')
-    else {
-      const d = await res.json()
-      setError(d.error || 'সংরক্ষণ ব্যর্থ')
-    }
+    if (res.ok) { router.push('/admin/quizzes'); router.refresh() }
+    else { const d = await res.json().catch(() => ({})); setError(d.error || 'save failed') }
     setLoading(false)
   }
 
-  const input = 'w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
       <div>
-        <label className="block text-sm font-medium mb-1">টিউটোরিয়াল *</label>
-        <select value={tutorialId} onChange={(e) => setTutorialId(e.target.value)} className={input} required>
-          <option value="">সিলেক্ট করুন</option>
+        <label className="admin-label">&gt; Tutorial</label>
+        <select className="admin-input" value={form.tutorialId} onChange={(e) => setForm((f) => ({ ...f, tutorialId: e.target.value }))} required>
           {tutorials.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">প্রশ্ন *</label>
-        <textarea value={question} onChange={(e) => setQuestion(e.target.value)} rows={3} className={input} required />
+        <label className="admin-label">&gt; Question</label>
+        <textarea className="admin-input" rows={2} value={form.question} onChange={(e) => setForm((f) => ({ ...f, question: e.target.value }))} required />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">ব্যাখ্যা (ঐচ্ছিক)</label>
-        <textarea value={explanation} onChange={(e) => setExplanation(e.target.value)} rows={2} className={input} />
+        <label className="admin-label">&gt; Explanation</label>
+        <textarea className="admin-input" rows={2} value={form.explanation || ''} onChange={(e) => setForm((f) => ({ ...f, explanation: e.target.value }))} />
       </div>
+
       <div>
-        <label className="block text-sm font-medium mb-2">অপশনসমূহ * (সঠিকটির বামে রেডিও সিলেক্ট করুন)</label>
-        {options.map((o, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2">
-            <input type="radio" name="correct" checked={o.isCorrect} onChange={() => setCorrect(i)} />
-            <input
-              value={o.text}
-              onChange={(e) => updateOption(i, { text: e.target.value })}
-              placeholder={`অপশন ${i + 1}`}
-              className={input}
-              required
-            />
-          </div>
-        ))}
+        <div className="flex items-center justify-between mb-2">
+          <span className="admin-label mb-0">&gt; Options</span>
+          <button type="button" className="text-xs text-cyan-400 hover:text-[#00ff88]" onClick={() => setOptions((o) => [...o, { text: '', isCorrect: false }])}>+ add</button>
+        </div>
+        <div className="space-y-2">
+          {options.map((opt, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <input type="radio" name="correct" checked={opt.isCorrect} className="accent-[#00ff88]" onChange={() => setOptions((o) => o.map((x, j) => ({ ...x, isCorrect: j === i })))} />
+              <input className="admin-input" value={opt.text} placeholder={`option ${i + 1}`} onChange={(e) => setOptions((o) => o.map((x, j) => j === i ? { ...x, text: e.target.value } : x))} required />
+              {options.length > 2 && (
+                <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setOptions((o) => o.filter((_, j) => j !== i))}>rm</button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">ক্রম</label>
-        <input type="number" value={orderIndex} onChange={(e) => setOrderIndex(Number(e.target.value))} className={input} />
+
+      {error && <div className="admin-error">[!] {error}</div>}
+      <div className="flex gap-3 pt-2">
+        <button type="submit" disabled={loading} className="admin-btn">{loading ? '> saving...' : '$ save'}</button>
+        <button type="button" onClick={() => router.back()} className="admin-btn-ghost">$ cancel</button>
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button type="submit" disabled={loading} className="w-full py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 disabled:opacity-50">
-        {loading ? 'সেভ হচ্ছে...' : isEdit ? 'আপডেট' : 'তৈরি'}
-      </button>
     </form>
   )
 }

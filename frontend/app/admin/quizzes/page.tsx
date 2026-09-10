@@ -1,52 +1,56 @@
-import prisma from '@/lib/prisma'
+import AdminHeader from '@/components/admin/AdminHeader'
+import TerminalCard from '@/components/admin/TerminalCard'
+import LogoutButton from '@/components/admin/LogoutButton'
 import Link from 'next/link'
-import DeleteButton from '@/components/admin/DeleteButton'
+import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
-
-export default async function AdminQuizzes() {
-  const quizzes = await prisma.quizQuestion.findMany({
-    include: {
-      tutorial: { select: { id: true, title: true } },
-      _count: { select: { options: true } },
-    },
+export default async function QuizzesPage() {
+  const items = await prisma.quizQuestion.findMany({
     orderBy: { createdAt: 'desc' },
+    take: 100,
+    include: { tutorial: { select: { title: true } }, _count: { select: { options: true } } },
   })
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">🧠 কুইজ প্রশ্ন</h1>
-        <Link href="/admin/quizzes/new" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm">
-          + নতুন প্রশ্ন
-        </Link>
-      </div>
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              {['প্রশ্ন', 'টিউটোরিয়াল', 'অপশন', 'ক্রম', 'অ্যাকশন'].map((h) => (
-                <th key={h} className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">{h}</th>
-              ))}
+    <div>
+      <AdminHeader
+        title="Quizzes"
+        subtitle={`${items.length} questions`}
+        action={
+          <div className="flex gap-2">
+            <Link href="/admin/quizzes/new" className="admin-btn">+ new</Link>
+            <LogoutButton />
+          </div>
+        }
+      />
+
+      <TerminalCard cmd='psql devschool -c "SELECT * FROM quiz_questions"'>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">
+              <th className="text-left px-4 py-2">question</th>
+              <th className="text-left px-4 py-2">tutorial</th>
+              <th className="text-left px-4 py-2">options</th>
+              <th className="text-right px-4 py-2">actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-            {quizzes.map((q) => (
-              <tr key={q.id}>
-                <td className="p-4 text-sm text-gray-900 dark:text-white max-w-md">{q.question}</td>
-                <td className="p-4 text-sm text-gray-500">{q.tutorial?.title || '—'}</td>
-                <td className="p-4 text-sm">{q._count.options}</td>
-                <td className="p-4 text-sm">{q.orderIndex}</td>
-                <td className="p-4 flex gap-3 text-sm">
-                  <Link href={`/admin/quizzes/${q.id}/edit`} className="text-indigo-600 hover:underline">এডিট</Link>
-                  <DeleteButton url={`/api/admin/quiz/${q.id}`} />
+          <tbody>
+            {items.map((it) => (
+              <tr key={it.id} className="border-b border-[#00ff88]/10 hover:bg-[#00ff88]/5 transition">
+                <td className="px-4 py-2 text-[#00ff88] max-w-md truncate">{it.question}</td>
+                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.title}</td>
+                <td className="px-4 py-2 text-[#00ff88]/60">{it._count.options}</td>
+                <td className="px-4 py-2 text-right">
+                  <Link href={`/admin/quizzes/${it.id}`} className="text-cyan-400 hover:text-[#00ff88]">edit →</Link>
                 </td>
               </tr>
             ))}
+            {items.length === 0 && (
+              <tr><td colSpan={4} className="px-4 py-8 text-center text-[#00ff88]/40">-- no records found --</td></tr>
+            )}
           </tbody>
         </table>
-        {quizzes.length === 0 && <p className="p-8 text-center text-gray-500">কোনো কুইজ প্রশ্ন নেই।</p>}
-      </div>
+      </TerminalCard>
     </div>
   )
 }

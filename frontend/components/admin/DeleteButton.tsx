@@ -3,29 +3,35 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function DeleteButton({ url, label = 'ডিলিট' }: { url: string; label?: string }) {
+export default function DeleteButton({ endpoint }: { endpoint: string }) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [confirm, setConfirm] = useState(false)
 
-  const handleDelete = async () => {
-    if (!confirm('আপনি কি নিশ্চিত? এই ডাটা ডিলিট হয়ে যাবে।')) return
-    setLoading(true)
-    const res = await fetch(url, { method: 'DELETE' })
-    if (res.ok) {
-      router.refresh()
-    } else {
-      alert('ডিলিট ব্যর্থ হয়েছে')
+  const onDelete = async () => {
+    if (!confirm) {
+      setConfirm(true)
+      setTimeout(() => setConfirm(false), 3000)
+      return
     }
-    setLoading(false)
+    setBusy(true)
+    const res = await fetch(endpoint, { method: 'DELETE' })
+    setBusy(false)
+    if (res.ok) router.refresh()
+    else alert('delete failed')
   }
 
   return (
     <button
-      onClick={handleDelete}
-      disabled={loading}
-      className="text-red-600 hover:underline text-sm disabled:opacity-50"
+      onClick={onDelete}
+      disabled={busy}
+      className={`text-xs font-mono transition ${
+        confirm
+          ? 'text-red-500 hover:text-red-400 font-bold'
+          : 'text-red-500/60 hover:text-red-500'
+      } disabled:opacity-40`}
     >
-      {loading ? 'মুছছে...' : label}
+      {busy ? '...' : confirm ? 'confirm?' : 'rm'}
     </button>
   )
 }

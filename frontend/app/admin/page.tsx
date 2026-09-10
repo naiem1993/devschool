@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
-export default function AdminIndex() {
+export default function AdminRoot() {
   redirect('/admin/dashboard')
 }

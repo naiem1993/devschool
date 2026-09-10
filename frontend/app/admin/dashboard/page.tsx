@@ -1,79 +1,69 @@
-import prisma from '@/lib/prisma'
-import Link from 'next/link'
+import AdminHeader from '@/components/admin/AdminHeader'
+import TerminalCard from '@/components/admin/TerminalCard'
 import LogoutButton from '@/components/admin/LogoutButton'
+import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
+async function getStats() {
+  const [categories, tutorials, quizzes, challenges, references, donations] =
+    await Promise.all([
+      prisma.category.count(),
+      prisma.tutorial.count(),
+      prisma.quizQuestion.count(),
+      prisma.codeChallenge.count(),
+      prisma.reference.count(),
+      prisma.donation.count(),
+    ])
+  return { categories, tutorials, quizzes, challenges, references, donations }
+}
 
-export default async function AdminDashboard() {
-  const [tutorialCount, categoryCount, quizCount, challengeCount, referenceCount] = await Promise.all([
-    prisma.tutorial.count(),
-    prisma.category.count(),
-    prisma.quizQuestion.count(),
-    prisma.codeChallenge.count(),
-    prisma.reference.count(),
-  ])
-
-  const recentTutorials = await prisma.tutorial.findMany({
-    take: 5,
-    orderBy: { createdAt: 'desc' },
-    include: { category: true },
-  })
+export default async function DashboardPage() {
+  const stats = await getStats()
 
   const cards = [
-    { href: '/admin/categories', title: '📂 ক্যাটাগরি', count: categoryCount, color: 'text-blue-600' },
-    { href: '/admin/tutorials', title: '📚 টিউটোরিয়াল', count: tutorialCount, color: 'text-indigo-600' },
-    { href: '/admin/quizzes', title: '🧠 কুইজ প্রশ্ন', count: quizCount, color: 'text-purple-600' },
-    { href: '/admin/challenges', title: '⚔️ চ্যালেঞ্জ', count: challengeCount, color: 'text-green-600' },
-    { href: '/admin/references', title: '📖 রেফারেন্স', count: referenceCount, color: 'text-orange-600' },
+    { label: 'categories', value: stats.categories, cmd: 'ls ./categories', href: '/admin/categories' },
+    { label: 'tutorials', value: stats.tutorials, cmd: 'ls ./tutorials', href: '/admin/tutorials' },
+    { label: 'quizzes', value: stats.quizzes, cmd: 'cat ./quizzes', href: '/admin/quizzes' },
+    { label: 'challenges', value: stats.challenges, cmd: 'ls ./challenges', href: '/admin/challenges' },
+    { label: 'references', value: stats.references, cmd: 'man ./references', href: '/admin/references' },
+    { label: 'donations', value: stats.donations, cmd: 'tail ./donations', href: '/admin/donations' },
   ]
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">📊 ড্যাশবোর্ড</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">DevSchool অ্যাডমিন প্যানেল</p>
-        </div>
-        <LogoutButton />
-      </div>
+    <div>
+      <AdminHeader
+        title="Dashboard"
+        subtitle="system status · all modules"
+        action={<LogoutButton />}
+      />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-        {cards.map((card) => (
-          <Link
-            key={card.href}
-            href={card.href}
-            className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow border border-gray-200 dark:border-gray-800 hover:shadow-lg transition"
-          >
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{card.title}</h2>
-            <p className={`text-3xl font-bold mt-2 ${card.color}`}>{card.count}</p>
-          </Link>
+      <TerminalCard className="p-4 mb-6">
+        <div className="text-xs text-[#00ff88]/70 space-y-0.5">
+          <div><span className="text-[#00ff88]">$</span> systemctl status devschool-admin</div>
+          <div className="text-[#00ff88]">
+            ● <span className="text-cyan-400">active (running)</span> · uptime OK
+          </div>
+          <div><span className="text-[#00ff88]">$</span> whoami → <span className="text-cyan-400">root@devschool</span></div>
+        </div>
+      </TerminalCard>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {cards.map((c) => (
+          <a key={c.label} href={c.href} className="block">
+            <TerminalCard
+              cmd={c.cmd}
+              className="p-4 hover:border-[#00ff88]/60 hover:shadow-[0_0_40px_-8px_#00ff88] transition"
+            >
+              <div className="flex items-baseline justify-between pt-2">
+                <span className="text-3xl font-bold text-[#00ff88] drop-shadow-[0_0_8px_#00ff88]">
+                  {String(c.value).padStart(3, '0')}
+                </span>
+                <span className="text-xs uppercase tracking-widest text-[#00ff88]/60">
+                  {c.label}
+                </span>
+              </div>
+            </TerminalCard>
+          </a>
         ))}
-      </div>
-
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800 p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">🕒 সাম্প্রতিক টিউটোরিয়াল</h2>
-          <Link href="/admin/tutorials/new" className="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
-            + নতুন
-          </Link>
-        </div>
-        {recentTutorials.length === 0 ? (
-          <p className="text-gray-500 py-4">এখনো কোনো টিউটোরিয়াল নেই।</p>
-        ) : (
-          <ul className="divide-y divide-gray-200 dark:divide-gray-800">
-            {recentTutorials.map((t) => (
-              <li key={t.id} className="py-3 flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{t.title}</p>
-                  <p className="text-xs text-gray-500">{t.category?.name} • {t.difficulty}</p>
-                </div>
-                <Link href={`/admin/tutorials/${t.id}/edit`} className="text-indigo-600 text-sm hover:underline">
-                  এডিট
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   )

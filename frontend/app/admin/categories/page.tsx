@@ -1,57 +1,75 @@
-import prisma from '@/lib/prisma'
-import Link from 'next/link'
+import AdminHeader from '@/components/admin/AdminHeader'
+import TerminalCard from '@/components/admin/TerminalCard'
+import LogoutButton from '@/components/admin/LogoutButton'
 import DeleteButton from '@/components/admin/DeleteButton'
+import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
-
-export default async function AdminCategories() {
-  const categories = await prisma.category.findMany({
+export default async function CategoriesPage() {
+  const items = await prisma.category.findMany({
     orderBy: { sortOrder: 'asc' },
-    include: { _count: { select: { tutorials: true, references: true } } },
   })
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">📂 ক্যাটাগরি</h1>
-        <Link href="/admin/categories/new" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm">
-          + নতুন ক্যাটাগরি
-        </Link>
-      </div>
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow overflow-hidden border border-gray-200 dark:border-gray-800">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">নাম</th>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">স্লাগ</th>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">টিউটোরিয়াল</th>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">রেফারেন্স</th>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">স্ট্যাটাস</th>
-              <th className="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300">অ্যাকশন</th>
+    <div>
+      <AdminHeader
+        title="Categories"
+        subtitle={`${items.length} records`}
+        action={
+          <div className="flex gap-2">
+            <Link href="/admin/categories/new" className="admin-btn">
+              + new
+            </Link>
+            <LogoutButton />
+          </div>
+        }
+      />
+
+      <TerminalCard cmd='psql devschool -c "SELECT * FROM categories"'>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">
+              <th className="text-left px-4 py-2">id</th>
+              <th className="text-left px-4 py-2">name</th>
+              <th className="text-left px-4 py-2">slug</th>
+              <th className="text-left px-4 py-2">active</th>
+              <th className="text-right px-4 py-2">actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-            {categories.map((c) => (
-              <tr key={c.id}>
-                <td className="p-4 text-sm text-gray-900 dark:text-white">{c.icon} {c.name}</td>
-                <td className="p-4 text-sm text-gray-500">{c.slug}</td>
-                <td className="p-4 text-sm">{c._count.tutorials}</td>
-                <td className="p-4 text-sm">{c._count.references}</td>
-                <td className="p-4 text-sm">
-                  <span className={`px-2 py-1 rounded text-xs ${c.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
-                    {c.isActive ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
-                  </span>
+          <tbody>
+            {items.map((it) => (
+              <tr key={it.id} className="border-b border-[#00ff88]/10 hover:bg-[#00ff88]/5 transition">
+                <td className="px-4 py-2 text-[#00ff88]/40">{it.id.slice(0, 8)}</td>
+                <td className="px-4 py-2 text-[#00ff88]">
+                  {it.icon && <span className="mr-1">{it.icon}</span>}
+                  {it.name}
                 </td>
-                <td className="p-4 flex gap-3 text-sm">
-                  <Link href={`/admin/categories/${c.id}/edit`} className="text-indigo-600 hover:underline">এডিট</Link>
-                  <DeleteButton url={`/api/admin/categories/${c.id}`} />
+                <td className="px-4 py-2 text-cyan-400/70">{it.slug}</td>
+                <td className="px-4 py-2">
+                  {it.isActive ? (
+                    <span className="text-[#00ff88]">● true</span>
+                  ) : (
+                    <span className="text-red-500/70">○ false</span>
+                  )}
+                </td>
+                <td className="px-4 py-2 text-right space-x-3">
+                  <Link href={`/admin/categories/${it.id}`} className="text-cyan-400 hover:text-[#00ff88]">
+                    edit →
+                  </Link>
+                  <DeleteButton endpoint={`/api/admin/categories/${it.id}`} />
                 </td>
               </tr>
             ))}
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-[#00ff88]/40">
+                  -- no records found --
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
-        {categories.length === 0 && <p className="p-8 text-center text-gray-500">কোনো ক্যাটাগরি নেই। প্রথমে যোগ করুন।</p>}
-      </div>
+      </TerminalCard>
     </div>
   )
 }

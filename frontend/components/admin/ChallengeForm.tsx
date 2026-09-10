@@ -1,141 +1,121 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-interface TC { input: string; expectedOutput: string; isHidden: boolean }
+type Tutorial = { id: string; title: string }
+type TC = { input: string; expectedOutput: string; isHidden: boolean }
 
-interface Props {
-  initial?: {
-    id?: string
-    tutorialId: string
-    title: string
-    description: string
-    starterCode: string
-    solution: string
-    difficulty: string
-    points: number
-    testCases: TC[]
-  }
-}
-
-export default function ChallengeForm({ initial }: Props) {
+export default function ChallengeForm({
+  initial,
+  tutorials,
+  mode = 'create',
+}: {
+  initial?: any
+  tutorials: Tutorial[]
+  mode?: 'create' | 'edit'
+}) {
   const router = useRouter()
-  const isEdit = !!initial?.id
-  const [tutorialId, setTutorialId] = useState(initial?.tutorialId || '')
-  const [title, setTitle] = useState(initial?.title || '')
-  const [description, setDescription] = useState(initial?.description || '')
-  const [starterCode, setStarterCode] = useState(initial?.starterCode || 'function solution(input) {\n  // your code\n}')
-  const [solution, setSolution] = useState(initial?.solution || '')
-  const [difficulty, setDifficulty] = useState(initial?.difficulty || 'Easy')
-  const [points, setPoints] = useState(initial?.points ?? 10)
+  const [form, setForm] = useState({
+    tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
+    title: initial?.title || '',
+    description: initial?.description || '',
+    starterCode: initial?.starterCode || '',
+    solution: initial?.solution || '',
+    difficulty: initial?.difficulty || 'Easy',
+    points: initial?.points ?? 10,
+  })
   const [testCases, setTestCases] = useState<TC[]>(
-    initial?.testCases?.length ? initial.testCases : [{ input: '', expectedOutput: '', isHidden: false }]
+    initial?.testCases?.length
+      ? initial.testCases.map((t: any) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden }))
+      : [{ input: '', expectedOutput: '', isHidden: false }]
   )
-  const [tutorials, setTutorials] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetch('/api/tutorials?limit=100').then((r) => r.json()).then((d) => setTutorials(d.tutorials || d || []))
-  }, [])
-
-  const updateTC = (i: number, patch: Partial<TC>) => {
-    const copy = [...testCases]
-    copy[i] = { ...copy[i], ...patch }
-    setTestCases(copy)
-  }
-
-  const addTC = () => setTestCases([...testCases, { input: '', expectedOutput: '', isHidden: false }])
-  const removeTC = (i: number) => setTestCases(testCases.filter((_, idx) => idx !== i))
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const url = isEdit ? `/api/admin/challenges/${initial!.id}` : '/api/admin/challenges'
-    const method = isEdit ? 'PUT' : 'POST'
+    const url = mode === 'edit' ? `/api/admin/challenges/${initial?.id}` : '/api/admin/challenges'
     const res = await fetch(url, {
-      method,
+      method: mode === 'edit' ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tutorialId, title, description, starterCode, solution, difficulty, points, testCases }),
+      body: JSON.stringify({ ...form, testCases }),
     })
-    if (res.ok) router.push('/admin/challenges')
-    else {
-      const d = await res.json()
-      setError(d.error || 'সংরক্ষণ ব্যর্থ')
-    }
+    if (res.ok) { router.push('/admin/challenges'); router.refresh() }
+    else { const d = await res.json().catch(() => ({})); setError(d.error || 'save failed') }
     setLoading(false)
   }
 
-  const input = 'w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
-  const mono = input + ' font-mono text-sm'
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div>
-        <label className="block text-sm font-medium mb-1">টিউটোরিয়াল *</label>
-        <select value={tutorialId} onChange={(e) => setTutorialId(e.target.value)} className={input} required>
-          <option value="">সিলেক্ট করুন</option>
-          {tutorials.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">শিরোনাম *</label>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} className={input} required />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">বিবরণ *</label>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className={input} required />
-      </div>
+    <form onSubmit={onSubmit} className="space-y-4 max-w-3xl">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">কঠিনতা</label>
-          <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className={input}>
-            <option>Easy</option>
-            <option>Medium</option>
-            <option>Hard</option>
+          <label className="admin-label">&gt; Tutorial</label>
+          <select className="admin-input" value={form.tutorialId} onChange={(e) => setForm((f) => ({ ...f, tutorialId: e.target.value }))} required>
+            {tutorials.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">পয়েন্টস</label>
-          <input type="number" value={points} onChange={(e) => setPoints(Number(e.target.value))} className={input} />
+          <label className="admin-label">&gt; Difficulty</label>
+          <select className="admin-input" value={form.difficulty} onChange={(e) => setForm((f) => ({ ...f, difficulty: e.target.value }))}>
+            <option>Easy</option><option>Medium</option><option>Hard</option>
+          </select>
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">স্টার্টার কোড</label>
-        <textarea value={starterCode} onChange={(e) => setStarterCode(e.target.value)} rows={5} className={mono} />
+        <label className="admin-label">&gt; Title</label>
+        <input className="admin-input" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">সমাধান (ঐচ্ছিক)</label>
-        <textarea value={solution} onChange={(e) => setSolution(e.target.value)} rows={5} className={mono} />
+        <label className="admin-label">&gt; Description</label>
+        <textarea className="admin-input" rows={3} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} required />
       </div>
-      <div className="border-t pt-4 dark:border-gray-800">
-        <h3 className="font-semibold mb-3 text-gray-900 dark:text-white">🧪 টেস্ট কেস</h3>
-        {testCases.map((tc, i) => (
-          <div key={i} className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 mb-3 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">টেস্ট #{i + 1}</span>
-              {testCases.length > 1 && (
-                <button type="button" onClick={() => removeTC(i)} className="text-red-600 text-xs">মুছুন</button>
-              )}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="admin-label">&gt; Starter Code</label>
+          <textarea className="admin-input" rows={5} value={form.starterCode || ''} onChange={(e) => setForm((f) => ({ ...f, starterCode: e.target.value }))} />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Solution</label>
+          <textarea className="admin-input" rows={5} value={form.solution || ''} onChange={(e) => setForm((f) => ({ ...f, solution: e.target.value }))} />
+        </div>
+      </div>
+      <div>
+        <label className="admin-label">&gt; Points</label>
+        <input type="number" className="admin-input" value={form.points} onChange={(e) => setForm((f) => ({ ...f, points: Number(e.target.value) }))} />
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="admin-label mb-0">&gt; Test Cases</span>
+          <button type="button" className="text-xs text-cyan-400 hover:text-[#00ff88]" onClick={() => setTestCases((t) => [...t, { input: '', expectedOutput: '', isHidden: false }])}>+ add</button>
+        </div>
+        <div className="space-y-3">
+          {testCases.map((tc, i) => (
+            <div key={i} className="border border-[#00ff88]/20 rounded p-3 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <input className="admin-input" placeholder="input" value={tc.input} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, input: e.target.value } : x))} />
+                <input className="admin-input" placeholder="expected output" value={tc.expectedOutput} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, expectedOutput: e.target.value } : x))} />
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-xs text-[#00ff88]/80 font-mono">
+                  <input type="checkbox" className="accent-[#00ff88]" checked={tc.isHidden} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, isHidden: e.target.checked } : x))} />
+                  hidden
+                </label>
+                {testCases.length > 1 && <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setTestCases((a) => a.filter((_, j) => j !== i))}>rm</button>}
+              </div>
             </div>
-            <input value={tc.input} onChange={(e) => updateTC(i, { input: e.target.value })} placeholder='ইনপুট (যেমন: [1,2,3])' className={input} />
-            <input value={tc.expectedOutput} onChange={(e) => updateTC(i, { expectedOutput: e.target.value })} placeholder='প্রত্যাশিত আউটপুট (যেমন: 6)' className={input} />
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={tc.isHidden} onChange={(e) => updateTC(i, { isHidden: e.target.checked })} />
-              ইউজারকে দেখাবেন না
-            </label>
-          </div>
-        ))}
-        <button type="button" onClick={addTC} className="w-full py-2 border-2 border-dashed border-gray-400 rounded-lg text-sm">
-          + টেস্ট কেস যোগ করুন
-        </button>
+          ))}
+        </div>
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button type="submit" disabled={loading} className="w-full py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 disabled:opacity-50">
-        {loading ? 'সেভ হচ্ছে...' : isEdit ? 'আপডেট' : 'তৈরি'}
-      </button>
+
+      {error && <div className="admin-error">[!] {error}</div>}
+      <div className="flex gap-3 pt-2">
+        <button type="submit" disabled={loading} className="admin-btn">{loading ? '> saving...' : '$ save'}</button>
+        <button type="button" onClick={() => router.back()} className="admin-btn-ghost">$ cancel</button>
+      </div>
     </form>
   )
 }
