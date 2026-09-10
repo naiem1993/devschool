@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { debounce } from 'lodash'
 
 interface Tutorial {
   id: string
@@ -9,15 +10,39 @@ interface Tutorial {
   slug: string
   difficulty: string
   views: number
+  content?: string
   category?: { name: string }
 }
 
 export default function HomeSearch({ tutorials }: { tutorials: Tutorial[] }) {
   const [query, setQuery] = useState('')
+  const [filtered, setFiltered] = useState<Tutorial[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const filtered = query.trim() === '' 
-    ? [] 
-    : tutorials.filter(t => t.title.toLowerCase().includes(query.toLowerCase()) || (t.category?.name && t.category.name.toLowerCase().includes(query.toLowerCase())))
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((searchTerm: string) => {
+      if (searchTerm.trim() === '') {
+        setFiltered([])
+        setIsLoading(false)
+        return
+      }
+      const results = tutorials.filter(t =>
+        t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (t.category?.name && t.category.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (t.content && t.content.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+      setFiltered(results)
+      setIsLoading(false)
+    }, 300),
+    [tutorials]
+  )
+
+  useEffect(() => {
+    setIsLoading(true)
+    debouncedSearch(query)
+    return () => debouncedSearch.cancel()
+  }, [query, debouncedSearch])
 
   return (
     <div className="max-w-2xl mx-auto mt-8 relative">
@@ -40,8 +65,21 @@ export default function HomeSearch({ tutorials }: { tutorials: Tutorial[] }) {
         )}
       </div>
 
-      {/* Live Search Results Dropdown */}
-      {query.trim() !== '' && (
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-4 z-50">
+          <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            <span>খুঁজছি...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Search Results Dropdown */}
+      {!isLoading && query.trim() !== '' && (
         <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto text-left">
           {filtered.length > 0 ? (
             <div className="p-2 divide-y divide-slate-100 dark:divide-slate-800">
@@ -58,6 +96,11 @@ export default function HomeSearch({ tutorials }: { tutorials: Tutorial[] }) {
                     <span>•</span>
                     <span>{t.difficulty}</span>
                   </div>
+                  {t.content && (
+                    <div className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
+                      {t.content}
+                    </div>
+                  )}
                 </Link>
               ))}
             </div>

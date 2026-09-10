@@ -1,10 +1,11 @@
-const { PrismaClient } = require('@prisma/client')
+import { PrismaClient } from '@prisma/client'
+
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 ডেমো ডেটা যোগ করা হচ্ছే...')
+  console.log('🌱 Seeding demo data...')
 
-  // 1. ক্যাটাগরি তৈরি
+  // 1. Create Categories
   const webCat = await prisma.category.create({
     data: {
       name: 'Web Development',
@@ -32,7 +33,7 @@ async function main() {
     }
   })
 
-  // 2. টিউটোরিয়াল তৈরি (HTML)
+  // 2. Create HTML Tutorial with Content
   const htmlTutorial = await prisma.tutorial.create({
     data: {
       title: 'Introduction to HTML',
@@ -49,8 +50,8 @@ async function main() {
     }
   })
 
-  // 3. HTML-এর Quiz
-  const htmlQuizQuestion = await prisma.quizQuestion.create({
+  // 3. Create Quiz Questions for HTML
+  await prisma.quizQuestion.create({
     data: {
       tutorialId: htmlTutorial.id,
       question: 'Which tag is used for the largest heading?',
@@ -82,7 +83,7 @@ async function main() {
     }
   })
 
-  // 4. HTML Reference
+  // 4. Create HTML Reference
   await prisma.reference.create({
     data: {
       title: 'HTML Tag List',
@@ -96,7 +97,7 @@ async function main() {
     }
   })
 
-  // 5. JavaScript টিউটোরিয়াল
+  // 5. Create JavaScript Tutorial with Content
   const jsTutorial = await prisma.tutorial.create({
     data: {
       title: 'JavaScript Basics',
@@ -113,7 +114,7 @@ async function main() {
     }
   })
 
-  // 6. JavaScript Quiz
+  // 6. Create Quiz Questions for JavaScript
   await prisma.quizQuestion.create({
     data: {
       tutorialId: jsTutorial.id,
@@ -130,7 +131,7 @@ async function main() {
     }
   })
 
-  // 7. JavaScript Code Challenge
+  // 7. Create Code Challenge for JavaScript
   await prisma.codeChallenge.create({
     data: {
       tutorialId: jsTutorial.id,
@@ -149,7 +150,7 @@ async function main() {
     }
   })
 
-  // 8. JavaScript Reference
+  // 8. Create JavaScript Reference
   await prisma.reference.create({
     data: {
       title: 'JavaScript Array Methods',
@@ -163,7 +164,7 @@ async function main() {
     }
   })
 
-  // 9. Python Tutorial
+  // 9. Create Python Tutorial
   const pythonTutorial = await prisma.tutorial.create({
     data: {
       title: 'Python Basics',
@@ -179,7 +180,7 @@ async function main() {
     }
   })
 
-  // 10. Python Reference
+  // 10. Create Python Reference
   await prisma.reference.create({
     data: {
       title: 'Python Data Types',
@@ -193,7 +194,7 @@ async function main() {
     }
   })
 
-  // 11. Site Settings
+  // 11. Create Site Settings
   await prisma.siteSettings.create({
     data: {
       key: 'general',
@@ -201,11 +202,11 @@ async function main() {
         siteName: 'DevSchool',
         isDonationEnabled: true,
         isAdsEnabled: true
-      }
+      } as any
     }
   })
 
-  console.log('✅ ডেমো ডেটা যোগ করা হয়েছে!')
+  console.log('✅ Demo data seeded successfully!')
   console.log('📚 Categories:', await prisma.category.count())
   console.log('📖 Tutorials:', await prisma.tutorial.count())
   console.log('📝 TutorialContents:', await prisma.tutorialContent.count())

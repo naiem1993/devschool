@@ -3,112 +3,141 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ==========================================
-//  CATEGORY (বিষয়)
+//  CATEGORY (বিষয়)
 // ==========================================
 model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  icon        String?   // emoji বা SVG আইকন
   description String?
-  icon        String?
-  createdAt   DateTime @default(now())
+  isActive    Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   tutorials   Tutorial[]
   references  Reference[]
+
+  @@index([slug])
+  @@index([isActive, sortOrder])
 }
 
 // ==========================================
-//  TUTORIAL (টিউটোরিয়াল)
+//  TUTORIAL (টিউটোরিয়াল)
 // ==========================================
 model Tutorial {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  description  String?
+  difficulty   String   @default("beginner")
+  viewCount    Int      @default(0)
+  isActive     Boolean  @default(true)
+  duration     Int?     // 时长（分钟）
+  rating       Float?   // 评分
+  isPublished  Boolean  @default(false)
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  contents     TutorialContent[]
+  quizzes      QuizQuestion[]
+  challenges   CodeChallenge[]
+
+  @@index([slug])
+  @@index([categoryId, createdAt])
+  @@index([isPublished])
+}
+
+// ==========================================
+//  TUTORIALCONTENT (অধ্যায়ভিত্তিক কন্টেন্ট)
+// ==========================================
+model TutorialContent {
+  id           String   @id @default(cuid())
+  tutorialId   String
+  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  chapterNo    Int
+  title        String
+  content      String   // Markdown বা HTML
+  codeExample  String?  // ঐচ্ছিক কোড ব্লক
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([tutorialId, chapterNo])
+  @@index([tutorialId, chapterNo])
+}
+
+// ==========================================
+//  QUIZQUESTION (কুইজ প্রশ্ন)
+// ==========================================
+model QuizQuestion {
+  id           String   @id @default(cuid())
+  tutorialId   String
+  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  question     String
+  explanation  String?
+  orderIndex   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  options      QuizOption[]
+
+  @@index([tutorialId])
+}
+
+model QuizOption {
   id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  content     String             // Markdown/HTML
-  categoryId  String   @map("category_id")
-  category    Category @relation(fields: [categoryId], references: [id])
-  difficulty  String   @default("beginner") // beginner, intermediate, advanced
-  isPublished Boolean  @default(true)
-  views       Int      @default(0)
+  questionId  String
+  question    QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text        String
+  isCorrect   Boolean  @default(false)
+  optionOrder Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([slug])
-  @@index([views])
-  @@index([createdAt])
-
-  exercises   Exercise[]
-  quizzes     Quiz[]
+  @@index([questionId])
 }
 
 // ==========================================
-//  EXERCISE (প্র্যাকটিস প্রশ্ন)
+//  CODECHALLENGE (কোড চ্যালেঞ্জ)
 // ==========================================
-model Exercise {
-  id          String   @id @default(cuid())
-  tutorialId  String   @map("tutorial_id")
-  tutorial    Tutorial @relation(fields: [tutorialId], references: [id])
-  question    String
-  hint        String?
-  solution    String?
-  language    String   @default("javascript")
-  createdAt   DateTime @default(now())
+model CodeChallenge {
+  id           String   @id @default(cuid())
+  tutorialId   String
+  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  starterCode  String?
+  solution     String?
+  difficulty   String   @default("Easy")
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  testCases    TestCase[]
+
+  @@index([tutorialId])
 }
 
-// ==========================================
-//  QUIZ (কুইজ)
-// ==========================================
-model Quiz {
-  id          String   @id @default(cuid())
-  title       String
-  tutorialId  String?  @map("tutorial_id")
-  tutorial    Tutorial? @relation(fields: [tutorialId], references: [id])
-  description String?
-  createdAt   DateTime @default(now())
-
-  questions   QuizQuestion[]
-}
-
-model QuizQuestion {
-  id          String   @id @default(cuid())
-  quizId      String   @map("quiz_id")
-  quiz        Quiz     @relation(fields: [quizId], references: [id])
-  question    String
-  options     String              // JSON array: ["A", "B", "C", "D"]
-  correctIndex Int
-  explanation String?
-  createdAt   DateTime @default(now())
-}
-
-// ==========================================
-//  CHALLENGE (কোড চ্যালেঞ্জ)
-// ==========================================
-model Challenge {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  language    String   @default("javascript")
-  starterCode String?
-  difficulty  String   @default("easy")   // easy, medium, hard
-  points      Int      @default(10)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-
-  testCases   ChallengeTestCase[]
-}
-
-model ChallengeTestCase {
-  id          String   @id @default(cuid())
-  challengeId String   @map("challenge_id")
-  challenge   Challenge @relation(fields: [challengeId], references: [id])
-  input       String
+model TestCase {
+  id             String   @id @default(cuid())
+  challengeId    String
+  challenge      CodeChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  input          String
   expectedOutput String
-  isHidden    Boolean  @default(false)
+  isHidden       Boolean  @default(false)
+  testCaseOrder  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([challengeId])
 }
 
 // ==========================================
@@ -116,18 +145,50 @@ model ChallengeTestCase {
 // ==========================================
 model Reference {
   id          String   @id @default(cuid())
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   title       String
   slug        String   @unique
-  content     String             // বিস্তারিত বর্ণনা + সিনট্যাক্স + উদাহরণ
-  categoryId  String?  @map("category_id")
-  category    Category? @relation(fields: [categoryId], references: [id])
-  language    String                     // html, css, javascript, python, ইত্যাদি
-  isPublished Boolean  @default(true)
-  views       Int      @default(0)
+  description String?
+  syntax      String?
+  example     String?
+  tags        String[]
+  language    String?  //programming language
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([slug])
-  @@index([views])
+  @@index([categoryId])
+}
+
+// ==========================================
+//  DONATION (দান সংক্রান্ত তথ্য)
+// ==========================================
+model Donation {
+  id            String   @id @default(cuid())
+  amount        Float
+  currency      String   @default("BDT")
+  donorName     String?
+  donorEmail    String?
+  transactionId String?  @unique
+  status        String   @default("pending")
+  message       String?
+  isPublic      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
   @@index([createdAt])
+}
+
+// ==========================================
+//  SITESETTINGS (অ্যাডমিন কনফিগারেশন)
+// ==========================================
+model SiteSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Json
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

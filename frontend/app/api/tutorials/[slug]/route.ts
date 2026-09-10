@@ -1,26 +1,113 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import prisma from '@/lib/prisma'
+import { slugParamSchema } from '@/lib/validators'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
-
+/**
+ * GET /api/tutorials/[slug]
+ * Returns a single tutorial with all related data
+ */
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params
+  
+  // ─── Validate slug ─────────────────────────────────────────────────────────
+  const validation = slugParamSchema.safeParse({ slug })
+  if (!validation.success) {
+    return NextResponse.json(
+      { error: 'অবৈধ টিউটোরিয়াল স্লগ' },
+      { status: 400 }
+    )
+  }
+  
   try {
-    const { slug } = await params
-    const response = await fetch(`${API_BASE_URL}/tutorials/${slug}`)
-    if (!response.ok) {
+    // ─── Query optimization: Select only what's needed ───────────────────────
+    const tutorial = await prisma.tutorial.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        difficulty: true,
+        viewCount: true,
+        duration: true,
+        rating: true,
+        isActive: true,
+        isPublished: true,
+        createdAt: true,
+        updatedAt: true,
+        categoryId: true,
+        // ─── Nested selects for related data ────────────────────────────────
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        contents: {
+          select: {
+            id: true,
+            chapterNo: true,
+            title: true,
+            content: true,
+            codeExample: true,
+          },
+          orderBy: { chapterNo: 'asc' },
+        },
+        quizzes: {
+          select: {
+            id: true,
+            question: true,
+            explanation: true,
+            options: {
+              select: {
+                id: true,
+                text: true,
+                // Don't expose isCorrect to client
+              },
+              orderBy: { id: 'asc' },
+            },
+          },
+        },
+        challenges: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            starterCode: true,
+            testCases: {
+              select: {
+                id: true,
+                input: true,
+                // Don't expose expectedOutput for hidden tests
+              },
+            },
+          },
+        },
+      },
+    })
+    
+    if (!tutorial) {
       return NextResponse.json(
-        { error: `Backend error: ${response.statusText}` },
-        { status: response.status }
+        { error: 'টিউটোরিয়াল পাওয়া যায়নি' },
+        { status: 404 }
       )
     }
-    const data = await response.json()
-    return NextResponse.json(data)
+    
+    // ─── Increment view count using optimized increment ──────────────────────
+    await prisma.tutorial.update({
+      where: { id: tutorial.id },
+      data: { viewCount: { increment: 1 } },
+    })
+    
+    return NextResponse.json(tutorial)
   } catch (error) {
-    console.error('Error fetching tutorial:', error)
+    console.error('Tutorial fetch error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch tutorial' },
+      { error: 'টিউটোরিয়াল লোড করতে সমস্যা হচ্ছে' },
       { status: 500 }
     )
   }

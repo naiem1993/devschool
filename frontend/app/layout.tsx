@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন",
-  description: "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
+  description: "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
 };
 
 export default function RootLayout({
@@ -32,7 +33,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-gray-900 dark:bg-[#0a0a0a] dark:text-gray-100 transition-colors duration-300">
         <Header />
-        <main className="flex-1">{children}</main>
+        <ErrorBoundary>
+          <main className="flex-1">{children}</main>
+        </ErrorBoundary>
         <Footer />
       </body>
     </html>
