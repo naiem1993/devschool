@@ -1,0 +1,116 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
+
+export type ChallengeCard = {
+  id: string
+  title: string
+  description: string
+  difficulty: string
+  points: number
+  tutorialTitle: string
+  categoryName: string
+  testCaseCount: number
+}
+
+type DiffFilter = 'all' | 'Easy' | 'Medium' | 'Hard'
+
+export default function ChallengeFilter({ challenges }: { challenges: ChallengeCard[] }) {
+  const [query, setQuery] = useState('')
+  const [difficulty, setDifficulty] = useState<DiffFilter>('all')
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return challenges.filter((c) => {
+      const matchesQ = q
+        ? c.title.toLowerCase().includes(q) ||
+          c.description.toLowerCase().includes(q) ||
+          c.categoryName.toLowerCase().includes(q)
+        : true
+      const matchesD = difficulty === 'all' || c.difficulty === difficulty
+      return matchesQ && matchesD
+    })
+  }, [challenges, query, difficulty])
+
+  const diffStyle = (d: string) => {
+    if (d === 'Easy') return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+    if (d === 'Medium') return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+    if (d === 'Hard') return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+    return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20'
+  }
+
+  return (
+    <>
+      <div className="space-y-3 mb-8">
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="চ্যালেঞ্জ খুঁজুন..."
+            aria-label="চ্যালেঞ্জ সার্চ"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {(['all', 'Easy', 'Medium', 'Hard'] as const).map((d) => (
+            <button
+              key={d}
+              onClick={() => setDifficulty(d)}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition border ${
+                difficulty === d
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'
+              }`}
+            >
+              {d === 'all' ? 'সব' : d}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mb-5 text-sm">
+        <p className="text-slate-500 dark:text-slate-400">
+          {filtered.length} টি চ্যালেঞ্জ
+        </p>
+        {(query || difficulty !== 'all') && (
+          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            ফিল্টার মুছুন ✕
+          </button>
+        )}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+          <div className="text-6xl mb-4">🎯</div>
+          <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">অন্য কীওয়ার্ড বা difficulty দিয়ে চেষ্টা করুন।</p>
+          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition">সব চ্যালেঞ্জ দেখুন</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filtered.map((c) => (
+            <Link
+              key={c.id}
+              href={`/challenges/${c.id}`}
+              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200 flex flex-col"
+            >
+              <div className="flex items-center justify-between mb-3 gap-2">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full border text-[10px] font-semibold uppercase tracking-wider ${diffStyle(c.difficulty)}`}>{c.difficulty}</span>
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">⭐ {c.points} pts</span>
+              </div>
+              <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-2">{c.title}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">{c.description}</p>
+              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
+                <span className="truncate max-w-[120px]" title={c.tutorialTitle}>📚 {c.tutorialTitle}</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">সমাধান →</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}

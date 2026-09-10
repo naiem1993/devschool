@@ -110,3 +110,55 @@ body {
   font-size: 0.75rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
+
+/* ============================================
+   HACKED MODE animations
+   ============================================ */
+@keyframes redflash {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+}
+
+.glitch {
+  animation: glitch 0.3s infinite;
+}
+
+
+/* ============================================
+   HACKED MODE animations
+   ============================================ */
+@keyframes redflash {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+}
+
+.glitch {
+  animation: glitch 0.3s infinite;
+}
+

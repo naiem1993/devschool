@@ -1,13 +1,13 @@
-app/admin/donations/page.tsx(17,5): error TS2657: JSX expressions must have one parent element.
-app/admin/donations/page.tsx(24,56): error TS1003: Identifier expected.
-app/admin/donations/page.tsx(24,128): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
-app/admin/donations/page.tsx(37,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
-app/admin/donations/page.tsx(39,53): error TS1003: Identifier expected.
-app/admin/donations/page.tsx(39,60): error TS1005: ')' expected.
-app/admin/donations/page.tsx(39,70): error TS1434: Unexpected keyword or identifier.
-app/admin/donations/page.tsx(39,76): error TS1434: Unexpected keyword or identifier.
-app/admin/donations/page.tsx(39,79): error TS1434: Unexpected keyword or identifier.
-app/admin/donations/page.tsx(39,94): error TS1127: Invalid character.
-app/admin/donations/page.tsx(71,7): error TS1128: Declaration or statement expected.
-app/admin/donations/page.tsx(72,5): error TS1109: Expression expected.
-app/admin/donations/page.tsx(73,3): error TS1109: Expression expected.
+app/api/attempts/[deviceId]/route.ts(26,16): error TS2339: Property 'quizAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/[deviceId]/route.ts(27,16): error TS2339: Property 'quizAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/[deviceId]/route.ts(28,16): error TS2339: Property 'challengeAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/[deviceId]/route.ts(32,16): error TS2339: Property 'quizAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/[deviceId]/route.ts(40,16): error TS2339: Property 'challengeAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/[deviceId]/route.ts(50,56): error TS7006: Parameter 'c' implicitly has an 'any' type.
+app/api/attempts/[deviceId]/route.ts(52,16): error TS7006: Parameter 'c' implicitly has an 'any' type.
+app/api/attempts/[deviceId]/route.ts(53,16): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+app/api/attempts/[deviceId]/route.ts(53,21): error TS7006: Parameter 'c' implicitly has an 'any' type.
+app/api/attempts/[deviceId]/route.ts(56,26): error TS7006: Parameter 'a' implicitly has an 'any' type.
+app/api/attempts/[deviceId]/route.ts(64,31): error TS7006: Parameter 'a' implicitly has an 'any' type.
+app/api/attempts/route.ts(33,36): error TS2339: Property 'quizAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.
+app/api/attempts/route.ts(50,36): error TS2339: Property 'challengeAttempt' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.

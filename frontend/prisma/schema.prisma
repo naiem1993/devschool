@@ -88,6 +88,7 @@ model QuizQuestion {
   updatedAt    DateTime @updatedAt
 
   options      QuizOption[]
+  attempts     QuizAttempt[]
 
   @@index([tutorialId])
 }
@@ -122,6 +123,7 @@ model CodeChallenge {
   updatedAt    DateTime @updatedAt
 
   testCases    TestCase[]
+  attempts     ChallengeAttempt[]
 
   @@index([tutorialId])
 }
@@ -207,4 +209,42 @@ model AdminUser {
   updatedAt    DateTime  @updatedAt
 
   @@index([email])
+}
+
+// ==========================================
+//  QUIZATTEMPT — anonymous progress tracking
+// ==========================================
+model QuizAttempt {
+  id            String   @id @default(cuid())
+  deviceId      String
+  questionId    String
+  question      QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedId    String?
+  isCorrect     Boolean
+  timeTakenSec  Int?
+  createdAt     DateTime @default(now())
+
+  @@index([deviceId, createdAt])
+  @@index([deviceId, questionId])
+  @@index([questionId])
+}
+
+// ==========================================
+//  CHALLENGEATTEMPT — anonymous progress tracking
+// ==========================================
+model ChallengeAttempt {
+  id             String   @id @default(cuid())
+  deviceId       String
+  challengeId    String
+  challenge      CodeChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  passed         Boolean
+  passedCount    Int      @default(0)
+  totalCount     Int      @default(0)
+  codeSubmitted  String?
+  timeTakenSec   Int?
+  createdAt      DateTime @default(now())
+
+  @@index([deviceId, createdAt])
+  @@index([deviceId, challengeId])
+  @@index([challengeId])
 }

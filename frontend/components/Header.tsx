@@ -14,6 +14,7 @@ export default function Header() {
     { name: 'রেফারেন্স', href: '/references' },
     { name: 'প্লেগ্রাউন্ড', href: '/playground' },
     { name: 'চ্যালেঞ্জ', href: '/challenges' },
+    { name: 'সার্চ', href: '/search' },
   ];
 
   return (

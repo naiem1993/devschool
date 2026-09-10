@@ -3,6 +3,9 @@ import TerminalCard from '@/components/admin/TerminalCard'
 import LogoutButton from '@/components/admin/LogoutButton'
 import { prisma } from '@/lib/prisma'
 
+const SQL_SUM = "psql devschool -c \"SELECT SUM(amount) FROM donations WHERE status='completed'\""
+const SQL_LIST = 'psql devschool -c "SELECT * FROM donations ORDER BY created_at DESC"'
+
 export default async function DonationsPage() {
   const [items, totals] = await Promise.all([
     prisma.donation.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
@@ -21,7 +24,7 @@ export default async function DonationsPage() {
         action={<LogoutButton />}
       />
 
-      <TerminalCard cmd={`psql devschool -c "SELECT SUM(amount) FROM donations WHERE status='completed'"`} className="p-4 mb-6">
+      <TerminalCard cmd={SQL_SUM} className="p-4 mb-6">
         <div className="text-xs text-[#00ff88]/70 space-y-1 pt-2">
           <div>
             <span className="text-[#00ff88]">total_received</span> ={' '}
@@ -36,7 +39,7 @@ export default async function DonationsPage() {
         </div>
       </TerminalCard>
 
-      <TerminalCard cmd={`psql devschool -c "SELECT * FROM donations ORDER BY created_at DESC"`}>
+      <TerminalCard cmd={SQL_LIST}>
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">

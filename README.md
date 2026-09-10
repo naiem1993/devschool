@@ -1,3 +1,6 @@
+✅ Admin user ready: admin@devschool.local
+   password: changeme123  (change in production!)
+
 # DevSchool
 
 [W3Schools](https://w3schools.com)-style free learning platform with Bangla content.
