@@ -14,7 +14,7 @@ model Category {
   id          String    @id @default(cuid())
   name        String    @unique
   slug        String    @unique
-  icon        String?   // emoji বা SVG আইকন
+  icon        String?
   description String?
   isActive    Boolean   @default(true)
   sortOrder   Int       @default(0)
@@ -29,7 +29,7 @@ model Category {
 }
 
 // ==========================================
-//  TUTORIAL (টিউটোরিয়াল)
+//  TUTORIAL
 // ==========================================
 model Tutorial {
   id           String   @id @default(cuid())
@@ -39,8 +39,8 @@ model Tutorial {
   difficulty   String   @default("beginner")
   viewCount    Int      @default(0)
   isActive     Boolean  @default(true)
-  duration     Int?     // 时长（分钟）
-  rating       Float?   // 评分
+  duration     Int?
+  rating       Float?
   isPublished  Boolean  @default(false)
   categoryId   String
   category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -57,7 +57,7 @@ model Tutorial {
 }
 
 // ==========================================
-//  TUTORIALCONTENT (অধ্যায়ভিত্তিক কন্টেন্ট)
+//  TUTORIALCONTENT
 // ==========================================
 model TutorialContent {
   id           String   @id @default(cuid())
@@ -65,8 +65,8 @@ model TutorialContent {
   tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
   chapterNo    Int
   title        String
-  content      String   // Markdown বা HTML
-  codeExample  String?  // ঐচ্ছিক কোড ব্লক
+  content      String
+  codeExample  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -75,7 +75,7 @@ model TutorialContent {
 }
 
 // ==========================================
-//  QUIZQUESTION (কুইজ প্রশ্ন)
+//  QUIZQUESTION
 // ==========================================
 model QuizQuestion {
   id           String   @id @default(cuid())
@@ -106,7 +106,7 @@ model QuizOption {
 }
 
 // ==========================================
-//  CODECHALLENGE (কোড চ্যালেঞ্জ)
+//  CODECHALLENGE
 // ==========================================
 model CodeChallenge {
   id           String   @id @default(cuid())
@@ -141,7 +141,7 @@ model TestCase {
 }
 
 // ==========================================
-//  REFERENCE (রেফারেন্স / ডিকশনারি)
+//  REFERENCE
 // ==========================================
 model Reference {
   id          String   @id @default(cuid())
@@ -153,7 +153,7 @@ model Reference {
   syntax      String?
   example     String?
   tags        String[]
-  language    String?  //programming language
+  language    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -162,7 +162,7 @@ model Reference {
 }
 
 // ==========================================
-//  DONATION (দান সংক্রান্ত তথ্য)
+//  DONATION
 // ==========================================
 model Donation {
   id            String   @id @default(cuid())
@@ -182,7 +182,7 @@ model Donation {
 }
 
 // ==========================================
-//  SITESETTINGS (অ্যাডমিন কনফিগারেশন)
+//  SITESETTINGS
 // ==========================================
 model SiteSettings {
   id          String   @id @default(cuid())
@@ -191,4 +191,20 @@ model SiteSettings {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+//  ADMINUSER — email + password auth (bcrypt)
+// ==========================================
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([email])
 }
