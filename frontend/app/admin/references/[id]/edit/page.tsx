@@ -4,7 +4,10 @@ import ReferenceForm from '@/components/admin/ReferenceForm'
 import Link from 'next/link'
 
 export default async function EditReferencePage({ params }: { params: { id: string } }) {
-  const r = await prisma.reference.findUnique({ where: { id: params.id } })
+  const [r, categories] = await Promise.all([
+    prisma.reference.findUnique({ where: { id: params.id } }),
+    prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+  ])
   if (!r) return notFound()
 
   return (
@@ -24,6 +27,8 @@ export default async function EditReferencePage({ params }: { params: { id: stri
             tags: r.tags.join(', '),
             language: r.language || 'javascript',
           }}
+          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+          mode="edit"
         />
       </div>
     </div>

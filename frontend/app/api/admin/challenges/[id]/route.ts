@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const c = await prisma.codeChallenge.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { testCases: { orderBy: { testCaseOrder: 'asc' } } },
   })
   if (!c) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(c)
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
     const { title, description, starterCode, solution, difficulty, points, testCases } = await req.json()
-    await prisma.testCase.deleteMany({ where: { challengeId: params.id } })
+    await prisma.testCase.deleteMany({ where: { challengeId: id } })
     const c = await prisma.codeChallenge.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title, description, starterCode, solution, difficulty, points,
         testCases: Array.isArray(testCases)
@@ -30,9 +32,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
-    await prisma.codeChallenge.delete({ where: { id: params.id } })
+    await prisma.codeChallenge.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })

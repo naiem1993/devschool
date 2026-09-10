@@ -5,6 +5,8 @@ CREATE TABLE "Category" (
     "slug" TEXT NOT NULL,
     "icon" TEXT,
     "description" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -19,6 +21,10 @@ CREATE TABLE "Tutorial" (
     "description" TEXT,
     "difficulty" TEXT NOT NULL DEFAULT 'beginner',
     "viewCount" INTEGER NOT NULL DEFAULT 0,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "duration" INTEGER,
+    "rating" DOUBLE PRECISION,
+    "isPublished" BOOLEAN NOT NULL DEFAULT false,
     "categoryId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -46,6 +52,7 @@ CREATE TABLE "QuizQuestion" (
     "tutorialId" TEXT NOT NULL,
     "question" TEXT NOT NULL,
     "explanation" TEXT,
+    "orderIndex" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -58,6 +65,7 @@ CREATE TABLE "QuizOption" (
     "questionId" TEXT NOT NULL,
     "text" TEXT NOT NULL,
     "isCorrect" BOOLEAN NOT NULL DEFAULT false,
+    "optionOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -72,6 +80,8 @@ CREATE TABLE "CodeChallenge" (
     "description" TEXT NOT NULL,
     "starterCode" TEXT,
     "solution" TEXT,
+    "difficulty" TEXT NOT NULL DEFAULT 'Easy',
+    "points" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -85,6 +95,7 @@ CREATE TABLE "TestCase" (
     "input" TEXT NOT NULL,
     "expectedOutput" TEXT NOT NULL,
     "isHidden" BOOLEAN NOT NULL DEFAULT false,
+    "testCaseOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -101,6 +112,7 @@ CREATE TABLE "Reference" (
     "syntax" TEXT,
     "example" TEXT,
     "tags" TEXT[],
+    "language" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -116,6 +128,8 @@ CREATE TABLE "Donation" (
     "donorEmail" TEXT,
     "transactionId" TEXT,
     "status" TEXT NOT NULL DEFAULT 'pending',
+    "message" TEXT,
+    "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -134,6 +148,20 @@ CREATE TABLE "SiteSettings" (
     CONSTRAINT "SiteSettings_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "AdminUser" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "lastLoginAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AdminUser_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
@@ -142,6 +170,9 @@ CREATE UNIQUE INDEX "Category_slug_key" ON "Category"("slug");
 
 -- CreateIndex
 CREATE INDEX "Category_slug_idx" ON "Category"("slug");
+
+-- CreateIndex
+CREATE INDEX "Category_isActive_sortOrder_idx" ON "Category"("isActive", "sortOrder");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tutorial_slug_key" ON "Tutorial"("slug");
@@ -153,16 +184,25 @@ CREATE INDEX "Tutorial_slug_idx" ON "Tutorial"("slug");
 CREATE INDEX "Tutorial_categoryId_createdAt_idx" ON "Tutorial"("categoryId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "Tutorial_title_description_idx" ON "Tutorial" USING GIN (to_tsvector('english', "title" || ' ' || COALESCE("description", '')));
-
--- CreateIndex
-CREATE UNIQUE INDEX "TutorialContent_tutorialId_chapterNo_key" ON "TutorialContent"("tutorialId", "chapterNo");
+CREATE INDEX "Tutorial_isPublished_idx" ON "Tutorial"("isPublished");
 
 -- CreateIndex
 CREATE INDEX "TutorialContent_tutorialId_chapterNo_idx" ON "TutorialContent"("tutorialId", "chapterNo");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TutorialContent_tutorialId_chapterNo_key" ON "TutorialContent"("tutorialId", "chapterNo");
+
+-- CreateIndex
 CREATE INDEX "QuizQuestion_tutorialId_idx" ON "QuizQuestion"("tutorialId");
+
+-- CreateIndex
+CREATE INDEX "QuizOption_questionId_idx" ON "QuizOption"("questionId");
+
+-- CreateIndex
+CREATE INDEX "CodeChallenge_tutorialId_idx" ON "CodeChallenge"("tutorialId");
+
+-- CreateIndex
+CREATE INDEX "TestCase_challengeId_idx" ON "TestCase"("challengeId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Reference_slug_key" ON "Reference"("slug");
@@ -184,6 +224,12 @@ CREATE INDEX "Donation_createdAt_idx" ON "Donation"("createdAt");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SiteSettings_key_key" ON "SiteSettings"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AdminUser_email_key" ON "AdminUser"("email");
+
+-- CreateIndex
+CREATE INDEX "AdminUser_email_idx" ON "AdminUser"("email");
 
 -- AddForeignKey
 ALTER TABLE "Tutorial" ADD CONSTRAINT "Tutorial_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;

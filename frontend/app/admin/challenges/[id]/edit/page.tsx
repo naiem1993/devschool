@@ -4,10 +4,13 @@ import ChallengeForm from '@/components/admin/ChallengeForm'
 import Link from 'next/link'
 
 export default async function EditChallengePage({ params }: { params: { id: string } }) {
-  const c = await prisma.codeChallenge.findUnique({
-    where: { id: params.id },
-    include: { testCases: { orderBy: { testCaseOrder: 'asc' } } },
-  })
+  const [c, tutorials] = await Promise.all([
+    prisma.codeChallenge.findUnique({
+      where: { id: params.id },
+      include: { testCases: { orderBy: { testCaseOrder: 'asc' } } },
+    }),
+    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { title: 'asc' } }),
+  ])
   if (!c) return notFound()
 
   return (
@@ -27,6 +30,8 @@ export default async function EditChallengePage({ params }: { params: { id: stri
             points: c.points,
             testCases: c.testCases.map((t) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden })),
           }}
+          tutorials={tutorials.map((t) => ({ id: t.id, title: t.title }))}
+          mode="edit"
         />
       </div>
     </div>

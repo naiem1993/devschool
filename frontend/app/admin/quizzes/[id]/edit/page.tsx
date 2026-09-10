@@ -4,10 +4,13 @@ import QuizForm from '@/components/admin/QuizForm'
 import Link from 'next/link'
 
 export default async function EditQuizPage({ params }: { params: { id: string } }) {
-  const q = await prisma.quizQuestion.findUnique({
-    where: { id: params.id },
-    include: { options: { orderBy: { optionOrder: 'asc' } } },
-  })
+  const [q, tutorials] = await Promise.all([
+    prisma.quizQuestion.findUnique({
+      where: { id: params.id },
+      include: { options: { orderBy: { optionOrder: 'asc' } } },
+    }),
+    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { title: 'asc' } }),
+  ])
   if (!q) return notFound()
 
   return (
@@ -24,6 +27,8 @@ export default async function EditQuizPage({ params }: { params: { id: string } 
             orderIndex: q.orderIndex,
             options: q.options.map((o) => ({ text: o.text, isCorrect: o.isCorrect })),
           }}
+          tutorials={tutorials.map((t) => ({ id: t.id, title: t.title }))}
+          mode="edit"
         />
       </div>
     </div>

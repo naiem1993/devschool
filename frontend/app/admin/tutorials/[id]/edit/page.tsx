@@ -4,10 +4,13 @@ import TutorialForm from '@/components/admin/TutorialForm'
 import Link from 'next/link'
 
 export default async function EditTutorialPage({ params }: { params: { id: string } }) {
-  const tutorial = await prisma.tutorial.findUnique({
-    where: { id: params.id },
-    include: { contents: { orderBy: { chapterNo: 'asc' } } },
-  })
+  const [tutorial, categories] = await Promise.all([
+    prisma.tutorial.findUnique({
+      where: { id: params.id },
+      include: { contents: { orderBy: { chapterNo: 'asc' } } },
+    }),
+    prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+  ])
   if (!tutorial) return notFound()
 
   return (
@@ -32,6 +35,8 @@ export default async function EditTutorialPage({ params }: { params: { id: strin
               codeExample: c.codeExample || '',
             })),
           }}
+          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+          mode="edit"
         />
       </div>
     </div>

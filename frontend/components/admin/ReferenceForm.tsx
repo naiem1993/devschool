@@ -36,7 +36,7 @@ export default function ReferenceForm({
     setError('')
     const payload = {
       ...form,
-      tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: form.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean),
     }
     const url = mode === 'edit' ? `/api/admin/references/${initial?.id}` : '/api/admin/references'
     const res = await fetch(url, {
