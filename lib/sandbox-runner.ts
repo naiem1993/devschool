@@ -89,7 +89,14 @@ const RUNNER_HTML = String.raw`<!DOCTYPE html>
       var r = fn();
       var out = logs.join('\n');
       if (r !== undefined){
-        out += (out ? '\n' : '') + '\u21a9 return: ' + fmt([r]);
+        if (d.mode === 'playground') {
+          // playground: debug-এর জন্য prefix সহ (console log + return value দেখায়)
+          out += (out ? '\n' : '') + '\u21a9 return: ' + fmt([r]);
+        } else {
+          // challenge: শুধু return value string — যাতে expectedOutput-এর সাথে সরাসরি compare হয়।
+          // console.log থাকলে উপেক্ষা করা হয় (test compare-এ হস্তক্ষেপ করবে না)।
+          out = fmt([r]);
+        }
       }
       result.output = out;
     } catch(err){
