@@ -1,7 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
+import { runInSandbox } from '@/lib/sandbox-runner'
+
+type MonacoEditorInstance = {
+  addCommand: (keybinding: number, handler: () => void) => void
+}
+
+type MonacoNamespace = {
+  KeyMod: { CtrlCmd: number }
+  KeyCode: { Enter: number }
+}
 
 type MonacoProps = {
   height?: string | number
@@ -10,6 +20,7 @@ type MonacoProps = {
   theme?: string
   value?: string
   onChange?: (value: string | undefined) => void
+  onMount?: (editor: MonacoEditorInstance, monaco: MonacoNamespace) => void
   options?: Record<string, unknown>
 }
 
@@ -31,9 +42,11 @@ const SAMPLES: Record<Lang, string> = {
   css: `/* CSS Playground 🎨 */\n/* Wrap your selectors for a live <style> preview */\n\n.preview-box {\n  padding: 32px;\n  background: linear-gradient(135deg, #6366f1, #06b6d4);\n  color: white;\n  border-radius: 20px;\n  font-family: sans-serif;\n  text-align: center;\n  font-size: 20px;\n  font-weight: bold;\n}`,
 }
 
+// NOTE: TypeScript option আপাতত সরানো হলো — sandbox-এ new Function দিয়ে TS syntax
+// বোঝা যায় না। Judge0 যোগ হলে TS ফিরিয়ে আনা হবে (সে TS transpile করতে পারে)।
+// type Lang ও SAMPLES-এ typescript key অপরিবর্তিত রাখা হলো — ভবিষ্যতে সহজে ফেরাতে পারবেন।
 const LANGUAGES: { id: Lang; label: string; icon: string }[] = [
   { id: 'javascript', label: 'JavaScript', icon: '🟨' },
-  { id: 'typescript', label: 'TypeScript', icon: '🟦' },
   { id: 'html', label: 'HTML', icon: '🟧' },
   { id: 'css', label: 'CSS', icon: '🎨' },
 ]
@@ -56,46 +69,12 @@ export default function PlaygroundClient() {
     }
   }, [lang])
 
-  const runJs = (source: string) => {
-    const logs: string[] = []
-    const origLog = console.log
-    const origErr = console.error
-    const origWarn = console.warn
-
-    const fmt = (...args: any[]) =>
-      args
-        .map((a) => {
-          if (typeof a === 'object' && a !== null) {
-            try { return JSON.stringify(a, null, 2) } catch { return String(a) }
-          }
-          return String(a)
-        })
-        .join(' ')
-
-    console.log = (...args: any[]) => { logs.push(`› ${fmt(...args)}`); origLog(...args) }
-    console.warn = (...args: any[]) => { logs.push(`⚠ ${fmt(...args)}`); origWarn(...args) }
-    console.error = (...args: any[]) => { logs.push(`✗ ${fmt(...args)}`); origErr(...args) }
-
-    try {
-      // eslint-disable-next-line no-new-func
-      const fn = new Function(`"use strict";\n${source}`)
-      const r = fn()
-      if (r !== undefined) logs.push(`↩ return: ${fmt(r)}`)
-    } catch (err: any) {
-      logs.push(`✗ ${err?.message || String(err)}`)
-    } finally {
-      console.log = origLog
-      console.error = origErr
-      console.warn = origWarn
-    }
-    return logs.join('\n')
-  }
-
-  const run = () => {
+  const run = useCallback(async () => {
     setRunning(true)
     try {
       if (lang === 'javascript' || lang === 'typescript') {
-        setOutput(runJs(code))
+        const r = await runInSandbox(code, '', 'playground')
+        setOutput(r.error ? `✗ ${r.error}` : r.output || '(no output)')
       } else if (lang === 'html') {
         setOutput('__HTML_PREVIEW__')
       } else if (lang === 'css') {
@@ -104,7 +83,13 @@ export default function PlaygroundClient() {
     } finally {
       setRunning(false)
     }
-  }
+  }, [code, lang])
+
+  // Monaco onMount একবারই চলে, তাই stale closure এড়াতে ref-এ latest run রাখা হলো।
+  const runRef = useRef(run)
+  useEffect(() => {
+    runRef.current = run
+  }, [run])
 
   const copy = async () => {
     try {
@@ -114,17 +99,17 @@ export default function PlaygroundClient() {
     } catch { /* ignore */ }
   }
 
-  // Keyboard: Ctrl/Cmd + Enter = Run
+  // Keyboard: Ctrl/Cmd + Enter = Run (window-level fallback)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault()
-        run()
+        runRef.current()
       }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [code, lang])
+  }, [run])
 
   // Save on edit
   useEffect(() => {
@@ -169,6 +154,15 @@ export default function PlaygroundClient() {
             theme="vs-dark"
             value={code}
             onChange={(v) => setCode(v || '')}
+            onMount={(editor, monaco) => {
+              // Monaco নিজেই Ctrl/Cmd+Enter ধরে ফেলে — তাই editor.addCommand দিয়ে bind করা হলো
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+                () => {
+                  runRef.current()
+                }
+              )
+            }}
             options={{
               minimap: { enabled: false },
               fontSize: 14,
@@ -226,7 +220,7 @@ export default function PlaygroundClient() {
           <iframe
             title="preview"
             className="w-full h-[520px] bg-white"
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts"
             srcDoc={srcDoc}
           />
         ) : (
