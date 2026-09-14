@@ -4,32 +4,29 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const links = [
-  { href: '/admin/dashboard', label: 'dashboard' },
-  { href: '/admin/categories', label: 'categories' },
-  { href: '/admin/tutorials', label: 'tutorials' },
-  { href: '/admin/quizzes', label: 'quizzes' },
-  { href: '/admin/challenges', label: 'challenges' },
-  { href: '/admin/references', label: 'references' },
-  { href: '/admin/donations', label: 'donations' },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: '▦' },
+  { href: '/admin/categories', label: 'Categories', icon: '◈' },
+  { href: '/admin/tutorials', label: 'Tutorials', icon: '▤' },
+  { href: '/admin/quizzes', label: 'Quizzes', icon: '?' },
+  { href: '/admin/challenges', label: 'Challenges', icon: '⚡' },
+  { href: '/admin/references', label: 'References', icon: '⌘' },
+  { href: '/admin/donations', label: 'Donations', icon: '♥' },
 ]
 
 export default function AdminSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 bg-black border-r border-[#00ff88]/30 min-h-screen p-4 hidden md:flex flex-col font-mono">
-      <div className="mb-6">
-        <pre className="text-[#00ff88] text-[9px] leading-tight drop-shadow-[0_0_6px_#00ff88]">
-{String.raw`┌─────────────────────┐
-│ DEV//ADMIN  v1.0    │
-└─────────────────────┘`}
-        </pre>
-      </div>
-
-      <div className="text-[10px] text-cyan-400 mb-3">
-        <span className="text-[#00ff88]">root@devschool</span>
-        <span className="text-gray-500">:~$</span> ls modules
-      </div>
+    <aside className="w-64 shrink-0 bg-white dark:bg-[#0f151c] border-r border-slate-200 dark:border-slate-800 min-h-screen p-4 hidden md:flex flex-col sticky top-0 h-screen">
+      <Link href="/admin/dashboard" className="mb-6 block px-2">
+        <span className="text-lg font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-[#86EFAC] to-[#22C55E] bg-clip-text text-transparent">Dev</span>
+          <span className="text-slate-900 dark:text-white">School</span>
+        </span>
+        <span className="ml-2 text-[10px] font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          Admin
+        </span>
+      </Link>
 
       <nav className="space-y-1 flex-1">
         {links.map((link) => {
@@ -38,21 +35,21 @@ export default function AdminSidebar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`block px-2 py-1.5 text-xs rounded transition border ${
+              className={`flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition ${
                 active
-                  ? 'text-[#00ff88] border-[#00ff88]/60 bg-[#00ff88]/5 shadow-[0_0_10px_-3px_#00ff88]'
-                  : 'text-gray-500 border-transparent hover:text-[#00ff88] hover:border-[#00ff88]/30 hover:bg-[#00ff88]/5'
+                  ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <span className="text-cyan-400">{active ? '▶' : ' '}</span> ./{link.label}
+              <span className="w-4 text-center text-xs opacity-80">{link.icon}</span>
+              {link.label}
             </Link>
           )
         })}
       </nav>
 
-      <div className="mt-4 pt-4 border-t border-[#00ff88]/20 text-[10px] text-[#00ff88]/40">
-        <div>uptime: {new Date().toLocaleDateString()}</div>
-        <div className="text-cyan-400/50">secure channel active</div>
+      <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-600">
+        DevSchool Admin v1.0
       </div>
     </aside>
   )
