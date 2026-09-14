@@ -2,59 +2,58 @@
 
 import { useEffect, useState } from 'react'
 
-export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false)
+const STORAGE_KEY = 'theme'
 
+export default function ThemeToggle() {
+  // Server renders <html class="dark">, so default to dark to match SSR.
+  const [isDark, setIsDark] = useState(true)
+
+  // Sync with whatever the inline script in layout.tsx already applied,
+  // so a returning visitor with saved 'light' sees the correct icon + color.
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const dark = savedTheme === 'dark' || (!savedTheme && prefersDark)
-    
-    setIsDark(dark)
-    if (dark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    const saved = localStorage.getItem(STORAGE_KEY)
+    setIsDark(saved ? saved === 'dark' : true)
   }, [])
 
-  const setMode = (dark: boolean) => {
-    setIsDark(dark)
-    if (dark) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
+  const toggle = () => {
+    const next = !isDark
+    const root = document.documentElement
+
+    root.classList.toggle('dark', next)
+
+    try {
+      localStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light')
+    } catch {
+      // localStorage may be unavailable (private mode / disabled) — ignore.
     }
+
+    setIsDark(next)
   }
 
   return (
-    <div className="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full p-1 gap-1 shadow-sm">
-      <button
-        onClick={() => setMode(false)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-          !isDark
-            ? 'bg-white text-slate-900 shadow-md scale-105'
-            : 'text-slate-400 hover:text-slate-200'
-        }`}
-        aria-label="Light Mode"
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
+      aria-pressed={isDark}
+      title={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
+      className={[
+        'group relative inline-flex h-10 w-10 items-center justify-center',
+        'rounded-xl border transition-all duration-300 active:scale-95',
+        // Dark mode button: cool indigo/purple gradient + soft glow
+        isDark
+          ? 'border-indigo-400/40 bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 text-amber-200 shadow-lg shadow-indigo-500/40 ring-1 ring-white/10 hover:shadow-indigo-500/60 hover:shadow-xl'
+          // Light mode button: warm amber/orange gradient + soft glow
+          : 'border-amber-400/60 bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-900 shadow-lg shadow-amber-500/40 ring-1 ring-black/5 hover:shadow-amber-500/60 hover:shadow-xl',
+      ].join(' ')}
+    >
+      <span
+        className="text-lg leading-none transition-transform duration-500 group-hover:rotate-[20deg] group-hover:scale-110"
+        aria-hidden="true"
       >
-        <span>☀️</span>
-        <span className="hidden sm:inline">লাইট</span>
-      </button>
-      <button
-        onClick={() => setMode(true)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-          isDark
-            ? 'bg-slate-800 text-indigo-400 shadow-md scale-105'
-            : 'text-slate-600 hover:text-slate-900'
-        }`}
-        aria-label="Dark Mode"
-      >
-        <span>🌙</span>
-        <span className="hidden sm:inline">ডার্ক</span>
-      </button>
-    </div>
+        {isDark ? '🌙' : '☀️'}
+      </span>
+      <span className="sr-only">Theme</span>
+    </button>
   )
 }

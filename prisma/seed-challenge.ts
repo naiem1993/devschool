@@ -1,17 +1,3 @@
-/**
- * prisma/seed-challenge.ts
- *
- * Sandbox code-execution test করার জন্য একটা sample challenge তৈরি করে।
- *
- * চালানোর কমান্ড:
- *   npx tsx prisma/seed-challenge.ts
- *
- * Idempotent — বারবার চালানো নিরাপদ:
- *  - category ও tutorial upsert হয় (থাকলে reuse, নাহলে তৈরি)
- *  - একই title-এর পুরনো challenge delete হয়, তারপর নতুন তৈরি
- *  - আপনার আসল ডেটা (অন্য category/tutorial) ছোঁয়া হয় না
- */
-
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
