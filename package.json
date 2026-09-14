@@ -13,7 +13,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "postinstall": "prisma generate && prisma migrate deploy || exit 0"
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"
