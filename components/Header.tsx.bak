@@ -21,56 +21,11 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo — D with animated > prompt */}
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 100"
-              className="w-10 h-10 rounded-xl group-hover:scale-105 transition-transform duration-200"
-              aria-label="DevSchool logo"
-            >
-              <defs>
-                <linearGradient id="dsLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#86EFAC" />
-                  <stop offset="100%" stopColor="#22C55E" />
-                </linearGradient>
-              </defs>
-
-              {/* D left bar */}
-              <rect x="22" y="16" width="14" height="68" rx="7" fill="url(#dsLogoGrad)" />
-
-              {/* D right arc */}
-              <path
-                d="M36,23 H52 C68,23 78,33 78,50 C78,67 68,77 52,77 H36"
-                fill="none"
-                stroke="url(#dsLogoGrad)"
-                strokeWidth="14"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* > prompt — animated draw & erase (dark symbol) */}
-              <path
-                d="M46,42 L56,50 L46,58"
-                fill="none"
-                stroke="#0F172A"
-                strokeWidth="5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="ds-logo-symbol dark:hidden"
-              />
-
-              {/* > prompt — animated draw & erase (white symbol for dark mode) */}
-              <path
-                d="M46,42 L56,50 L46,58"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="ds-logo-symbol hidden dark:block"
-              />
-            </svg>
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center font-mono font-bold text-lg shadow-md group-hover:scale-105 transition">
+              {'{ }'}
+            </div>
             <div className="flex flex-col">
               <span className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
                 DevSchool

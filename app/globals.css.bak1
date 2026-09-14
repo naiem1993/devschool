@@ -27,22 +27,6 @@ body {
 }
 
 /* ============================================
-   DevSchool Logo — draw & erase animation on > symbol
-   ============================================ */
-@keyframes ds-logo-draw-erase {
-  0%   { stroke-dashoffset: 40; }
-  45%  { stroke-dashoffset: 0; }
-  60%  { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -40; }
-}
-
-.ds-logo-symbol {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: ds-logo-draw-erase 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ============================================
    ADMIN TERMINAL — hacker/cyberpunk theme
    ============================================ */
 
