@@ -40,11 +40,11 @@ export default function ThemeToggle() {
       className={[
         'group relative inline-flex h-10 w-10 items-center justify-center',
         'rounded-xl border transition-all duration-300 active:scale-95',
-        // Dark mode button: cool indigo/purple gradient + soft glow
+        // Dark mode button: brand neon-green gradient + green glow (matches dark bg)
         isDark
-          ? 'border-indigo-400/40 bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 text-amber-200 shadow-lg shadow-indigo-500/40 ring-1 ring-white/10 hover:shadow-indigo-500/60 hover:shadow-xl'
-          // Light mode button: warm amber/orange gradient + soft glow
-          : 'border-amber-400/60 bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-900 shadow-lg shadow-amber-500/40 ring-1 ring-black/5 hover:shadow-amber-500/60 hover:shadow-xl',
+          ? 'border-emerald-300/50 bg-gradient-to-br from-[#4ADE80] via-[#22C55E] to-[#10B981] text-[#04140a] shadow-lg shadow-[#22C55E]/45 ring-1 ring-white/10 hover:shadow-[#22C55E]/70 hover:shadow-xl'
+          // Light mode button: soft mint gradient + gentle green glow (matches light bg)
+          : 'border-emerald-500/40 bg-gradient-to-br from-[#DCFCE7] via-[#BBF7D0] to-[#86EFAC] text-[#0F172A] shadow-lg shadow-[#22C55E]/30 ring-1 ring-emerald-900/5 hover:shadow-[#22C55E]/55 hover:shadow-xl',
       ].join(' ')}
     >
       <span

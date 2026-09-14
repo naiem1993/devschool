@@ -3,14 +3,15 @@
 /* Tailwind v4: class-based dark mode driven by .dark on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* DevSchool brand background — neon green (#22C55E) mixed with black / white */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f2fbf4;   /* light  = neon green + white  */
+  --foreground: #0f172a;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #050806;   /* dark   = neon green + black  */
+  --foreground: #e6f4ea;
 }
 
 @theme inline {
@@ -24,6 +25,13 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ============================================
+   DevSchool brand text color (fallback utility)
+   ============================================ */
+.text-dev-green {
+  color: #22c55e;
 }
 
 /* ============================================

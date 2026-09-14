@@ -18,7 +18,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <header className="sticky top-0 z-50 w-full bg-[#F2FBF4]/90 dark:bg-[#050806]/90 backdrop-blur-md border-b border-emerald-200/70 dark:border-emerald-900/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo — D with animated > prompt */}
@@ -72,11 +72,12 @@ export default function Header() {
               />
             </svg>
             <div className="flex flex-col">
-              <span className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
-                DevSchool
+              <span className="text-lg font-extrabold tracking-tight">
+                <span className="text-dev-green">Dev</span>
+                <span className="text-slate-900 dark:text-white">School</span>
               </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono -mt-1">
-                LEARN & CODE
+                LEARN &amp; CODE
               </span>
             </div>
           </Link>
@@ -125,7 +126,7 @@ export default function Header() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden bg-[#F2FBF4] dark:bg-[#050806] border-b border-emerald-200/70 dark:border-emerald-900/40 px-4 pt-2 pb-4 space-y-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
             return (
