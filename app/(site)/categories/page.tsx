@@ -112,16 +112,16 @@ export default async function CategoriesListingPage() {
   // ─── DB ERROR STATE ───
   if (dbError) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-slate-50 dark:bg-[#0b0f19] p-4">
-        <div className="text-center max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
-          <div className="text-6xl mb-4">🔌</div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
+      <div className="min-h-[70vh] flex items-center justify-center bg-white dark:bg-[#050806] p-4">
+        <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
+          <div className="text-5xl mb-4">🔌</div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
             সংযোগ সমস্যা
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
             হোমপেজে ফিরে যান
           </Link>
@@ -152,28 +152,25 @@ export default async function CategoriesListingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
-        {/* ══════════ HERO ══════════ */}
-        <section className="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-950 dark:via-[#0b0f19] dark:to-indigo-950/40">
+      <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
+        {/* ══════════ HERO — clean black + single green glow ══════════ */}
+        <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
+          {/* soft radial green glow */}
           <div
-            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
             aria-hidden
+            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
             style={{
-              backgroundImage:
-                'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
-              backgroundSize: '32px 32px',
+              background:
+                'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
             }}
           />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-2">
             {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <li>
-                  <Link
-                    href="/"
-                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-                  >
+                  <Link href="/" className="hover:text-[#22C55E] transition">
                     হোম
                   </Link>
                 </li>
@@ -182,33 +179,33 @@ export default async function CategoriesListingPage() {
               </ol>
             </nav>
 
-            <div className="max-w-3xl">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-                📚 সব ক্যাটাগরি
+            <div className="max-w-2xl">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
+                সব ক্যাটাগরি
               </h1>
-              <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
                 আপনার পছন্দের প্রোগ্রামিং ভাষা বেছে নিন এবং স্ট্রাকচার্ড টিউটোরিয়াল দিয়ে
                 শেখা শুরু করুন। সব কন্টেন্ট ১০০% বিনামূল্যে।
               </p>
 
               {/* Stats */}
-              <div className="mt-8 flex flex-wrap gap-4">
-                <StatCard value={categories.length} label="ক্যাটাগরি" color="indigo" />
-                <StatCard value={totalTutorials} label="টিউটোরিয়াল" color="purple" />
-                <StatCard value={totalReferences} label="রেফারেন্স" color="emerald" />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <StatCard value={categories.length} label="ক্যাটাগরি" />
+                <StatCard value={totalTutorials} label="টিউটোরিয়াল" />
+                <StatCard value={totalReferences} label="রেফারেন্স" />
               </div>
             </div>
           </div>
         </section>
 
         {/* ══════════ LISTING + FILTERS ══════════ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           {categories.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
-              <div className="text-6xl mb-4">🌱</div>
-              <h2 className="text-xl font-bold mb-2">এখনো কোনো ক্যাটাগরি নেই</h2>
+            <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+              <div className="text-5xl mb-4">📚</div>
+              <h3 className="text-xl font-bold mb-2">কোনো ক্যাটাগরি নেই</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                শীঘ্রই নতুন ক্যাটাগরি যুক্ত করা হবে।
+                শীঘ্রই নতুন ক্যাটাগরি যুক্ত হবে।
               </p>
             </div>
           ) : (
@@ -221,31 +218,13 @@ export default async function CategoriesListingPage() {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  STAT CARD (server component)
+//  StatCard — neutral surface, green value only
 // ─────────────────────────────────────────────────────────────
-function StatCard({
-  value,
-  label,
-  color,
-}: {
-  value: number
-  label: string
-  color: 'indigo' | 'purple' | 'emerald'
-}) {
-  const colorMap = {
-    indigo: 'text-indigo-600 dark:text-indigo-400',
-    purple: 'text-purple-600 dark:text-purple-400',
-    emerald: 'text-emerald-600 dark:text-emerald-400',
-  } as const
-
+function StatCard({ value, label }: { value: number; label: string }) {
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3">
-      <div className={`text-2xl font-extrabold ${colorMap[color]}`}>
-        {value.toLocaleString()}
-      </div>
-      <div className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
-        {label}
-      </div>
+    <div className="flex items-baseline gap-2 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] px-4 py-2.5">
+      <span className="text-xl font-bold tabular-nums text-[#22C55E]">{value}</span>
+      <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
     </div>
   )
 }

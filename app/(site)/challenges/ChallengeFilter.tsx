@@ -103,9 +103,9 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
               </div>
               <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-2">{c.title}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">{c.description}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/5 text-xs text-slate-400">
                 <span className="truncate max-w-[120px]" title={c.tutorialTitle}>📚 {c.tutorialTitle}</span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">সমাধান →</span>
+                <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform">সমাধান →</span>
               </div>
             </Link>
           ))}

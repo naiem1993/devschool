@@ -116,7 +116,7 @@ export default async function HomePage() {
 
   if (dbError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0b0f19] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#F2FBF4] dark:bg-[#050806] p-4">
         <div className="text-center max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
           <div className="text-6xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">সংযোগ সমস্যা</h2>
@@ -144,7 +144,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans">
+    <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">
       {/* === হিরো সেকশন === */}
       <HeroSection
         tutorials={allTutorialsForSearch}

@@ -163,16 +163,16 @@ export default async function CategoryPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
+      <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100">
         {/* ══════════ BREADCRUMB ══════════ */}
-        <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+        <div className="border-b border-slate-200 dark:border-white/5 bg-white dark:bg-[#050806]">
           <nav
             aria-label="Breadcrumb"
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3"
           >
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <li>
-                <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <Link href="/" className="hover:text-[#22C55E] transition">
                   হোম
                 </Link>
               </li>
@@ -180,7 +180,7 @@ export default async function CategoryPage({ params }: PageProps) {
               <li>
                 <Link
                   href="/categories"
-                  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                  className="hover:text-[#22C55E] transition"
                 >
                   ক্যাটাগরি
                 </Link>
@@ -192,17 +192,16 @@ export default async function CategoryPage({ params }: PageProps) {
         </div>
 
         {/* ══════════ HERO ══════════ */}
-        <section className="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-950 dark:via-[#0b0f19] dark:to-indigo-950/40">
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" aria-hidden>
-            <div
-              className="w-full h-full"
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
-                backgroundSize: '32px 32px',
-              }}
-            />
-          </div>
+        <section className="relative overflow-hidden border-b border-slate-200 dark:border-white/5 bg-[#f6f8f7] dark:bg-[#050806]">
+          {/* soft radial green glow */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
+            style={{
+              background:
+                'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
+            }}
+          />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
             <div className="max-w-3xl">
@@ -223,7 +222,7 @@ export default async function CategoryPage({ params }: PageProps) {
               {/* Stats */}
               <div className="mt-8 flex flex-wrap gap-4">
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3">
-                  <div className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                  <div className="text-2xl font-extrabold text-[#22C55E]">
                     {category._count.tutorials}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
@@ -254,7 +253,7 @@ export default async function CategoryPage({ params }: PageProps) {
               </p>
               <Link
                 href="/categories"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
               >
                 অন্য ক্যাটাগরি দেখুন →
               </Link>
@@ -297,12 +296,12 @@ export default async function CategoryPage({ params }: PageProps) {
                   <Link
                     key={c.id}
                     href={`/categories/${c.slug}`}
-                    className="group bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-indigo-400 dark:hover:border-indigo-600 hover:shadow-md transition"
+                    className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-4 hover:border-[#22C55E]/50 hover:shadow-md transition"
                   >
                     <div className="text-3xl mb-2" aria-hidden>
                       {c.icon || '📘'}
                     </div>
-                    <h3 className="font-semibold text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-1">
+                    <h3 className="font-semibold text-sm group-hover:text-[#22C55E] transition line-clamp-1">
                       {c.name}
                     </h3>
                     <span className="text-xs text-slate-400 mt-1 block">
@@ -355,7 +354,7 @@ function TutorialGrid({
             )}
           </div>
 
-          <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-2">
+          <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-[#22C55E] transition line-clamp-2">
             {t.title}
           </h3>
 
@@ -368,7 +367,7 @@ function TutorialGrid({
           <div className="flex items-center justify-between text-xs text-slate-400 pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
             <span className="inline-flex items-center gap-1">👁️ {t.viewCount.toLocaleString()}</span>
             {t.duration && <span className="inline-flex items-center gap-1">⏱️ {t.duration}মি</span>}
-            <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">
+            <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform">
               পড়ুন →
             </span>
           </div>

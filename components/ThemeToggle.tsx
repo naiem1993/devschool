@@ -37,15 +37,7 @@ export default function ThemeToggle() {
       aria-label={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
       aria-pressed={isDark}
       title={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
-      className={[
-        'group relative inline-flex h-10 w-10 items-center justify-center',
-        'rounded-xl border transition-all duration-300 active:scale-95',
-        // Dark mode button: brand neon-green gradient + green glow (matches dark bg)
-        isDark
-          ? 'border-emerald-300/50 bg-gradient-to-br from-[#4ADE80] via-[#22C55E] to-[#10B981] text-[#04140a] shadow-lg shadow-[#22C55E]/45 ring-1 ring-white/10 hover:shadow-[#22C55E]/70 hover:shadow-xl'
-          // Light mode button: soft mint gradient + gentle green glow (matches light bg)
-          : 'border-emerald-500/40 bg-gradient-to-br from-[#DCFCE7] via-[#BBF7D0] to-[#86EFAC] text-[#0F172A] shadow-lg shadow-[#22C55E]/30 ring-1 ring-emerald-900/5 hover:shadow-[#22C55E]/55 hover:shadow-xl',
-      ].join(' ')}
+      className="group inline-flex h-10 w-10 items-center justify-center rounded-xl bg-transparent border-0 transition-all duration-300 active:scale-90 hover:scale-110"
     >
       <span
         className="text-lg leading-none transition-transform duration-500 group-hover:rotate-[20deg] group-hover:scale-110"

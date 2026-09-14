@@ -17,6 +17,9 @@ export type CategoryCard = {
 
 type SortKey = 'sortOrder' | 'name' | 'tutorials' | 'references'
 
+const inputBase =
+  'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
+
 export default function CategoriesFilter({ categories }: { categories: CategoryCard[] }) {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<SortKey>('sortOrder')
@@ -53,7 +56,7 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
             onChange={(e) => setQuery(e.target.value)}
             placeholder="ক্যাটাগরি খুঁজুন... (যেমন: JavaScript, Python)"
             aria-label="ক্যাটাগরি সার্চ"
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition"
+            className={`w-full pl-11 pr-4 py-3 rounded-2xl text-sm ${inputBase}`}
           />
         </div>
 
@@ -61,7 +64,7 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
           aria-label="সাজানোর ধরন"
-          className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition cursor-pointer"
+          className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
         >
           <option value="sortOrder">নির্ধারিত ক্রম</option>
           <option value="name">নাম (A-Z)</option>
@@ -75,15 +78,13 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
         <p className="text-slate-500 dark:text-slate-400">
           {filtered.length} টি ক্যাটাগরি
           {query && (
-            <span className="ml-2 text-xs text-indigo-600 dark:text-indigo-400">
-              &quot;{query}&quot; এর জন্য
-            </span>
+            <span className="ml-2 text-xs text-[#22C55E]">&quot;{query}&quot; এর জন্য</span>
           )}
         </p>
         {query && (
           <button
             onClick={() => setQuery('')}
-            className="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+            className="text-xs text-slate-500 hover:text-[#22C55E] transition"
           >
             ফিল্টার মুছুন ✕
           </button>
@@ -92,15 +93,15 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
 
       {/* ─── Grid ─── */}
       {filtered.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
-          <div className="text-6xl mb-4">🔎</div>
+        <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+          <div className="text-5xl mb-4">🔎</div>
           <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
             আরো ভিন্ন কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।
           </p>
           <button
             onClick={() => setQuery('')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
             সব ক্যাটাগরি দেখুন
           </button>
@@ -111,18 +112,18 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
             <Link
               key={c.id}
               href={`/categories/${c.slug}`}
-              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200 flex flex-col"
+              className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-6 hover:border-[#22C55E]/50 hover:-translate-y-1 transition-all duration-200 flex flex-col"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
                   {c.icon || '📘'}
                 </div>
-                <span className="text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+                <span className="text-[10px] font-mono text-slate-400 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2 py-1 rounded-full">
                   #{c.slug}
                 </span>
               </div>
 
-              <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-1">
+              <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white group-hover:text-[#22C55E] transition line-clamp-1">
                 {c.name}
               </h3>
 
@@ -136,32 +137,30 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
                 </p>
               )}
 
-              {/* Difficulty spread */}
+              {/* Difficulty spread — neutral chips, semantic dot */}
               {c.tutorialCount > 0 && (
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex flex-wrap items-center gap-2 mb-4">
                   {c.difficultySpread.Beginner > 0 && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
                       🟢 {c.difficultySpread.Beginner}
                     </span>
                   )}
                   {c.difficultySpread.Intermediate > 0 && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
                       🟡 {c.difficultySpread.Intermediate}
                     </span>
                   )}
                   {c.difficultySpread.Advanced > 0 && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
                       🔴 {c.difficultySpread.Advanced}
                     </span>
                   )}
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-                <span className="inline-flex items-center gap-1">
-                  📚 {c.tutorialCount} টিউটোরিয়াল
-                </span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1">📚 {c.tutorialCount} টিউটোরিয়াল</span>
+                <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                   শুরু করুন →
                 </span>
               </div>

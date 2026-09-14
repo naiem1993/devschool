@@ -68,27 +68,23 @@ export default async function SearchPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
-        {/* HERO */}
-        <section className="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-[#0b0f19] dark:to-indigo-950/30">
+      <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
+        {/* ══════════ HERO — clean black + single green glow ══════════ */}
+        <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
           <div
-            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
             aria-hidden
+            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
             style={{
-              backgroundImage:
-                'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
-              backgroundSize: '32px 32px',
+              background:
+                'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
             }}
           />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-2">
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <li>
-                  <Link
-                    href="/"
-                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-                  >
+                  <Link href="/" className="hover:text-[#22C55E] transition">
                     হোম
                   </Link>
                 </li>
@@ -97,19 +93,19 @@ export default async function SearchPage() {
               </ol>
             </nav>
 
-            <div className="max-w-3xl">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-                🔍 সার্চ
+            <div className="max-w-2xl">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
+                সার্চ
               </h1>
-              <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
                 পুরো DevSchool-এর টিউটোরিয়াল, রেফারেন্স ও সিনট্যাক্স — সেকেন্ডেই খুঁজে
-                নিন। PostgreSQL ফুল-টেক্সট সার্চ ইঞ্জিন দিয়ে চালিত।
+                নিন।
               </p>
             </div>
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <Suspense fallback={<SearchSkeleton />}>
             <SearchClient categories={categories} languages={languages} />
           </Suspense>

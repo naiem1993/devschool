@@ -112,7 +112,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
+      <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100">
         {/* Breadcrumb */}
         <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
           <nav

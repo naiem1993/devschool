@@ -1,6 +1,6 @@
 export default function TutorialLoading() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19]">
+    <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
           <div className="animate-pulse space-y-6">

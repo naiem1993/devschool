@@ -63,12 +63,12 @@ export default async function ChallengesListingPage() {
 
   if (dbError) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-slate-50 dark:bg-[#0b0f19] p-4">
-        <div className="text-center max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
-          <div className="text-6xl mb-4">🔌</div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">সংযোগ সমস্যা</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
-          <Link href="/" className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition">হোমপেজে ফিরে যান</Link>
+      <div className="min-h-[70vh] flex items-center justify-center bg-white dark:bg-[#050806] p-4">
+        <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
+          <div className="text-5xl mb-4">🔌</div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">সংযোগ সমস্যা</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">হোমপেজে ফিরে যান</Link>
         </div>
       </div>
     )
@@ -86,33 +86,44 @@ export default async function ChallengesListingPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
-        <section className="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-emerald-50 via-white to-indigo-50 dark:from-slate-950 dark:via-[#0b0f19] dark:to-emerald-950/30">
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" aria-hidden style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
+        {/* ══════════ HERO — clean black + single green glow ══════════ */}
+        <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
+            style={{
+              background:
+                'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
+            }}
+          />
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-2">
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <li><Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">হোম</Link></li>
+                <li><Link href="/" className="hover:text-[#22C55E] transition">হোম</Link></li>
                 <li aria-hidden>/</li>
                 <li className="text-slate-800 dark:text-slate-200 font-medium">চ্যালেঞ্জ</li>
               </ol>
             </nav>
-            <div className="max-w-3xl">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">⚔️ কোড চ্যালেঞ্জ</h1>
-              <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 leading-relaxed">বাস্তব কোডিং সমস্যা সমাধান করুন, টেস্ট কেস পাস করে নিজের দক্ষতা প্রমাণ করুন। প্রতিটা চ্যালেঞ্জে আছে ইন্টারঅ্যাকটিভ এডিটর, লাইভ রান ও অটো-টেস্ট।</p>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <StatCard value={challenges.length} label="চ্যালেঞ্জ" color="emerald" />
-                <StatCard value={challenges.filter(c => c.difficulty === 'Easy').length} label="Easy" color="emerald" />
-                <StatCard value={challenges.filter(c => c.difficulty === 'Medium').length} label="Medium" color="amber" />
-                <StatCard value={challenges.filter(c => c.difficulty === 'Hard').length} label="Hard" color="red" />
+            <div className="max-w-2xl">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">কোড চ্যালেঞ্জ</h1>
+              <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                বাস্তব কোডিং সমস্যা সমাধান করুন, টেস্ট কেস পাস করে নিজের দক্ষতা প্রমাণ করুন।
+                প্রতিটা চ্যালেঞ্জে আছে ইন্টারঅ্যাকটিভ এডিটর, লাইভ রান ও অটো-টেস্ট।
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <StatCard value={challenges.length} label="চ্যালেঞ্জ" />
+                <StatCard value={challenges.filter((c) => c.difficulty === 'Easy').length} label="Easy" />
+                <StatCard value={challenges.filter((c) => c.difficulty === 'Medium').length} label="Medium" />
+                <StatCard value={challenges.filter((c) => c.difficulty === 'Hard').length} label="Hard" />
               </div>
             </div>
           </div>
         </section>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           {challenges.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
-              <div className="text-6xl mb-4">⚔️</div>
+            <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+              <div className="text-5xl mb-4">⚔️</div>
               <h2 className="text-xl font-bold mb-2">এখনো কোনো চ্যালেঞ্জ নেই</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">শীঘ্রই নতুন চ্যালেঞ্জ যুক্ত করা হবে।</p>
             </div>
@@ -125,16 +136,14 @@ export default async function ChallengesListingPage() {
   )
 }
 
-function StatCard({ value, label, color }: { value: number; label: string; color: 'emerald' | 'amber' | 'red' }) {
-  const colorMap = {
-    emerald: 'text-emerald-600 dark:text-emerald-400',
-    amber: 'text-amber-600 dark:text-amber-400',
-    red: 'text-red-600 dark:text-red-400',
-  } as const
+// ─────────────────────────────────────────────────────────────
+//  StatCard — neutral surface, green value only
+// ─────────────────────────────────────────────────────────────
+function StatCard({ value, label }: { value: number; label: string }) {
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3">
-      <div className={`text-2xl font-extrabold ${colorMap[color]}`}>{value.toLocaleString()}</div>
-      <div className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">{label}</div>
+    <div className="flex items-baseline gap-2 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] px-4 py-2.5">
+      <span className="text-xl font-bold tabular-nums text-[#22C55E]">{value.toLocaleString()}</span>
+      <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
     </div>
   )
 }

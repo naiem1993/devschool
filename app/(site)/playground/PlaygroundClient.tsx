@@ -231,7 +231,7 @@ export default function PlaygroundClient() {
       </div>
 
       <div className="lg:col-span-2 p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-        <strong className="text-indigo-600 dark:text-indigo-400">💡 টিপস:</strong> কোড <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">localStorage</code>-এ auto-save হয়, তাই ব্রাউজার রিফ্রেশ করলেও তোমার কোড থাকবে। TypeScript এখন শুধু syntax highlight করে — type checking এর জন্য পরবর্তী আপডেটে Web Worker যোগ করা হবে।
+        <strong className="text-[#22C55E]">💡 টিপস:</strong> কোড <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">localStorage</code>-এ auto-save হয়, তাই ব্রাউজার রিফ্রেশ করলেও তোমার কোড থাকবে। TypeScript এখন শুধু syntax highlight করে — type checking এর জন্য পরবর্তী আপডেটে Web Worker যোগ করা হবে।
       </div>
     </div>
   )

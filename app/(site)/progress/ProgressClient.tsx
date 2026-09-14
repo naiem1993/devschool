@@ -60,7 +60,7 @@ export default function ProgressClient() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{error}</p>
         <button
           onClick={load}
-          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
+          className="px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
         >
           আবার চেষ্টা করুন
         </button>
@@ -81,7 +81,7 @@ export default function ProgressClient() {
           একটা কুইজ দিয়ে শুরু করুন অথবা একটা কোডিং চ্যালেঞ্জ সমাধান করুন — তখনই এখানে ডেটা দেখা যাবে।
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/challenges" className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition">
+          <Link href="/challenges" className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">
             ⚔️ চ্যালেঞ্জ দেখুন
           </Link>
           <Link href="/categories" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
@@ -101,7 +101,7 @@ export default function ProgressClient() {
           label="কুইজ নির্ভুলতা"
           value={`${data.quiz.accuracy}%`}
           sub={`${data.quiz.correct}/${data.quiz.total} সঠিক`}
-          color="indigo"
+          color="green"
         />
         <StatCard
           icon="⚔️"
@@ -128,7 +128,7 @@ export default function ProgressClient() {
           </div>
           <div className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all"
+              className="h-full bg-gradient-to-r from-[#22C55E] to-[#4ADE80] transition-all"
               style={{ width: `${data.quiz.accuracy}%` }}
             />
           </div>
@@ -181,7 +181,7 @@ export default function ProgressClient() {
       <div className="flex justify-end">
         <button
           onClick={load}
-          className="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+          className="text-xs text-slate-500 hover:text-[#22C55E] transition"
         >
           ↻ রিফ্রেশ
         </button>
@@ -201,10 +201,10 @@ function StatCard({
   label: string
   value: string
   sub: string
-  color: 'indigo' | 'emerald' | 'amber'
+  color: 'green' | 'emerald' | 'amber'
 }) {
   const colorMap = {
-    indigo: 'text-indigo-600 dark:text-indigo-400',
+    green: 'text-[#22C55E]',
     emerald: 'text-emerald-600 dark:text-emerald-400',
     amber: 'text-amber-600 dark:text-amber-400',
   } as const

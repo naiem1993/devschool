@@ -241,7 +241,7 @@ export default function SearchClient({
                 onClick={() => setType(t.key)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                   type === t.key
-                    ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                    ? 'bg-white dark:bg-white/10 text-[#22C55E] shadow-sm'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
