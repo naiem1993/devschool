@@ -3,10 +3,16 @@ import { notFound } from 'next/navigation'
 import TutorialForm from '@/components/admin/TutorialForm'
 import Link from 'next/link'
 
-export default async function EditTutorialPage({ params }: { params: { id: string } }) {
+export default async function EditTutorialPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+
   const [tutorial, categories] = await Promise.all([
     prisma.tutorial.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { contents: { orderBy: { chapterNo: 'asc' } } },
     }),
     prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),

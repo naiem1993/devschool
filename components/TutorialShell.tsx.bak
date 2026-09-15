@@ -19,7 +19,7 @@ export default function TutorialShell({
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100">
       {/* ══════════ 3-COLUMN LAYOUT ══════════ */}
-      <div className="w-full px-0">
+      <div className="w-full px-2 sm:px-4 lg:px-0">
         <div className="flex flex-col lg:flex-row">
           {/* ── LEFT: Chapters Sidebar ── */}
           <LessonSidebar

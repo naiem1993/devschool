@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 type Chapter = {
   chapterNo: number
@@ -16,26 +19,73 @@ export default function LessonSidebar({
   chapters: Chapter[]
   currentChapter?: number
 }) {
+  const [open, setOpen] = useState(false)
+
+  // Listen for toggle events from CategoryNav ☰
+  useEffect(() => {
+    const onToggle = () => setOpen((o) => !o)
+    const onClose = () => setOpen(false)
+    window.addEventListener('toggle-tutorial-sidebar', onToggle)
+    window.addEventListener('close-tutorial-sidebar', onClose)
+    return () => {
+      window.removeEventListener('toggle-tutorial-sidebar', onToggle)
+      window.removeEventListener('close-tutorial-sidebar', onClose)
+    }
+  }, [])
+
+  // ESC key closes sidebar
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', onEsc)
+    return () => document.removeEventListener('keydown', onEsc)
+  }, [])
+
   return (
-    <aside className="w-full lg:w-[240px] flex-shrink-0">
-      {/* Sticky wrapper */}
-      <div className="lg:sticky lg:top-[128px] max-h-[calc(100vh-140px)] overflow-y-auto bg-[#E8F7ED]/60 dark:bg-[#080c0a] lg:border-r border-emerald-200/60 dark:border-emerald-900/40">
-        {/* Header */}
-        <h2 className="px-4 py-3 text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-100 border-b border-emerald-200/60 dark:border-emerald-900/40">
+    <>
+      {/* ═════ BACKDROP (mobile only) ═════ */}
+      <div
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+        className={[
+          'fixed inset-0 z-[55] lg:hidden',
+          'bg-black/65 backdrop-blur-sm',
+          'transition-opacity duration-200',
+          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+        ].join(' ')}
+      />
+
+      {/* ═════ SIDEBAR ═════ */}
+      <aside
+        className={[
+          'w-[270px] lg:w-[250px] flex-shrink-0',
+          'fixed lg:sticky top-[105px] left-0 z-[60] lg:z-auto',
+          'h-[calc(100vh-105px)] overflow-y-auto',
+          'bg-gradient-to-b from-[#080c0a] to-[#050806]',
+          'border-r border-emerald-900/40',
+          'transition-transform duration-300 ease-out',
+          open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        ].join(' ')}
+      >
+        {/* Heading with green accent bar */}
+        <h2 className="flex items-center gap-2 px-4 py-4 text-xs font-extrabold uppercase tracking-widest text-[#4ADE80] border-b border-emerald-900/40">
+          <span className="w-[3px] h-[14px] rounded-sm bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,.4)]" />
           {tutorialTitle}
         </h2>
 
-        <nav aria-label="Tutorial chapters" className="py-1">
+        <nav aria-label="Tutorial chapters" className="py-2 pb-6">
           <ul>
             {/* Home link */}
             <li>
               <Link
                 href={`/tutorials/${tutorialSlug}`}
+                onClick={() => setOpen(false)}
                 className={[
-                  'block px-4 py-2 text-[13px] border-l-[3px] transition-colors',
+                  'block px-5 py-2 text-[13.5px] border-l-[3px] transition-all',
                   !currentChapter
-                    ? 'bg-[#22C55E]/20 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-semibold'
-                    : 'border-transparent text-slate-700 dark:text-slate-300 hover:bg-[#22C55E]/10 hover:border-[#4ADE80]',
+                    ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#4ADE80] font-bold shadow-[inset_0_0_20px_rgba(34,197,94,.08)]'
+                    : 'border-transparent text-slate-200 hover:bg-[#22C55E]/5 hover:border-[#4ADE80]/40',
                 ].join(' ')}
               >
                 {tutorialTitle.toUpperCase()} HOME
@@ -49,11 +99,12 @@ export default function LessonSidebar({
                 <li key={c.chapterNo}>
                   <Link
                     href={`/tutorials/${tutorialSlug}/${c.chapterNo}`}
+                    onClick={() => setOpen(false)}
                     className={[
-                      'block px-4 py-2 text-[13px] border-l-[3px] transition-colors',
+                      'block px-5 py-2 text-[13.5px] border-l-[3px] transition-all',
                       active
-                        ? 'bg-[#22C55E]/20 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-semibold'
-                        : 'border-transparent text-slate-700 dark:text-slate-300 hover:bg-[#22C55E]/10 hover:border-[#4ADE80]',
+                        ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#4ADE80] font-bold shadow-[inset_0_0_20px_rgba(34,197,94,.08)]'
+                        : 'border-transparent text-slate-200 hover:bg-[#22C55E]/5 hover:border-[#4ADE80]/40',
                     ].join(' ')}
                   >
                     {c.title}
@@ -63,7 +114,7 @@ export default function LessonSidebar({
             })}
           </ul>
         </nav>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }
