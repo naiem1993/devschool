@@ -236,8 +236,4 @@ INSERT INTO "SiteSettings" ("id", "key", "value", "updatedAt")
 VALUES ('settings-general', 'general', '{"siteName":"DevSchool","isDonationEnabled":true,"isAdsEnabled":true}', NOW())
 ON CONFLICT ("key") DO NOTHING;
 
--- =====================================================
--- শেষ ধাপ: admin ইউজার বানাতে হবে (bcrypt hash দরকার)।
--- Supabase URL দিয়ে লোকাল টার্মিনালে চালান:
---   DATABASE_URL="<supabase-url>" npx prisma db seed
--- =====================================================
+//

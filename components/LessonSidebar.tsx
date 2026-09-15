@@ -1,33 +1,69 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-type Lesson = {
-  id: string;
-  title: string;
-  slug: string;
-};
+type Chapter = {
+  chapterNo: number
+  title: string
+}
 
-export default function LessonSidebar({ lessons, currentSlug }: { lessons: Lesson[]; currentSlug?: string }) {
+export default function LessonSidebar({
+  tutorialSlug,
+  tutorialTitle,
+  chapters,
+  currentChapter,
+}: {
+  tutorialSlug: string
+  tutorialTitle: string
+  chapters: Chapter[]
+  currentChapter?: number
+}) {
   return (
-    <aside className="w-full md:w-64 lg:w-72 flex-shrink-0 bg-white dark:bg-[#111] border-r border-gray-200 dark:border-gray-800 p-4 overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
-      <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-        এই টিউটোরিয়ালের অধ্যায়
-      </h3>
-      <ul className="space-y-1">
-        {lessons.map((lesson) => (
-          <li key={lesson.id}>
-            <Link
-              href={`/tutorials/${lesson.slug}`}
-              className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                lesson.slug === currentSlug
-                  ? 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 font-medium'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-              }`}
-            >
-              {lesson.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <aside className="w-full lg:w-[240px] flex-shrink-0">
+      {/* Sticky wrapper */}
+      <div className="lg:sticky lg:top-[128px] max-h-[calc(100vh-140px)] overflow-y-auto bg-[#E8F7ED]/60 dark:bg-[#080c0a] lg:border-r border-emerald-200/60 dark:border-emerald-900/40">
+        {/* Header */}
+        <h2 className="px-4 py-3 text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-100 border-b border-emerald-200/60 dark:border-emerald-900/40">
+          {tutorialTitle}
+        </h2>
+
+        <nav aria-label="Tutorial chapters" className="py-1">
+          <ul>
+            {/* Home link */}
+            <li>
+              <Link
+                href={`/tutorials/${tutorialSlug}`}
+                className={[
+                  'block px-4 py-2 text-[13px] border-l-[3px] transition-colors',
+                  !currentChapter
+                    ? 'bg-[#22C55E]/20 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-semibold'
+                    : 'border-transparent text-slate-700 dark:text-slate-300 hover:bg-[#22C55E]/10 hover:border-[#4ADE80]',
+                ].join(' ')}
+              >
+                {tutorialTitle.toUpperCase()} HOME
+              </Link>
+            </li>
+
+            {/* Chapters */}
+            {chapters.map((c) => {
+              const active = currentChapter === c.chapterNo
+              return (
+                <li key={c.chapterNo}>
+                  <Link
+                    href={`/tutorials/${tutorialSlug}/${c.chapterNo}`}
+                    className={[
+                      'block px-4 py-2 text-[13px] border-l-[3px] transition-colors',
+                      active
+                        ? 'bg-[#22C55E]/20 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-semibold'
+                        : 'border-transparent text-slate-700 dark:text-slate-300 hover:bg-[#22C55E]/10 hover:border-[#4ADE80]',
+                    ].join(' ')}
+                  >
+                    {c.title}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+      </div>
     </aside>
-  );
+  )
 }
