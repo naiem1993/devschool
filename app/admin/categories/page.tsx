@@ -53,7 +53,7 @@ export default async function CategoriesPage() {
                   )}
                 </td>
                 <td className="px-4 py-2 text-right space-x-3">
-                  <Link href={`/admin/categories/${it.id}`} className="text-cyan-400 hover:text-[#00ff88]">
+                  <Link href={`/admin/categories/${it.id}/edit`} className="text-cyan-400 hover:text-[#00ff88]">
                     edit →
                   </Link>
                   <DeleteButton endpoint={`/api/admin/categories/${it.id}`} />
