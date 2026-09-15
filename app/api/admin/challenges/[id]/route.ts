@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { requireAdmin, getAdminId } from '@/lib/auth'
+import { verifyPinToken } from '@/lib/pin'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -32,7 +34,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await requireAdmin(req)
+  if (denied) return denied
+  const adminId = await getAdminId(req)
+  if (!adminId) return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
+
+  const token = req.headers.get('x-pin-token') || undefined
+  if (!(await verifyPinToken(token, adminId))) {
+    return NextResponse.json({ error: 'PIN_REQUIRED' }, { status: 403 })
+  }
+
   const { id } = await params
   try {
     await prisma.codeChallenge.delete({ where: { id } })

@@ -13,7 +13,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "setup:pin": "node scripts/add-pin-env.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"
