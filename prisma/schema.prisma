@@ -262,16 +262,3 @@ model PinLockout {
   lockedUntil    DateTime?
   updatedAt      DateTime  @updatedAt
 }
-
-// ==========================================
-//  PINLOCKOUT — singleton row for delete-PIN lockout state
-//  PIN নিজে env var-এ (ADMIN_PIN), কিন্তু attempt/lock state DB-তে
-//  রাখতে হয়, কারণ env var runtime-এ লেখা যায় না।
-//  Manual unlock: Supabase Studio → PinLockout → lockedUntil = null
-// ==========================================
-model PinLockout {
-  id             String    @id @default("singleton")
-  failedAttempts Int       @default(0)
-  lockedUntil    DateTime?
-  updatedAt      DateTime  @updatedAt
-}
