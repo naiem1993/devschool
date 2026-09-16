@@ -8,9 +8,6 @@ type PageProps = {
   params: Promise<{ slug: string }>
 }
 
-// ISR — প্রতি ১ ঘণ্টায় page rebuild, তবু static থাকবে
-export const revalidate = 3600
-
 export async function generateStaticParams() {
   try {
     const tutorials = await prisma.tutorial.findMany({
@@ -63,11 +60,9 @@ export default async function TutorialPage({ params }: PageProps) {
 
   if (!tutorial) notFound()
 
-  // ─── viewCount আর এখানে increment হয় না ──────────────────────────────
-  // আগে এখানে প্রতি page-load-এ prisma.update() চলত, যার ফলে page
-  // কখনো static হতে পারত না (প্রতিটা request-এ DB write = dynamic)।
-  // এখন viewCount increment হয় app/api/tutorials/[slug]/route.ts-এ,
-  // যেটা client থেকে আলাদা fetch হলে চলবে।
+  prisma.tutorial
+    .update({ where: { id: tutorial.id }, data: { viewCount: { increment: 1 } } })
+    .catch(() => {})
 
   const chapters = tutorial.contents.map((c) => ({
     chapterNo: c.chapterNo,

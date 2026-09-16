@@ -56,20 +56,21 @@ export default function LessonSidebar({
         ].join(' ')}
       />
 
-      {/* ═════ SIDEBAR ═════ */}
+      {/* ═════ SIDEBAR — light: হালকা মিন্ট | dark: কালো ═════ */}
       <aside
         className={[
           'w-[270px] lg:w-[250px] flex-shrink-0',
           'fixed lg:sticky top-[105px] left-0 z-[60] lg:z-auto',
           'h-[calc(100vh-105px)] overflow-y-auto',
-          'bg-gradient-to-b from-[#080c0a] to-[#050806]',
-          'border-r border-emerald-900/40',
+          'bg-gradient-to-b from-white to-[#F2FBF4]',
+          'dark:from-[#080c0a] dark:to-[#050806]',
+          'border-r border-slate-200 dark:border-emerald-900/40',
           'transition-transform duration-300 ease-out',
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         ].join(' ')}
       >
         {/* Heading with green accent bar */}
-        <h2 className="flex items-center gap-2 px-4 py-4 text-xs font-extrabold uppercase tracking-widest text-[#4ADE80] border-b border-emerald-900/40">
+        <h2 className="flex items-center gap-2 px-4 py-4 text-xs font-extrabold uppercase tracking-widest text-[#15803d] dark:text-[#4ADE80] border-b border-slate-200 dark:border-emerald-900/40">
           <span className="w-[3px] h-[14px] rounded-sm bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,.4)]" />
           {tutorialTitle}
         </h2>
@@ -84,8 +85,8 @@ export default function LessonSidebar({
                 className={[
                   'block px-5 py-2 text-[13.5px] border-l-[3px] transition-all',
                   !currentChapter
-                    ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#4ADE80] font-bold shadow-[inset_0_0_20px_rgba(34,197,94,.08)]'
-                    : 'border-transparent text-slate-200 hover:bg-[#22C55E]/5 hover:border-[#4ADE80]/40',
+                    ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-bold'
+                    : 'border-transparent text-slate-700 dark:text-slate-200 hover:bg-[#22C55E]/10 dark:hover:bg-[#22C55E]/5 hover:border-[#22C55E]/40 dark:hover:border-[#4ADE80]/40',
                 ].join(' ')}
               >
                 {tutorialTitle.toUpperCase()} HOME
@@ -103,8 +104,8 @@ export default function LessonSidebar({
                     className={[
                       'block px-5 py-2 text-[13.5px] border-l-[3px] transition-all',
                       active
-                        ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#4ADE80] font-bold shadow-[inset_0_0_20px_rgba(34,197,94,.08)]'
-                        : 'border-transparent text-slate-200 hover:bg-[#22C55E]/5 hover:border-[#4ADE80]/40',
+                        ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-bold'
+                        : 'border-transparent text-slate-700 dark:text-slate-200 hover:bg-[#22C55E]/10 dark:hover:bg-[#22C55E]/5 hover:border-[#22C55E]/40 dark:hover:border-[#4ADE80]/40',
                     ].join(' ')}
                   >
                     {c.title}

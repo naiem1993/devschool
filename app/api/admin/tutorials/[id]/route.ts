@@ -4,7 +4,11 @@ import { updateTutorialSchema, validateBody } from '@/lib/validators'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // Defense-in-depth: proxy.ts ছাড়াও নিজে admin check করি
+  const denied = await requireAdmin(req)
+  if (denied) return denied
+
   const { id } = await params
   const tut = await prisma.tutorial.findUnique({
     where: { id },
@@ -15,6 +19,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // Defense-in-depth: proxy.ts ছাড়াও নিজে admin check করি
+  const denied = await requireAdmin(req)
+  if (denied) return denied
+
   const { id } = await params
   const body = await req.json()
   const { contents, ...rest } = body

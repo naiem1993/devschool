@@ -4,9 +4,32 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import TutorialShell from '@/components/TutorialShell'
 import LessonContent from '@/components/LessonContent'
+import TryIt from '@/components/TryIt'
 
 type PageProps = {
   params: Promise<{ slug: string; chapter: string }>
+}
+
+// ISR — প্রতি ১ ঘণ্টায় rebuild
+export const revalidate = 3600
+
+/**
+ * Build-time-এ সব published tutorial-এর সব chapter-এর জন্য static page বানায়।
+ * এতে chapter page-গুলো CDN থেকে instant serve হয় — dynamic DB query লাগে না।
+ */
+export async function generateStaticParams() {
+  try {
+    const tutorials = await prisma.tutorial.findMany({
+      where: { isPublished: true },
+      select: { slug: true, contents: { select: { chapterNo: true } } },
+      take: 100,
+    })
+    return tutorials.flatMap((t) =>
+      t.contents.map((c) => ({ slug: t.slug, chapter: String(c.chapterNo) }))
+    )
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -83,7 +106,7 @@ export default async function ChapterPage({ params }: PageProps) {
 
       {/* Content — paragraphs + inline Try It blocks ([[tryit]] marker) */}
       <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-        <LessonContent content={current.content} />
+        <LessonContent content={current.content} slug={tutorial.slug} chapterNo={chapterNo} />
       </div>
 
       {/* Code example */}
@@ -96,6 +119,11 @@ export default async function ChapterPage({ params }: PageProps) {
             <code>{current.codeExample}</code>
           </pre>
         </div>
+      )}
+
+      {/* Try it Yourself — Option C: আগে কোড দেখাও, তারপর এক ক্লিকে editor */}
+      {current.codeExample && (
+        <TryIt code={current.codeExample} slug={tutorial.slug} chapterNo={chapterNo} />
       )}
 
       {/* Prev / Next */}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useState } from 'react'
 
 type Category = { id: string; name: string }
@@ -101,21 +102,26 @@ export default function TutorialForm({
       (c) => c.title.trim() && c.content.trim()
     )
 
-    if (validChapters.length === 0) {
-      setError('অন্তত একটা chapter-এ title ও content দিতে হবে')
-      setLoading(false)
-      return
-    }
-
-    const payload = {
-      ...form,
-      contents: validChapters.map((c, i) => ({
-        chapterNo: i + 1,
-        title: c.title.trim(),
-        content: c.content.trim(),
-        codeExample: c.codeExample?.trim() || undefined,
-      })),
-    }
+    // ⚠️ Option A: chapter এখানে বাধ্যতামূলক নয়।
+    // create mode-এ শুধু course-এর shell বানানো হয়, তারপর chapters পেজে
+    // গিয়ে একটার পর একটা lesson যোগ করা হয়। তাই title+content খালি
+    // থাকলে শুধু বাদ পড়ে — কোনো error নেই।
+    // edit mode-এও contents পাঠানো হয় না (আলাদা chapters পেজ manage করে),
+    // নাহলে PUT handler সব chapter মুছে নতুন করে বানাবে।
+    const payload =
+      mode === 'edit'
+        ? { ...form }
+        : {
+            ...form,
+            contents: validChapters.length
+              ? validChapters.map((c, i) => ({
+                  chapterNo: i + 1,
+                  title: c.title.trim(),
+                  content: c.content.trim(),
+                  codeExample: c.codeExample?.trim() || undefined,
+                }))
+              : undefined,
+          }
 
     const url =
       mode === 'edit'
@@ -129,8 +135,22 @@ export default function TutorialForm({
         body: JSON.stringify(payload),
       })
       if (res.ok) {
-        router.push('/admin/tutorials')
-        router.refresh()
+        if (mode === 'edit') {
+          router.push('/admin/tutorials')
+          router.refresh()
+        } else {
+          // নতুন tutorial তৈরি হলো → সোজা chapters পেজে নিয়ে যাই,
+          // যাতে একটার পর একটা lesson যোগ করা যায়।
+          const data = await res.json().catch(() => ({}))
+          const newId = data?.id
+          if (newId) {
+            router.push(`/admin/tutorials/${newId}/chapters`)
+            router.refresh()
+          } else {
+            router.push('/admin/tutorials')
+            router.refresh()
+          }
+        }
       } else {
         const data = await res.json().catch(() => ({}))
         setError(data.error || 'save failed')
@@ -247,100 +267,117 @@ export default function TutorialForm({
         </label>
       </div>
 
-      {/* ================= CHAPTERS / LESSONS ================= */}
-      <div className="border-t border-[#22C55E]/20 pt-4 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[#22C55E] font-mono">
-            📚 Lessons / Chapters ({chapters.length})
-          </h2>
-          <button
-            type="button"
-            onClick={addChapter}
-            className="admin-btn text-sm"
-          >
-            + chapter যোগ করুন
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {chapters.map((ch, idx) => (
-            <div
-              key={idx}
-              className="border border-[#22C55E]/20 rounded-md p-4 bg-[#0a0f0a]/50 space-y-3"
+      {/* ═══════ EDIT MODE — Chapters আলাদা পেজে ═══════ */}
+      {mode === 'edit' && initial?.id && (
+        <div className="border-t border-[#22C55E]/20 pt-4 mt-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/[0.05] p-4">
+            <div>
+              <h2 className="text-sm font-bold text-[#15803d] dark:text-[#4ADE80]">
+                📚 Chapters / Lessons ({chapters.length})
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                chapter যোগ/এডিট/ডিলিট/reorder এখন আলাদা পেজে — এক chapter
+                বদলালে বাকিগুলো অটুট থাকে।
+              </p>
+            </div>
+            <Link
+              href={`/admin/tutorials/${initial.id}/chapters`}
+              className="px-4 py-2 rounded-lg bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] text-sm font-bold transition whitespace-nowrap"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-[#22C55E]/70">
-                  chapter #{ch.chapterNo}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => insertTryItBlock(idx)}
-                  title="Content-এ [[tryit]] … [[/tryit]] ব্লক বসাবে"
-                  className="ml-auto mr-3 text-xs px-2.5 py-1 rounded border border-[#22C55E]/40 text-[#22C55E] hover:bg-[#22C55E]/10"
-                >
-                  + Try It
-                </button>
-                {chapters.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeChapter(idx)}
-                    className="text-xs text-red-400 hover:text-red-300 font-mono"
-                  >
-                    ✕ remove
-                  </button>
-                )}
-              </div>
+              Chapters manage করো →
+            </Link>
+          </div>
+        </div>
+      )}
 
-              <div>
-                <label className="admin-label">&gt; Lesson Title</label>
+      {/* ═══════ CREATE MODE — chapters এখানেই ═══════ */}
+      {mode === 'create' && (
+        <div className="border-t border-[#22C55E]/20 pt-4 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-[#22C55E] font-mono">
+              📚 Lessons / Chapters ({chapters.length})
+            </h2>
+            <button
+              type="button"
+              onClick={addChapter}
+              className="admin-btn text-sm"
+            >
+              + chapter যোগ করুন
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {chapters.map((ch, idx) => (
+              <div
+                key={idx}
+                className="border border-[#22C55E]/20 rounded-md p-4 bg-[#0a0f0a]/50 space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[#22C55E]/70">
+                    chapter #{ch.chapterNo}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => insertTryItBlock(idx)}
+                      title="Content-এ [[tryit]] … [[/tryit]] ব্লক বসাবে"
+                      className="text-xs px-2.5 py-1 rounded border border-[#22C55E]/40 text-[#22C55E] hover:bg-[#22C55E]/10"
+                    >
+                      + Try It
+                    </button>
+                    {chapters.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeChapter(idx)}
+                        className="text-xs text-red-400 hover:text-red-300"
+                      >
+                        🗑 Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <input
                   className="admin-input"
+                  placeholder="Chapter title (যেমন: HTML Styles)"
                   value={ch.title}
                   onChange={(e) => updateChapter(idx, 'title', e.target.value)}
-                  placeholder="যেমন: HTML Introduction"
                 />
-              </div>
 
-              <div>
-                <label className="admin-label">&gt; Content (বাংলায় ব্যাখ্যা)</label>
                 <textarea
                   className="admin-input"
-                  rows={6}
+                  rows={8}
+                  placeholder={'Content...\n\n[[tryit]]\n<h1>Hello</h1>\n[[/tryit]]'}
                   value={ch.content}
                   onChange={(e) => updateChapter(idx, 'content', e.target.value)}
-                  placeholder="HTML হলো ওয়েব পেজ তৈরির স্ট্যান্ডার্ড মার্কআপ ভাষা..."
                 />
-              </div>
 
-              <div>
-                <label className="admin-label">&gt; Code Example (optional)</label>
                 <textarea
-                  className="admin-input font-mono text-sm"
+                  className="admin-input"
                   rows={4}
+                  placeholder="Code example (ঐচ্ছিক)"
                   value={ch.codeExample}
-                  onChange={(e) =>
-                    updateChapter(idx, 'codeExample', e.target.value)
-                  }
-                  placeholder="<h1>Hello World</h1>"
+                  onChange={(e) => updateChapter(idx, 'codeExample', e.target.value)}
                 />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {error && <div className="admin-error">[!] {error}</div>}
+      {error && (
+        <p className="text-sm text-red-500 font-mono border border-red-500/30 rounded px-3 py-2">
+          {error}
+        </p>
+      )}
 
-      <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={loading} className="admin-btn">
-          {loading ? '> saving...' : '$ save'}
-        </button>
+      <div className="pt-2">
         <button
-          type="button"
-          onClick={() => router.back()}
-          className="admin-btn-ghost"
+          type="submit"
+          disabled={loading}
+          className="admin-btn disabled:opacity-50"
         >
-          $ cancel
+          {loading ? 'সেভ হচ্ছে...' : mode === 'edit' ? 'আপডেট করো' : 'টিউটোরিয়াল তৈরি করো'}
         </button>
       </div>
     </form>
