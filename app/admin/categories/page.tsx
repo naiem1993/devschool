@@ -62,7 +62,7 @@ export default async function CategoriesPage() {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-[#00ff88]/40">
+                <td colSpan={6} className="px-4 py-8 text-center text-[#00ff88]/40">
                   -- no records found --
                 </td>
               </tr>

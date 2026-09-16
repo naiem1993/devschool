@@ -6,6 +6,7 @@ export const createCategorySchema = z.object({
   name: z.string().min(2).max(100),
   slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)'),
   description: z.string().optional(),
+  sortOrder: z.number().int().optional(),
   isActive: z.boolean().default(true),
 })
 
@@ -13,6 +14,7 @@ export const updateCategorySchema = z.object({
   name: z.string().min(2).max(100).optional(),
   slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
   description: z.string().optional(),
+  sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
 })
 

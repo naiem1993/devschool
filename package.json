@@ -14,7 +14,10 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "postinstall": "prisma generate",
-    "setup:pin": "node scripts/add-pin-env.mjs"
+    "setup:pin": "node scripts/add-pin-env.mjs",
+    "reset:admin": "tsx prisma/reset-admin.ts",
+    "inspect:tutorials": "tsx scripts/inspect-tutorials.ts",
+    "merge:html": "tsx scripts/merge-html-lessons.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"

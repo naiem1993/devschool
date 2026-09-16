@@ -20,6 +20,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const cat = await prisma.category.update({ where: { id }, data: data! })
     return NextResponse.json(cat)
   } catch (e: any) {
+    // Friendly handling for duplicate name/slug (Prisma P2002 unique constraint)
+    if (e?.code === 'P2002') {
+      const field = Array.isArray(e?.meta?.target) ? e.meta.target.join(', ') : 'name/slug'
+      return NextResponse.json(
+        { error: `এই ${field} আগেই ব্যবহৃত হয়েছে — অন্য মান দিন।` },
+        { status: 409 }
+      )
+    }
     return NextResponse.json({ error: e.message }, { status: 500 })
   }
 }

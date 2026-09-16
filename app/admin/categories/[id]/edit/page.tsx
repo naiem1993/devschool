@@ -14,6 +14,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
       <h1 className="text-3xl font-bold mt-2 mb-6 text-gray-900 dark:text-white">ক্যাটাগরি এডিট</h1>
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800">
         <CategoryForm
+          mode="edit"
           initial={{
             id: category.id,
             name: category.name,
