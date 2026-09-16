@@ -12,7 +12,7 @@ export default function ChallengesError({ error, reset }: { error: Error & { dig
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">কিছু একটা ভুল হয়েছে</h2>
         <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">চ্যালেঞ্জ লোড করার সময় একটি ত্রুটি ঘটেছে।</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button onClick={reset} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition">আবার চেষ্টা করুন 🔄</button>
+          <button onClick={reset} className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">আবার চেষ্টা করুন 🔄</button>
           <Link href="/" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">হোমপেজ</Link>
         </div>
         {error.digest && <p className="mt-6 text-[10px] font-mono text-slate-400">Error ID: {error.digest}</p>}

@@ -37,12 +37,12 @@ export default async function DashboardPage() {
       />
 
       <TerminalCard className="p-4 mb-6">
-        <div className="text-xs text-[#00ff88]/70 space-y-0.5">
-          <div><span className="text-[#00ff88]">$</span> systemctl status devschool-admin</div>
-          <div className="text-[#00ff88]">
+        <div className="text-xs text-[#22C55E]/70 space-y-0.5">
+          <div><span className="text-[#22C55E]">$</span> systemctl status devschool-admin</div>
+          <div className="text-[#22C55E]">
             ● <span className="text-cyan-400">active (running)</span> · uptime OK
           </div>
-          <div><span className="text-[#00ff88]">$</span> whoami → <span className="text-cyan-400">root@devschool</span></div>
+          <div><span className="text-[#22C55E]">$</span> whoami → <span className="text-cyan-400">root@devschool</span></div>
         </div>
       </TerminalCard>
 
@@ -51,13 +51,13 @@ export default async function DashboardPage() {
           <a key={c.label} href={c.href} className="block">
             <TerminalCard
               cmd={c.cmd}
-              className="p-4 hover:border-[#00ff88]/60 hover:shadow-[0_0_40px_-8px_#00ff88] transition"
+              className="p-4 hover:border-[#22C55E]/60 hover:shadow-[0_0_40px_-8px_#22C55E] transition"
             >
               <div className="flex items-baseline justify-between pt-2">
-                <span className="text-3xl font-bold text-[#00ff88] drop-shadow-[0_0_8px_#00ff88]">
+                <span className="text-3xl font-bold text-[#22C55E] drop-shadow-[0_0_8px_#22C55E]">
                   {String(c.value).padStart(3, '0')}
                 </span>
-                <span className="text-xs uppercase tracking-widest text-[#00ff88]/60">
+                <span className="text-xs uppercase tracking-widest text-[#22C55E]/60">
                   {c.label}
                 </span>
               </div>

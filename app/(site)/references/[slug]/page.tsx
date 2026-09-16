@@ -121,7 +121,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
           >
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
               <li>
-                <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <Link href="/" className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
                   হোম
                 </Link>
               </li>
@@ -129,7 +129,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
               <li>
                 <Link
                   href="/references"
-                  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                  className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
                   রেফারেন্স
                 </Link>
@@ -138,7 +138,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
               <li>
                 <Link
                   href={`/categories/${reference.category.slug}`}
-                  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                  className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
                   {reference.category.name}
                 </Link>
@@ -157,7 +157,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-3 mb-4 flex-wrap">
               <Link
                 href={`/categories/${reference.category.slug}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-950 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition"
               >
                 📂 {reference.category.name}
               </Link>
@@ -259,10 +259,10 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                   <Link
                     key={r.id}
                     href={`/references/${r.slug}`}
-                    className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition"
+                    className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 hover:shadow-md transition"
                   >
                     <div className="flex items-center justify-between mb-2 gap-2">
-                      <h3 className="font-semibold text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-1">
+                      <h3 className="font-semibold text-sm group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80] transition line-clamp-1">
                         {r.title}
                       </h3>
                       {r.language && (

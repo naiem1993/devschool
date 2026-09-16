@@ -120,12 +120,12 @@ export default function CategoryForm({
           />
         </div>
         <div className="flex items-end">
-          <label className="flex items-center gap-2 text-xs text-[#00ff88]/80 font-mono">
+          <label className="flex items-center gap-2 text-xs text-[#22C55E]/80 font-mono">
             <input
               type="checkbox"
               checked={form.isActive}
               onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-              className="accent-[#00ff88]"
+              className="accent-[#22C55E]"
             />
             is_active
           </label>

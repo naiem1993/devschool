@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import TutorialShell from '@/components/TutorialShell'
+import LessonContent from '@/components/LessonContent'
 
 type PageProps = {
   params: Promise<{ slug: string; chapter: string }>
@@ -80,9 +81,9 @@ export default async function ChapterPage({ params }: PageProps) {
       {/* H1 */}
       <h1 className="text-3xl sm:text-4xl font-extrabold mb-6">{current.title}</h1>
 
-      {/* Content — paragraphs */}
-      <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-        {current.content}
+      {/* Content — paragraphs + inline Try It blocks ([[tryit]] marker) */}
+      <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
+        <LessonContent content={current.content} />
       </div>
 
       {/* Code example */}

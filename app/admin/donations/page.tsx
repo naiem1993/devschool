@@ -25,15 +25,15 @@ export default async function DonationsPage() {
       />
 
       <TerminalCard cmd={SQL_SUM} className="p-4 mb-6">
-        <div className="text-xs text-[#00ff88]/70 space-y-1 pt-2">
+        <div className="text-xs text-[#22C55E]/70 space-y-1 pt-2">
           <div>
-            <span className="text-[#00ff88]">total_received</span> ={' '}
+            <span className="text-[#22C55E]">total_received</span> ={' '}
             <span className="text-cyan-400 font-bold">
               {totals._sum.amount?.toFixed(2) || '0.00'} BDT
             </span>
           </div>
           <div>
-            <span className="text-[#00ff88]">completed_count</span> ={' '}
+            <span className="text-[#22C55E]">completed_count</span> ={' '}
             <span className="text-cyan-400">{totals._count}</span>
           </div>
         </div>
@@ -42,7 +42,7 @@ export default async function DonationsPage() {
       <TerminalCard cmd={SQL_LIST}>
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">
+            <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
               <th className="text-left px-4 py-2">date</th>
               <th className="text-left px-4 py-2">donor</th>
               <th className="text-left px-4 py-2">amount</th>
@@ -52,22 +52,22 @@ export default async function DonationsPage() {
           </thead>
           <tbody>
             {items.map((it) => (
-              <tr key={it.id} className="border-b border-[#00ff88]/10 hover:bg-[#00ff88]/5 transition">
-                <td className="px-4 py-2 text-[#00ff88]/40">{it.createdAt.toISOString().slice(0, 10)}</td>
-                <td className="px-4 py-2 text-[#00ff88]">{it.donorName || 'anonymous'}</td>
+              <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
+                <td className="px-4 py-2 text-[#22C55E]/40">{it.createdAt.toISOString().slice(0, 10)}</td>
+                <td className="px-4 py-2 text-[#22C55E]">{it.donorName || 'anonymous'}</td>
                 <td className="px-4 py-2 text-cyan-400">{it.amount} {it.currency}</td>
                 <td className="px-4 py-2">
                   {it.status === 'completed' ? (
-                    <span className="text-[#00ff88]">● {it.status}</span>
+                    <span className="text-[#22C55E]">● {it.status}</span>
                   ) : (
                     <span className="text-yellow-500/80">○ {it.status}</span>
                   )}
                 </td>
-                <td className="px-4 py-2 text-[#00ff88]/40 truncate max-w-[120px]">{it.transactionId || '—'}</td>
+                <td className="px-4 py-2 text-[#22C55E]/40 truncate max-w-[120px]">{it.transactionId || '—'}</td>
               </tr>
             ))}
             {items.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-[#00ff88]/40">-- no records found --</td></tr>
+              <tr><td colSpan={5} className="px-4 py-8 text-center text-[#22C55E]/40">-- no records found --</td></tr>
             )}
           </tbody>
         </table>

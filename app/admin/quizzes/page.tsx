@@ -27,7 +27,7 @@ export default async function QuizzesPage() {
       <TerminalCard cmd='psql devschool -c "SELECT * FROM quiz_questions"'>
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#00ff88]/20 text-[#00ff88]/60 uppercase tracking-widest text-[10px]">
+            <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
               <th className="text-left px-4 py-2">question</th>
               <th className="text-left px-4 py-2">tutorial</th>
               <th className="text-left px-4 py-2">options</th>
@@ -36,17 +36,17 @@ export default async function QuizzesPage() {
           </thead>
           <tbody>
             {items.map((it) => (
-              <tr key={it.id} className="border-b border-[#00ff88]/10 hover:bg-[#00ff88]/5 transition">
-                <td className="px-4 py-2 text-[#00ff88] max-w-md truncate">{it.question}</td>
+              <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
+                <td className="px-4 py-2 text-[#22C55E] max-w-md truncate">{it.question}</td>
                 <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.title}</td>
-                <td className="px-4 py-2 text-[#00ff88]/60">{it._count.options}</td>
+                <td className="px-4 py-2 text-[#22C55E]/60">{it._count.options}</td>
                 <td className="px-4 py-2 text-right">
-                  <Link href={`/admin/quizzes/${it.id}`} className="text-cyan-400 hover:text-[#00ff88]">edit →</Link>
+                  <Link href={`/admin/quizzes/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
                 </td>
               </tr>
             ))}
             {items.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-8 text-center text-[#00ff88]/40">-- no records found --</td></tr>
+              <tr><td colSpan={4} className="px-4 py-8 text-center text-[#22C55E]/40">-- no records found --</td></tr>
             )}
           </tbody>
         </table>

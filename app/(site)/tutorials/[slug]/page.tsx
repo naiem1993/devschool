@@ -79,7 +79,7 @@ export default async function TutorialPage({ params }: PageProps) {
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
         <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
         <span>/</span>
-        <Link href="/categories" className="hover:text-[#22C55E]">টিউটোরিয়াল</Link>
+        <Link href="/categories" className="hover:text-[#22C55E]">ক্যাটাগরি</Link>
         <span>/</span>
         <Link href={`/categories/${tutorial.category.slug}`} className="hover:text-[#22C55E]">
           {tutorial.category.name}
@@ -95,13 +95,10 @@ export default async function TutorialPage({ params }: PageProps) {
         </p>
       )}
 
-      {/* Meta chips */}
+      {/* Meta chip — category only (W3Schools feel: no difficulty label on lesson) */}
       <div className="flex flex-wrap gap-2 mb-8">
         <span className="px-3 py-1 rounded-full bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold">
           📂 {tutorial.category.name}
-        </span>
-        <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
-          {tutorial.difficulty}
         </span>
       </div>
 

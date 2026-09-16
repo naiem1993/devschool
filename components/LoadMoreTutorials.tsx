@@ -45,11 +45,11 @@ export default function LoadMoreTutorials({ initialTutorials }: { initialTutoria
             href={`/tutorials/${tutorial.slug}`}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-xl transition group"
           >
-            <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+            <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80]">
               {tutorial.title}
             </h3>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-3">
-              <span className="bg-indigo-100 dark:bg-indigo-900/50 px-2 py-0.5 rounded-full">
+              <span className="bg-[#22C55E]/15 dark:bg-indigo-900/50 px-2 py-0.5 rounded-full">
                 {tutorial.category?.name || 'জেনেরিক'}
               </span>
               <span>⭐ {tutorial.rating || 0}</span>
@@ -64,7 +64,7 @@ export default function LoadMoreTutorials({ initialTutorials }: { initialTutoria
           <button
             onClick={loadMore}
             disabled={loading}
-            className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/30 disabled:opacity-50 transition"
+            className="px-8 py-3 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-2xl font-bold shadow-lg shadow-indigo-600/30 disabled:opacity-50 transition"
           >
             {loading ? (
               <span className="flex items-center gap-2">

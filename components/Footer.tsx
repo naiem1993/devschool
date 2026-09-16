@@ -9,7 +9,7 @@ export default function Footer() {
         </p>
         <p className="mt-1 text-xs">
           ❤️ দান করতে চান?{" "}
-          <Link href="/donate" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+          <Link href="/donate" className="text-[#15803d] dark:text-[#4ADE80] hover:underline font-medium">
             এখানে ক্লিক করুন
           </Link>
         </p>

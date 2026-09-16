@@ -64,12 +64,12 @@ export default function QuizForm({
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="admin-label mb-0">&gt; Options</span>
-          <button type="button" className="text-xs text-cyan-400 hover:text-[#00ff88]" onClick={() => setOptions((o) => [...o, { text: '', isCorrect: false }])}>+ add</button>
+          <button type="button" className="text-xs text-cyan-400 hover:text-[#22C55E]" onClick={() => setOptions((o) => [...o, { text: '', isCorrect: false }])}>+ add</button>
         </div>
         <div className="space-y-2">
           {options.map((opt, i) => (
             <div key={i} className="flex gap-2 items-center">
-              <input type="radio" name="correct" checked={opt.isCorrect} className="accent-[#00ff88]" onChange={() => setOptions((o) => o.map((x, j) => ({ ...x, isCorrect: j === i })))} />
+              <input type="radio" name="correct" checked={opt.isCorrect} className="accent-[#22C55E]" onChange={() => setOptions((o) => o.map((x, j) => ({ ...x, isCorrect: j === i })))} />
               <input className="admin-input" value={opt.text} placeholder={`option ${i + 1}`} onChange={(e) => setOptions((o) => o.map((x, j) => j === i ? { ...x, text: e.target.value } : x))} required />
               {options.length > 2 && (
                 <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setOptions((o) => o.filter((_, j) => j !== i))}>rm</button>

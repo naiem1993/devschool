@@ -80,6 +80,17 @@ export default function TutorialForm({
     )
   }
 
+  // ── Content-এ একটা Try It ব্লক বসায় (W3Schools-style inline editor) ──
+  const insertTryItBlock = (idx: number) => {
+    const block =
+      '\n\n[[tryit]]\n<h1>Hello DevSchool</h1>\n<p>Edit this code and press Run.</p>\n[[/tryit]]\n'
+    setChapters((prev) =>
+      prev.map((c, i) =>
+        i === idx ? { ...c, content: (c.content || '') + block } : c
+      )
+    )
+  }
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -212,10 +223,10 @@ export default function TutorialForm({
       </div>
 
       <div className="flex gap-6">
-        <label className="flex items-center gap-2 text-xs text-[#00ff88]/80 font-mono">
+        <label className="flex items-center gap-2 text-xs text-[#22C55E]/80 font-mono">
           <input
             type="checkbox"
-            className="accent-[#00ff88]"
+            className="accent-[#22C55E]"
             checked={form.isPublished}
             onChange={(e) =>
               setForm((f) => ({ ...f, isPublished: e.target.checked }))
@@ -223,10 +234,10 @@ export default function TutorialForm({
           />
           is_published
         </label>
-        <label className="flex items-center gap-2 text-xs text-[#00ff88]/80 font-mono">
+        <label className="flex items-center gap-2 text-xs text-[#22C55E]/80 font-mono">
           <input
             type="checkbox"
-            className="accent-[#00ff88]"
+            className="accent-[#22C55E]"
             checked={form.isActive}
             onChange={(e) =>
               setForm((f) => ({ ...f, isActive: e.target.checked }))
@@ -237,9 +248,9 @@ export default function TutorialForm({
       </div>
 
       {/* ================= CHAPTERS / LESSONS ================= */}
-      <div className="border-t border-[#00ff88]/20 pt-4 mt-6">
+      <div className="border-t border-[#22C55E]/20 pt-4 mt-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[#00ff88] font-mono">
+          <h2 className="text-lg font-bold text-[#22C55E] font-mono">
             📚 Lessons / Chapters ({chapters.length})
           </h2>
           <button
@@ -255,12 +266,20 @@ export default function TutorialForm({
           {chapters.map((ch, idx) => (
             <div
               key={idx}
-              className="border border-[#00ff88]/20 rounded-md p-4 bg-[#0a0f0a]/50 space-y-3"
+              className="border border-[#22C55E]/20 rounded-md p-4 bg-[#0a0f0a]/50 space-y-3"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-[#00ff88]/70">
+                <span className="text-xs font-mono text-[#22C55E]/70">
                   chapter #{ch.chapterNo}
                 </span>
+                <button
+                  type="button"
+                  onClick={() => insertTryItBlock(idx)}
+                  title="Content-এ [[tryit]] … [[/tryit]] ব্লক বসাবে"
+                  className="ml-auto mr-3 text-xs px-2.5 py-1 rounded border border-[#22C55E]/40 text-[#22C55E] hover:bg-[#22C55E]/10"
+                >
+                  + Try It
+                </button>
                 {chapters.length > 1 && (
                   <button
                     type="button"

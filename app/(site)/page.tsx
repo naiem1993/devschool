@@ -124,13 +124,13 @@ export default async function HomePage() {
           <div className="mt-6 flex flex-col gap-3">
             <button
               onClick={() => window.location.reload()}
-              className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 transition font-medium"
+              className="px-6 py-2.5 bg-[#22C55E] text-[#050806] rounded-xl hover:bg-[#4ADE80] transition font-semibold"
             >
               আবার চেষ্টা করুন 🔄
             </button>
             <Link
               href="/categories"
-              className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+              className="text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline"
             >
               ব্রাউজিং চালিয়ে যান →
             </Link>
@@ -193,7 +193,7 @@ export default async function HomePage() {
           </div>
 
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition group">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+            <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
               🧠
             </div>
             <h3 className="text-xl font-bold">Full Stack Developer</h3>
@@ -202,7 +202,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/categories"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-purple-600 dark:text-purple-400 mt-6 group-hover:translate-x-1 transition"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[#15803d] dark:text-[#4ADE80] mt-6 group-hover:translate-x-1 transition"
             >
               ট্র্যাক শুরু করুন →
             </Link>

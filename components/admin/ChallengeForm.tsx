@@ -90,18 +90,18 @@ export default function ChallengeForm({
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="admin-label mb-0">&gt; Test Cases</span>
-          <button type="button" className="text-xs text-cyan-400 hover:text-[#00ff88]" onClick={() => setTestCases((t) => [...t, { input: '', expectedOutput: '', isHidden: false }])}>+ add</button>
+          <button type="button" className="text-xs text-cyan-400 hover:text-[#22C55E]" onClick={() => setTestCases((t) => [...t, { input: '', expectedOutput: '', isHidden: false }])}>+ add</button>
         </div>
         <div className="space-y-3">
           {testCases.map((tc, i) => (
-            <div key={i} className="border border-[#00ff88]/20 rounded p-3 space-y-2">
+            <div key={i} className="border border-[#22C55E]/20 rounded p-3 space-y-2">
               <div className="grid grid-cols-2 gap-2">
                 <input className="admin-input" placeholder="input" value={tc.input} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, input: e.target.value } : x))} />
                 <input className="admin-input" placeholder="expected output" value={tc.expectedOutput} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, expectedOutput: e.target.value } : x))} />
               </div>
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-xs text-[#00ff88]/80 font-mono">
-                  <input type="checkbox" className="accent-[#00ff88]" checked={tc.isHidden} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, isHidden: e.target.checked } : x))} />
+                <label className="flex items-center gap-2 text-xs text-[#22C55E]/80 font-mono">
+                  <input type="checkbox" className="accent-[#22C55E]" checked={tc.isHidden} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, isHidden: e.target.checked } : x))} />
                   hidden
                 </label>
                 {testCases.length > 1 && <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setTestCases((a) => a.filter((_, j) => j !== i))}>rm</button>}

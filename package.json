@@ -17,7 +17,8 @@
     "setup:pin": "node scripts/add-pin-env.mjs",
     "reset:admin": "tsx prisma/reset-admin.ts",
     "inspect:tutorials": "tsx scripts/inspect-tutorials.ts",
-    "merge:html": "tsx scripts/merge-html-lessons.ts"
+    "merge:html": "tsx scripts/merge-html-lessons.ts",
+    "fix:colors": "node scripts/fix-colors.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"

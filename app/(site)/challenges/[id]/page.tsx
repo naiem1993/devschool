@@ -68,9 +68,9 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
         <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
           <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-              <li><Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">হোম</Link></li>
+              <li><Link href="/" className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">হোম</Link></li>
               <li aria-hidden>/</li>
-              <li><Link href="/challenges" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">চ্যালেঞ্জ</Link></li>
+              <li><Link href="/challenges" className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">চ্যালেঞ্জ</Link></li>
               <li aria-hidden>/</li>
               <li className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[240px]">{challenge.title}</li>
             </ol>
@@ -80,9 +80,9 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <header className="mb-6">
             <div className="flex items-center gap-3 mb-3 flex-wrap">
-              <Link href={`/categories/${challenge.tutorial.category.slug}`} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-950 transition">📂 {challenge.tutorial.category.name}</Link>
+              <Link href={`/categories/${challenge.tutorial.category.slug}`} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition">📂 {challenge.tutorial.category.name}</Link>
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold uppercase tracking-wider">{challenge.difficulty}</span>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">⭐ {challenge.points} pts</span>
+              <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {challenge.points} pts</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">{challenge.title}</h1>
             <p className="mt-3 text-base text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">{challenge.description}</p>

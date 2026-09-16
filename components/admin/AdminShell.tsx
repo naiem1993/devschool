@@ -10,12 +10,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   // ---- LOGIN PAGE: hacker / terminal style (আগের মতোই) ----
   if (isAuthPage) {
     return (
-      <div className="min-h-screen bg-black text-[#00ff88] font-mono flex relative">
+      <div className="min-h-screen bg-black text-[#22C55E] font-mono flex relative">
         <div
           className="pointer-events-none fixed inset-0 z-40 opacity-[0.04]"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(0deg, #00ff88 0px, #00ff88 1px, transparent 1px, transparent 3px)',
+              'repeating-linear-gradient(0deg, #22C55E 0px, #22C55E 1px, transparent 1px, transparent 3px)',
           }}
         />
         <main className="flex-1 overflow-x-auto relative">

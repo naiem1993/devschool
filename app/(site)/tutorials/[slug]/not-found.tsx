@@ -14,13 +14,13 @@ export default function TutorialNotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/categories"
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
+            className="px-6 py-3 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition"
           >
             সব টিউটোরিয়াল দেখুন
           </Link>
           <Link
             href="/"
-            className="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition"
+            className="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-[#22C55E] text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition"
           >
             হোমপেজে ফিরে যান
           </Link>

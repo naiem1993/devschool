@@ -51,7 +51,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             onChange={(e) => setQuery(e.target.value)}
             placeholder="চ্যালেঞ্জ খুঁজুন..."
             aria-label="চ্যালেঞ্জ সার্চ"
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition"
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -61,8 +61,8 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
               onClick={() => setDifficulty(d)}
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition border ${
                 difficulty === d
-                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'
+                  ? 'bg-[#22C55E] text-[#050806] border-[#22C55E] shadow-md'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60'
               }`}
             >
               {d === 'all' ? 'সব' : d}
@@ -76,7 +76,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
           {filtered.length} টি চ্যালেঞ্জ
         </p>
         {(query || difficulty !== 'all') && (
-          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
             ফিল্টার মুছুন ✕
           </button>
         )}
@@ -87,7 +87,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
           <div className="text-6xl mb-4">🎯</div>
           <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">অন্য কীওয়ার্ড বা difficulty দিয়ে চেষ্টা করুন।</p>
-          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition">সব চ্যালেঞ্জ দেখুন</button>
+          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">সব চ্যালেঞ্জ দেখুন</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -95,13 +95,13 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             <Link
               key={c.id}
               href={`/challenges/${c.id}`}
-              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200 flex flex-col"
+              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 transition-all duration-200 flex flex-col"
             >
               <div className="flex items-center justify-between mb-3 gap-2">
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full border text-[10px] font-semibold uppercase tracking-wider ${diffStyle(c.difficulty)}`}>{c.difficulty}</span>
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">⭐ {c.points} pts</span>
+                <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {c.points} pts</span>
               </div>
-              <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition line-clamp-2">{c.title}</h3>
+              <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80] transition line-clamp-2">{c.title}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">{c.description}</p>
               <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/5 text-xs text-slate-400">
                 <span className="truncate max-w-[120px]" title={c.tutorialTitle}>📚 {c.tutorialTitle}</span>

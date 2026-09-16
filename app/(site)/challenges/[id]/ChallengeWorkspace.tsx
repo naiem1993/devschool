@@ -232,7 +232,7 @@ export default function ChallengeWorkspace({
             onClick={() => setActiveTab('tests')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
               activeTab === 'tests'
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-[#22C55E] text-[#050806]'
                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
             }`}
           >
@@ -242,7 +242,7 @@ export default function ChallengeWorkspace({
             onClick={() => setActiveTab('output')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
               activeTab === 'output'
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-[#22C55E] text-[#050806]'
                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
             }`}
           >
@@ -344,11 +344,11 @@ export default function ChallengeWorkspace({
         )}
 
         {/* Help hint */}
-        <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-          <strong className="text-indigo-600 dark:text-indigo-400">💡 টিপস:</strong> তোমার কোডে অবশ্যই <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">function solve(input) {'{ ... }'}</code> ফাংশন থাকতে হবে — যা <code className="font-mono">input</code> নিয়ে output রিটার্ন করবে।
+        <div className="p-4 rounded-2xl bg-[#22C55E]/5 border border-[#22C55E]/20 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+          <strong className="text-[#15803d] dark:text-[#4ADE80]">💡 টিপস:</strong> তোমার কোডে অবশ্যই <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">function solve(input) {'{ ... }'}</code> ফাংশন থাকতে হবে — যা <code className="font-mono">input</code> নিয়ে output রিটার্ন করবে।
         </div>
 
-        <Link href={`/tutorials/${tutorialSlug}`} className="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">
+        <Link href={`/tutorials/${tutorialSlug}`} className="inline-flex items-center gap-2 text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline font-semibold">
           📚 সম্পর্কিত টিউটোরিয়াল: {tutorialTitle} →
         </Link>
       </div>

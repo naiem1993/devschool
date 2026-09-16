@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 
@@ -119,6 +119,13 @@ export default async function CategoryPage({ params }: PageProps) {
 
   if (!category) notFound()
 
+  // ─── Single-tutorial category → সরাসরি tutorial-এ (W3Schools feel) ───
+  // ক্যাটাগরিতে একটাই published tutorial থাকলে মাঝের লিস্ট পেজটা বাদ দিয়ে
+  // সোজা /tutorials/<slug>-এ নিয়ে যাই। ২+ tutorial থাকলে নিচের লিস্ট পেজই দেখাবে।
+  if (category.tutorials.length === 1) {
+    redirect(`/tutorials/${category.tutorials[0].slug}`)
+  }
+
   // ─── Fetch other categories for footer navigation ───
   const otherCategories = await prisma.category
     .findMany({
@@ -230,7 +237,7 @@ export default async function CategoryPage({ params }: PageProps) {
                   </div>
                 </div>
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3">
-                  <div className="text-2xl font-extrabold text-purple-600 dark:text-purple-400">
+                  <div className="text-2xl font-extrabold text-[#15803d] dark:text-[#4ADE80]">
                     {category._count.references}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">

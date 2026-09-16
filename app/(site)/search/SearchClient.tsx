@@ -196,7 +196,7 @@ export default function SearchClient({
           placeholder="কী শিখতে চান? (যেমন: JavaScript, Python, React...)"
           aria-label="সার্চ"
           autoFocus
-          className="w-full pl-14 pr-24 py-4 sm:py-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-base sm:text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition"
+          className="w-full pl-14 pr-24 py-4 sm:py-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-base sm:text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg focus:outline-none focus:border-[#22C55E] focus:ring-4 focus:ring-[#22C55E]/10 transition"
         />
         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-500 dark:text-slate-400">
@@ -222,7 +222,7 @@ export default function SearchClient({
             <button
               key={p.q}
               onClick={() => setQuery(p.q)}
-              className="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+              className="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
             >
               {p.label}
             </button>
@@ -257,7 +257,7 @@ export default function SearchClient({
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               aria-label="ক্যাটাগরি ফিল্টার"
-              className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition cursor-pointer"
+              className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
             >
               <option value="">সব ক্যাটাগরি</option>
               {categories.map((c) => (
@@ -272,7 +272,7 @@ export default function SearchClient({
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
                 aria-label="লেভেল ফিল্টার"
-                className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition cursor-pointer"
+                className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
               >
                 <option value="">সব লেভেল</option>
                 {DIFFICULTIES.map((d) => (
@@ -288,7 +288,7 @@ export default function SearchClient({
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
                 aria-label="ভাষা ফিল্টার"
-                className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition cursor-pointer"
+                className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
               >
                 <option value="">সব ভাষা</option>
                 {languages.map((l) => (
@@ -303,7 +303,7 @@ export default function SearchClient({
           {activeFilters && (
             <button
               onClick={resetFilters}
-              className="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+              className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
             >
               সব ফিল্টার মুছুন ✕
             </button>
@@ -363,7 +363,7 @@ export default function SearchClient({
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-            <span className="font-mono text-indigo-600 dark:text-indigo-400">
+            <span className="font-mono text-[#15803d] dark:text-[#4ADE80]">
               “{result.query}”
             </span>{' '}
             এর জন্য কোনো ফলাফল নেই। অন্য কীওয়ার্ড চেষ্টা করুন।
@@ -373,7 +373,7 @@ export default function SearchClient({
               <button
                 key={p.q}
                 onClick={() => setQuery(p.q)}
-                className="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-100 dark:hover:bg-indigo-950 transition"
+                className="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#22C55E]/15 dark:hover:bg-[#22C55E]/15 transition"
               >
                 {p.label}
               </button>
@@ -399,13 +399,13 @@ export default function SearchClient({
                   <Link
                     key={t.id}
                     href={`/tutorials/${t.slug}`}
-                    className="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200"
+                    className="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 transition-all duration-200"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="font-bold text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                      <h3 className="font-bold text-lg group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80] transition">
                         {t.title}
                       </h3>
-                      <span className="flex-shrink-0 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+                      <span className="flex-shrink-0 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] border border-[#22C55E]/20">
                         {t.difficulty}
                       </span>
                     </div>
@@ -415,7 +415,7 @@ export default function SearchClient({
                       </p>
                     )}
                     {t.categoryName && (
-                      <div className="mt-3 text-xs text-indigo-600 dark:text-indigo-400 font-medium">
+                      <div className="mt-3 text-xs text-[#15803d] dark:text-[#4ADE80] font-medium">
                         {t.categoryName}
                       </div>
                     )}
