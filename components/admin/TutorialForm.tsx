@@ -379,6 +379,13 @@ export default function TutorialForm({
         >
           {loading ? 'সেভ হচ্ছে...' : mode === 'edit' ? 'আপডেট করো' : 'টিউটোরিয়াল তৈরি করো'}
         </button>
+        <button
+          type="button"
+          onClick={() => router.push('/admin/tutorials')}
+          className="admin-btn-ghost"
+        >
+          $ cancel
+        </button>
       </div>
     </form>
   )

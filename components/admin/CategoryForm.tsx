@@ -140,7 +140,7 @@ export default function CategoryForm({
         </button>
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => router.push('/admin/categories')}
           className="admin-btn-ghost"
         >
           $ cancel

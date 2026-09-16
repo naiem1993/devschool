@@ -299,6 +299,20 @@ function ChapterCard({
             >
               {saving ? 'সেভ হচ্ছে...' : 'সেভ করো'}
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDraft({
+                  title: chapter.title,
+                  content: chapter.content,
+                  codeExample: chapter.codeExample || '',
+                })
+                setOpen(false)
+              }}
+              className="admin-btn-ghost"
+            >
+              বাতিল
+            </button>
             {dirty && !saving && (
               <span className="text-[11px] font-mono text-amber-600 dark:text-amber-400">
                 unsaved changes

@@ -91,7 +91,7 @@ export default function ReferenceForm({
       {error && <div className="admin-error">[!] {error}</div>}
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={loading} className="admin-btn">{loading ? '> saving...' : '$ save'}</button>
-        <button type="button" onClick={() => router.back()} className="admin-btn-ghost">$ cancel</button>
+        <button type="button" onClick={() => router.push('/admin/references')} className="admin-btn-ghost">$ cancel</button>
       </div>
     </form>
   )
