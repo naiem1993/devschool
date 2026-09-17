@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { updateCategorySchema, validateBody } from '@/lib/validators'
 import { requireAdmin, getAdminId } from '@/lib/auth'
@@ -18,6 +19,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (error) return NextResponse.json({ error }, { status: 400 })
   try {
     const cat = await prisma.category.update({ where: { id }, data: data! })
+    // ISR cache invalidate — icon সেভ করলেই /categories এ সাথে সাথে দেখাবে
+    revalidatePath('/categories')
+    revalidatePath(`/categories/${cat.slug}`)
+    revalidatePath('/admin/categories')
     return NextResponse.json(cat)
   } catch (e: any) {
     // Friendly handling for duplicate name/slug (Prisma P2002 unique constraint)

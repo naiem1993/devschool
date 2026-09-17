@@ -1,0 +1,89 @@
+'use client'
+
+// ─────────────────────────────────────────────────────────────
+//  DevSchool — Site-level Error Boundary
+//  (site) route group-এর যেকোনো page crash হলে এই UI দেখাবে
+//  Brand: Neon Green #22C55E  •  dark bg #050806
+// ─────────────────────────────────────────────────────────────
+
+import { useEffect } from 'react'
+import Link from 'next/link'
+
+export default function SiteError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  useEffect(() => {
+    console.error('[site] Error:', error)
+  }, [error])
+
+  return (
+    <main className="relative min-h-[100svh] overflow-hidden bg-[#f2fbf4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 flex items-center justify-center px-4 py-16">
+      {/* soft radial green glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[520px] w-[860px] max-w-[140vw]"
+        style={{
+          background:
+            'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-lg">
+        <div className="rounded-3xl border border-slate-200 bg-white/80 p-8 text-center shadow-xl backdrop-blur-sm dark:border-white/[0.07] dark:bg-white/[0.03] dark:shadow-none sm:p-10">
+          {/* icon */}
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#22C55E]/35 bg-[#22C55E]/10 text-3xl">
+            ⚠️
+          </div>
+
+          {/* status pill */}
+          <div className="mb-4 flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[#15803d] dark:text-[#4ADE80]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+              Something went wrong
+            </span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            কিছু একটা ভুল হয়েছে
+          </h1>
+
+          <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            পেজটি লোড করার সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন —
+            সমস্যা থেকে গেলে হোমপেজে ফিরে যান।
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={reset}
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-bold text-[#050806] transition hover:bg-[#4ADE80] hover:shadow-[0_0_28px_rgba(34,197,94,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ADE80] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050806]"
+            >
+              আবার চেষ্টা করুন 🔄
+            </button>
+            <Link
+              href="/"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#22C55E] hover:text-[#15803d] dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#22C55E]/60 dark:hover:text-[#4ADE80]"
+            >
+              🏠 হোমপেজ
+            </Link>
+          </div>
+
+          {/* error id */}
+          {error?.digest && (
+            <p className="mt-6 font-mono text-[10px] text-slate-400 dark:text-slate-600">
+              Error ID: {error.digest}
+            </p>
+          )}
+        </div>
+
+        <p className="mt-6 text-center font-mono text-[11px] text-slate-400 dark:text-slate-600">
+          DevSchool · বিনামূল্যে প্রোগ্রামিং শিখুন
+        </p>
+      </div>
+    </main>
+  )
+}

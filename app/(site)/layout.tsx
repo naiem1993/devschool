@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import CategoryNav from '@/components/CategoryNav'
+import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
 import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
@@ -23,6 +24,34 @@ export default async function SiteLayout({
     categories = []
   }
 
+  // ⭐ Sponsors — active, date-window-valid, priority sorted
+  let sponsors: PublicSponsor[] = []
+  try {
+    const now = new Date()
+    const rows = await prisma.sponsor.findMany({
+      where: {
+        isActive: true,
+        AND: [
+          { OR: [{ startDate: null }, { startDate: { lte: now } }] },
+          { OR: [{ endDate: null }, { endDate: { gte: now } }] },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        logoUrl: true,
+        websiteUrl: true,
+        tier: true,
+        description: true,
+      },
+      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      take: 12,
+    })
+    sponsors = rows
+  } catch {
+    sponsors = []
+  }
+
   return (
     <>
       <Header />
@@ -30,6 +59,7 @@ export default async function SiteLayout({
       <ErrorBoundary>
         <main className="flex-1">{children}</main>
       </ErrorBoundary>
+      <SponsorRail sponsors={sponsors} />
       <Footer />
     </>
   )

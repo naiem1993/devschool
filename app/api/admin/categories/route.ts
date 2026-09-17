@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createCategorySchema, validateBody } from '@/lib/validators'
 
@@ -13,6 +14,9 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error }, { status: 400 })
   try {
     const cat = await prisma.category.create({ data: data! })
+    // ISR cache invalidate — icon/name/description সাথে সাথে /categories এ দেখাবে
+    revalidatePath('/categories')
+    revalidatePath('/admin/categories')
     return NextResponse.json(cat, { status: 201 })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })

@@ -10,6 +10,7 @@ const links = [
   { href: '/admin/quizzes', label: 'Quizzes', icon: '?' },
   { href: '/admin/challenges', label: 'Challenges', icon: '⚡' },
   { href: '/admin/references', label: 'References', icon: '⌘' },
+  { href: '/admin/sponsors', label: 'Sponsors', icon: '★' },
   { href: '/admin/donations', label: 'Donations', icon: '♥' },
 ]
 

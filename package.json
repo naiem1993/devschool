@@ -18,7 +18,8 @@
     "reset:admin": "tsx prisma/reset-admin.ts",
     "inspect:tutorials": "tsx scripts/inspect-tutorials.ts",
     "merge:html": "tsx scripts/merge-html-lessons.ts",
-    "fix:colors": "node scripts/fix-colors.mjs"
+    "fix:colors": "node scripts/fix-colors.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"

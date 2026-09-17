@@ -5,6 +5,7 @@ import { z } from 'zod'
 export const createCategorySchema = z.object({
   name: z.string().min(2).max(100),
   slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)'),
+  icon: z.string().trim().max(20).optional().nullable(),
   description: z.string().optional(),
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().default(true),
@@ -13,6 +14,7 @@ export const createCategorySchema = z.object({
 export const updateCategorySchema = z.object({
   name: z.string().min(2).max(100).optional(),
   slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
+  icon: z.string().trim().max(20).optional().nullable(),
   description: z.string().optional(),
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
@@ -171,3 +173,34 @@ export function getPaginationMetadata(page: number, limit: number, total: number
     totalPages: Math.ceil(total / limit),
   }
 }
+
+// ─── Sponsor Validators ─────────────────────────────────────────────────────────
+
+export const SPONSOR_TIERS = ['gold', 'silver', 'bronze', 'partner'] as const
+
+const urlOrPath = z
+  .string()
+  .trim()
+  .refine(
+    (v) => v === '' || v.startsWith('/') || /^https?:\/\//i.test(v),
+    'Must be an http(s) URL or an internal path'
+  )
+
+export const createSponsorSchema = z.object({
+  name: z.string().min(1).max(150),
+  logoUrl: urlOrPath.optional(),
+  imageId: z.string().cuid().nullable().optional(),
+  websiteUrl: z.string().trim().url('Must be a valid URL').max(500).optional().or(z.literal('')),
+  description: z.string().max(500).optional(),
+  tier: z.enum(SPONSOR_TIERS).default('partner'),
+  priority: z.number().int().min(0).max(999).default(0),
+  isActive: z.boolean().default(true),
+  startDate: z.string().datetime().nullable().optional(),
+  endDate: z.string().datetime().nullable().optional(),
+})
+
+export const updateSponsorSchema = createSponsorSchema.partial()
+
+export const trackClickSchema = z.object({
+  sponsorId: z.string().cuid(),
+})

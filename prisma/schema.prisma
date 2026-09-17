@@ -262,3 +262,54 @@ model PinLockout {
   lockedUntil    DateTime?
   updatedAt      DateTime  @updatedAt
 }
+
+// ==========================================
+//  SPONSORIMAGE — image blob store (DB-blob mode)
+//  ছবি byte আকারে Postgres-এ রাখা হয়। hash দিয়ে dedup —
+//  একই ছবি দুইবার upload করলে দ্বিতীয়বার save হয় না,
+//  শুধু existing row-এর id reuse হয়।
+//  একই SponsorImage একাধিক Sponsor-এ reference করা যায়।
+// ==========================================
+model SponsorImage {
+  id        String    @id @default(cuid())
+  hash      String    @unique
+  mimeType  String
+  width     Int?
+  height    Int?
+  sizeBytes Int
+  data      Bytes
+  createdAt DateTime  @default(now())
+
+  sponsors  Sponsor[]
+
+  @@index([hash])
+}
+
+// ==========================================
+//  SPONSOR — sponsor/partner listing
+//  logoUrl = '/api/sponsors/image/[imageId]' (upload mode)
+//          অথবা সরাসরি external URL (URL paste mode)
+//  imageId → SponsorImage (upload mode-এ FK, external-এ null)
+//  websiteUrl = sponsor logo-তে ক্লিক করলে যেখানে যাবে
+// ==========================================
+model Sponsor {
+  id          String        @id @default(cuid())
+  name        String
+  logoUrl     String?
+  imageId     String?
+  image       SponsorImage? @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  websiteUrl  String?
+  description String?
+  tier        String        @default("partner") // gold | silver | bronze | partner
+  priority    Int           @default(0)
+  isActive    Boolean       @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  impressions Int           @default(0)
+  clicks      Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([isActive, priority])
+  @@index([imageId])
+}
