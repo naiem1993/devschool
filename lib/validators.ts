@@ -82,6 +82,7 @@ export const updateReferenceSchema = z.object({
   syntax: z.string().optional(),
   example: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  language: z.string().trim().max(50).optional().nullable(),
 })
 
 // ─── Code Challenge Validators ─────────────────────────────────────────────────

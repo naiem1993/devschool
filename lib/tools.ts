@@ -38,7 +38,6 @@ export const DEV_TOOLS: DevTool[] = [
     href: '/tools/json-formatter',
     category: 'code',
     tags: ['json', 'format', 'beautify'],
-    comingSoon: true,
   },
   {
     slug: 'base64',
@@ -48,7 +47,15 @@ export const DEV_TOOLS: DevTool[] = [
     href: '/tools/base64',
     category: 'convert',
     tags: ['base64', 'encode', 'decode'],
-    comingSoon: true,
+  },
+  {
+    slug: 'image-base64',
+    name: 'Image to Base64',
+    description: 'ছবি থেকে Base64 / Data URI বানান, আর Base64 থেকে ছবি দেখুন।',
+    icon: '🖼️',
+    href: '/tools/image-base64',
+    category: 'convert',
+    tags: ['image', 'base64', 'data uri', 'png', 'jpg', 'webp'],
   },
   {
     slug: 'color-picker',
@@ -58,7 +65,6 @@ export const DEV_TOOLS: DevTool[] = [
     href: '/tools/color-picker',
     category: 'design',
     tags: ['color', 'hex', 'rgb', 'palette'],
-    comingSoon: true,
   },
   {
     slug: 'uuid',
@@ -78,7 +84,6 @@ export const DEV_TOOLS: DevTool[] = [
     href: '/tools/lorem-ipsum',
     category: 'text',
     tags: ['lorem', 'placeholder', 'text'],
-    comingSoon: true,
   },
   {
     slug: 'url-encoder',
