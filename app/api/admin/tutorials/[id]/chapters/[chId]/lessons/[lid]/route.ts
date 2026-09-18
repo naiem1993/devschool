@@ -5,10 +5,10 @@ import { verifyPinToken } from '@/lib/pin'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 
 /**
- * একটা chapter-এর উপর operation (nested structure v3)
+ * একটা Lesson-এর operation
  *
- *  PATCH  → title / slug / groupId / content / codeExample আপডেট
- *  DELETE → chapter মুছে ফেলে (lessons cascade) — PIN দরকার
+ *  PATCH  → title / slug / content / codeExample আপডেট
+ *  DELETE → lesson মুছে বাকিগুলো re-number — PIN দরকার
  */
 
 function normSlug(raw: unknown): string {
@@ -22,21 +22,15 @@ function normSlug(raw: unknown): string {
 // ─── PATCH ────────────────────────────────────────────────────
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string; chId: string }> }
+  { params }: { params: Promise<{ id: string; chId: string; lid: string }> }
 ) {
   const denied = await requireAdmin(req)
   if (denied) return denied
 
-  const { id, chId } = await params
+  const { id, chId, lid } = await params
   const body = await req.json().catch(() => ({}))
 
-  const data: {
-    title?: string
-    slug?: string
-    groupId?: string | null
-    content?: string | null
-    codeExample?: string | null
-  } = {}
+  const data: { title?: string; slug?: string; content?: string; codeExample?: string | null } = {}
 
   if (typeof body?.title === 'string') {
     const t = body.title.trim()
@@ -48,11 +42,10 @@ export async function PATCH(
     if (!s) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
     data.slug = s
   }
-  if ('groupId' in (body ?? {})) {
-    data.groupId = body.groupId ? String(body.groupId) : null
-  }
-  if ('content' in (body ?? {})) {
-    data.content = body.content != null && String(body.content).trim() !== '' ? String(body.content) : null
+  if (typeof body?.content === 'string') {
+    const c = body.content.trim()
+    if (!c) return NextResponse.json({ error: 'content খালি রাখা যাবে না' }, { status: 400 })
+    data.content = c
   }
   if ('codeExample' in (body ?? {})) {
     data.codeExample = body.codeExample ? String(body.codeExample).trim() : null
@@ -63,28 +56,37 @@ export async function PATCH(
   }
 
   try {
-    const existing = await prisma.chapter.findUnique({ where: { id: chId } })
-    if (!existing || existing.tutorialId !== id) {
+    const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { tutorialId: true } })
+    if (!chapter || chapter.tutorialId !== id) {
       return NextResponse.json({ error: 'Chapter not found' }, { status: 404 })
     }
 
-    if (data.groupId) {
-      const g = await prisma.chapterGroup.findFirst({
-        where: { id: data.groupId, tutorialId: id },
-        select: { id: true },
-      })
-      if (!g) return NextResponse.json({ error: 'Group not found' }, { status: 404 })
+    const existing = await prisma.lesson.findUnique({ where: { id: lid } })
+    if (!existing || existing.chapterId !== chId) {
+      return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
     }
 
     if (data.slug && data.slug !== existing.slug) {
-      const dup = await prisma.chapter.findFirst({
-        where: { tutorialId: id, slug: data.slug, NOT: { id: chId } },
+      const dup = await prisma.lesson.findFirst({
+        where: { chapterId: chId, slug: data.slug, NOT: { id: lid } },
         select: { id: true },
       })
       if (dup) return NextResponse.json({ error: 'এই slug আগেই ব্যবহৃত' }, { status: 409 })
     }
 
-    const updated = await prisma.chapter.update({ where: { id: chId }, data })
+    const updated = await prisma.lesson.update({ where: { id: lid }, data })
+
+    // D6a — first lesson হলে chapter slug sync
+    if (existing.sortOrder === 0 && data.slug) {
+      const clash = await prisma.chapter.findFirst({
+        where: { tutorialId: id, slug: data.slug, NOT: { id: chId } },
+        select: { id: true },
+      })
+      if (!clash) {
+        await prisma.chapter.update({ where: { id: chId }, data: { slug: data.slug } })
+      }
+    }
+
     return NextResponse.json(updated)
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })
@@ -94,7 +96,7 @@ export async function PATCH(
 // ─── DELETE (PIN) ─────────────────────────────────────────────
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string; chId: string }> }
+  { params }: { params: Promise<{ id: string; chId: string; lid: string }> }
 ) {
   const denied = await requireAdmin(req)
   if (denied) return denied
@@ -107,14 +109,32 @@ export async function DELETE(
     return NextResponse.json({ error: 'PIN_REQUIRED' }, { status: 403 })
   }
 
-  const { id, chId } = await params
+  const { id, chId, lid } = await params
 
   try {
-    const existing = await prisma.chapter.findUnique({ where: { id: chId } })
-    if (!existing || existing.tutorialId !== id) {
+    const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { tutorialId: true } })
+    if (!chapter || chapter.tutorialId !== id) {
       return NextResponse.json({ error: 'Chapter not found' }, { status: 404 })
     }
-    await prisma.chapter.delete({ where: { id: chId } })
+    const existing = await prisma.lesson.findUnique({ where: { id: lid } })
+    if (!existing || existing.chapterId !== chId) {
+      return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
+    }
+
+    const removedNo = existing.sortOrder
+
+    await prisma.$transaction(async (tx) => {
+      await tx.lesson.delete({ where: { id: lid } })
+      const rest = await tx.lesson.findMany({
+        where: { chapterId: chId, sortOrder: { gt: removedNo } },
+        orderBy: { sortOrder: 'asc' },
+        select: { id: true },
+      })
+      for (const r of rest) {
+        await tx.lesson.update({ where: { id: r.id }, data: { sortOrder: { decrement: 1 } } })
+      }
+    })
+
     await revalidateTutorialPaths(id)
     return NextResponse.json({ ok: true })
   } catch (e: any) {

@@ -30,12 +30,8 @@ export const createTutorialSchema = z.object({
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).default('Beginner'),
   isActive: z.boolean().default(true),
   isPublished: z.boolean().default(false),
-  contents: z.array(z.object({
-    chapterNo: z.number().int().positive(),
-    title: z.string().min(1).max(255),
-    content: z.string().min(1),
-    codeExample: z.string().optional(),
-  })).optional(),
+  /** @deprecated nested structure (v3) — chapter/lesson আলাদা API থেকে তৈরি হয় */
+  contents: z.array(z.any()).optional(),
 })
 
 export const updateTutorialSchema = z.object({
@@ -46,6 +42,50 @@ export const updateTutorialSchema = z.object({
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
   isActive: z.boolean().optional(),
   isPublished: z.boolean().optional(),
+})
+
+// ─── Nested Structure Validators (v3) ──────────────────────────────────────────
+
+const urlSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+export const createGroupSchema = z.object({
+  title: z.string().min(1).max(255),
+  sortOrder: z.number().int().optional(),
+})
+
+export const updateGroupSchema = z.object({
+  title: z.string().min(1).max(255).optional(),
+  sortOrder: z.number().int().optional(),
+})
+
+export const createChapterSchema = z.object({
+  title: z.string().min(1).max(255),
+  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)'),
+  groupId: z.string().cuid().nullable().optional(),
+  content: z.string().nullable().optional(),
+  codeExample: z.string().nullable().optional(),
+})
+
+export const updateChapterSchema = z.object({
+  title: z.string().min(1).max(255).optional(),
+  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
+  groupId: z.string().cuid().nullable().optional(),
+  content: z.string().nullable().optional(),
+  codeExample: z.string().nullable().optional(),
+})
+
+export const createLessonSchema = z.object({
+  title: z.string().min(1).max(255),
+  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)'),
+  content: z.string().min(1),
+  codeExample: z.string().nullable().optional(),
+})
+
+export const updateLessonSchema = z.object({
+  title: z.string().min(1).max(255).optional(),
+  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
+  content: z.string().min(1).optional(),
+  codeExample: z.string().nullable().optional(),
 })
 
 // ─── Quiz Question Validators ──────────────────────────────────────────────────

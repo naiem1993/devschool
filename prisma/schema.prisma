@@ -48,7 +48,8 @@ model Tutorial {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  contents     TutorialContent[]
+  groups       ChapterGroup[]
+  chapters     Chapter[]
   quizzes      QuizQuestion[]
   challenges   CodeChallenge[]
 
@@ -58,21 +59,77 @@ model Tutorial {
 }
 
 // ==========================================
-//  TUTORIALCONTENT
+//  CHAPTERGROUP — sidebar-এর non-clickable section header
+//  e.g. "HTML Forms", "HTML Graphics"
+//  কোনো URL নেই, কোনো caret নেই — শুধু visual divider
 // ==========================================
-model TutorialContent {
-  id           String   @id @default(cuid())
-  tutorialId   String
-  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  chapterNo    Int
-  title        String
-  content      String
-  codeExample  String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model ChapterGroup {
+  id         String   @id @default(cuid())
+  tutorialId String
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  title      String
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@unique([tutorialId, chapterNo])
-  @@index([tutorialId, chapterNo])
+  chapters   Chapter[]
+
+  @@index([tutorialId, sortOrder])
+}
+
+// ==========================================
+//  CHAPTER — sidebar-এর main item
+//  দুই ধরনের:
+//   (ক) single-page — lessons[] খালি, content নিজের
+//   (খ) nested       — lessons[] আছে, content null
+//  URL: lowest-sortOrder lesson = /{chapter.slug}
+//       বাকি lesson             = /{chapter.slug}/{lesson.slug}
+// ==========================================
+model Chapter {
+  id          String        @id @default(cuid())
+  tutorialId  String
+  tutorial    Tutorial      @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  groupId     String?
+  group       ChapterGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  title       String
+  slug        String
+  sortOrder   Int           @default(0)
+
+  // শুধু single-page chapter-এর জন্য (nested হলে null)
+  content     String?
+  codeExample String?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  lessons     Lesson[]
+
+  @@unique([tutorialId, slug])
+  @@index([tutorialId, sortOrder])
+  @@index([groupId])
+}
+
+// ==========================================
+//  LESSON — nested chapter-এর ভেতরের item
+//  slug শুধু chapter-এর ভেতরে unique
+// ==========================================
+model Lesson {
+  id          String   @id @default(cuid())
+  chapterId   String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  title       String
+  slug        String
+  content     String
+  codeExample String?
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([chapterId, slug])
+  @@index([chapterId, sortOrder])
 }
 
 // ==========================================

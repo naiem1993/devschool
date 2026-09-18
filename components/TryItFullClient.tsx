@@ -8,7 +8,8 @@ type Props = {
   tutorialTitle: string
   chapterTitle: string
   slug: string
-  chapterNo: number
+  /** lesson path — e.g. "html/basic" or "html/basic/exercises" */
+  lessonPath: string
 }
 
 /**
@@ -22,7 +23,7 @@ export default function TryItFullClient({
   tutorialTitle,
   chapterTitle,
   slug,
-  chapterNo,
+  lessonPath,
 }: Props) {
   const [src, setSrc] = useState(code)
   const [isDark, setIsDark] = useState(true)
@@ -97,7 +98,7 @@ export default function TryItFullClient({
       <header className="sticky top-0 z-10 border-b border-emerald-200/60 dark:border-emerald-900/40 bg-white/85 dark:bg-[#080c0a]/85 backdrop-blur">
         <div className="max-w-[1500px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 flex-wrap">
           <Link
-            href={`/tutorials/${slug}/${chapterNo}`}
+            href={`/tutorials/${slug}/${lessonPath}`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition-colors"
           >
             ← ফিরে যান

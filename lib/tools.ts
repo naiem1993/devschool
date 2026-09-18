@@ -86,6 +86,15 @@ export const DEV_TOOLS: DevTool[] = [
     tags: ['lorem', 'placeholder', 'text'],
   },
   {
+    slug: 'image-to-pdf',
+    name: 'Image to PDF',
+    description: 'JPG / PNG / GIF / WEBP ছবি থেকে এক ক্লিকে PDF বানান।',
+    icon: '📄',
+    href: '/tools/image-to-pdf',
+    category: 'convert',
+    tags: ['pdf', 'image', 'jpg', 'png', 'convert', 'merge'],
+  },
+  {
     slug: 'url-encoder',
     name: 'URL Encode / Decode',
     description: 'URL-safe করতে টেক্সট encode বা decode করুন।',

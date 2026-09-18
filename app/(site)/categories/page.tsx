@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import CategoriesFilter, { type CategoryCard } from './CategoriesFilter'
+import { absoluteUrl } from '@/lib/site-url'
 
 // ─────────────────────────────────────────────────────────────
 //  ISR — revalidate every 5 minutes
@@ -141,7 +142,7 @@ export default async function CategoriesListingPage() {
     hasPart: categories.slice(0, 20).map((c) => ({
       '@type': 'Course',
       name: c.name,
-      url: `https://devschool.com/categories/${c.slug}`,
+      url: absoluteUrl(`/categories/${c.slug}`),
     })),
   }
 

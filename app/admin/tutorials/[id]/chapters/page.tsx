@@ -1,12 +1,14 @@
 import prisma from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import ChaptersManager from '@/components/admin/ChaptersManager'
+import ChaptersManager, { type ChapterRow } from '@/components/admin/ChaptersManager'
+import GroupsManager, { type GroupRow } from '@/components/admin/GroupsManager'
+
+export const dynamic = 'force-dynamic'
 
 /**
- * Chapters management page (Option A)
- * tutorial-এর info আলাদা (/edit), chapter গুলো আলাদা (এই পেজ)।
- * এক chapter সেভ করলে বাকিগুলোর ID অটুট থাকে।
+ * Chapters + Groups management page (nested v3)
+ * tutorial-এর info আলাদা (/edit), chapter/group/lesson এখানে।
  */
 export default async function ChaptersPage({
   params,
@@ -19,10 +21,48 @@ export default async function ChaptersPage({
     where: { id },
     include: {
       category: { select: { name: true } },
-      contents: { orderBy: { chapterNo: 'asc' } },
+      groups: {
+        orderBy: { sortOrder: 'asc' },
+        include: { _count: { select: { chapters: true } } },
+      },
+      chapters: {
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          group: { select: { id: true, title: true } },
+          lessons: { orderBy: { sortOrder: 'asc' } },
+        },
+      },
     },
   })
   if (!tutorial) return notFound()
+
+  const groupRows: GroupRow[] = tutorial.groups.map((g) => ({
+    id: g.id,
+    title: g.title,
+    sortOrder: g.sortOrder,
+    chapterCount: g._count.chapters,
+  }))
+
+  const chapterRows: ChapterRow[] = tutorial.chapters.map((c) => ({
+    id: c.id,
+    title: c.title,
+    slug: c.slug,
+    groupId: c.groupId,
+    groupTitle: c.group?.title ?? null,
+    content: c.content,
+    codeExample: c.codeExample,
+    sortOrder: c.sortOrder,
+    lessons: c.lessons.map((l) => ({
+      id: l.id,
+      title: l.title,
+      slug: l.slug,
+      content: l.content,
+      codeExample: l.codeExample,
+      sortOrder: l.sortOrder,
+    })),
+  }))
+
+  const totalLessons = chapterRows.reduce((n, c) => n + c.lessons.length, 0)
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -42,19 +82,18 @@ export default async function ChaptersPage({
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        {tutorial.category.name} · {tutorial.contents.length} টি chapter
+        {tutorial.category.name} · {chapterRows.length} chapter · {totalLessons} lesson ·{' '}
+        {groupRows.length} group
       </p>
 
-      <ChaptersManager
-        tutorialId={tutorial.id}
-        chapters={tutorial.contents.map((c) => ({
-          id: c.id,
-          chapterNo: c.chapterNo,
-          title: c.title,
-          content: c.content,
-          codeExample: c.codeExample,
-        }))}
-      />
+      <div className="space-y-6">
+        <GroupsManager tutorialId={tutorial.id} groups={groupRows} />
+        <ChaptersManager
+          tutorialId={tutorial.id}
+          chapters={chapterRows}
+          groups={groupRows.map((g) => ({ id: g.id, title: g.title }))}
+        />
+      </div>
     </div>
   )
 }

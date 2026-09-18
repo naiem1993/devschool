@@ -5,7 +5,11 @@ import CategoryNav from '@/components/CategoryNav'
 import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
 import prisma from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
+// ISR: ৫ মিনিট cache। Categories + sponsors ঘনঘন বদলায় না —
+// তাই static-safe, প্রতিটা request-এ DB hit হবে না → many-x fast।
+// যেসব child page dynamic দরকার (search/progress/playground),
+// তারা নিজেরাই force-dynamic declare করবে।
+export const revalidate = 300
 
 export default async function SiteLayout({
   children,

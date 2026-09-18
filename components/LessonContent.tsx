@@ -22,7 +22,8 @@ import LessonLink from './LessonLink'
 type Props = {
   content: string
   slug?: string
-  chapterNo?: number
+  /** lesson path for TryIt ↗ button — e.g. "html/basic" or "html/basic/exercises" */
+  lessonPath?: string
 }
 
 type Token =
@@ -84,7 +85,7 @@ function tokenize(raw: string): Token[] {
   return tokens
 }
 
-export default function LessonContent({ content, slug, chapterNo }: Props) {
+export default function LessonContent({ content, slug, lessonPath }: Props) {
   const tokens = tokenize(content)
   if (tokens.length === 0) return null
 
@@ -101,7 +102,7 @@ export default function LessonContent({ content, slug, chapterNo }: Props) {
           )
         }
         if (t.kind === 'tryit') {
-          return <TryIt key={i} code={t.code} slug={slug} chapterNo={chapterNo} />
+          return <TryIt key={i} code={t.code} slug={slug} lessonPath={lessonPath} />
         }
         if (t.kind === 'callout') {
           return (

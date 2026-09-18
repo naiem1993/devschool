@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devschool.com'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * Crawler নিয়ম — public সব পেজ allow, admin/api/progress বাদ।

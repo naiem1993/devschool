@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
+import { SITE_URL } from '@/lib/site-url'
 
 // ─────────────────────────────────────────────────────────────
 //  TYPES
@@ -160,7 +161,7 @@ export default async function CategoryPage({ params }: PageProps) {
     name: `${category.name} টিউটোরিয়াল`,
     description: category.description,
     inLanguage: 'bn-BD',
-    isPartOf: { '@type': 'WebSite', name: 'DevSchool', url: 'https://devschool.com' },
+    isPartOf: { '@type': 'WebSite', name: 'DevSchool', url: SITE_URL },
   }
 
   return (

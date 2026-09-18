@@ -13,7 +13,10 @@ export default async function EditTutorialPage({
   const [tutorial, categories] = await Promise.all([
     prisma.tutorial.findUnique({
       where: { id },
-      include: { contents: { orderBy: { chapterNo: 'asc' } } },
+      include: {
+        category: { select: { name: true } },
+        _count: { select: { chapters: true, groups: true } },
+      },
     }),
     prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
   ])
@@ -21,8 +24,18 @@ export default async function EditTutorialPage({
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <Link href="/admin/tutorials" className="text-sm text-[#15803d] hover:underline">← ফিরে যান</Link>
-      <h1 className="text-3xl font-bold mt-2 mb-6 text-gray-900 dark:text-white">টিউটোরিয়াল এডিট</h1>
+      <Link href="/admin/tutorials" className="text-sm text-[#15803d] hover:underline">
+        ← ফিরে যান
+      </Link>
+      <h1 className="text-3xl font-bold mt-2 mb-1 text-gray-900 dark:text-white">
+        টিউটোরিয়াল এডিট
+      </h1>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        {tutorial._count.chapters} chapter · {tutorial._count.groups} group ·{' '}
+        <Link href={`/admin/tutorials/${tutorial.id}/chapters`} className="text-[#15803d] hover:underline">
+          chapter/lesson manage করো →
+        </Link>
+      </p>
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800">
         <TutorialForm
           initial={{
@@ -31,15 +44,10 @@ export default async function EditTutorialPage({
             slug: tutorial.slug,
             description: tutorial.description || '',
             difficulty: tutorial.difficulty,
+            duration: tutorial.duration,
             categoryId: tutorial.categoryId,
             isActive: tutorial.isActive,
             isPublished: tutorial.isPublished,
-            contents: tutorial.contents.map((c) => ({
-              chapterNo: c.chapterNo,
-              title: c.title,
-              content: c.content,
-              codeExample: c.codeExample || '',
-            })),
           }}
           categories={categories.map((c) => ({ id: c.id, name: c.name }))}
           mode="edit"

@@ -4,33 +4,41 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DeleteButton from './DeleteButton'
 import RichEditor from './RichEditor'
+import LessonsManager, { type LessonRow } from './LessonsManager'
 
 export type ChapterRow = {
   id: string
-  chapterNo: number
   title: string
-  content: string
+  slug: string
+  groupId: string | null
+  groupTitle: string | null
+  content: string | null
   codeExample: string | null
+  sortOrder: number
+  lessons: LessonRow[]
 }
 
+export type GroupOption = { id: string; title: string }
+
 /**
- * Chapters manager (Option A)
- * — প্রতিটা chapter আলাদা করে সেভ/ডিলিট/reorder হয়
- * — এক chapter বদলালে বাকিগুলোর ID অটুট থাকে
+ * Chapters manager (nested v3)
+ * — chapter CRUD + group assign + nested lessons
+ * — single-page = lesson নেই; nested = lesson আছে
  */
 export default function ChaptersManager({
   tutorialId,
   chapters: initial,
+  groups,
 }: {
   tutorialId: string
   chapters: ChapterRow[]
+  groups: GroupOption[]
 }) {
   const router = useRouter()
   const [chapters, setChapters] = useState<ChapterRow[]>(initial)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
-  // server refresh হলে নতুন props এসে state sync করবে
   useEffect(() => {
     setChapters(initial)
   }, [initial])
@@ -40,30 +48,24 @@ export default function ChaptersManager({
     setTimeout(() => setMsg(''), 3000)
   }
 
-  /* ── reorder ── */
   const move = async (idx: number, dir: -1 | 1) => {
     const j = idx + dir
     if (j < 0 || j >= chapters.length || busy) return
-
     const next = [...chapters]
     ;[next[idx], next[j]] = [next[j], next[idx]]
-    const renumbered = next.map((c, i) => ({ ...c, chapterNo: i + 1 }))
-    setChapters(renumbered)
+    setChapters(next)
     setBusy(true)
-
     try {
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/chapters`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order: renumbered.map((c) => c.id) }),
+        body: JSON.stringify({ order: next.map((c) => c.id) }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
         flash(d.error || 'reorder ব্যর্থ')
-        router.refresh()
-      } else {
-        router.refresh()
       }
+      router.refresh()
     } catch {
       flash('network error')
       router.refresh()
@@ -80,7 +82,6 @@ export default function ChaptersManager({
         </div>
       )}
 
-      {/* ════════ LIST ════════ */}
       {chapters.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-10 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -94,6 +95,7 @@ export default function ChaptersManager({
               key={ch.id}
               chapter={ch}
               tutorialId={tutorialId}
+              groups={groups}
               isFirst={idx === 0}
               isLast={idx === chapters.length - 1}
               busy={busy}
@@ -105,10 +107,9 @@ export default function ChaptersManager({
         </ol>
       )}
 
-      {/* ════════ ADD NEW ════════ */}
       <AddChapterForm
         tutorialId={tutorialId}
-        nextNo={(chapters[chapters.length - 1]?.chapterNo ?? 0) + 1}
+        groups={groups}
         onDone={(m) => {
           flash(m)
           router.refresh()
@@ -118,12 +119,10 @@ export default function ChaptersManager({
   )
 }
 
-/* ────────────────────────────────────────────────────────────
-   একটা chapter কার্ড — collapse/expand + inline edit
-   ──────────────────────────────────────────────────────────── */
 function ChapterCard({
   chapter,
   tutorialId,
+  groups,
   isFirst,
   isLast,
   busy,
@@ -133,6 +132,7 @@ function ChapterCard({
 }: {
   chapter: ChapterRow
   tutorialId: string
+  groups: GroupOption[]
   isFirst: boolean
   isLast: boolean
   busy: boolean
@@ -145,27 +145,27 @@ function ChapterCard({
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({
     title: chapter.title,
-    content: chapter.content,
+    slug: chapter.slug,
+    groupId: chapter.groupId || '',
+    content: chapter.content || '',
     codeExample: chapter.codeExample || '',
   })
 
   useEffect(() => {
     setDraft({
       title: chapter.title,
-      content: chapter.content,
+      slug: chapter.slug,
+      groupId: chapter.groupId || '',
+      content: chapter.content || '',
       codeExample: chapter.codeExample || '',
     })
   }, [chapter])
 
-  const dirty =
-    draft.title !== chapter.title ||
-    draft.content !== chapter.content ||
-    draft.codeExample !== (chapter.codeExample || '')
+  const nested = chapter.lessons.length > 0
 
   const save = async () => {
-    if (!draft.title.trim() || !draft.content.trim()) {
-      onFlash('title ও content দুটোই দরকার')
-      return
+    if (!draft.title.trim() || !draft.slug.trim()) {
+      return onFlash('title ও slug দুটোই দরকার')
     }
     setSaving(true)
     try {
@@ -175,14 +175,16 @@ function ChapterCard({
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            title: draft.title,
-            content: draft.content,
+            title: draft.title.trim(),
+            slug: draft.slug.trim(),
+            groupId: draft.groupId || null,
+            content: draft.content || null,
             codeExample: draft.codeExample || null,
           }),
         }
       )
       if (res.ok) {
-        onFlash(`ch#${chapter.chapterNo} সেভ হয়েছে ✓`)
+        onFlash('chapter সেভ হয়েছে ✓')
         router.refresh()
       } else {
         const d = await res.json().catch(() => ({}))
@@ -197,11 +199,8 @@ function ChapterCard({
 
   return (
     <li className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden">
-      {/* header row */}
       <div className="flex items-center gap-2 px-3 py-2.5">
-        <span className="text-xs font-mono text-gray-400 w-8 shrink-0">
-          #{chapter.chapterNo}
-        </span>
+        <span className="text-[10px] font-mono text-gray-400 w-6 shrink-0">{chapter.sortOrder + 1}</span>
 
         <button
           type="button"
@@ -212,7 +211,17 @@ function ChapterCard({
           {chapter.title || '(শিরোনামহীন)'}
         </button>
 
-        {/* reorder */}
+        {/* type badge */}
+        <span
+          className={
+            nested
+              ? 'text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded border border-[#22C55E]/50 text-[#15803d] dark:text-[#4ADE80] shrink-0'
+              : 'text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-700 text-gray-500 shrink-0'
+          }
+        >
+          {nested ? `${chapter.lessons.length} lessons` : 'single'}
+        </span>
+
         <button
           type="button"
           onClick={onMoveUp}
@@ -232,13 +241,11 @@ function ChapterCard({
           ↓
         </button>
 
-        {/* delete — PIN protected */}
         <DeleteButton
           endpoint={`/api/admin/tutorials/${tutorialId}/chapters/${chapter.id}`}
-          itemLabel={`ch#${chapter.chapterNo} ${chapter.title}`}
+          itemLabel={`chapter “${chapter.title}”`}
         />
 
-        {/* expand */}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -249,122 +256,125 @@ function ChapterCard({
         </button>
       </div>
 
-      {/* expanded editor */}
       {open && (
         <div className="border-t border-gray-200 dark:border-gray-800 px-4 py-4 space-y-3 bg-gray-50/60 dark:bg-black/20">
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-              Title
-            </label>
-            <input
-              value={draft.title}
-              onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E]"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="sm:col-span-1">
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+              <input
+                value={draft.title}
+                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
+              <input
+                value={draft.slug}
+                onChange={(e) => setDraft({ ...draft, slug: e.target.value })}
+                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Group</label>
+              <select
+                value={draft.groupId}
+                onChange={(e) => setDraft({ ...draft, groupId: e.target.value })}
+                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              >
+                <option value="">— কোনো group নেই —</option>
+                {groups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-              Content
-            </label>
-            <RichEditor
-              value={draft.content}
-              onChange={(e) => setDraft((d) => ({ ...d, content: e.target.value }))}
-              rows={10}
-              className="w-full px-3 py-2 text-sm font-mono leading-relaxed rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E] resize-y"
-            />
-            <p className="mt-1 text-[11px] text-gray-400 font-mono">
-              Try It বসাতে: [[tryit]] ... [[/tryit]]
-            </p>
-          </div>
+          {!nested && (
+            <>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                  Content (single-page)
+                </label>
+                <RichEditor
+                  value={draft.content}
+                  onChange={(e) => setDraft({ ...draft, content: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                  Code example (optional)
+                </label>
+                <textarea
+                  value={draft.codeExample}
+                  onChange={(e) => setDraft({ ...draft, codeExample: e.target.value })}
+                  rows={3}
+                  className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                />
+              </div>
+            </>
+          )}
 
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-              Code example (ঐচ্ছিক)
-            </label>
-            <textarea
-              value={draft.codeExample}
-              onChange={(e) => setDraft((d) => ({ ...d, codeExample: e.target.value }))}
-              rows={5}
-              className="w-full px-3 py-2 text-sm font-mono leading-relaxed rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E] resize-y"
-            />
-          </div>
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="text-xs font-mono px-3 py-1.5 rounded-lg border border-[#22C55E]/60 text-[#15803d] dark:text-[#4ADE80] hover:bg-[#22C55E]/10 disabled:opacity-40"
+          >
+            {saving ? 'সেভ হচ্ছে…' : 'সেভ করো'}
+          </button>
 
-          <div className="flex items-center gap-3 pt-1">
-            <button
-              type="button"
-              onClick={save}
-              disabled={saving || !dirty}
-              className="px-4 py-2 rounded-lg bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition"
-            >
-              {saving ? 'সেভ হচ্ছে...' : 'সেভ করো'}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setDraft({
-                  title: chapter.title,
-                  content: chapter.content,
-                  codeExample: chapter.codeExample || '',
-                })
-                setOpen(false)
-              }}
-              className="admin-btn-ghost"
-            >
-              বাতিল
-            </button>
-            {dirty && !saving && (
-              <span className="text-[11px] font-mono text-amber-600 dark:text-amber-400">
-                unsaved changes
-              </span>
-            )}
-          </div>
+          <LessonsManager
+            tutorialId={tutorialId}
+            chapterId={chapter.id}
+            lessons={chapter.lessons}
+          />
         </div>
       )}
     </li>
   )
 }
 
-/* ────────────────────────────────────────────────────────────
-   নতুন chapter যোগ করার ফর্ম
-   ──────────────────────────────────────────────────────────── */
 function AddChapterForm({
   tutorialId,
-  nextNo,
+  groups,
   onDone,
 }: {
   tutorialId: string
-  nextNo: number
-  onDone: (msg: string) => void
+  groups: GroupOption[]
+  onDone: (m: string) => void
 }) {
-  const [open, setOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
   const [title, setTitle] = useState('')
+  const [slug, setSlug] = useState('')
+  const [groupId, setGroupId] = useState('')
   const [content, setContent] = useState('')
   const [codeExample, setCodeExample] = useState('')
+  const [saving, setSaving] = useState(false)
 
-  const reset = () => {
-    setTitle('')
-    setContent('')
-    setCodeExample('')
-  }
-
-  const submit = async () => {
-    if (!title.trim() || !content.trim()) {
-      onDone('title ও content দুটোই দরকার')
-      return
-    }
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!title.trim() || !slug.trim()) return onDone('title ও slug দরকার')
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/chapters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, codeExample: codeExample || undefined }),
+        body: JSON.stringify({
+          title: title.trim(),
+          slug: slug.trim(),
+          groupId: groupId || null,
+          content: content || null,
+          codeExample: codeExample || null,
+        }),
       })
       if (res.ok) {
-        onDone(`ch#${nextNo} যোগ হয়েছে ✓`)
-        reset()
-        setOpen(false)
+        setTitle('')
+        setSlug('')
+        setContent('')
+        setCodeExample('')
+        onDone('নতুন chapter যোগ হয়েছে ✓')
       } else {
         const d = await res.json().catch(() => ({}))
         onDone(d.error || 'যোগ ব্যর্থ')
@@ -376,69 +386,70 @@ function AddChapterForm({
     }
   }
 
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="w-full py-3 rounded-xl border border-dashed border-[#22C55E]/50 text-[#15803d] dark:text-[#4ADE80] text-sm font-semibold hover:bg-[#22C55E]/5 transition"
-      >
-        + নতুন chapter যোগ করো (ch#{nextNo})
-      </button>
-    )
-  }
-
   return (
-    <div className="rounded-xl border border-[#22C55E]/40 bg-[#22C55E]/[0.04] p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-mono text-[#15803d] dark:text-[#4ADE80] font-bold">
-          নতুন chapter #{nextNo}
-        </span>
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false)
-            reset()
-          }}
-          className="text-xs font-mono text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-        >
-          বাতিল
-        </button>
+    <form
+      onSubmit={submit}
+      className="rounded-xl border border-dashed border-[#22C55E]/40 p-4 space-y-3"
+    >
+      <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">+ নতুন Chapter</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="যেমন HTML Paragraphs"
+            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
+          <input
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="html-paragraphs"
+            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Group</label>
+          <select
+            value={groupId}
+            onChange={(e) => setGroupId(e.target.value)}
+            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          >
+            <option value="">— কোনো group নেই —</option>
+            {groups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.title}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Chapter title (যেমন: HTML Styles)"
-        className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E]"
-      />
-
-      <RichEditor
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder={'Content...\n\n[[tryit]]\n<h1>Hello</h1>\n[[/tryit]]'}
-        rows={8}
-        className="w-full px-3 py-2 text-sm font-mono leading-relaxed rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E] resize-y"
-      />
-
-      <textarea
-        value={codeExample}
-        onChange={(e) => setCodeExample(e.target.value)}
-        placeholder="Code example (ঐচ্ছিক)"
-        rows={4}
-        className="w-full px-3 py-2 text-sm font-mono leading-relaxed rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 outline-none focus:border-[#22C55E] resize-y"
-      />
-
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={submit}
-          disabled={saving}
-          className="px-4 py-2 rounded-lg bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] text-sm font-bold disabled:opacity-40 transition"
-        >
-          {saving ? 'যোগ হচ্ছে...' : 'যোগ করো'}
-        </button>
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+          Content (single-page chapter-এর জন্য; খালি রাখলে lesson যোগ করতে পারবেন)
+        </label>
+        <RichEditor value={content} onChange={(e) => setContent(e.target.value)} />
       </div>
-    </div>
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (optional)</label>
+        <textarea
+          value={codeExample}
+          onChange={(e) => setCodeExample(e.target.value)}
+          rows={3}
+          className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={saving}
+        className="text-xs font-mono px-3 py-1.5 rounded-lg border border-[#22C55E]/60 text-[#15803d] dark:text-[#4ADE80] hover:bg-[#22C55E]/10 disabled:opacity-40"
+      >
+        {saving ? 'যোগ হচ্ছে…' : '+ chapter যোগ করো'}
+      </button>
+    </form>
   )
 }

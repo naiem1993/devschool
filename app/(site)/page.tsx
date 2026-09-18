@@ -5,7 +5,9 @@ import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
 
-export const dynamic = 'force-dynamic';
+// ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
+// তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
+export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const tutorialCount = await prisma.tutorial.count({ where: { isPublished: true } });
@@ -20,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: 'DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন',
       description: `${tutorialCount} টি টিউটোরিয়াল সহ সম্পূর্ণ ফ্রি লার্নিং প্ল্যাটফর্ম`,
-      url: 'https://devschool.com',
+      url: '/',
     },
   };
 }
@@ -89,7 +91,7 @@ export default async function HomePage() {
         slug: true,
         difficulty: true,
         viewCount: true,
-        contents: true,
+        chapters: { select: { id: true, slug: true, title: true } },
         category: { select: { name: true } },
       },
       take: 50,

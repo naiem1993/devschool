@@ -1,25 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
+import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 
 /**
- * Chapter collection API (Option A — আলাদা chapter management)
+ * Chapter collection API (nested structure v3)
  *
- *  GET    /api/admin/tutorials/[id]/chapters  → সব chapter (ক্রম অনুযায়ী)
- *  POST   /api/admin/tutorials/[id]/chapters  → নতুন chapter (chapterNo auto)
- *  PATCH  /api/admin/tutorials/[id]/chapters  → reorder { order: [id, id, ...] }
+ *  GET    → সব chapter (group + lesson count সহ)
+ *  POST   → নতুন chapter { title, slug, groupId?, content?, codeExample? }
+ *  PATCH  → reorder { order: [chapterId, ...] }
  *
- * ⚠️ DELETE এখানে নেই — একটা chapter মুছতে
- *    /api/admin/tutorials/[id]/chapters/[chId] ব্যবহার করুন (PIN দরকার)।
+ * ⚠️ DELETE নেই — একটা chapter মুছতে [chId] route ব্যবহার করুন (PIN দরকার)।
  */
+
+function normSlug(raw: unknown): string {
+  return String(raw ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 // ─── GET: list ────────────────────────────────────────────────
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const chapters = await prisma.tutorialContent.findMany({
+    const chapters = await prisma.chapter.findMany({
       where: { tutorialId: id },
-      orderBy: { chapterNo: 'asc' },
+      orderBy: { sortOrder: 'asc' },
+      include: {
+        group: { select: { id: true, title: true } },
+        _count: { select: { lessons: true } },
+      },
     })
     return NextResponse.json(chapters)
   } catch (e: any) {
@@ -36,27 +48,37 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const body = await req.json().catch(() => ({}))
 
   const title = String(body?.title ?? '').trim()
-  const content = String(body?.content ?? '').trim()
+  const slug = normSlug(body?.slug)
+  const groupId = body?.groupId ? String(body.groupId) : null
+  const content = body?.content != null && String(body.content).trim() !== '' ? String(body.content) : null
   const codeExample = body?.codeExample ? String(body.codeExample).trim() : null
 
-  if (!title || !content) {
-    return NextResponse.json({ error: 'title ও content দুটোই দরকার' }, { status: 400 })
-  }
+  if (!title) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  if (!slug) return NextResponse.json({ error: 'slug URL-safe হতে হবে (lowercase, hyphens)' }, { status: 400 })
 
   try {
     const tutorial = await prisma.tutorial.findUnique({ where: { id }, select: { id: true } })
     if (!tutorial) return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 })
 
-    const last = await prisma.tutorialContent.findFirst({
-      where: { tutorialId: id },
-      orderBy: { chapterNo: 'desc' },
-      select: { chapterNo: true },
-    })
-    const nextNo = (last?.chapterNo ?? 0) + 1
+    if (groupId) {
+      const g = await prisma.chapterGroup.findFirst({ where: { id: groupId, tutorialId: id }, select: { id: true } })
+      if (!g) return NextResponse.json({ error: 'Group not found' }, { status: 404 })
+    }
 
-    const created = await prisma.tutorialContent.create({
-      data: { tutorialId: id, chapterNo: nextNo, title, content, codeExample },
+    const dup = await prisma.chapter.findFirst({ where: { tutorialId: id, slug }, select: { id: true } })
+    if (dup) return NextResponse.json({ error: 'এই slug আগেই ব্যবহৃত' }, { status: 409 })
+
+    const last = await prisma.chapter.findFirst({
+      where: { tutorialId: id },
+      orderBy: { sortOrder: 'desc' },
+      select: { sortOrder: true },
     })
+    const nextOrder = (last?.sortOrder ?? -1) + 1
+
+    const created = await prisma.chapter.create({
+      data: { tutorialId: id, title, slug, groupId, content, codeExample, sortOrder: nextOrder },
+    })
+    await revalidateTutorialPaths(id)
     return NextResponse.json(created, { status: 201 })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })
@@ -77,15 +99,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   try {
-    const existing = await prisma.tutorialContent.findMany({
-      where: { tutorialId: id },
-      select: { id: true },
-    })
+    const existing = await prisma.chapter.findMany({ where: { tutorialId: id }, select: { id: true } })
     const ids = new Set(existing.map((c) => c.id))
 
     if (
       order.length !== existing.length ||
-      !order.every((oid) => ids.has(oid as string)) ||
+      !order.every((o: string) => ids.has(o)) ||
       new Set(order).size !== order.length
     ) {
       return NextResponse.json(
@@ -94,27 +113,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       )
     }
 
-    // দুটো pass — নাহলে @@unique([tutorialId, chapterNo]) ভেঙে যাবে।
-    // pass 1: সবাইকে negative temp-এ সরাই
-    // pass 2: চূড়ান্ত 1..N বসাই
-    await prisma.$transaction(async (tx) => {
-      for (let i = 0; i < order.length; i++) {
-        await tx.tutorialContent.update({
-          where: { id: order[i] as string },
-          data: { chapterNo: -(i + 1) },
-        })
-      }
-      for (let i = 0; i < order.length; i++) {
-        await tx.tutorialContent.update({
-          where: { id: order[i] as string },
-          data: { chapterNo: i + 1 },
-        })
-      }
-    })
+    await prisma.$transaction(
+      order.map((cid: string, i: number) =>
+        prisma.chapter.update({ where: { id: cid }, data: { sortOrder: i } })
+      )
+    )
 
-    const fresh = await prisma.tutorialContent.findMany({
+    const fresh = await prisma.chapter.findMany({
       where: { tutorialId: id },
-      orderBy: { chapterNo: 'asc' },
+      orderBy: { sortOrder: 'asc' },
+      include: { group: { select: { id: true, title: true } }, _count: { select: { lessons: true } } },
     })
     return NextResponse.json(fresh)
   } catch (e: any) {

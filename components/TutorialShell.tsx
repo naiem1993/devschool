@@ -1,32 +1,38 @@
 import LessonSidebar from './LessonSidebar'
 import TutorialPromo from './TutorialPromo'
-
-type Chapter = { chapterNo: number; title: string }
+import type { TutorialNav, SidebarActive } from '@/lib/tutorial-types'
 
 export default function TutorialShell({
   tutorialSlug,
   tutorialTitle,
-  chapters,
-  currentChapter,
+  nav,
+  active,
   children,
 }: {
   tutorialSlug: string
   tutorialTitle: string
-  chapters: Chapter[]
-  currentChapter?: number
+  nav: TutorialNav
+  active?: SidebarActive
   children: React.ReactNode
 }) {
+  const activeState: SidebarActive = active || { chapterSlug: null, lessonSlug: null }
+
+  // Promo widget-এর জন্য কোন chapter-এ আছি তার 1-based position
+  const currentChapterOrder = activeState.chapterSlug
+    ? nav.chapters.findIndex((c) => c.slug === activeState.chapterSlug) + 1
+    : 0
+
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100">
       {/* ══════════ 3-COLUMN LAYOUT ══════════ */}
       <div className="w-full px-0">
         <div className="flex flex-col lg:flex-row">
-          {/* ── LEFT: Chapters Sidebar ── */}
+          {/* ── LEFT: Sidebar ── */}
           <LessonSidebar
             tutorialSlug={tutorialSlug}
             tutorialTitle={tutorialTitle}
-            chapters={chapters}
-            currentChapter={currentChapter}
+            nav={nav}
+            active={activeState}
           />
 
           {/* ── CENTER: Main Content ── */}
@@ -37,8 +43,8 @@ export default function TutorialShell({
           {/* ── RIGHT: Promo ── */}
           <div className="px-4 lg:px-6 py-6">
             <TutorialPromo
-              chapterCount={chapters.length}
-              currentChapter={currentChapter}
+              chapterCount={nav.chapters.length}
+              currentChapter={currentChapterOrder}
             />
           </div>
         </div>

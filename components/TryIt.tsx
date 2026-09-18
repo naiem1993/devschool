@@ -11,8 +11,8 @@ type Props = {
   title?: string
   /** tutorial slug — ↗ বাটনের জন্য দরকার (না থাকলে ↗ দেখাবে না) */
   slug?: string
-  /** chapter number — ↗ বাটনের জন্য দরকার */
-  chapterNo?: number
+  /** lesson path for ↗ button — e.g. "html/basic" or "html/basic/exercises" */
+  lessonPath?: string
 }
 
 /**
@@ -32,7 +32,7 @@ export default function TryIt({
   label = 'Try it Yourself',
   title = 'index.html',
   slug,
-  chapterNo,
+  lessonPath,
 }: Props) {
   const [open, setOpen] = useState(false)
   const [src, setSrc] = useState(code)
@@ -126,10 +126,10 @@ export default function TryIt({
           {open ? 'বন্ধ করুন' : label}
         </button>
 
-        {/* ↗ নতুন ট্যাবে — শুধু slug+chapterNo থাকলে দেখায় */}
-        {slug && chapterNo ? (
+        {/* ↗ নতুন ট্যাবে — শুধু slug+lessonPath থাকলে দেখায় */}
+        {slug && lessonPath ? (
           <a
-            href={`/tutorials/${slug}/${chapterNo}/tryit`}
+            href={`/tutorials/${slug}/${lessonPath}/tryit`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 border border-emerald-300/70 dark:border-emerald-800/70 text-slate-700 dark:text-slate-200 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] font-semibold text-[13.5px] px-4 py-2.5 rounded-lg transition-colors"

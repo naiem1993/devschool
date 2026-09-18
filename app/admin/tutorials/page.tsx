@@ -5,13 +5,15 @@ import DeleteButton from '@/components/admin/DeleteButton'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 export default async function TutorialsPage() {
   const items = await prisma.tutorial.findMany({
     orderBy: { createdAt: 'desc' },
     take: 100,
     include: {
       category: { select: { name: true } },
-      _count: { select: { contents: true } },
+      _count: { select: { chapters: true, groups: true } },
     },
   })
 
@@ -37,21 +39,22 @@ export default async function TutorialsPage() {
               <th className="text-left px-4 py-2">title</th>
               <th className="text-left px-4 py-2">category</th>
               <th className="text-left px-4 py-2">difficulty</th>
-              <th className="text-left px-4 py-2">lessons</th>
+              <th className="text-left px-4 py-2">chapters</th>
+              <th className="text-left px-4 py-2">groups</th>
               <th className="text-left px-4 py-2">published</th>
               <th className="text-right px-4 py-2">actions</th>
             </tr>
           </thead>
           <tbody>
             {items.map((it) => {
-              const chapterCount = it._count.contents
+              const chapterCount = it._count.chapters
+              const groupCount = it._count.groups
               return (
                 <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
                   <td className="px-4 py-2 text-[#22C55E]">{it.title}</td>
                   <td className="px-4 py-2 text-cyan-400/70">{it.category.name}</td>
                   <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
 
-                  {/* lessons count — ০ হলে লাল সতর্কতা */}
                   <td className="px-4 py-2">
                     {chapterCount > 0 ? (
                       <Link
@@ -70,6 +73,16 @@ export default async function TutorialsPage() {
                         ⚠ 0
                       </Link>
                     )}
+                  </td>
+
+                  <td className="px-4 py-2 text-[#22C55E]/60">
+                    <Link
+                      href={`/admin/tutorials/${it.id}/chapters`}
+                      className="hover:text-[#4ADE80] transition"
+                      title="Groups manage করো"
+                    >
+                      {groupCount}
+                    </Link>
                   </td>
 
                   <td className="px-4 py-2">
@@ -99,7 +112,7 @@ export default async function TutorialsPage() {
             })}
             {items.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[#22C55E]/40">
+                <td colSpan={7} className="px-4 py-8 text-center text-[#22C55E]/40">
                   -- no records found --
                 </td>
               </tr>

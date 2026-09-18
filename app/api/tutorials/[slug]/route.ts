@@ -47,15 +47,32 @@ export async function GET(
             slug: true,
           },
         },
-        contents: {
+        groups: {
+          select: { id: true, title: true, sortOrder: true },
+          orderBy: { sortOrder: 'asc' },
+        },
+        chapters: {
           select: {
             id: true,
-            chapterNo: true,
+            slug: true,
             title: true,
+            sortOrder: true,
+            groupId: true,
             content: true,
             codeExample: true,
+            lessons: {
+              select: {
+                id: true,
+                slug: true,
+                title: true,
+                content: true,
+                codeExample: true,
+                sortOrder: true,
+              },
+              orderBy: { sortOrder: 'asc' },
+            },
           },
-          orderBy: { chapterNo: 'asc' },
+          orderBy: { sortOrder: 'asc' },
         },
         quizzes: {
           select: {
