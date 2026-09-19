@@ -35,6 +35,150 @@ body {
 }
 
 /* ============================================
+   HOME v3 — aurora / particles / marquee / reveal / accordion
+   (header untouched — শুধু হোম পেজের নতুন সেকশনের জন্য)
+   ============================================ */
+
+/* --- aurora orbs --- */
+@keyframes auroraDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(70px, -50px) scale(1.16); }
+  66%      { transform: translate(-50px, 60px) scale(0.94); }
+}
+.aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  pointer-events: none;
+  animation: auroraDrift 24s ease-in-out infinite;
+}
+.aurora-orb-1 { width: 560px; height: 560px; background: #22C55E; top: -160px; left: -90px; opacity: .12; }
+.aurora-orb-2 { width: 480px; height: 480px; background: #0ea5e9; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
+.aurora-orb-3 { width: 440px; height: 440px; background: #a855f7; bottom: -160px; left: 32%; opacity: .06; animation-delay: -14s; }
+.dark .aurora-orb-1 { opacity: .30; }
+.dark .aurora-orb-2 { opacity: .26; }
+.dark .aurora-orb-3 { opacity: .16; }
+
+/* --- marquee --- */
+@keyframes marqueeSlide { to { transform: translateX(-50%); } }
+.marquee-track { display: flex; gap: 2.5rem; width: max-content; animation: marqueeSlide 30s linear infinite; }
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+/* --- animated gradient border --- */
+@keyframes gradientSpin { to { background-position: 300% 0; } }
+.gradient-border { position: relative; }
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, #22C55E, #0ea5e9, #a855f7, #22C55E);
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradientSpin 9s linear infinite;
+  pointer-events: none;
+}
+
+/* --- reveal on scroll (progressive enhancement) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .75s cubic-bezier(.22,1,.36,1), transform .75s cubic-bezier(.22,1,.36,1);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* --- accordion --- */
+.acc-body { max-height: 0; overflow: hidden; transition: max-height .38s cubic-bezier(.4,0,.2,1); }
+.acc-open .acc-body { max-height: 260px; }
+.acc-icon { transition: transform .25s; }
+.acc-open .acc-icon { transform: rotate(45deg); }
+
+/* --- reduced motion — সব animation বন্ধ --- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-orb, .marquee-track, .gradient-border::before, .ds-logo-symbol { animation: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ============================================
+   HOME v3 — aurora / particles / marquee / reveal / accordion
+   (header untouched — শুধু হোম পেজের নতুন সেকশনের জন্য)
+   ============================================ */
+
+/* --- aurora orbs --- */
+@keyframes auroraDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(70px, -50px) scale(1.16); }
+  66%      { transform: translate(-50px, 60px) scale(0.94); }
+}
+.aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  pointer-events: none;
+  animation: auroraDrift 24s ease-in-out infinite;
+}
+.aurora-orb-1 { width: 560px; height: 560px; background: #22C55E; top: -160px; left: -90px; opacity: .12; }
+.aurora-orb-2 { width: 480px; height: 480px; background: #0ea5e9; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
+.aurora-orb-3 { width: 440px; height: 440px; background: #a855f7; bottom: -160px; left: 32%; opacity: .06; animation-delay: -14s; }
+.dark .aurora-orb-1 { opacity: .30; }
+.dark .aurora-orb-2 { opacity: .26; }
+.dark .aurora-orb-3 { opacity: .16; }
+
+/* --- marquee --- */
+@keyframes marqueeSlide { to { transform: translateX(-50%); } }
+.marquee-track { display: flex; gap: 2.5rem; width: max-content; animation: marqueeSlide 30s linear infinite; }
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+/* --- animated gradient border --- */
+@keyframes gradientSpin { to { background-position: 300% 0; } }
+.gradient-border { position: relative; }
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, #22C55E, #0ea5e9, #a855f7, #22C55E);
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradientSpin 9s linear infinite;
+  pointer-events: none;
+}
+
+/* --- reveal on scroll (progressive enhancement) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .75s cubic-bezier(.22,1,.36,1), transform .75s cubic-bezier(.22,1,.36,1);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* --- accordion --- */
+.acc-body { max-height: 0; overflow: hidden; transition: max-height .38s cubic-bezier(.4,0,.2,1); }
+.acc-open .acc-body { max-height: 260px; }
+.acc-icon { transition: transform .25s; }
+.acc-open .acc-icon { transform: rotate(45deg); }
+
+/* --- reduced motion — সব animation বন্ধ --- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-orb, .marquee-track, .gradient-border::before, .ds-logo-symbol { animation: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ============================================
    DevSchool Logo — draw & erase animation on > symbol
    ============================================ */
 @keyframes ds-logo-draw-erase {

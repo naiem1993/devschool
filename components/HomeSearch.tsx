@@ -79,7 +79,7 @@ export default function HomeSearch(
     result && (result.tutorials.length > 0 || result.references.length > 0)
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 relative">
+    <div className="max-w-2xl mx-auto lg:mx-0 lg:max-w-xl mt-8 relative">
       <div className="relative flex items-center">
         <span className="absolute left-4 text-slate-400 text-lg">🔍</span>
         <input

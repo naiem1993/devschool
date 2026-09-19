@@ -254,6 +254,35 @@ model SiteSettings {
 }
 
 // ==========================================
+//  REVIEW — ইউজারের দেওয়া feedback (admin approve করলে homepage-এ দেখাবে)
+// ==========================================
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  role      String?
+  stars     Int      @default(5)
+  text      String
+  status    String   @default("pending") // pending | approved
+  deviceId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+// ==========================================
+//  REVIEWCOOLDOWN — ১ device ৩০ দিনে মাত্র ১বার review দিতে পারবে
+//  (review delete হলেও cooldown টিকে থাকে, তাই bypass হয় না)
+// ==========================================
+model ReviewCooldown {
+  id             String   @id @default(cuid())
+  deviceId       String   @unique
+  lastSubmittedAt DateTime @default(now())
+
+  @@index([deviceId])
+}
+
+// ==========================================
 //  ADMINUSER — email + password auth (bcrypt)
 // ==========================================
 model AdminUser {

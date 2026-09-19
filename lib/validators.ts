@@ -153,6 +153,22 @@ export const createDonationSchema = z.object({
   isPublic: z.boolean().default(false),
 })
 
+// ─── Review Validators ─────────────────────────────────────────────────────────
+
+/** Public review submit — honeypot ফিল্ড `website` খালি থাকতে হবে (bot trap) */
+export const createReviewSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  role: z.string().trim().max(80).optional().nullable(),
+  stars: z.number().int().min(1).max(5).default(5),
+  text: z.string().trim().min(5).max(600),
+  website: z.string().max(0, 'spam detected').optional().nullable(),
+})
+
+/** Admin moderation — approve / unapprove */
+export const reviewModerationSchema = z.object({
+  status: z.enum(['pending', 'approved']),
+})
+
 // ─── Query Parameter Validators ────────────────────────────────────────────────
 
 export const paginationSchema = z.object({

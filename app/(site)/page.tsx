@@ -4,6 +4,8 @@ import Link from 'next/link';
 import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
+import HomeExtras from '@/components/HomeExtras';
+import ReviewForm from '@/components/ReviewForm';
 import { getHeroSettings } from '@/lib/site-settings';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
@@ -33,6 +35,7 @@ export default async function HomePage() {
   let popularTutorials: any[] = [];
   let latestTutorials: any[] = [];
   let allTutorialsForSearch: any[] = [];
+  let reviews: any[] = [];
   let languageCount = 0;
   let tutorialCount = 0;
   let quizCount = 0;
@@ -104,6 +107,13 @@ export default async function HomePage() {
       prisma.quizQuestion.count(),
       prisma.codeChallenge.count(),
     ]);
+
+    reviews = await prisma.review.findMany({
+      where: { status: 'approved' },
+      orderBy: { createdAt: 'desc' },
+      take: 6,
+      select: { id: true, name: true, role: true, stars: true, text: true },
+    });
   } catch (error: any) {
     console.error('Database error:', error);
     dbError = true;
@@ -156,6 +166,14 @@ export default async function HomePage() {
         tutorials={allTutorialsForSearch}
         stats={{ languageCount, tutorialCount, quizCount, challengeCount }}
       />
+
+      {/* === নতুন সেকশনগুলো (marquee / bento / timeline / reviews / FAQ / CTA) === */}
+      <HomeExtras reviews={reviews} />
+
+      {/* === ইউজার রিভিউ ফর্ম === */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ReviewForm />
+      </section>
 
       {/* === লার্নিং ট্র্যাক / রোডম্যাপ সেকশন === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

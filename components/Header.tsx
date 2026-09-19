@@ -146,9 +146,9 @@ export default function Header() {
      ========================================================= */
   if (isHome) {
     return (
-      <header className="sticky top-0 z-50 w-full pt-4 pb-2 pointer-events-none">
-        <div className="mx-auto w-[92%] sm:w-[80%] pointer-events-auto">
-          <div className="rounded-full border border-emerald-200/70 dark:border-emerald-900/50 bg-[#F2FBF4]/85 dark:bg-[#050806]/85 backdrop-blur-xl shadow-lg shadow-emerald-500/5 dark:shadow-black/40">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full pt-4 pb-2 pointer-events-none">
+        <div className="relative mx-auto w-[92%] sm:w-[80%] pointer-events-auto">
+          <div className="rounded-full border border-emerald-500/25 dark:border-emerald-500/25 bg-emerald-500/[0.06] dark:bg-emerald-500/[0.08] backdrop-blur-xl shadow-[0_8px_32px_-12px_rgba(34,197,94,0.25)]">
             <div className="flex items-center justify-between h-14 px-2 sm:px-4 lg:px-5 gap-2">
               {/* Left: mobile burger + logo */}
               <div className="flex items-center gap-2 shrink-0 min-w-0">
