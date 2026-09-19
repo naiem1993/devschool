@@ -43,7 +43,7 @@ export default function ReviewForm() {
 
   if (!open) {
     return (
-      <div className="text-center mt-10">
+      <div className="text-center mt-2">
         <button
           onClick={() => setOpen(true)}
           className="px-6 py-3 rounded-2xl bg-[#22C55E] text-[#050806] font-semibold hover:bg-[#4ADE80] transition"

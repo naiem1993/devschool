@@ -223,6 +223,23 @@ export const footerSettingsSchema = z.object({
  * Validate request body with Zod schema
  * @returns {data, error} - Returns validated data or error object
  */
+/** Reviews section toggle — SiteSettings key='reviews' */
+export const reviewsSettingsSchema = z.object({
+  enabled: z.boolean(),
+})
+
+/** FAQ section content — SiteSettings key='faq' */
+export const faqSettingsSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        q: z.string().trim().min(1).max(300),
+        a: z.string().trim().min(1).max(2000),
+      }),
+    )
+    .max(50),
+})
+
 export function validateBody<T>(schema: z.ZodType<T>, body: unknown): { data: T | null; error: string | null } {
   const result = schema.safeParse(body)
   if (result.success) {

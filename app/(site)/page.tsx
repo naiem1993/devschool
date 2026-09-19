@@ -5,8 +5,7 @@ import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
 import HomeExtras from '@/components/HomeExtras';
-import ReviewForm from '@/components/ReviewForm';
-import { getHeroSettings } from '@/lib/site-settings';
+import { getHeroSettings, getReviewsSettings, getFaqSettings } from '@/lib/site-settings';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
@@ -36,6 +35,9 @@ export default async function HomePage() {
   let latestTutorials: any[] = [];
   let allTutorialsForSearch: any[] = [];
   let reviews: any[] = [];
+  let allCategoryNames: string[] = [];
+  let reviewsCount = 0;
+  let reviewsAvg = 0;
   let languageCount = 0;
   let tutorialCount = 0;
   let quizCount = 0;
@@ -111,9 +113,25 @@ export default async function HomePage() {
     reviews = await prisma.review.findMany({
       where: { status: 'approved' },
       orderBy: { createdAt: 'desc' },
-      take: 6,
+      take: 30,
       select: { id: true, name: true, role: true, stars: true, text: true },
     });
+
+    const reviewAgg = await prisma.review.aggregate({
+      where: { status: 'approved' },
+      _count: { _all: true },
+      _avg: { stars: true },
+    });
+    reviewsCount = reviewAgg._count._all;
+    reviewsAvg = reviewAgg._avg.stars ?? 0;
+
+    // Marquee-র tech list: সব active category-র নাম sortOrder অনুযায়ী
+    const allCats = await prisma.category.findMany({
+      where: { isActive: true },
+      select: { name: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+    allCategoryNames = allCats.map((c) => c.name);
   } catch (error: any) {
     console.error('Database error:', error);
     dbError = true;
@@ -157,6 +175,8 @@ export default async function HomePage() {
   }
 
   const hero = await getHeroSettings()
+  const reviewsSettings = await getReviewsSettings()
+  const faqSettings = await getFaqSettings()
 
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">
@@ -168,12 +188,14 @@ export default async function HomePage() {
       />
 
       {/* === নতুন সেকশনগুলো (marquee / bento / timeline / reviews / FAQ / CTA) === */}
-      <HomeExtras reviews={reviews} />
-
-      {/* === ইউজার রিভিউ ফর্ম === */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <ReviewForm />
-      </section>
+      <HomeExtras
+        reviews={reviews}
+        reviewsCount={reviewsCount}
+        reviewsAvg={reviewsAvg}
+        reviewsEnabled={reviewsSettings.enabled}
+        faqItems={faqSettings.items}
+        techItems={allCategoryNames}
+      />
 
       {/* === লার্নিং ট্র্যাক / রোডম্যাপ সেকশন === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -3,16 +3,24 @@
 import { useState } from 'react'
 import type { HeroContent } from '@/lib/hero-content'
 import type { FooterContent } from '@/lib/footer-content'
+import type { ReviewsSettings } from '@/lib/reviews-content'
+import type { FaqSettings, FaqItem } from '@/lib/faq-content'
 
 export default function SiteSettingsForm({
   initialHero,
   initialFooter,
+  initialReviews,
+  initialFaq,
 }: {
   initialHero: HeroContent
   initialFooter: FooterContent
+  initialReviews: ReviewsSettings
+  initialFaq: FaqSettings
 }) {
   const [hero, setHero] = useState<HeroContent>(initialHero)
   const [footer, setFooter] = useState<FooterContent>(initialFooter)
+  const [reviews, setReviews] = useState<ReviewsSettings>(initialReviews)
+  const [faq, setFaq] = useState<FaqSettings>(initialFaq)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -36,6 +44,25 @@ export default function SiteSettingsForm({
     setSaved(false)
   }
 
+  const updateFaqItem = (i: number, patch: Partial<FaqItem>) => {
+    setFaq((f) => {
+      const next = [...f.items]
+      next[i] = { ...next[i], ...patch }
+      return { items: next }
+    })
+    setSaved(false)
+  }
+
+  const addFaqItem = () => {
+    setFaq((f) => ({ items: [...f.items, { q: '', a: '' }] }))
+    setSaved(false)
+  }
+
+  const removeFaqItem = (i: number) => {
+    setFaq((f) => ({ items: f.items.filter((_, idx) => idx !== i) }))
+    setSaved(false)
+  }
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -45,7 +72,7 @@ export default function SiteSettingsForm({
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hero, footer }),
+        body: JSON.stringify({ hero, footer, reviews, faq }),
       })
       if (res.ok) {
         setSaved(true)
@@ -168,6 +195,115 @@ export default function SiteSettingsForm({
             </Field>
           ))}
         </fieldset>
+      </section>
+
+      {/* ═══ REVIEWS SECTION ═══ */}
+      <section className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Reviews Section</h2>
+
+        <label className="flex items-start gap-3 cursor-pointer select-none rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-[#22C55E] transition">
+          <input
+            type="checkbox"
+            checked={reviews.enabled}
+            onChange={(e) => {
+              setReviews({ enabled: e.target.checked })
+              setSaved(false)
+            }}
+            className="mt-0.5 w-5 h-5 accent-[#22C55E] cursor-pointer"
+          />
+          <span>
+            <span className="block text-sm font-semibold text-slate-900 dark:text-white">
+              হোমপেজে রিভিউ সেকশন দেখাও
+            </span>
+            <span className="block mt-1 text-xs text-slate-500 dark:text-slate-400">
+              বন্ধ করলে "লার্নাররা যা বলছেন" সেকশনটা (রেটিং সারসংক্ষেপ, স্লাইডার ও রিভিউ ফর্মসহ) হোমপেজ থেকে পুরোপুরি লুকিয়ে যাবে। ডেটা ডিলিট হবে না — আবার চালু করলে সব ফিরে আসবে।
+            </span>
+          </span>
+        </label>
+      </section>
+
+      {/* ═══ FAQ SECTION ═══ */}
+      <section className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">FAQ Section</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          এখানে যা থাকবে সেটাই homepage-এর FAQ সেকশনে দেখাবে (এই মুহূর্তে প্রশ্ন-উত্তর)। সব প্রশ্ন মুছে দিলে পুরো FAQ সেকশন homepage থেকে লুকিয়ে যাবে।
+        </p>
+
+        {faq.items.length === 0 && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+            এখনো কোনো প্রশ্ন নেই — নিচের বাটন দিয়ে যোগ করুন।
+          </p>
+        )}
+
+        <div className="space-y-4">
+          {faq.items.map((item, i) => (
+            <div
+              key={i}
+              className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3 bg-slate-50/50 dark:bg-slate-900/40"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  প্রশ্ন {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFaq((f) => ({ items: f.items.filter((_, idx) => idx !== i) }))
+                    setSaved(false)
+                  }}
+                  className="text-xs text-red-600 dark:text-red-400 hover:underline"
+                  aria-label="প্রশ্ন মুছুন"
+                >
+                  🗑️ মুছুন
+                </button>
+              </div>
+
+              <Field label="> প্রশ্ন">
+                <input
+                  className="admin-input"
+                  value={item.q}
+                  onChange={(e) => {
+                    setFaq((f) => {
+                      const items = [...f.items]
+                      items[i] = { ...items[i], q: e.target.value }
+                      return { items }
+                    })
+                    setSaved(false)
+                  }}
+                  placeholder="যেমন: DevSchool কি সত্যিই ফ্রি?"
+                />
+              </Field>
+
+              <Field label="> উত্তর">
+                <textarea
+                  className="admin-input"
+                  rows={3}
+                  value={item.a}
+                  onChange={(e) => {
+                    setFaq((f) => {
+                      const items = [...f.items]
+                      items[i] = { ...items[i], a: e.target.value }
+                      return { items }
+                    })
+                    setSaved(false)
+                  }}
+                  placeholder="যেমন: হ্যাঁ, ১০০% ফ্রি। কোনো কার্ড, ট্রায়াল বা লুকানো চার্জ নেই।"
+                />
+              </Field>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setFaq((f) => ({ items: [...f.items, { q: '', a: '' } as FaqItem] }))
+            setSaved(false)
+          }}
+          className="text-sm font-semibold text-[#15803D] dark:text-[#4ADE80] border border-[#22C55E]/40 rounded-xl px-4 py-2 hover:bg-[#22C55E]/10 transition"
+        >
+          + নতুন প্রশ্ন যোগ করুন
+        </button>
       </section>
 
       {/* ═══ FOOTER ═══ */}

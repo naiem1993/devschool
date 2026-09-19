@@ -4,7 +4,7 @@ import { getSiteSettings } from '@/lib/site-settings'
 export const metadata = { title: 'Site Settings — DevSchool Admin' }
 
 export default async function AdminSettingsPage() {
-  const { hero, footer } = await getSiteSettings()
+  const { hero, footer, reviews, faq } = await getSiteSettings()
 
   return (
     <div>
@@ -13,10 +13,10 @@ export default async function AdminSettingsPage() {
           Site Settings
         </h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          হোমপেজের হিরো সেকশন ও সাইট ফুটারের সব টেক্সট এখান থেকে পরিবর্তন করুন। Save করলে সাথে সাথে লাইভ সাইটে আপডেট হয়ে যাবে।
+          হোমপেজের হিরো সেকশন, সাইট ফুটার, রিভিউ ও FAQ সেকশন এখান থেকে কন্ট্রোল করুন। Save করলে সাথে সাথে লাইভ সাইটে আপডেট হয়ে যাবে।
         </p>
       </div>
-      <SiteSettingsForm initialHero={hero} initialFooter={footer} />
+      <SiteSettingsForm initialHero={hero} initialFooter={footer} initialReviews={reviews} initialFaq={faq} />
     </div>
   )
 }

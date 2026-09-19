@@ -7,16 +7,19 @@
 :root {
   --background: #f2fbf4;   /* light  = neon green + white  */
   --foreground: #0f172a;
+  --card: #ffffff;         /* light card surface = pure white */
 }
 
 .dark {
   --background: #050806;   /* dark   = neon green + black  */
   --foreground: #e6f4ea;
+  --card: #0a120d;         /* dark card surface = neon green + black tint (brand match) */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -25,6 +28,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ============================================
+   Option C — brand card remap
+   সব `dark:bg-slate-900` card surface কে brand card color-এ আনি
+   (একটা rule → ৫৬+ জায়গায় apply, কোনো file touch ছাড়াই)
+   ভবিষ্যতে রঙ বদলাতে শুধু --card variable বদলান
+   ============================================ */
+.dark .dark\:bg-slate-900 {
+  background-color: var(--card);
 }
 
 /* ============================================
