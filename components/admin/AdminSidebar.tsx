@@ -12,6 +12,7 @@ const links = [
   { href: '/admin/references', label: 'References', icon: '⌘' },
   { href: '/admin/sponsors', label: 'Sponsors', icon: '★' },
   { href: '/admin/donations', label: 'Donations', icon: '♥' },
+  { href: '/admin/settings', label: 'Site Settings', icon: '⚙' },
 ]
 
 export default function AdminSidebar() {

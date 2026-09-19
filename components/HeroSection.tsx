@@ -3,12 +3,13 @@
 import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
+import { DEFAULT_HERO, type HeroContent } from '@/lib/hero-content'
 
 const transition: Transition = { duration: 0.6, ease: 'easeOut' }
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition }
+  visible: { opacity: 1, y: 0, transition },
 }
 
 const staggerContainer = {
@@ -17,12 +18,14 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 }
 
 interface HeroSectionProps {
+  /** Admin → Site Settings থেকে আসা content। না পেলে default। */
+  hero?: HeroContent
   tutorials: any[]
   stats: {
     languageCount: number
@@ -32,7 +35,14 @@ interface HeroSectionProps {
   }
 }
 
-export default function HeroSection({ tutorials, stats }: HeroSectionProps) {
+export default function HeroSection({ hero = DEFAULT_HERO, tutorials, stats }: HeroSectionProps) {
+  const statValues = [
+    `${stats.languageCount}+`,
+    `${stats.tutorialCount}+`,
+    `${stats.quizCount}+`,
+    `${stats.challengeCount}+`,
+  ]
+
   return (
     <motion.section
       initial="hidden"
@@ -47,16 +57,16 @@ export default function HeroSection({ tutorials, stats }: HeroSectionProps) {
           variants={fadeUp}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#15803D] dark:text-[#4ADE80] text-xs font-semibold mb-6"
         >
-          ✨ আপনামার প্োরোগ্রামিং ক্যারিয়া গড়া বিশ্বস্তু প্ল্যাটফর্ম
+          {hero.badge}
         </motion.div>
 
         <motion.h1
           variants={fadeUp}
           className="text-4xl sm:text-6xl font-black tracking-tight leading-tight"
         >
-          আধুনিক প্রযুক্তি শিখুন, <br className="hidden sm:inline" />
+          {hero.heading} <br className="hidden sm:inline" />
           <span className="bg-gradient-to-r from-[#16A34A] via-[#22C55E] to-[#15803D] dark:from-[#86EFAC] dark:via-[#4ADE80] dark:to-[#22C55E] bg-clip-text text-transparent">
-            নিজের গতিকে মাস্টার হন
+            {hero.headingHighlight}
           </span>
         </motion.h1>
 
@@ -64,11 +74,11 @@ export default function HeroSection({ tutorials, stats }: HeroSectionProps) {
           variants={fadeUp}
           className="mt-4 text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal"
         >
-          ইনটরঅ্যাকটিভ টিউটোরিয়াল, রিয়াল-ওয়ার্ল্ড প্রজেক্ট, কোড চ্যালেঞ্জ ও কুইজের মাধ্যমে হাতে-কলমে কোডিং শিখুন।
+          {hero.subtitle}
         </motion.p>
 
         <motion.div variants={fadeUp}>
-          <HomeSearch tutorials={tutorials} />
+          <HomeSearch tutorials={tutorials} placeholder={hero.searchPlaceholder} />
         </motion.div>
 
         <motion.div
@@ -76,16 +86,16 @@ export default function HeroSection({ tutorials, stats }: HeroSectionProps) {
           className="mt-8 flex flex-wrap justify-center gap-4"
         >
           <Link
-            href="/categories"
+            href={hero.cta1Href}
             className="px-7 py-3.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#04140a] rounded-2xl font-bold shadow-lg shadow-[#22C55E]/30 hover:scale-105 transition-all duration-200"
           >
-            🚀 টিউটোরিয়াল ব্রাউজ করুন
+            {hero.cta1Label}
           </Link>
           <Link
-            href="/challenges"
+            href={hero.cta2Href}
             className="px-7 py-3.5 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-2xl font-bold border border-slate-200 dark:border-slate-700 hover:scale-105 transition-all duration-200"
           >
-            ⚡ কোড চ্যালেঞ্জ ট্রাই করুন
+            {hero.cta2Label}
           </Link>
         </motion.div>
 
@@ -94,20 +104,20 @@ export default function HeroSection({ tutorials, stats }: HeroSectionProps) {
           className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border-t border-slate-200 dark:border-slate-800/80 pt-8"
         >
           <div className="bg-white dark:bg-slate-900/50 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
-            <div className="text-3xl font-extrabold text-[#16A34A] dark:text-[#4ADE80]">{stats.languageCount}+</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">প্রোগ্রামিং ভাষা ও তেকনোলজি</div>
+            <div className="text-3xl font-extrabold text-[#16A34A] dark:text-[#4ADE80]">{statValues[0]}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{hero.statLabels[0]}</div>
           </div>
           <div className="bg-white dark:bg-slate-900/50 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
-            <div className="text-3xl font-extrabold text-[#15803D] dark:text-[#34D399]">{stats.tutorialCount}+</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">ডিটেইলড টিউটোরিয়াল</div>
+            <div className="text-3xl font-extrabold text-[#15803D] dark:text-[#34D399]">{statValues[1]}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{hero.statLabels[1]}</div>
           </div>
           <div className="bg-white dark:bg-slate-900/50 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
-            <div className="text-3xl font-extrabold text-[#22C55E] dark:text-[#22C55E]">{stats.quizCount}+</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">ইনটরঅ্যাকটিভ কুইজ</div>
+            <div className="text-3xl font-extrabold text-[#22C55E] dark:text-[#22C55E]">{statValues[2]}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{hero.statLabels[2]}</div>
           </div>
           <div className="bg-white dark:bg-slate-900/50 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
-            <div className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.challengeCount}+</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">প্র্যাকটিস চ্যালেঞ্জ</div>
+            <div className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{statValues[3]}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{hero.statLabels[3]}</div>
           </div>
         </motion.div>
       </div>

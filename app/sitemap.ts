@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import prisma from '@/lib/prisma'
+import { SITE_URL } from '@/lib/site-url'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devschool.com'
+
 
 /**
  * Dynamic sitemap — static routes + DB থেকে সব category, tutorial,

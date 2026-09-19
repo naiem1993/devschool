@@ -2,8 +2,8 @@
 
 **Last Updated:** 2026-09-18
 **Updated By:** MCP AI
-**Current Phase:** Nested Structure — **N4 (Admin Panel)** — শুরু করা দরকার
-**Overall Progress:** ▰▰▰▰▰▰▱▱▱▱ 55%
+**Current Phase:** Nested Structure — **N5 (Cleanup + SEO)** ✅ প্রায় শেষ — শুধু চোখে browser verify বাকি
+**Overall Progress:** ▰▰▰▰▰▰▰▱▱▱ 68%
 
 ## 🚦 Legend
 ✅ Done  |  🔄 In Progress  |  ⏳ Not Started  |  ⚠️ Blocked  |  ❌ Cancelled
@@ -23,10 +23,10 @@
 | 1 | Foundation Audit | ✅ | 100% | schema + migrations verified |
 | 2 | Repo Hygiene | ⏳ | 0% | — |
 | 3 | Security Audit | ⏳ | 0% | — |
-| 4 | Core Features | 🔄 | 75% | public site nested — admin বাকি |
-| 5 | Admin Panel | 🔄 | 30% | পুরনো schema — N4-এ rewrite দরকার |
+| 4 | Core Features | ✅ | 100% | public + admin — দুটোই nested, কাজ করছে |
+| 5 | Admin Panel | ✅ | 100% | N4-এ সম্পূর্ণ rewrite, tsc ০ error |
 | 6 | UX Polish | ⏳ | 0% | — |
-| 7 | SEO & Perf | ⏳ | 0% | — |
+| 7 | SEO & Perf | 🔄 | 60% | ISR + sitemap + robots + metadataBase ✅ |
 | 8 | Testing | ⏳ | 0% | — |
 | 9 | Deploy & Launch | ⏳ | 0% | — |
 
@@ -41,9 +41,9 @@
 | N1 | Schema + Reset script | ✅ **DONE** | migration চালানো, DB clean |
 | N2 | Public pages | ✅ **DONE** | `[chapter]` rewrite, `[lesson]` নতুন, tryit pages |
 | N3 | 3-level Sidebar | ✅ **DONE** | LessonSidebar সম্পূর্ণ rewrite |
-| **N4** | **Admin (Lesson + Group)** | 🔴 **PENDING** | এখান থেকে শুরু করবে |
-| N5 | Cleanup + SEO | ⏳ | redirect নেই |
-| N6 | Content writing | ⏳ | ইউজারের হাতে |
+| N4 | Admin (Lesson + Group) | ✅ **DONE** | tsc ০ error, build সফল |
+| **N5** | **Cleanup + SEO** | 🔄 **IN PROGRESS** | ISR + SEO ✅, redirect verify ✅ (লাগবে না) |
+| N6 | Content writing | ⏳ | ইউজারের হাতে — chapter-01.md ready |
 
 ---
 
@@ -134,10 +134,17 @@
 - [x] Tutorials [slug]/[chapter]/[lesson] → SSG+ISR (86400s safety net)
 - [x] Security verify: কোনো user data static-এ নেই
 
-### বাকি
-- [ ] পুরনো URL redirect
-- [ ] SEO metadata audit
-- [ ] sitemap verify
+### SEO fix (✅ DONE)
+- [x] `app/sitemap.ts` — duplicate `SITE_URL` সরিয়ে `lib/site-url.ts` থেকে import (single source)
+- [x] `app/layout.tsx` — `metadataBase: new URL(SITE_URL)` যোগ (canonical/OG absolute URL)
+- [x] `robots.ts` verify — admin/api/progress/search disallow ঠিক আছে
+- [x] Tutorial [slug]/[chapter]/[lesson] page-এ canonical + metadata আছে
+
+### Redirect + Build verify (✅ DONE)
+- [x] Redirect verify — `NESTED-STRUCTURE-PLAN.md` line 192 অনুযায়ী **redirects() যোগ করা হবে না** (D7: site live নয়)
+- [x] `npx tsc --noEmit` → **০ error**
+- [x] `npm run build` → **সফল** (৩৫ static page, tutorial pages SSG, 8.8s)
+- [x] N5 **সম্পূর্ণ** ✅ — শুধু চোখে browser verify (optional)
 
 ---
 
@@ -160,6 +167,7 @@
 
 | Date | Phase | Action | Result |
 |------|-------|--------|--------|
+| 09-18 | N5 | **N5 সম্পূর্ণ** — tsc ০ error + build সফল (৩৫ static page) + redirect verify (লাগবে না, D7) | ✅ |
 | 09-18 | N5 | ISR + on-demand revalidate (৮ admin route) | ✅ instant update |
 | 09-18 | N5 | Home + site layout ISR → ২৮ public page static | ✅ |
 | 09-18 | N4 | Admin panel সম্পূর্ণ — tsc ০ error, build সফল | ✅ |
@@ -176,11 +184,15 @@
 
 ## ⏭️ Next Action
 
-**N4 ✅ শেষ, N5-এর ISR অংশও ✅ শেষ। বাকি N5 cleanup:**
-1. পুরনো URL redirect verify (D7 অনুযায়ী site live নয়, তাই redirect লাগতেও পারে না)
-2. SEO metadata audit
-3. sitemap verify
-4. তারপর N6 (content writing — ইউজারের হাতে)
+**N5 ✅ সম্পূর্ণ (tsc ০ error, build সফল, SEO + redirect verify)। পরের কাজ N6 (content writing):**
+
+1. ✅ `content/html/chapter-01.md` তৈরি (৩ lesson) — **user verify বাকি**
+2. User confirm দিলে → `scripts/seed-html-course.ts` বানানো হবে (`.md` পড়ে DB-তে insert)
+3. Seed → Chapter 1 DB-তে → public site-এ live verify
+4. ঠিক থাকলে Chapter 2 (এভাবে ধীরে ধীরে ১৫টা chapter)
+
+**⚠️ Slow workflow (N6 locked):** এক chapter শেষ → user verify → পরের chapter। একবারে সব না।
+**⚠️ W3Schools style, বাংলায়। Master prompt:** `HTML-CHAPTER-WRITER-PROMPT.md`
 
 **⚠️ কোনো প্রশ্ন করার দরকার নেই — সব decision `NEXT-AI-HANDOFF.md`-এ locked।**
 

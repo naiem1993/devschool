@@ -1,0 +1,22 @@
+import SiteSettingsForm from '@/components/admin/SiteSettingsForm'
+import { getSiteSettings } from '@/lib/site-settings'
+
+export const metadata = { title: 'Site Settings — DevSchool Admin' }
+
+export default async function AdminSettingsPage() {
+  const { hero, footer } = await getSiteSettings()
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Site Settings
+        </h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          হোমপেজের হিরো সেকশন ও সাইট ফুটারের সব টেক্সট এখান থেকে পরিবর্তন করুন। Save করলে সাথে সাথে লাইভ সাইটে আপডেট হয়ে যাবে।
+        </p>
+      </div>
+      <SiteSettingsForm initialHero={hero} initialFooter={footer} />
+    </div>
+  )
+}

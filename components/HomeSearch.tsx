@@ -39,7 +39,12 @@ type SearchResult = {
  * The `tutorials` prop is kept for backwards-compat / SSR fallback,
  * but the actual search is performed server-side with FTS ranking.
  */
-export default function HomeSearch(_props: { tutorials?: unknown[] } = {}) {
+export default function HomeSearch(
+  { placeholder = 'কী শিখতে চান? (যেমন: JavaScript, Python, React...)' }: {
+    tutorials?: unknown[]
+    placeholder?: string
+  } = {}
+) {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -81,7 +86,7 @@ export default function HomeSearch(_props: { tutorials?: unknown[] } = {}) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="কী শিখতে চান? (যেমন: JavaScript, Python, React...)"
+          placeholder={placeholder}
           className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
         {query && (

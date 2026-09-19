@@ -4,6 +4,7 @@ import Link from 'next/link';
 import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
+import { getHeroSettings } from '@/lib/site-settings';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
@@ -145,10 +146,13 @@ export default async function HomePage() {
     );
   }
 
+  const hero = await getHeroSettings()
+
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">
       {/* === হিরো সেকশন === */}
       <HeroSection
+        hero={hero}
         tutorials={allTutorialsForSearch}
         stats={{ languageCount, tutorialCount, quizCount, challengeCount }}
       />

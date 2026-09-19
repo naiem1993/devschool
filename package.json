@@ -21,7 +21,12 @@
     "fix:colors": "node scripts/fix-colors.mjs",
     "typecheck": "tsc --noEmit",
     "tc": "npx tsc --noEmit > tsc-out.txt 2>&1",
-    "tscout": "tsc --noEmit > tsc-out.txt 2>&1 & exit 0"
+    "tscout": "tsc --noEmit > tsc-out.txt 2>&1 & exit 0",
+    "seed:html": "tsx scripts/seed-html-course.ts",
+    "db:inspect": "tsx scripts/db-inspect-tutorial.ts",
+    "diagnose:db": "tsx scripts/diagnose-db.ts",
+    "fix:searchvec": "tsx scripts/fix-search-vec-triggers.ts",
+    "verify:html-seed": "tsx scripts/verify-html-seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed-admin.ts"

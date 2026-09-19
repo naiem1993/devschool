@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import CategoryNav from '@/components/CategoryNav'
 import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
+import { getFooterSettings } from '@/lib/site-settings'
 import prisma from '@/lib/prisma'
 
 // ISR: ৫ মিনিট cache। Categories + sponsors ঘনঘন বদলায় না —
@@ -56,6 +57,8 @@ export default async function SiteLayout({
     sponsors = []
   }
 
+  const footer = await getFooterSettings()
+
   return (
     <>
       <Header />
@@ -64,7 +67,7 @@ export default async function SiteLayout({
         <main className="flex-1">{children}</main>
       </ErrorBoundary>
       <SponsorRail sponsors={sponsors} />
-      <Footer />
+      <Footer footer={footer} />
     </>
   )
 }

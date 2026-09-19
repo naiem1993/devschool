@@ -177,6 +177,30 @@ export const idParamSchema = z.object({
   id: z.string().cuid({ message: 'Valid ID format required' }),
 })
 
+// ─── Site Settings Validators ─────────────────────────────────────────────────
+
+/** Hero section content — SiteSettings key='hero' */
+export const heroSettingsSchema = z.object({
+  badge: z.string().min(1).max(200),
+  heading: z.string().min(1).max(200),
+  headingHighlight: z.string().min(1).max(200),
+  subtitle: z.string().min(1).max(600),
+  searchPlaceholder: z.string().min(1).max(200),
+  cta1Label: z.string().min(1).max(100),
+  cta1Href: z.string().min(1).max(200),
+  cta2Label: z.string().min(1).max(100),
+  cta2Href: z.string().min(1).max(200),
+  statLabels: z.array(z.string().min(1).max(100)).length(4),
+})
+
+/** Footer content — SiteSettings key='footer' */
+export const footerSettingsSchema = z.object({
+  copyright: z.string().min(1).max(300),
+  donatePrompt: z.string().min(1).max(200),
+  donateLinkLabel: z.string().min(1).max(100),
+  donateLinkHref: z.string().min(1).max(200),
+})
+
 // ─── Helper Functions ──────────────────────────────────────────────────────────
 
 /**

@@ -20,9 +20,9 @@ Plan document: `NESTED-STRUCTURE-PLAN.md` (v3 FINAL — approved)।
 | **N1** | Schema + Reset script | ✅ **DONE** — migration চালানো হয়েছে, DB clean |
 | **N2** | Public pages (chapter + lesson) | ✅ **DONE** — সব public page rewrite |
 | **N3** | 3-level Sidebar | ✅ **DONE** — LessonSidebar সম্পূর্ণ rewrite |
-| **N4** | Admin (Lesson + Group manager) | 🔴 **PENDING** — এখান থেকেই শুরু করবে |
-| **N5** | Cleanup + SEO | ⏳ Pending |
-| **N6** | Content writing | ⏳ ইউজারের হাতে |
+| **N4** | Admin (Lesson + Group manager) | ✅ **DONE** — `tsc --noEmit` ০ error, `npm run build` সফল, chapter/lesson/group CRUD কাজ করে |
+| **N5** | Cleanup + SEO | 🔄 **IN PROGRESS** — ISR + revalidate ✅, SEO ✅, redirect verify বাকি |
+| **N6** | Content writing | ⏳ ইউজারের হাতে (Option খ — hybrid, slow workflow) |
 
 ---
 
@@ -139,9 +139,9 @@ model Lesson {
 - `scripts/merge-html-lessons.ts`
 - `scripts/inspect-tutorials.ts`
 
-### ⚠️ সবচেয়ে জরুরি — এখনো যা বাকি
+### 📋 N4-এ যা যা fix হয়েছে (Reference — সব ✅)
 
-`npx tsc --noEmit` চালালে **~৪৪টা error** দেখাবে। সব error এই ফাইলগুলোতে:
+N4-এর আগে `npx tsc --noEmit` চালালে **~৪৪টা error** দেখাত। সব error ছিল এই ফাইলগুলোতে (এখন সব fix হয়েছে):
 
 | File | Errors | কী করতে হবে |
 |---|---|---|
@@ -159,11 +159,21 @@ model Lesson {
 
 **✅ N4 শেষ — সব error fix হয়েছে।** Public site (home, tutorial, chapter, lesson, sidebar) এবং admin panel — দুটোই এখন কাজ করবে।
 
-**পরের কাজ (N5 — Cleanup + SEO):**
-1. `npx tsc --noEmit` আবার চালাও (নিশ্চিত হও ০ error)
-2. `npm run build` চালাও — build সফল কিনা দেখো
-3. পুরনো URL redirect verify করো
-4. SEO metadata + sitemap verify করো
+**N5-এ যা যা হয়ে গেছে (✅):**
+1. `npx tsc --noEmit` → **০ error** ✅
+2. `npm run build` → **সফল** ✅
+3. ISR + on-demand revalidation (`lib/revalidate-tutorial.ts`, ৮ admin route থেকে call) ✅
+4. SEO: sitemap single source (`lib/site-url.ts`) + `metadataBase` + robots verify ✅
+
+**N5-এ যা বাকি (পরের AI-এর কাজ):**
+1. পুরনো URL redirect verify করো — **তবে D7 অনুযায়ী site live নয়, তাই সম্ভবত লাগবে না**
+2. Final SEO metadata audit (chapter/lesson page-এর canonical একবার চোখে দেখা)
+3. Final `npm run build` + browser-এ সব public page চোখে verify
+
+**তারপর N6 — Content writing:**
+- `content/html/chapter-01.md` তৈরি হয়েছে (৩ lesson)
+- User-এর confirm-এর পর seed script (`scripts/seed-html-course.ts`) বানাতে হবে
+- **Slow workflow:** এক chapter শেষ → user verify → পরের chapter (W3Schools style, বাংলা)
 
 ---
 

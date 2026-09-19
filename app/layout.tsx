@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন",
   description: "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
+  metadataBase: new URL(SITE_URL),
   // Icon served automatically by app/icon.svg (Next.js App Router file convention)
 };
 
