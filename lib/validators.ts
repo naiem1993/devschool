@@ -212,6 +212,29 @@ export const heroSettingsSchema = z.object({
 /** Footer content — SiteSettings key='footer' */
 export const footerSettingsSchema = z.object({
   copyright: z.string().min(1).max(300),
+  /** Social icon list — empty array দিলে icon block hide হবে */
+  socialLinks: z
+    .array(
+      z.object({
+        platform: z.enum([
+          'github',
+          'twitter',
+          'x',
+          'youtube',
+          'discord',
+          'linkedin',
+          'facebook',
+          'instagram',
+          'tiktok',
+          'telegram',
+        ]),
+        url: z.string().url().max(500),
+      }),
+    )
+    .max(12)
+    .optional(),
+  /** "Made with 💚 {creditText}" — empty হলে শুধু heart দেখাবে */
+  creditText: z.string().max(80).optional(),
   donatePrompt: z.string().min(1).max(200),
   donateLinkLabel: z.string().min(1).max(100),
   donateLinkHref: z.string().min(1).max(200),

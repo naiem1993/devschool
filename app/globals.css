@@ -48,75 +48,22 @@ body {
 }
 
 /* ============================================
-   HOME v3 — aurora / particles / marquee / reveal / accordion
-   (header untouched — শুধু হোম পেজের নতুন সেকশনের জন্য)
+   Footer watermark (Design 05 — Two-tier + Watermark)
+   Dark  = original subtle outline (white 8%, no glow)
+   Light = visible outline (slate 22% + soft green tint + glow)
    ============================================ */
-
-/* --- aurora orbs --- */
-@keyframes auroraDrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(70px, -50px) scale(1.16); }
-  66%      { transform: translate(-50px, 60px) scale(0.94); }
-}
-.aurora-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(100px);
-  pointer-events: none;
-  animation: auroraDrift 24s ease-in-out infinite;
-}
-.aurora-orb-1 { width: 560px; height: 560px; background: #22C55E; top: -160px; left: -90px; opacity: .12; }
-.aurora-orb-2 { width: 480px; height: 480px; background: #0ea5e9; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
-.aurora-orb-3 { width: 440px; height: 440px; background: #a855f7; bottom: -160px; left: 32%; opacity: .06; animation-delay: -14s; }
-.dark .aurora-orb-1 { opacity: .30; }
-.dark .aurora-orb-2 { opacity: .26; }
-.dark .aurora-orb-3 { opacity: .16; }
-
-/* --- marquee --- */
-@keyframes marqueeSlide { to { transform: translateX(-50%); } }
-.marquee-track { display: flex; gap: 2.5rem; width: max-content; animation: marqueeSlide 30s linear infinite; }
-.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-.marquee-fade {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-}
-
-/* --- animated gradient border --- */
-@keyframes gradientSpin { to { background-position: 300% 0; } }
-.gradient-border { position: relative; }
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(120deg, #22C55E, #0ea5e9, #a855f7, #22C55E);
-  background-size: 300% 300%;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: gradientSpin 9s linear infinite;
+.ds-footer-watermark {
+  color: transparent;
+  -webkit-text-stroke-width: 1.2px;
+  -webkit-text-stroke-color: rgba(15, 23, 42, 0.22);
+  text-shadow: 0 0 40px rgba(34, 197, 94, 0.10);
+  user-select: none;
   pointer-events: none;
 }
-
-/* --- reveal on scroll (progressive enhancement) --- */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .75s cubic-bezier(.22,1,.36,1), transform .75s cubic-bezier(.22,1,.36,1);
-}
-.reveal.is-visible { opacity: 1; transform: none; }
-
-/* --- accordion --- */
-.acc-body { max-height: 0; overflow: hidden; transition: max-height .38s cubic-bezier(.4,0,.2,1); }
-.acc-open .acc-body { max-height: 260px; }
-.acc-icon { transition: transform .25s; }
-.acc-open .acc-icon { transform: rotate(45deg); }
-
-/* --- reduced motion — সব animation বন্ধ --- */
-@media (prefers-reduced-motion: reduce) {
-  .aurora-orb, .marquee-track, .gradient-border::before, .ds-logo-symbol { animation: none !important; }
-  .reveal { opacity: 1 !important; transform: none !important; }
+.dark .ds-footer-watermark {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.08);
+  text-shadow: none;
 }
 
 /* ============================================
@@ -149,8 +96,8 @@ body {
 .marquee-track { display: flex; gap: 2.5rem; width: max-content; animation: marqueeSlide 30s linear infinite; }
 .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
 .marquee-fade {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
 /* --- animated gradient border --- */
@@ -166,6 +113,7 @@ body {
   background-size: 300% 300%;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
   animation: gradientSpin 9s linear infinite;
   pointer-events: none;
@@ -190,174 +138,3 @@ body {
   .aurora-orb, .marquee-track, .gradient-border::before, .ds-logo-symbol { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
-
-/* ============================================
-   DevSchool Logo — draw & erase animation on > symbol
-   ============================================ */
-@keyframes ds-logo-draw-erase {
-  0%   { stroke-dashoffset: 40; }
-  45%  { stroke-dashoffset: 0; }
-  60%  { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -40; }
-}
-
-.ds-logo-symbol {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: ds-logo-draw-erase 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ============================================
-   ADMIN TERMINAL — hacker/cyberpunk theme
-   ============================================ */
-
-/* Simple + dark-mode friendly admin UI (login page keeps its own hacker styles) */
-.admin-input {
-  width: 100%;
-  padding: 0.55rem 0.75rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.dark .admin-input {
-  background: #0f151c;
-  border-color: #1e293b;
-  color: #e6f4ea;
-}
-.admin-input::placeholder {
-  color: #94a3b8;
-}
-.admin-input:focus {
-  outline: none;
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
-}
-
-.admin-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #334155;
-  margin-bottom: 0.35rem;
-}
-.dark .admin-label {
-  color: #cbd5e1;
-}
-
-.admin-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 1rem;
-  background: #22c55e;
-  color: #06231a;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
-  transition: background 0.15s, box-shadow 0.15s;
-  cursor: pointer;
-  border: none;
-}
-.admin-btn:hover {
-  background: #16a34a;
-  color: #ffffff;
-}
-.admin-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid #e2e8f0;
-  color: #475569;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
-  transition: all 0.15s;
-  cursor: pointer;
-}
-.dark .admin-btn-ghost {
-  border-color: #1e293b;
-  color: #cbd5e1;
-}
-.admin-btn-ghost:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-}
-.dark .admin-btn-ghost:hover {
-  background: #0f151c;
-  border-color: #334155;
-}
-
-.admin-error {
-  color: #dc2626;
-  border: 1px solid #fecaca;
-  background: #fef2f2;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
-}
-.dark .admin-error {
-  color: #fca5a5;
-  border-color: #7f1d1d;
-  background: rgba(127, 29, 29, 0.2);
-}
-
-/* ============================================
-   HACKED MODE animations
-   ============================================ */
-@keyframes redflash {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.45; }
-}
-
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-@keyframes glitch {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(2px, -1px); }
-  60% { transform: translate(-1px, 2px); }
-  80% { transform: translate(1px, -2px); }
-}
-
-.glitch {
-  animation: glitch 0.3s infinite;
-}
-
-
-/* ============================================
-   HACKED MODE animations
-   ============================================ */
-@keyframes redflash {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.45; }
-}
-
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-@keyframes glitch {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(2px, -1px); }
-  60% { transform: translate(-1px, 2px); }
-  80% { transform: translate(1px, -2px); }
-}
-
-.glitch {
-  animation: glitch 0.3s infinite;
-}
-

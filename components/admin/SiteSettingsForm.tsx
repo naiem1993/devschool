@@ -342,6 +342,7 @@ export default function SiteSettingsForm({
               className="admin-input"
               value={footer.donateLinkHref}
               onChange={(e) => updateFooter({ donateLinkHref: e.target.value })}
+                data-href-anchor="1"
               placeholder="/donate"
               required
             />
