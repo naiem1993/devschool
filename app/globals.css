@@ -133,8 +133,145 @@ body {
 .acc-icon { transition: transform .25s; }
 .acc-open .acc-icon { transform: rotate(45deg); }
 
+/* ============================================
+   Logo draw-and-erase animation (ds-logo-symbol)
+   `>` symbol আঁকা → hold → মুছে যাওয়া (5s loop)
+   path: M46,42 L56,50 L46,58 — দুই সেগমেন্ট × ~12.8 ≈ total 26
+   light ও dark দুই mode-এই কাজ করে (দুই path-ই .ds-logo-symbol)
+   ============================================ */
+@keyframes dsLogoDrawErase {
+  0%   { stroke-dashoffset: 26; }   /* লুকানো */
+  40%  { stroke-dashoffset: 0;  }   /* পুরো আঁকা */
+  60%  { stroke-dashoffset: 0;  }   /* hold */
+  100% { stroke-dashoffset: -26; }  /* মুছে ফেলা (একই দিকে) */
+}
+.ds-logo-symbol {
+  stroke-dasharray: 26;
+  animation: dsLogoDrawErase 5s ease-in-out infinite;
+}
+
 /* --- reduced motion — সব animation বন্ধ --- */
 @media (prefers-reduced-motion: reduce) {
   .aurora-orb, .marquee-track, .gradient-border::before, .ds-logo-symbol { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ============================================
+   ADMIN FORM COMPONENTS
+   `admin-label`, `admin-input`, `admin-btn`,
+   `admin-btn-ghost`, `admin-error`
+   ⚠️ এগুলো আগে কোথাও define করা ছিল না — তাই admin form গুলো
+   unstyled (raw input) দেখাচ্ছিল। এখন DevSchool brand
+   (neon green #22C55E + dark) অনুযায়ী define করা হলো।
+   ============================================ */
+
+/* --- label (terminal-style, mono) --- */
+.admin-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: #15803d;               /* light mode green */
+}
+.dark .admin-label {
+  color: #4ade80;               /* dark mode bright green */
+}
+
+/* --- input / textarea / select --- */
+.admin-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.admin-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+}
+.dark .admin-input {
+  background: #0a120d;          /* brand dark card surface */
+  color: #e6f4ea;
+  border-color: rgba(34, 197, 94, 0.28);
+}
+.dark .admin-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+}
+.admin-input::placeholder {
+  color: rgba(100, 116, 139, 0.7);
+}
+
+/* --- primary button (solid neon green) --- */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 0.5rem;
+  background: #22c55e;
+  color: #04120a;
+  border: 1px solid #22c55e;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+.admin-btn:hover {
+  filter: brightness(1.08);
+}
+.admin-btn:active {
+  transform: translateY(1px);
+}
+.admin-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* --- ghost / secondary button (outline) --- */
+.admin-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.admin-btn-ghost:hover {
+  background: rgba(34, 197, 94, 0.10);
+  border-color: #22c55e;
+}
+
+/* --- error message box --- */
+.admin-error {
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  border-radius: 0.5rem;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.dark .admin-error {
+  color: #fecaca;
 }
