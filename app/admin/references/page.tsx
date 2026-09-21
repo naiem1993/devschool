@@ -9,7 +9,7 @@ export default async function ReferencesPage() {
   const items = await prisma.reference.findMany({
     orderBy: { createdAt: 'desc' },
     take: 100,
-    include: { category: { select: { name: true } } },
+    include: { tutorial: { select: { title: true } } },
   })
 
   return (
@@ -39,7 +39,7 @@ export default async function ReferencesPage() {
             {items.map((it) => (
               <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
                 <td className="px-4 py-2 text-[#22C55E]">{it.title}</td>
-                <td className="px-4 py-2 text-cyan-400/70">{it.category.name}</td>
+                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.title}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it.language || '—'}</td>
                 <td className="px-4 py-2 text-right space-x-3">
                   <Link href={`/admin/references/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>

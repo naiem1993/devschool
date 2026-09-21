@@ -7,7 +7,6 @@ import prisma from '@/lib/prisma'
  * Query params:
  *   q          — search term (min 2 chars)
  *   type       — 'all' | 'tutorials' | 'references'  (default: all)
- *   category   — category slug filter (optional)
  *   difficulty — tutorial difficulty filter (optional)
  *   language   — reference language filter (optional)
  *   limit      — results per page (1..30, default 12)
@@ -27,7 +26,6 @@ export async function GET(request: NextRequest) {
 
   const q = (url.searchParams.get('q') || '').trim()
   const type = (url.searchParams.get('type') || 'all').toLowerCase()
-  const category = (url.searchParams.get('category') || '').trim()
   const difficulty = (url.searchParams.get('difficulty') || '').trim()
   const language = (url.searchParams.get('language') || '').trim()
   const limit = Math.min(Math.max(Number(url.searchParams.get('limit') || 12), 1), 30)
@@ -61,8 +59,6 @@ export async function GET(request: NextRequest) {
           slug: string
           description: string | null
           difficulty: string
-          categoryName: string | null
-          categorySlug: string | null
           rank: number
         }>
       >`
@@ -72,14 +68,10 @@ export async function GET(request: NextRequest) {
           t.slug,
           t.description,
           t.difficulty,
-          c.name AS "categoryName",
-          c.slug AS "categorySlug",
           ts_rank(t."searchVec", websearch_to_tsquery('simple', ${q})) AS rank
         FROM "Tutorial" t
-        LEFT JOIN "Category" c ON c.id = t."categoryId"
         WHERE t."isPublished" = true
           AND t."searchVec" @@ websearch_to_tsquery('simple', ${q})
-          AND (${category} = '' OR c.slug = ${category})
           AND (${difficulty} = '' OR t.difficulty = ${difficulty})
         ORDER BY rank DESC, t."viewCount" DESC
         LIMIT ${limit} OFFSET ${offset}
@@ -94,8 +86,6 @@ export async function GET(request: NextRequest) {
           slug: string
           syntax: string | null
           language: string | null
-          categoryName: string | null
-          categorySlug: string | null
           rank: number
         }>
       >`
@@ -105,13 +95,9 @@ export async function GET(request: NextRequest) {
           r.slug,
           r.syntax,
           r.language,
-          c.name AS "categoryName",
-          c.slug AS "categorySlug",
           ts_rank(r."searchVec", websearch_to_tsquery('simple', ${q})) AS rank
         FROM "Reference" r
-        LEFT JOIN "Category" c ON c.id = r."categoryId"
         WHERE r."searchVec" @@ websearch_to_tsquery('simple', ${q})
-          AND (${category} = '' OR c.slug = ${category})
           AND (${language} = '' OR r.language = ${language})
         ORDER BY rank DESC, r.title ASC
         LIMIT ${limit} OFFSET ${offset}
@@ -141,7 +127,6 @@ export async function GET(request: NextRequest) {
                     { description: { contains: q, mode: 'insensitive' } },
                   ],
                 },
-                category ? { category: { slug: category } } : {},
                 difficulty ? { difficulty } : {},
               ],
             },
@@ -151,7 +136,6 @@ export async function GET(request: NextRequest) {
               slug: true,
               description: true,
               difficulty: true,
-              category: { select: { name: true, slug: true } },
             },
             take: limit,
             skip: offset,
@@ -164,8 +148,6 @@ export async function GET(request: NextRequest) {
         type,
         tutorials: tutorials.map((t) => ({
           ...t,
-          categoryName: t.category?.name ?? null,
-          categorySlug: t.category?.slug ?? null,
           rank: 0,
         })),
         references: [],

@@ -9,52 +9,32 @@ datasource db {
 }
 
 // ==========================================
-//  CATEGORY (বিষয়)
-// ==========================================
-model Category {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  slug        String    @unique
-  icon        String?
-  description String?
-  isActive    Boolean   @default(true)
-  sortOrder   Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  tutorials   Tutorial[]
-  references  Reference[]
-
-  @@index([slug])
-  @@index([isActive, sortOrder])
-}
-
-// ==========================================
-//  TUTORIAL
+//  TUTORIAL — top-level learning container
+//  Category model removed (2026-09-21).
+//  Tutorial এখন top-level entity.
 // ==========================================
 model Tutorial {
-  id           String   @id @default(cuid())
-  title        String
-  slug         String   @unique
-  description  String?
-  difficulty   String   @default("beginner")
-  viewCount    Int      @default(0)
-  isActive     Boolean  @default(true)
-  duration     Int?
-  rating       Float?
-  isPublished  Boolean  @default(false)
-  categoryId   String
-  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  difficulty  String   @default("beginner")
+  viewCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  duration    Int?
+  rating      Float?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  groups       ChapterGroup[]
-  chapters     Chapter[]
-  quizzes      QuizQuestion[]
-  challenges   CodeChallenge[]
+  groups     ChapterGroup[]
+  chapters   Chapter[]
+  references Reference[]
+  quizzes    QuizQuestion[]
+  challenges CodeChallenge[]
 
   @@index([slug])
-  @@index([categoryId, createdAt])
+  @@index([createdAt])
   @@index([isPublished])
 }
 
@@ -72,7 +52,7 @@ model ChapterGroup {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  chapters   Chapter[]
+  chapters Chapter[]
 
   @@index([tutorialId, sortOrder])
 }
@@ -86,24 +66,24 @@ model ChapterGroup {
 //       বাকি lesson             = /{chapter.slug}/{lesson.slug}
 // ==========================================
 model Chapter {
-  id          String        @id @default(cuid())
-  tutorialId  String
-  tutorial    Tutorial      @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  groupId     String?
-  group       ChapterGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  id         String        @id @default(cuid())
+  tutorialId String
+  tutorial   Tutorial      @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  groupId    String?
+  group      ChapterGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
-  title       String
-  slug        String
-  sortOrder   Int           @default(0)
+  title     String
+  slug      String
+  sortOrder Int    @default(0)
 
   // শুধু single-page chapter-এর জন্য (nested হলে null)
   content     String?
   codeExample String?
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  lessons     Lesson[]
+  lessons Lesson[]
 
   @@unique([tutorialId, slug])
   @@index([tutorialId, sortOrder])
@@ -115,18 +95,18 @@ model Chapter {
 //  slug শুধু chapter-এর ভেতরে unique
 // ==========================================
 model Lesson {
-  id          String   @id @default(cuid())
-  chapterId   String
-  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   title       String
   slug        String
   content     String
   codeExample String?
-  sortOrder   Int      @default(0)
+  sortOrder   Int     @default(0)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([chapterId, slug])
   @@index([chapterId, sortOrder])
@@ -136,30 +116,30 @@ model Lesson {
 //  QUIZQUESTION
 // ==========================================
 model QuizQuestion {
-  id           String   @id @default(cuid())
-  tutorialId   String
-  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  question     String
-  explanation  String?
-  orderIndex   Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tutorialId  String
+  tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  question    String
+  explanation String?
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  options      QuizOption[]
-  attempts     QuizAttempt[]
+  options  QuizOption[]
+  attempts QuizAttempt[]
 
   @@index([tutorialId])
 }
 
 model QuizOption {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   questionId  String
   question    QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text        String
-  isCorrect   Boolean  @default(false)
-  optionOrder Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isCorrect   Boolean      @default(false)
+  optionOrder Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([questionId])
 }
@@ -168,34 +148,34 @@ model QuizOption {
 //  CODECHALLENGE
 // ==========================================
 model CodeChallenge {
-  id           String   @id @default(cuid())
-  tutorialId   String
-  tutorial     Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  title        String
-  description  String
-  starterCode  String?
-  solution     String?
-  difficulty   String   @default("Easy")
-  points       Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tutorialId  String
+  tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  starterCode String?
+  solution    String?
+  difficulty  String   @default("Easy")
+  points      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  testCases    TestCase[]
-  attempts     ChallengeAttempt[]
+  testCases TestCase[]
+  attempts  ChallengeAttempt[]
 
   @@index([tutorialId])
 }
 
 model TestCase {
-  id             String   @id @default(cuid())
+  id             String        @id @default(cuid())
   challengeId    String
   challenge      CodeChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   input          String
   expectedOutput String
-  isHidden       Boolean  @default(false)
-  testCaseOrder  Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isHidden       Boolean       @default(false)
+  testCaseOrder  Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@index([challengeId])
 }
@@ -205,8 +185,8 @@ model TestCase {
 // ==========================================
 model Reference {
   id          String   @id @default(cuid())
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tutorialId  String
+  tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
   title       String
   slug        String   @unique
   description String?
@@ -218,7 +198,7 @@ model Reference {
   updatedAt   DateTime @updatedAt
 
   @@index([slug])
-  @@index([categoryId])
+  @@index([tutorialId])
 }
 
 // ==========================================
@@ -275,8 +255,8 @@ model Review {
 //  (review delete হলেও cooldown টিকে থাকে, তাই bypass হয় না)
 // ==========================================
 model ReviewCooldown {
-  id             String   @id @default(cuid())
-  deviceId       String   @unique
+  id              String   @id @default(cuid())
+  deviceId        String   @unique
   lastSubmittedAt DateTime @default(now())
 
   @@index([deviceId])
@@ -302,14 +282,14 @@ model AdminUser {
 //  QUIZATTEMPT — anonymous progress tracking
 // ==========================================
 model QuizAttempt {
-  id            String   @id @default(cuid())
-  deviceId      String
-  questionId    String
-  question      QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  selectedId    String?
-  isCorrect     Boolean
-  timeTakenSec  Int?
-  createdAt     DateTime @default(now())
+  id           String       @id @default(cuid())
+  deviceId     String
+  questionId   String
+  question     QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedId   String?
+  isCorrect    Boolean
+  timeTakenSec Int?
+  createdAt    DateTime     @default(now())
 
   @@index([deviceId, createdAt])
   @@index([deviceId, questionId])
@@ -320,16 +300,16 @@ model QuizAttempt {
 //  CHALLENGEATTEMPT — anonymous progress tracking
 // ==========================================
 model ChallengeAttempt {
-  id             String   @id @default(cuid())
-  deviceId       String
-  challengeId    String
-  challenge      CodeChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  passed         Boolean
-  passedCount    Int      @default(0)
-  totalCount     Int      @default(0)
-  codeSubmitted  String?
-  timeTakenSec   Int?
-  createdAt      DateTime @default(now())
+  id            String        @id @default(cuid())
+  deviceId      String
+  challengeId   String
+  challenge     CodeChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  passed        Boolean
+  passedCount   Int           @default(0)
+  totalCount    Int           @default(0)
+  codeSubmitted String?
+  timeTakenSec  Int?
+  createdAt     DateTime      @default(now())
 
   @@index([deviceId, createdAt])
   @@index([deviceId, challengeId])
@@ -357,16 +337,16 @@ model PinLockout {
 //  একই SponsorImage একাধিক Sponsor-এ reference করা যায়।
 // ==========================================
 model SponsorImage {
-  id        String    @id @default(cuid())
-  hash      String    @unique
+  id        String   @id @default(cuid())
+  hash      String   @unique
   mimeType  String
   width     Int?
   height    Int?
   sizeBytes Int
   data      Bytes
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  sponsors  Sponsor[]
+  sponsors Sponsor[]
 
   @@index([hash])
 }

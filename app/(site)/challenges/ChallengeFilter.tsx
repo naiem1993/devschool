@@ -10,7 +10,6 @@ export type ChallengeCard = {
   difficulty: string
   points: number
   tutorialTitle: string
-  categoryName: string
   testCaseCount: number
 }
 
@@ -25,8 +24,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
     return challenges.filter((c) => {
       const matchesQ = q
         ? c.title.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q) ||
-          c.categoryName.toLowerCase().includes(q)
+          c.description.toLowerCase().includes(q)
         : true
       const matchesD = difficulty === 'all' || c.difficulty === difficulty
       return matchesQ && matchesD

@@ -37,7 +37,7 @@ export default async function ChallengesListingPage() {
   try {
     const raw = await prisma.codeChallenge.findMany({
       include: {
-        tutorial: { select: { title: true, slug: true, category: { select: { name: true } } } },
+        tutorial: { select: { title: true, slug: true } },
         _count: { select: { testCases: true } },
       },
       orderBy: [{ difficulty: 'asc' }, { createdAt: 'desc' }],
@@ -50,7 +50,6 @@ export default async function ChallengesListingPage() {
       difficulty: c.difficulty,
       points: c.points,
       tutorialTitle: c.tutorial.title,
-      categoryName: c.tutorial.category.name,
       testCaseCount: c._count.testCases,
     }))
   } catch (err: any) {

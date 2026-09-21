@@ -13,10 +13,9 @@ export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const tutorialCount = await prisma.tutorial.count({ where: { isPublished: true } });
-  const categoryCount = await prisma.category.count();
 
   return {
-    title: `DevSchool — ${tutorialCount}+ টি টিউটোরিয়াল, ${categoryCount} টি ভাষা`,
+    title: `DevSchool — ${tutorialCount}+ টি টিউটোরিয়াল`,
     description: `বিনামূল্যে প্রোগ্রামিং শিখুন। ${tutorialCount} টি টিউটোরিয়াল, ইন্টারঅ্যাকটিভ কুইজ ও প্র্যাকটিস চ্যালেঞ্জ।`,
     alternates: {
       canonical: 'https://devschool.com',
@@ -30,7 +29,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  let categories: any[] = [];
   let popularTutorials: any[] = [];
   let latestTutorials: any[] = [];
   let allTutorialsForSearch: any[] = [];
@@ -46,17 +44,6 @@ export default async function HomePage() {
   let errorMessage = '';
 
   try {
-    categories = await prisma.category.findMany({
-      include: {
-        tutorials: {
-          where: { isPublished: true },
-          take: 3,
-          orderBy: { viewCount: 'desc' },
-        },
-      },
-      take: 6,
-    });
-
     popularTutorials = await prisma.tutorial.findMany({
       where: { isPublished: true },
       select: {
@@ -67,7 +54,6 @@ export default async function HomePage() {
         viewCount: true,
         duration: true,
         rating: true,
-        category: { select: { name: true } },
       },
       orderBy: { viewCount: 'desc' },
       take: 6,
@@ -83,7 +69,6 @@ export default async function HomePage() {
         viewCount: true,
         duration: true,
         rating: true,
-        category: { select: { name: true } },
       },
       orderBy: { createdAt: 'desc' },
       take: 6,
@@ -98,17 +83,16 @@ export default async function HomePage() {
         difficulty: true,
         viewCount: true,
         chapters: { select: { id: true, slug: true, title: true } },
-        category: { select: { name: true } },
       },
       take: 50,
     });
 
-    [languageCount, tutorialCount, quizCount, challengeCount] = await Promise.all([
-      prisma.category.count(),
+    [tutorialCount, quizCount, challengeCount] = await Promise.all([
       prisma.tutorial.count({ where: { isPublished: true } }),
       prisma.quizQuestion.count(),
       prisma.codeChallenge.count(),
     ]);
+    languageCount = tutorialCount;
 
     reviews = await prisma.review.findMany({
       where: { status: 'approved' },
@@ -125,13 +109,14 @@ export default async function HomePage() {
     reviewsCount = reviewAgg._count._all;
     reviewsAvg = reviewAgg._avg.stars ?? 0;
 
-    // Marquee-র tech list: সব active category-র নাম sortOrder অনুযায়ী
-    const allCats = await prisma.category.findMany({
-      where: { isActive: true },
-      select: { name: true },
-      orderBy: { sortOrder: 'asc' },
+    // Marquee-র tech list: সব tutorial-এর নাম
+    const allTuts = await prisma.tutorial.findMany({
+      where: { isPublished: true },
+      select: { title: true },
+      orderBy: { viewCount: 'desc' },
+      take: 12,
     });
-    allCategoryNames = allCats.map((c) => c.name);
+    allCategoryNames = allTuts.map((t) => t.title);
   } catch (error: any) {
     console.error('Database error:', error);
     dbError = true;
@@ -160,7 +145,7 @@ export default async function HomePage() {
               আবার চেষ্টা করুন 🔄
             </button>
             <Link
-              href="/courses"
+              href="/tutorials"
               className="text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline"
             >
               ব্রাউজিং চালিয়ে যান →
@@ -215,7 +200,7 @@ export default async function HomePage() {
               HTML, CSS, JavaScript, React, Next.js শিখুন এবং মডার্ন ইউজার ইন্টারফেস তৈরি করুন।
             </p>
             <Link
-              href="/courses"
+              href="/tutorials"
               className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition"
             >
               ট্র্যাক শুরু করুন →

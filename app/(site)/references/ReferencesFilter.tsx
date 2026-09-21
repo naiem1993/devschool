@@ -12,25 +12,21 @@ export type ReferenceCard = {
   example: string | null
   tags: string[]
   language: string | null
-  category: { name: string; slug: string }
 }
 
-type SortKey = 'title' | 'category' | 'language'
+type SortKey = 'title' | 'language'
 
 const inputBase =
   'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
 
 export default function ReferencesFilter({
   references,
-  categories,
   languages,
 }: {
   references: ReferenceCard[]
-  categories: { id: string; name: string; slug: string }[]
   languages: string[]
 }) {
   const [query, setQuery] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [languageFilter, setLanguageFilter] = useState<string>('all')
   const [sort, setSort] = useState<SortKey>('title')
 
@@ -46,33 +42,27 @@ export default function ReferencesFilter({
           r.tags.some((t) => t.toLowerCase().includes(q))
         : true
 
-      const matchesCategory =
-        categoryFilter === 'all' || r.category.slug === categoryFilter
-
       const matchesLanguage =
         languageFilter === 'all' ||
         (r.language || '').toLowerCase() === languageFilter.toLowerCase()
 
-      return matchesQuery && matchesCategory && matchesLanguage
+      return matchesQuery && matchesLanguage
     })
 
     result = [...result].sort((a, b) => {
       if (sort === 'title') return a.title.localeCompare(b.title)
-      if (sort === 'category') return a.category.name.localeCompare(b.category.name)
       if (sort === 'language')
         return (a.language || '').localeCompare(b.language || '')
       return 0
     })
 
     return result
-  }, [references, query, categoryFilter, languageFilter, sort])
+  }, [references, query, languageFilter, sort])
 
-  const activeFilters =
-    query || categoryFilter !== 'all' || languageFilter !== 'all'
+  const activeFilters = query || languageFilter !== 'all'
 
   const reset = () => {
     setQuery('')
-    setCategoryFilter('all')
     setLanguageFilter('all')
   }
 
@@ -94,21 +84,7 @@ export default function ReferencesFilter({
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            aria-label="ক্যাটাগরি ফিল্টার"
-            className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
-          >
-            <option value="all">সব ক্যাটাগরি</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <select
             value={languageFilter}
             onChange={(e) => setLanguageFilter(e.target.value)}
@@ -130,7 +106,6 @@ export default function ReferencesFilter({
             className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
           >
             <option value="title">নাম (A-Z)</option>
-            <option value="category">ক্যাটাগরি</option>
             <option value="language">ভাষা</option>
           </select>
         </div>
@@ -217,10 +192,7 @@ export default function ReferencesFilter({
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
-                <span className="inline-flex items-center gap-1 line-clamp-1">
-                  📂 {r.category.name}
-                </span>
+              <div className="flex items-center justify-end pt-3 border-t border-slate-200 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
                 <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                   দেখুন →
                 </span>

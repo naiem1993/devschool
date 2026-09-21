@@ -10,7 +10,6 @@ async function main() {
   const tutorial = await prisma.tutorial.findUnique({
     where: { slug: 'html' },
     include: {
-      category: true,
       chapters: {
         orderBy: { sortOrder: 'asc' },
         include: {
@@ -26,7 +25,6 @@ async function main() {
   }
 
   console.log('✅ Tutorial:', tutorial.title, `(${tutorial.slug})`)
-  console.log('   Category:', tutorial.category.name)
   console.log('   isPublished:', tutorial.isPublished)
   console.log('   Chapters:', tutorial.chapters.length)
 

@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
-    { url: `${SITE_URL}/courses`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/tutorials`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${SITE_URL}/references`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/challenges`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/tools`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
@@ -21,33 +21,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
-    const [categories, tutorials] = await Promise.all([
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: { slug: true, updatedAt: true },
-      }),
-      prisma.tutorial.findMany({
-        where: { isPublished: true },
-        select: {
-          slug: true,
-          updatedAt: true,
-          chapters: {
-            select: {
-              slug: true,
-              lessons: { orderBy: { sortOrder: 'asc' }, select: { slug: true } },
-            },
+    const tutorials = await prisma.tutorial.findMany({
+      where: { isPublished: true },
+      select: {
+        slug: true,
+        updatedAt: true,
+        chapters: {
+          select: {
+            slug: true,
+            lessons: { orderBy: { sortOrder: 'asc' }, select: { slug: true } },
           },
         },
-        take: 500,
-      }),
-    ])
-
-    const categoryUrls: MetadataRoute.Sitemap = categories.map((c) => ({
-      url: `${SITE_URL}/courses/${c.slug}`,
-      lastModified: c.updatedAt,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    }))
+      },
+      take: 500,
+    })
 
     const tutorialUrls: MetadataRoute.Sitemap = tutorials.map((t) => ({
       url: `${SITE_URL}/tutorials/${t.slug}`,
@@ -74,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ),
     ])
 
-    return [...staticRoutes, ...categoryUrls, ...tutorialUrls, ...chapterUrls]
+    return [...staticRoutes, ...tutorialUrls, ...chapterUrls]
   } catch {
     // DB fail হলেও static routes অন্তত দেবে
     return staticRoutes

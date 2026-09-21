@@ -5,42 +5,13 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding demo data...')
 
-  // 1. Categories
-  const webCat = await prisma.category.create({
-    data: {
-      name: 'Web Development',
-      slug: 'web-development',
-      icon: '🌐',
-      description: 'All about web development',
-    },
-  })
-
-  const jsCat = await prisma.category.create({
-    data: {
-      name: 'JavaScript',
-      slug: 'javascript',
-      icon: '🚀',
-      description: 'JavaScript programming language',
-    },
-  })
-
-  const pythonCat = await prisma.category.create({
-    data: {
-      name: 'Python',
-      slug: 'python',
-      icon: '🐍',
-      description: 'Python programming language',
-    },
-  })
-
-  // 2. HTML tutorial (nested structure)
+  // 1. HTML tutorial (nested structure)
   const htmlTutorial = await prisma.tutorial.create({
     data: {
       title: 'Introduction to HTML',
       slug: 'html-intro',
       description: 'Learn the basics of HTML',
       difficulty: 'Beginner',
-      categoryId: webCat.id,
     },
   })
 
@@ -130,18 +101,17 @@ async function main() {
       example: '<h1>Title</h1>\n<p>Paragraph</p>',
       tags: ['html', 'tags', 'elements'],
       language: 'html',
-      categoryId: webCat.id,
+      tutorialId: htmlTutorial.id,
     },
   })
 
-  // 5. JavaScript tutorial
+  // 2. JavaScript tutorial
   const jsTutorial = await prisma.tutorial.create({
     data: {
       title: 'JavaScript Basics',
       slug: 'js-basics',
       description: 'Learn JavaScript from scratch',
       difficulty: 'Beginner',
-      categoryId: jsCat.id,
     },
   })
 
@@ -237,18 +207,17 @@ async function main() {
         'const arr = [1, 2, 3];\narr.push(4);\nconst doubled = arr.map(x => x * 2);',
       tags: ['javascript', 'arrays', 'methods'],
       language: 'javascript',
-      categoryId: jsCat.id,
+      tutorialId: jsTutorial.id,
     },
   })
 
-  // 9. Python tutorial
+  // 3. Python tutorial
   const pythonTutorial = await prisma.tutorial.create({
     data: {
       title: 'Python Basics',
       slug: 'python-basics',
       description: 'Learn Python programming',
       difficulty: 'Beginner',
-      categoryId: pythonCat.id,
     },
   })
 
@@ -283,7 +252,7 @@ async function main() {
       example: 'x = 5  # int\ny = "Hello"  # str\nz = [1, 2, 3]  # list',
       tags: ['python', 'types', 'variables'],
       language: 'python',
-      categoryId: pythonCat.id,
+      tutorialId: pythonTutorial.id,
     },
   })
 
@@ -300,7 +269,7 @@ async function main() {
   })
 
   console.log('✅ Demo data seeded successfully!')
-  console.log('📚 Categories:', await prisma.category.count())
+  console.log('📚 Tutorials:', await prisma.tutorial.count())
   console.log('📖 Tutorials:', await prisma.tutorial.count())
   console.log('📂 Chapters:', await prisma.chapter.count())
   console.log('📝 Lessons:', await prisma.lesson.count())

@@ -3,11 +3,6 @@ import TutorialForm from '@/components/admin/TutorialForm'
 import Link from 'next/link'
 
 export default async function NewTutorialPage() {
-  const categories = await prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { name: 'asc' },
-  })
-
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <Link
@@ -20,13 +15,11 @@ export default async function NewTutorialPage() {
         নতুন টিউটোরিয়াল
       </h1>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        শুধু course-এর shell বানাও (title, slug, category)। Save করলে সোজা
+        শুধু tutorial-এর shell বানাও (title, slug)। Save করলে সোজা
         chapters পেজে যাবে — সেখানে একটার পর একটা lesson যোগ করতে পারবে।
       </p>
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800">
-        <TutorialForm
-          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
-        />
+        <TutorialForm />
       </div>
     </div>
   )

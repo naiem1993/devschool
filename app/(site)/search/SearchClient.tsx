@@ -11,8 +11,6 @@ type TutorialHit = {
   slug: string
   description: string | null
   difficulty: string
-  categoryName: string | null
-  categorySlug: string | null
   rank?: number
 }
 
@@ -22,8 +20,6 @@ type ReferenceHit = {
   slug: string
   syntax: string | null
   language: string | null
-  categoryName: string | null
-  categorySlug: string | null
   rank?: number
 }
 
@@ -39,8 +35,6 @@ type SearchResult = {
 
 type TabKey = 'all' | 'tutorials' | 'references'
 
-export type CategoryOption = { id: string; name: string; slug: string }
-
 const DIFFICULTIES = ['beginner', 'intermediate', 'advanced']
 
 const POPULAR = [
@@ -52,13 +46,7 @@ const POPULAR = [
   { label: 'SQL', q: 'sql' },
 ]
 
-export default function SearchClient({
-  categories,
-  languages,
-}: {
-  categories: CategoryOption[]
-  languages: string[]
-}) {
+export default function SearchClient({ languages }: { languages: string[] }) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -67,7 +55,6 @@ export default function SearchClient({
 
   const [query, setQuery] = useState(initialQuery)
   const [type, setType] = useState<TabKey>(initialType)
-  const [category, setCategory] = useState(searchParams.get('category') || '')
   const [difficulty, setDifficulty] = useState(searchParams.get('difficulty') || '')
   const [language, setLanguage] = useState(searchParams.get('language') || '')
 
@@ -96,7 +83,6 @@ export default function SearchClient({
       debounce(async (opts: {
         q: string
         type: TabKey
-        category: string
         difficulty: string
         language: string
       }) => {
@@ -111,7 +97,6 @@ export default function SearchClient({
             type: opts.type,
             limit: '24',
           })
-          if (opts.category) params.set('category', opts.category)
           if (opts.difficulty) params.set('difficulty', opts.difficulty)
           if (opts.language) params.set('language', opts.language)
 
@@ -135,20 +120,19 @@ export default function SearchClient({
 
   useEffect(() => {
     setIsLoading(query.trim().length >= 2)
-    runSearch({ q: query, type, category, difficulty, language })
+    runSearch({ q: query, type, difficulty, language })
     return () => runSearch.cancel()
-  }, [query, type, category, difficulty, language, runSearch])
+  }, [query, type, difficulty, language, runSearch])
 
   // ─── Sync URL whenever query/filters change ───
   useEffect(() => {
     syncUrl({
       q: query.trim(),
       type: type !== 'all' ? type : '',
-      category,
       difficulty,
       language,
     })
-  }, [query, type, category, difficulty, language, syncUrl])
+  }, [query, type, difficulty, language, syncUrl])
 
   // ─── Keyboard: "/" focuses the search box ───
   useEffect(() => {
@@ -162,12 +146,11 @@ export default function SearchClient({
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const activeFilters = Boolean(category || difficulty || language)
+  const activeFilters = Boolean(difficulty || language)
   const hasQuery = query.trim().length >= 2
   const hasHits = result && (result.tutorials.length > 0 || result.references.length > 0)
 
   const resetFilters = () => {
-    setCategory('')
     setDifficulty('')
     setLanguage('')
   }
@@ -252,20 +235,7 @@ export default function SearchClient({
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              aria-label="ক্যাটাগরি ফিল্টার"
-              className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
-            >
-              <option value="">সব ক্যাটাগরি</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.slug}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
             {showTutorials && (
               <select
@@ -414,11 +384,6 @@ export default function SearchClient({
                         {t.description}
                       </p>
                     )}
-                    {t.categoryName && (
-                      <div className="mt-3 text-xs text-[#15803d] dark:text-[#4ADE80] font-medium">
-                        {t.categoryName}
-                      </div>
-                    )}
                   </Link>
                 ))}
               </div>
@@ -455,9 +420,6 @@ export default function SearchClient({
                       <pre className="bg-slate-900 dark:bg-black border border-slate-800 rounded-lg px-3 py-2 text-[11px] text-emerald-300 font-mono overflow-x-auto line-clamp-2 whitespace-pre-wrap">
                         {r.syntax}
                       </pre>
-                    )}
-                    {r.categoryName && (
-                      <div className="mt-2 text-[11px] text-slate-400">{r.categoryName}</div>
                     )}
                   </Link>
                 ))}

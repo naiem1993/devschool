@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import prisma from '@/lib/prisma'
-import SearchClient, { type CategoryOption } from './SearchClient'
+import SearchClient from './SearchClient'
 
 export const revalidate = 300
 
@@ -26,32 +26,25 @@ export const metadata: Metadata = {
 
 async function getFilterData() {
   try {
-    const [categories, langRows] = await Promise.all([
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true, slug: true },
-        orderBy: { sortOrder: 'asc' },
-      }),
-      prisma.reference.findMany({
-        where: { language: { not: null } },
-        select: { language: true },
-        distinct: ['language'],
-      }),
-    ])
+    const langRows = await prisma.reference.findMany({
+      where: { language: { not: null } },
+      select: { language: true },
+      distinct: ['language'],
+    })
 
     const languages = Array.from(
       new Set(langRows.map((r) => r.language).filter((l): l is string => Boolean(l)))
     ).sort()
 
-    return { categories: categories as CategoryOption[], languages }
+    return { languages }
   } catch (err) {
     console.error('Search page filter data error:', err)
-    return { categories: [] as CategoryOption[], languages: [] as string[] }
+    return { languages: [] as string[] }
   }
 }
 
 export default async function SearchPage() {
-  const { categories, languages } = await getFilterData()
+  const { languages } = await getFilterData()
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -107,7 +100,7 @@ export default async function SearchPage() {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <Suspense fallback={<SearchSkeleton />}>
-            <SearchClient categories={categories} languages={languages} />
+            <SearchClient languages={languages} />
           </Suspense>
         </div>
       </div>

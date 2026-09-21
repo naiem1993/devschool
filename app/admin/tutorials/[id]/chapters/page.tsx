@@ -20,7 +20,6 @@ export default async function ChaptersPage({
   const tutorial = await prisma.tutorial.findUnique({
     where: { id },
     include: {
-      category: { select: { name: true } },
       groups: {
         orderBy: { sortOrder: 'asc' },
         include: { _count: { select: { chapters: true } } },
@@ -82,7 +81,7 @@ export default async function ChaptersPage({
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        {tutorial.category.name} · {chapterRows.length} chapter · {totalLessons} lesson ·{' '}
+        {chapterRows.length} chapter · {totalLessons} lesson ·{' '}
         {groupRows.length} group
       </p>
 

@@ -29,7 +29,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: true,
         description: true,
         syntax: true,
-        category: { select: { name: true } },
       },
     })
 
@@ -38,12 +37,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const description =
-      ref.description || `${ref.title} — ${ref.category.name} এর syntax ও উদাহরণ।`
+      ref.description || `${ref.title} — syntax ও উদাহরণ।`
 
     return {
       title: `${ref.title} — Syntax ও উদাহরণ | DevSchool`,
       description,
-      keywords: [ref.title, ref.category.name, 'reference', 'syntax'],
+      keywords: [ref.title, 'reference', 'syntax'],
       alternates: { canonical: `/references/${slug}` },
       openGraph: {
         title: ref.title,
@@ -71,7 +70,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
     .findUnique({
       where: { slug },
       include: {
-        category: { select: { id: true, name: true, slug: true } },
+        tutorial: { select: { id: true, title: true, slug: true } },
       },
     })
     .catch(() => null)
@@ -81,7 +80,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
   const related = await prisma.reference
     .findMany({
       where: {
-        categoryId: reference.categoryId,
+        tutorialId: reference.tutorialId,
         id: { not: reference.id },
       },
       select: {
@@ -101,7 +100,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
     '@type': 'DefinedTerm',
     name: reference.title,
     description: reference.description,
-    inDefinedTermSet: reference.category.name,
+    inDefinedTermSet: reference.tutorial.title,
     inLanguage: 'bn-BD',
   }
 
@@ -137,10 +136,10 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
               <li aria-hidden>/</li>
               <li>
                 <Link
-                  href={`/courses/${reference.category.slug}`}
+                  href={`/tutorials/${reference.tutorial.slug}`}
                   className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
-                  {reference.category.name}
+                  {reference.tutorial.title}
                 </Link>
               </li>
               <li aria-hidden>/</li>
@@ -156,10 +155,10 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
           <header className="mb-8">
             <div className="flex items-center gap-3 mb-4 flex-wrap">
               <Link
-                href={`/courses/${reference.category.slug}`}
+                href={`/tutorials/${reference.tutorial.slug}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition"
               >
-                📂 {reference.category.name}
+                📂 {reference.tutorial.title}
               </Link>
               {reference.language && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20 text-xs font-mono font-semibold uppercase tracking-wider">

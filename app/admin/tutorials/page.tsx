@@ -12,7 +12,6 @@ export default async function TutorialsPage() {
     orderBy: { createdAt: 'desc' },
     take: 100,
     include: {
-      category: { select: { name: true } },
       _count: { select: { chapters: true, groups: true } },
     },
   })
@@ -37,7 +36,6 @@ export default async function TutorialsPage() {
           <thead>
             <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
               <th className="text-left px-4 py-2">title</th>
-              <th className="text-left px-4 py-2">category</th>
               <th className="text-left px-4 py-2">difficulty</th>
               <th className="text-left px-4 py-2">chapters</th>
               <th className="text-left px-4 py-2">groups</th>
@@ -52,7 +50,6 @@ export default async function TutorialsPage() {
               return (
                 <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
                   <td className="px-4 py-2 text-[#22C55E]">{it.title}</td>
-                  <td className="px-4 py-2 text-cyan-400/70">{it.category.name}</td>
                   <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
 
                   <td className="px-4 py-2">
@@ -112,7 +109,7 @@ export default async function TutorialsPage() {
             })}
             {items.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[#22C55E]/40">
+                <td colSpan={5} className="px-4 py-8 text-center text-[#22C55E]/40">
                   -- no records found --
                 </td>
               </tr>

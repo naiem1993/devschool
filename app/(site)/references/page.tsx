@@ -44,16 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ReferencesListingPage() {
   let references: ReferenceCard[] = []
-  let categories: { id: string; name: string; slug: string }[] = []
   let languages: string[] = []
   let dbError = false
   let errorMessage = ''
 
   try {
     const raw = await prisma.reference.findMany({
-      include: {
-        category: { select: { name: true, slug: true } },
-      },
       orderBy: { title: 'asc' },
     })
 
@@ -66,22 +62,7 @@ export default async function ReferencesListingPage() {
       example: r.example,
       tags: r.tags,
       language: r.language,
-      category: { name: r.category.name, slug: r.category.slug },
     }))
-
-    const catMap = new Map<string, { id: string; name: string; slug: string }>()
-    for (const r of raw) {
-      if (!catMap.has(r.category.slug)) {
-        catMap.set(r.category.slug, {
-          id: r.categoryId,
-          name: r.category.name,
-          slug: r.category.slug,
-        })
-      }
-    }
-    categories = Array.from(catMap.values()).sort((a, b) =>
-      a.name.localeCompare(b.name)
-    )
 
     languages = Array.from(
       new Set(raw.map((r) => r.language).filter((l): l is string => Boolean(l)))
@@ -167,7 +148,6 @@ export default async function ReferencesListingPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <StatCard value={references.length} label="রেফারেন্স" />
                 <StatCard value={languages.length} label="ভাষা" />
-                <StatCard value={categories.length} label="ক্যাটাগরি" />
               </div>
             </div>
           </div>
@@ -186,7 +166,6 @@ export default async function ReferencesListingPage() {
           ) : (
             <ReferencesFilter
               references={references}
-              categories={categories}
               languages={languages}
             />
           )}

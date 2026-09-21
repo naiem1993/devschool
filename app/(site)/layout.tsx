@@ -1,7 +1,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import CategoryNav from '@/components/CategoryNav'
 import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
 import { getFooterSettings } from '@/lib/site-settings'
 import prisma from '@/lib/prisma'
@@ -17,18 +16,6 @@ export default async function SiteLayout({
 }: {
   children: React.ReactNode
 }) {
-  // 📂 Auto-load categories from database — admin panel থেকে add করলে নিজে থেকেই nav-এ আসবে
-  let categories: { name: string; slug: string }[] = []
-  try {
-    categories = await prisma.category.findMany({
-      where: { isActive: true },
-      select: { name: true, slug: true },
-      orderBy: { sortOrder: 'asc' },
-    })
-  } catch {
-    categories = []
-  }
-
   // ⭐ Sponsors — active, date-window-valid, priority sorted
   let sponsors: PublicSponsor[] = []
   try {
@@ -62,7 +49,6 @@ export default async function SiteLayout({
   return (
     <>
       <Header />
-      <CategoryNav categories={categories} />
       <ErrorBoundary>
         <main className="flex-1">{children}</main>
       </ErrorBoundary>

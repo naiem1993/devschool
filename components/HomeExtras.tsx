@@ -67,7 +67,7 @@ export default function HomeExtras({
   const reviewsOff = !reviewsEnabled
   // FAQ items খালি হলে পুরো FAQ সেকশন লুকাবে
   const faqOff = faqItems.length === 0
-  // techItems (Category থেকে আসা) খালি হলে marquee লুকাবে
+  // techItems (tutorial নাম থেকে আসা) খালি হলে marquee লুকাবে
   const techOff = techItems.length === 0
 
   // ---- Reviews slider state ----

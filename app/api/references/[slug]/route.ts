@@ -16,7 +16,7 @@ export async function GET(
   const validation = slugParamSchema.safeParse({ slug })
   if (!validation.success) {
     return NextResponse.json(
-      { error: 'অবৈধ ক্যাটাগরি স্লগ' },
+      { error: 'অবৈধ স্লগ' },
       { status: 400 }
     )
   }
@@ -25,7 +25,7 @@ export async function GET(
     // ─── Query optimization: Select only needed fields ───────────────────────
     const references = await prisma.reference.findMany({
       where: {
-        category: { slug },
+        tutorial: { slug },
       },
       select: {
         id: true,

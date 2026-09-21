@@ -3,15 +3,15 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-type Category = { id: string; name: string }
+type TutorialOption = { id: string; title: string }
 
 export default function ReferenceForm({
   initial,
-  categories,
+  tutorials,
   mode = 'create',
 }: {
   initial?: any
-  categories: Category[]
+  tutorials: TutorialOption[]
   mode?: 'create' | 'edit'
 }) {
   const router = useRouter()
@@ -23,7 +23,7 @@ export default function ReferenceForm({
     example: initial?.example || '',
     tags: (initial?.tags || []).join(', '),
     language: initial?.language || '',
-    categoryId: initial?.categoryId || categories[0]?.id || '',
+    tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,9 +61,9 @@ export default function ReferenceForm({
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="admin-label">&gt; Category</label>
-          <select className="admin-input" value={form.categoryId} onChange={(e) => setForm((f) => ({ ...f, categoryId: e.target.value }))} required>
-            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          <label className="admin-label">&gt; Tutorial</label>
+          <select className="admin-input" value={form.tutorialId} onChange={(e) => setForm((f) => ({ ...f, tutorialId: e.target.value }))} required>
+            {tutorials.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
           </select>
         </div>
         <div>

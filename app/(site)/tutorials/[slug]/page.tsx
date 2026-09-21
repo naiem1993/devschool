@@ -35,7 +35,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: true,
         description: true,
         difficulty: true,
-        category: { select: { name: true } },
       },
     })
     if (!tutorial) {
@@ -46,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
     const description =
       tutorial.description ||
-      `${tutorial.title} — ${tutorial.category.name} ক্যাটাগরির ${tutorial.difficulty} লেভেলের টিউটোরিয়াল`
+      `${tutorial.title} — ${tutorial.difficulty} লেভেলের টিউটোরিয়াল`
     return {
       title: `${tutorial.title} | DevSchool`,
       description,
@@ -76,7 +75,6 @@ export default async function TutorialPage({ params }: PageProps) {
         slug: true,
         title: true,
         description: true,
-        category: { select: { name: true, slug: true } },
       },
     })
     .catch(() => null)
@@ -101,15 +99,8 @@ export default async function TutorialPage({ params }: PageProps) {
           হোম
         </Link>
         <span>/</span>
-        <Link href="/courses" className="hover:text-[#22C55E]">
-          ক্যাটাগরি
-        </Link>
-        <span>/</span>
-        <Link
-          href={`/courses/${tutorial.category.slug}`}
-          className="hover:text-[#22C55E]"
-        >
-          {tutorial.category.name}
+        <Link href="/tutorials" className="hover:text-[#22C55E]">
+          টিউটোরিয়াল
         </Link>
       </nav>
 

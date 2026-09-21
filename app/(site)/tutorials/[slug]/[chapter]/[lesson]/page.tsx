@@ -83,7 +83,6 @@ export default async function LessonPage({ params }: PageProps) {
         id: true,
         slug: true,
         title: true,
-        category: { select: { name: true, slug: true } },
       },
     })
     .catch(() => null)
@@ -163,10 +162,6 @@ export default async function LessonPage({ params }: PageProps) {
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
         <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
-        <span>/</span>
-        <Link href={`/courses/${tutorial.category.slug}`} className="hover:text-[#22C55E]">
-          {tutorial.category.name}
-        </Link>
         <span>/</span>
         <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
           {tutorial.title}

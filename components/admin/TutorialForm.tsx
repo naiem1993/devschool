@@ -3,15 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-type Category = { id: string; name: string }
-
 export default function TutorialForm({
   initial,
-  categories,
   mode = 'create',
 }: {
   initial?: any
-  categories: Category[]
   mode?: 'create' | 'edit'
 }) {
   const router = useRouter()
@@ -21,7 +17,6 @@ export default function TutorialForm({
     description: initial?.description || '',
     difficulty: initial?.difficulty || 'Beginner',
     duration: initial?.duration ?? 0,
-    categoryId: initial?.categoryId || categories[0]?.id || '',
     isPublished: initial?.isPublished ?? false,
     isActive: initial?.isActive ?? true,
   })
@@ -116,21 +111,6 @@ export default function TutorialForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="admin-label">&gt; Category</label>
-          <select
-            className="admin-input"
-            value={form.categoryId}
-            onChange={(e) => setForm((f) => ({ ...f, categoryId: e.target.value }))}
-            required
-          >
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
           <label className="admin-label">&gt; Difficulty</label>
           <select
             className="admin-input"
@@ -142,16 +122,15 @@ export default function TutorialForm({
             <option value="Advanced">Advanced</option>
           </select>
         </div>
-      </div>
-
-      <div>
-        <label className="admin-label">&gt; Duration (min)</label>
-        <input
-          type="number"
-          className="admin-input"
-          value={form.duration}
-          onChange={(e) => setForm((f) => ({ ...f, duration: Number(e.target.value) }))}
-        />
+        <div>
+          <label className="admin-label">&gt; Duration (min)</label>
+          <input
+            type="number"
+            className="admin-input"
+            value={form.duration}
+            onChange={(e) => setForm((f) => ({ ...f, duration: Number(e.target.value) }))}
+          />
+        </div>
       </div>
 
       <div className="flex gap-6">

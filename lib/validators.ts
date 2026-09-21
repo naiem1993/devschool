@@ -1,31 +1,10 @@
 import { z } from 'zod'
 
-// ─── Category Validators ───────────────────────────────────────────────────────
-
-export const createCategorySchema = z.object({
-  name: z.string().min(2).max(100),
-  slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)'),
-  icon: z.string().trim().max(20).optional().nullable(),
-  description: z.string().optional(),
-  sortOrder: z.number().int().optional(),
-  isActive: z.boolean().default(true),
-})
-
-export const updateCategorySchema = z.object({
-  name: z.string().min(2).max(100).optional(),
-  slug: z.string().min(2).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
-  icon: z.string().trim().max(20).optional().nullable(),
-  description: z.string().optional(),
-  sortOrder: z.number().int().optional(),
-  isActive: z.boolean().optional(),
-})
-
 // ─── Tutorial Validators ───────────────────────────────────────────────────────
 
 export const createTutorialSchema = z.object({
   title: z.string().min(2).max(255),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe'),
-  categoryId: z.string().cuid({ message: 'Valid categoryId is required' }),
   description: z.string().optional(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).default('Beginner'),
   isActive: z.boolean().default(true),
@@ -37,7 +16,6 @@ export const createTutorialSchema = z.object({
 export const updateTutorialSchema = z.object({
   title: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
-  categoryId: z.string().cuid().optional(),
   description: z.string().optional(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
   isActive: z.boolean().optional(),
@@ -106,12 +84,13 @@ export const createQuizOptionSchema = z.object({
 // ─── Reference Validators ──────────────────────────────────────────────────────
 
 export const createReferenceSchema = z.object({
-  categoryId: z.string().cuid({ message: 'Valid categoryId is required' }),
+  tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
   title: z.string().min(2).max(255),
   slug: z.string().min(2).max(255),
   description: z.string().optional(),
   syntax: z.string().optional(),
   example: z.string().optional(),
+  language: z.string().trim().max(50).optional().nullable(),
   tags: z.array(z.string()).default([]),
 })
 
@@ -180,7 +159,6 @@ export const paginationSchema = z.object({
 
 export const searchSchema = z.object({
   q: z.string().min(2).max(100).optional(),
-  category: z.string().optional(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
   ...paginationSchema.shape,
 })

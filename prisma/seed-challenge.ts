@@ -26,19 +26,7 @@ const SOLUTION_CODE = `function solve(input) {
 async function main() {
   console.log('🌱 Seeding sandbox test challenge...')
 
-  // 1. Category (upsert)
-  const category = await prisma.category.upsert({
-    where: { slug: CATEGORY_SLUG },
-    update: {},
-    create: {
-      name: 'Sandbox Demo',
-      slug: CATEGORY_SLUG,
-      icon: '🧪',
-      description: 'Code execution sandbox testing',
-    },
-  })
-
-  // 2. Tutorial (upsert)
+  // Tutorial (upsert)
   const tutorial = await prisma.tutorial.upsert({
     where: { slug: TUTORIAL_SLUG },
     update: {},
@@ -47,7 +35,6 @@ async function main() {
       slug: TUTORIAL_SLUG,
       description: 'Tutorial for testing sandbox code execution',
       difficulty: 'beginner',
-      categoryId: category.id,
       isPublished: true,
     },
   })

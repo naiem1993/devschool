@@ -164,19 +164,7 @@ async function seedChapter(filename: string) {
   console.log(`   → Lessons: ${parsed.lessons.length}`)
   if (parsed.goal) console.log(`   → লক্ষ্য: ${parsed.goal}`)
 
-  // 1. Category (find or create)
-  const category = await prisma.category.upsert({
-    where: { slug: CATEGORY_SLUG },
-    update: {},
-    create: {
-      name: CATEGORY_NAME,
-      slug: CATEGORY_SLUG,
-      icon: '🌐',
-      description: 'All about web development',
-    },
-  })
-
-  // 2. Tutorial (find or create by slug)
+  // 1. Tutorial (find or create by slug)
   const tutorial = await prisma.tutorial.upsert({
     where: { slug: TUTORIAL_SLUG },
     update: {
@@ -188,7 +176,6 @@ async function seedChapter(filename: string) {
       slug: TUTORIAL_SLUG,
       description: TUTORIAL_DESCRIPTION,
       difficulty: 'Beginner',
-      categoryId: category.id,
       isPublished: true,
     },
   })

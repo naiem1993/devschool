@@ -6,7 +6,6 @@ import { revalidateTutorialListPaths } from '@/lib/revalidate-tutorial'
 export async function GET() {
   const tutorials = await prisma.tutorial.findMany({
     include: {
-      category: true,
       _count: { select: { chapters: true, quizzes: true, challenges: true } },
     },
     orderBy: { createdAt: 'desc' },

@@ -38,15 +38,7 @@ export async function GET(
         isPublished: true,
         createdAt: true,
         updatedAt: true,
-        categoryId: true,
         // ─── Nested selects for related data ────────────────────────────────
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          },
-        },
         groups: {
           select: { id: true, title: true, sortOrder: true },
           orderBy: { sortOrder: 'asc' },

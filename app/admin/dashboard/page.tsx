@@ -4,24 +4,24 @@ import LogoutButton from '@/components/admin/LogoutButton'
 import { prisma } from '@/lib/prisma'
 
 async function getStats() {
-  const [categories, tutorials, quizzes, challenges, references, donations] =
+  const [tutorials, chapters, quizzes, challenges, references, donations] =
     await Promise.all([
-      prisma.category.count(),
       prisma.tutorial.count(),
+      prisma.chapter.count(),
       prisma.quizQuestion.count(),
       prisma.codeChallenge.count(),
       prisma.reference.count(),
       prisma.donation.count(),
     ])
-  return { categories, tutorials, quizzes, challenges, references, donations }
+  return { tutorials, chapters, quizzes, challenges, references, donations }
 }
 
 export default async function DashboardPage() {
   const stats = await getStats()
 
   const cards = [
-    { label: 'categories', value: stats.categories, cmd: 'ls ./categories', href: '/admin/categories' },
     { label: 'tutorials', value: stats.tutorials, cmd: 'ls ./tutorials', href: '/admin/tutorials' },
+    { label: 'chapters', value: stats.chapters, cmd: 'ls ./chapters', href: '/admin/tutorials' },
     { label: 'quizzes', value: stats.quizzes, cmd: 'cat ./quizzes', href: '/admin/quizzes' },
     { label: 'challenges', value: stats.challenges, cmd: 'ls ./challenges', href: '/admin/challenges' },
     { label: 'references', value: stats.references, cmd: 'man ./references', href: '/admin/references' },

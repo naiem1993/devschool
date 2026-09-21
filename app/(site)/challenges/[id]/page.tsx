@@ -44,7 +44,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
     .findUnique({
       where: { id },
       include: {
-        tutorial: { select: { id: true, title: true, slug: true, category: { select: { name: true, slug: true } } } },
+        tutorial: { select: { id: true, title: true, slug: true } },
         testCases: { orderBy: { testCaseOrder: 'asc' } },
       },
     })
@@ -80,7 +80,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <header className="mb-6">
             <div className="flex items-center gap-3 mb-3 flex-wrap">
-              <Link href={`/courses/${challenge.tutorial.category.slug}`} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition">📂 {challenge.tutorial.category.name}</Link>
+              <Link href={`/tutorials/${challenge.tutorial.slug}`} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition">📂 {challenge.tutorial.title}</Link>
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold uppercase tracking-wider">{challenge.difficulty}</span>
               <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {challenge.points} pts</span>
             </div>

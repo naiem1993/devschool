@@ -10,16 +10,12 @@ export default async function EditTutorialPage({
 }) {
   const { id } = await params
 
-  const [tutorial, categories] = await Promise.all([
-    prisma.tutorial.findUnique({
-      where: { id },
-      include: {
-        category: { select: { name: true } },
-        _count: { select: { chapters: true, groups: true } },
-      },
-    }),
-    prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
-  ])
+  const tutorial = await prisma.tutorial.findUnique({
+    where: { id },
+    include: {
+      _count: { select: { chapters: true, groups: true } },
+    },
+  })
   if (!tutorial) return notFound()
 
   return (
@@ -45,11 +41,9 @@ export default async function EditTutorialPage({
             description: tutorial.description || '',
             difficulty: tutorial.difficulty,
             duration: tutorial.duration,
-            categoryId: tutorial.categoryId,
             isActive: tutorial.isActive,
             isPublished: tutorial.isPublished,
           }}
-          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
           mode="edit"
         />
       </div>

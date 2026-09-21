@@ -4,7 +4,7 @@ import { paginationSchema, searchSchema, validateQuery } from '@/lib/validators'
 
 /**
  * GET /api/tutorials
- * Query params: page, limit, sort, order, q, category, difficulty
+ * Query params: page, limit, sort, order, q, difficulty
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
   const sort = validated.data?.sort ?? 'createdAt'
   const order = validated.data?.order ?? 'desc'
   const q = validated.data?.q
-  const category = validated.data?.category
   const difficulty = validated.data?.difficulty
 
   const skip = (page - 1) * limit
@@ -34,11 +33,9 @@ export async function GET(request: NextRequest) {
     if (q) {
       where.AND = [
         { title: { search: q } },
-        ...(category ? [{ categoryId: category }] : []),
         ...(difficulty ? [{ difficulty }] : []),
       ]
     } else {
-      if (category) where.categoryId = category
       if (difficulty) where.difficulty = difficulty
     }
 
@@ -54,13 +51,6 @@ export async function GET(request: NextRequest) {
           duration: true,
           rating: true,
           createdAt: true,
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
         },
         orderBy: { [sort]: order },
         skip,
@@ -119,9 +109,6 @@ export async function POST(request: NextRequest) {
 
     const tutorial = await prisma.tutorial.create({
       data: tutorialData,
-      include: {
-        category: { select: { name: true, slug: true } },
-      },
     })
 
     return NextResponse.json(tutorial, { status: 201 })
