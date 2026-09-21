@@ -10,7 +10,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: 'সব কোর্স', href: '/courses' },
+    { name: 'টিউটোরিয়াল', href: '/tutorials' },
     { name: 'রেফারেন্স', href: '/references' },
     { name: 'প্লেগ্রাউন্ড', href: '/playground' },
     { name: 'চ্যালেঞ্জ', href: '/challenges' },

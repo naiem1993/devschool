@@ -13,7 +13,7 @@ export default function TutorialNotFound() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/courses"
+            href="/tutorials"
             className="px-6 py-3 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition"
           >
             সব টিউটোরিয়াল দেখুন

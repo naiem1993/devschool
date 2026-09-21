@@ -20,7 +20,7 @@ export async function revalidateTutorialPaths(tutorialId: string): Promise<void>
     if (!tut) return
 
     revalidatePath('/')
-    revalidatePath('/courses')
+    revalidatePath('/tutorials')
     revalidatePath('/sitemap.xml')
     // layout mode — সব nested chapter/lesson page একসাথে revalidate
     revalidatePath(`/tutorials/${tut.slug}`, 'layout')
@@ -36,7 +36,7 @@ export async function revalidateTutorialPaths(tutorialId: string): Promise<void>
 export function revalidateTutorialListPaths(): void {
   try {
     revalidatePath('/')
-    revalidatePath('/courses')
+    revalidatePath('/tutorials')
     revalidatePath('/sitemap.xml')
   } catch (e) {
     console.error('revalidateTutorialListPaths failed:', e)

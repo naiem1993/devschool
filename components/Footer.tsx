@@ -61,7 +61,7 @@ export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterCon
           </div>
 
           <FooterCol title="Learn">
-            <FooterLink href="/courses">Categories</FooterLink>
+            <FooterLink href="/tutorials">Tutorials</FooterLink>
             <FooterLink href="/challenges">Challenges</FooterLink>
             <FooterLink href="/references">References</FooterLink>
             <FooterLink href="/search">Search</FooterLink>

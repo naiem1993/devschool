@@ -399,7 +399,7 @@ export default function HomeExtras({
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight">আজই শুরু করুন — একদম ফ্রি</h2>
           <p className="text-slate-600 dark:text-slate-400 mt-3">কোনো কার্ড লাগবে না, কোনো ট্রায়াল নেই। শুধু শেখা।</p>
           <a
-            href="/courses"
+            href="/tutorials"
             className="inline-block mt-7 px-8 py-4 rounded-2xl bg-[#22C55E] text-[#04140a] font-bold hover:scale-105 hover:bg-[#4ADE80] transition"
           >
             🚀 এখনই শুরু করুন

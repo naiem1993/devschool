@@ -153,7 +153,7 @@ export default function SiteSettingsForm({
                 className="admin-input"
                 value={hero.cta1Href}
                 onChange={(e) => updateHero({ cta1Href: e.target.value })}
-                placeholder="/courses"
+                placeholder="/tutorials"
                 required
               />
             </Field>

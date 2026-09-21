@@ -98,21 +98,6 @@ export default function LessonSidebar({
 
         <nav aria-label="Tutorial navigation" className="py-2 pb-6">
           <ul>
-            <li>
-              <Link
-                href={`/tutorials/${tutorialSlug}`}
-                onClick={() => setOpen(false)}
-                className={[
-                  'block px-5 py-2 text-[13.5px] border-l-[3px] transition-all',
-                  isHome
-                    ? 'bg-gradient-to-r from-[#22C55E]/20 to-[#22C55E]/5 border-[#22C55E] text-[#15803d] dark:text-[#4ADE80] font-bold'
-                    : 'border-transparent text-slate-700 dark:text-slate-200 hover:bg-[#22C55E]/10 dark:hover:bg-[#22C55E]/5 hover:border-[#22C55E]/40 dark:hover:border-[#4ADE80]/40',
-                ].join(' ')}
-              >
-                {tutorialTitle.toUpperCase()} HOME
-              </Link>
-            </li>
-
             {sections.map((section) => {
               if (section.type === 'group') {
                 return (
