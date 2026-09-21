@@ -27,7 +27,7 @@ export const DEFAULT_HERO: HeroContent = {
     'ইনটরঅ্যাকটিভ টিউটোরিয়াল, রিয়াল-ওয়ার্ল্ড প্রজেক্ট, কোড চ্যালেঞ্জ ও কুইজের মাধ্যমে হাতে-কলমে কোডিং শিখুন।',
   searchPlaceholder: 'কী শিখতে চান? (যেমন: JavaScript, Python, React...)',
   cta1Label: '🚀 টিউটোরিয়াল ব্রাউজ করুন',
-  cta1Href: '/categories',
+  cta1Href: '/courses',
   cta2Label: '⚡ কোড চ্যালেঞ্জ ট্রাই করুন',
   cta2Href: '/challenges',
   statLabels: [

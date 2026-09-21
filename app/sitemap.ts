@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
-    { url: `${SITE_URL}/categories`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/courses`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${SITE_URL}/references`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/challenges`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/tools`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
@@ -43,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ])
 
     const categoryUrls: MetadataRoute.Sitemap = categories.map((c) => ({
-      url: `${SITE_URL}/categories/${c.slug}`,
+      url: `${SITE_URL}/courses/${c.slug}`,
       lastModified: c.updatedAt,
       changeFrequency: 'weekly',
       priority: 0.8,

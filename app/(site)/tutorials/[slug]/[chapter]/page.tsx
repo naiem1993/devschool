@@ -131,7 +131,7 @@ export default async function ChapterPage({ params }: PageProps) {
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
         <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
         <span>/</span>
-        <Link href={`/categories/${tutorial.category.slug}`} className="hover:text-[#22C55E]">
+        <Link href={`/courses/${tutorial.category.slug}`} className="hover:text-[#22C55E]">
           {tutorial.category.name}
         </Link>
         <span>/</span>

@@ -111,7 +111,7 @@ export default function CategoriesFilter({ categories }: { categories: CategoryC
           {filtered.map((c) => (
             <Link
               key={c.id}
-              href={`/categories/${c.slug}`}
+              href={`/courses/${c.slug}`}
               className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-6 hover:border-[#22C55E]/50 hover:-translate-y-1 transition-all duration-200 flex flex-col"
             >
               <div className="flex items-start justify-between mb-4">

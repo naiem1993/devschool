@@ -53,12 +53,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${category.name} টিউটোরিয়াল | DevSchool`,
       description,
       keywords: [category.name, 'tutorial', 'programming', 'learn', 'DevSchool'],
-      alternates: { canonical: `/categories/${slug}` },
+      alternates: { canonical: `/courses/${slug}` },
       openGraph: {
         title: `${category.name} টিউটোরিয়াল | DevSchool`,
         description,
         type: 'website',
-        url: `/categories/${slug}`,
+        url: `/courses/${slug}`,
         siteName: 'DevSchool',
         locale: 'bn_BD',
       },
@@ -187,7 +187,7 @@ export default async function CategoryPage({ params }: PageProps) {
               <li aria-hidden>/</li>
               <li>
                 <Link
-                  href="/categories"
+                  href="/courses"
                   className="hover:text-[#22C55E] transition"
                 >
                   ক্যাটাগরি
@@ -260,7 +260,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 আমরা শীঘ্রই এই ক্যাটাগরির টিউটোরিয়াল যোগ করব।
               </p>
               <Link
-                href="/categories"
+                href="/courses"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
               >
                 অন্য ক্যাটাগরি দেখুন →
@@ -303,7 +303,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 {otherCategories.map((c) => (
                   <Link
                     key={c.id}
-                    href={`/categories/${c.slug}`}
+                    href={`/courses/${c.slug}`}
                     className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-4 hover:border-[#22C55E]/50 hover:shadow-md transition"
                   >
                     <div className="text-3xl mb-2" aria-hidden>

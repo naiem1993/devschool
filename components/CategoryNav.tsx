@@ -88,7 +88,7 @@ export default function CategoryNav({ categories }: { categories: Cat[] }) {
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((c) => {
-            const href = `/categories/${c.slug}`
+            const href = `/courses/${c.slug}`
             const isActive = pathname === href || pathname?.startsWith(href + '/')
 
             return (

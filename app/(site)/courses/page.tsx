@@ -25,12 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'সব ক্যাটাগরি — টিউটোরিয়াল ব্রাউজ করুন | DevSchool',
       description,
       keywords: ['categories', 'tutorials', 'programming', 'learn to code', 'DevSchool'],
-      alternates: { canonical: '/categories' },
+      alternates: { canonical: '/courses' },
       openGraph: {
         title: 'সব ক্যাটাগরি | DevSchool',
         description,
         type: 'website',
-        url: '/categories',
+        url: '/courses',
         siteName: 'DevSchool',
         locale: 'bn_BD',
       },
@@ -142,7 +142,7 @@ export default async function CategoriesListingPage() {
     hasPart: categories.slice(0, 20).map((c) => ({
       '@type': 'Course',
       name: c.name,
-      url: absoluteUrl(`/categories/${c.slug}`),
+      url: absoluteUrl(`/courses/${c.slug}`),
     })),
   }
 

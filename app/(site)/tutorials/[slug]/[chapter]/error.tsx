@@ -62,7 +62,7 @@ export default function ChapterError({
               আবার চেষ্টা করুন 🔄
             </button>
             <Link
-              href="/categories"
+              href="/courses"
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#22C55E] hover:text-[#15803d] dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#22C55E]/60 dark:hover:text-[#4ADE80]"
             >
               📚 সব টিউটোরিয়াল

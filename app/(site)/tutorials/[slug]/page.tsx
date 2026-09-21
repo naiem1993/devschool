@@ -101,12 +101,12 @@ export default async function TutorialPage({ params }: PageProps) {
           হোম
         </Link>
         <span>/</span>
-        <Link href="/categories" className="hover:text-[#22C55E]">
+        <Link href="/courses" className="hover:text-[#22C55E]">
           ক্যাটাগরি
         </Link>
         <span>/</span>
         <Link
-          href={`/categories/${tutorial.category.slug}`}
+          href={`/courses/${tutorial.category.slug}`}
           className="hover:text-[#22C55E]"
         >
           {tutorial.category.name}

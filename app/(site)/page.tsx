@@ -160,7 +160,7 @@ export default async function HomePage() {
               আবার চেষ্টা করুন 🔄
             </button>
             <Link
-              href="/categories"
+              href="/courses"
               className="text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline"
             >
               ব্রাউজিং চালিয়ে যান →
@@ -215,7 +215,7 @@ export default async function HomePage() {
               HTML, CSS, JavaScript, React, Next.js শিখুন এবং মডার্ন ইউজার ইন্টারফেস তৈরি করুন।
             </p>
             <Link
-              href="/categories"
+              href="/courses"
               className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition"
             >
               ট্র্যাক শুরু করুন →
@@ -231,7 +231,7 @@ export default async function HomePage() {
               Node.js, Express, Python, Databases, API Design এবং সার্ভার আর্কিটেকচার মাস্টার করুন।
             </p>
             <Link
-              href="/categories"
+              href="/courses"
               className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition"
             >
               ট্র্যাক শুরু করুন →
@@ -247,7 +247,7 @@ export default async function HomePage() {
               ফ্রন্টএন্ড ও ব্যাকএন্ড দুই দিকেই দক্ষ হন। ডাটাবেস, ডিপ্লয়মেন্ট, অথেন্টিকেশন সব শিখুন।
             </p>
             <Link
-              href="/categories"
+              href="/courses"
               className="inline-flex items-center gap-1 text-sm font-semibold text-[#15803d] dark:text-[#4ADE80] mt-6 group-hover:translate-x-1 transition"
             >
               ট্র্যাক শুরু করুন →

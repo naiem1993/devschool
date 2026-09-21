@@ -84,7 +84,7 @@ export default function ProgressClient() {
           <Link href="/challenges" className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">
             ⚔️ চ্যালেঞ্জ দেখুন
           </Link>
-          <Link href="/categories" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
+          <Link href="/courses" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
             📚 টিউটোরিয়াল দেখুন
           </Link>
         </div>

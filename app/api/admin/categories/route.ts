@@ -14,8 +14,8 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error }, { status: 400 })
   try {
     const cat = await prisma.category.create({ data: data! })
-    // ISR cache invalidate — icon/name/description সাথে সাথে /categories এ দেখাবে
-    revalidatePath('/categories')
+    // ISR cache invalidate — icon/name/description সাথে সাথে /courses এ দেখাবে
+    revalidatePath('/courses')
     revalidatePath('/admin/categories')
     return NextResponse.json(cat, { status: 201 })
   } catch (e: any) {

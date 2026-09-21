@@ -13,7 +13,7 @@ export const metadata = {
 }
 
 const QUICK_LINKS = [
-  { href: '/categories', label: 'ক্যাটাগরি', icon: '📚' },
+  { href: '/courses', label: 'ক্যাটাগরি', icon: '📚' },
   { href: '/challenges', label: 'চ্যালেঞ্জ', icon: '⚡' },
   { href: '/references', label: 'রেফারেন্স', icon: '📖' },
   { href: '/search', label: 'সার্চ', icon: '🔍' },

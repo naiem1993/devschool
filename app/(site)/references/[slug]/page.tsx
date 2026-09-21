@@ -137,7 +137,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
               <li aria-hidden>/</li>
               <li>
                 <Link
-                  href={`/categories/${reference.category.slug}`}
+                  href={`/courses/${reference.category.slug}`}
                   className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
                   {reference.category.name}
@@ -156,7 +156,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
           <header className="mb-8">
             <div className="flex items-center gap-3 mb-4 flex-wrap">
               <Link
-                href={`/categories/${reference.category.slug}`}
+                href={`/courses/${reference.category.slug}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition"
               >
                 📂 {reference.category.name}

@@ -19,9 +19,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (error) return NextResponse.json({ error }, { status: 400 })
   try {
     const cat = await prisma.category.update({ where: { id }, data: data! })
-    // ISR cache invalidate — icon সেভ করলেই /categories এ সাথে সাথে দেখাবে
-    revalidatePath('/categories')
-    revalidatePath(`/categories/${cat.slug}`)
+    // ISR cache invalidate — icon সেভ করলেই /courses এ সাথে সাথে দেখাবে
+    revalidatePath('/courses')
+    revalidatePath(`/courses/${cat.slug}`)
     revalidatePath('/admin/categories')
     return NextResponse.json(cat)
   } catch (e: any) {

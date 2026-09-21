@@ -51,7 +51,7 @@ export default function ChapterNotFound() {
         {/* CTAs */}
         <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/categories"
+            href="/courses"
             className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-bold text-[#050806] transition hover:bg-[#4ADE80] hover:shadow-[0_0_28px_rgba(34,197,94,0.45)]"
           >
             <span aria-hidden>📚</span> সব টিউটোরিয়াল
