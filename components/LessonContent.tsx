@@ -33,7 +33,7 @@ type Token =
   | { kind: 'link'; href: string; label: string; color: 'green' | 'blue' | 'gray' }
 
 const MARKER_RE =
-  /\[\[(tryit|note|warn|tip|important)\]([\s\S]*?)\[\[\/\1\]\]|\[\[link:([^|\]]+)\|([^|\]]+)(?:\|(\w+))?\]\]/g
+  /\[\[\s*(tryit|note|warn|tip|important)\s*\]\s*([\s\S]*?)\s*\[\[\s*\/\s*\1\s*\]\]|\[\[\s*link\s*:\s*([^|\]]+?)\s*\|\s*([^|\]]+?)\s*(?:\|\s*(\w+)\s*)?\]\]/g
 
 /** basic XSS safety: strip <script>, on* attrs, javascript: URLs */
 function sanitize(html: string): string {
@@ -41,6 +41,56 @@ function sanitize(html: string): string {
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
     .replace(/javascript:/gi, '')
+}
+
+const VOID_TAGS = new Set([
+  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+  'link', 'meta', 'param', 'source', 'track', 'wbr',
+])
+
+const TAG_RE = /<\/?([a-zA-Z][a-zA-Z0-9-]*)(?:\s[^>]*)?\/?>/g
+
+type OpenTag = { name: string; open: string }
+
+/**
+ * প্রতি html টুকরোকে self-contained বানায়।
+ * আগের টুকরোতে খোলা ট্যাগ থাকলে এই টুকরোর শুরুতে attribute সহ reopen করে,
+ * এবং এই টুকরোর শেষে খোলা ট্যাগগুলো বন্ধ করে দেয়।
+ */
+function balanceHtmlChunks(tokens: Token[]): Token[] {
+  const stack: OpenTag[] = []
+
+  return tokens.map((t) => {
+    if (t.kind !== 'html') return t
+
+    const reopen = stack.map(({ open }) => open).join('')
+
+    TAG_RE.lastIndex = 0
+    let m: RegExpExecArray | null
+    while ((m = TAG_RE.exec(t.value)) !== null) {
+      const raw = m[0]
+      const name = m[1].toLowerCase()
+
+      if (VOID_TAGS.has(name)) continue
+
+      if (raw.startsWith('</')) {
+        const idx = stack.map((s) => s.name).lastIndexOf(name)
+        if (idx !== -1) stack.splice(idx, 1)
+      } else if (!raw.endsWith('/>')) {
+        stack.push({ name, open: raw })
+      }
+    }
+
+    const close = [...stack]
+      .reverse()
+      .map(({ name }) => `</${name}>`)
+      .join('')
+
+    return {
+      kind: 'html' as const,
+      value: reopen + t.value + close,
+    }
+  })
 }
 
 function tokenize(raw: string): Token[] {
@@ -82,7 +132,7 @@ function tokenize(raw: string): Token[] {
 
   const tail = raw.slice(cursor)
   if (tail.trim()) tokens.push({ kind: 'html', value: sanitize(tail) })
-  return tokens
+  return balanceHtmlChunks(tokens)
 }
 
 export default function LessonContent({ content, slug, lessonPath }: Props) {

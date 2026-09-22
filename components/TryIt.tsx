@@ -29,7 +29,7 @@ type Props = {
  */
 export default function TryIt({
   code,
-  label = 'Try it Yourself',
+  label = 'রান করুন',
   title = 'index.html',
   slug,
   lessonPath,
@@ -121,7 +121,7 @@ export default function TryIt({
               open ? '' : 'rotate-90'
             }`}
           >
-            {open ? '✕' : '»'}
+            {open ? '✕' : '▶'}
           </span>
           {open ? 'বন্ধ করুন' : label}
         </button>
@@ -134,8 +134,9 @@ export default function TryIt({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 border border-emerald-300/70 dark:border-emerald-800/70 text-slate-700 dark:text-slate-200 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] font-semibold text-[13.5px] px-4 py-2.5 rounded-lg transition-colors"
           >
+            <span aria-hidden="true">🖥️</span>
+            এডিটর
             <span aria-hidden="true">↗</span>
-            নতুন ট্যাবে
           </a>
         ) : null}
       </div>

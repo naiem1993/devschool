@@ -72,9 +72,10 @@ export default function RichEditor({
     const el = ref.current
     if (!el) return
     el.focus()
+    const html = text.trim().replace(/\n/g, '<br>')
     const sel = window.getSelection()
     if (!sel || sel.rangeCount === 0) {
-      el.innerHTML += '<br>' + text
+      el.innerHTML += '<div>' + html + '</div>'
       fire()
       return
     }

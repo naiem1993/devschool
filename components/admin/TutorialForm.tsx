@@ -15,6 +15,7 @@ export default function TutorialForm({
     title: initial?.title || '',
     slug: initial?.slug || '',
     description: initial?.description || '',
+    icon: initial?.icon || '',
     difficulty: initial?.difficulty || 'Beginner',
     duration: initial?.duration ?? 0,
     isPublished: initial?.isPublished ?? false,
@@ -107,6 +108,20 @@ export default function TutorialForm({
           value={form.description || ''}
           onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
         />
+      </div>
+
+      <div>
+        <label className="admin-label">&gt; Icon (emoji)</label>
+        <input
+          className="admin-input"
+          placeholder="যেমন: 🌐 🎨 🟨 🐍 (ফাঁকা রাখলেও চলবে)"
+          value={form.icon || ''}
+          onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))}
+          maxLength={20}
+        />
+        <p className="text-xs text-slate-500 mt-1">
+          কার্ডে টিউটোরিয়ালের পাশে এই emoji দেখা যাবে।
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

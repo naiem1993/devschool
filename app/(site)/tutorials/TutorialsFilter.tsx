@@ -8,6 +8,7 @@ export type TutorialCard = {
   title: string
   slug: string
   description: string | null
+  icon: string | null
   difficulty: string
   viewCount: number
   duration: number | null
@@ -18,14 +19,17 @@ export type TutorialCard = {
 
 type SortKey = 'popular' | 'title' | 'latest'
 
-const inputBase =
-  'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
-
 const DIFFICULTIES = [
   { value: 'all', label: 'সব লেভেল' },
   { value: 'beginner', label: 'বিগিনার' },
   { value: 'intermediate', label: 'ইন্টারমিডিয়েট' },
   { value: 'advanced', label: 'অ্যাডভান্সড' },
+]
+
+const SORTS: { value: SortKey; label: string }[] = [
+  { value: 'latest', label: 'সর্বশেষ' },
+  { value: 'popular', label: 'জনপ্রিয়' },
+  { value: 'title', label: 'নাম (A-Z)' },
 ]
 
 const difficultyLabel = (d: string) => {
@@ -77,53 +81,84 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
 
   return (
     <>
-      {/* ─── Controls ─── */}
-      <div className="space-y-3 mb-8">
+      {/* ─── Toolbar ─── */}
+      <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-[#0a0f0c] p-4 sm:p-5 mb-6">
+        {/* Search */}
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-            🔍
-          </span>
+          <svg
+            aria-hidden
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" strokeLinecap="round" />
+          </svg>
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="টিউটোরিয়াল খুঁজুন... (যেমন: HTML, JavaScript, Python)"
             aria-label="টিউটোরিয়াল সার্চ"
-            className={`w-full pl-11 pr-4 py-3 rounded-2xl text-sm ${inputBase}`}
+            className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-sm bg-white dark:bg-[#050806] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <select
-            value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value)}
-            aria-label="লেভেল ফিল্টার"
-            className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
-          >
-            {DIFFICULTIES.map((d) => (
-              <option key={d.value} value={d.value}>
-                {d.label}
-              </option>
-            ))}
-          </select>
+        {/* Filter row */}
+        <div className="mt-4 flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* Difficulty pills */}
+          <div className="flex flex-wrap items-center gap-2">
+            {DIFFICULTIES.map((d) => {
+              const active = difficultyFilter === d.value
+              return (
+                <button
+                  key={d.value}
+                  type="button"
+                  onClick={() => setDifficultyFilter(d.value)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
+                    active
+                      ? 'bg-[#22C55E] border-[#22C55E] text-black'
+                      : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:border-[#22C55E]/50 hover:text-[#22C55E]'
+                  }`}
+                >
+                  {d.label}
+                </button>
+              )
+            })}
+          </div>
 
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortKey)}
-            aria-label="সাজানোর ধরন"
-            className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
-          >
-            <option value="latest">সর্বশেষ</option>
-            <option value="popular">জনপ্রিয়</option>
-            <option value="title">নাম (A-Z)</option>
-          </select>
+          {/* Sort */}
+          <div className="lg:ml-auto flex items-center gap-2">
+            <span className="text-xs text-slate-400 hidden sm:inline">সাজান:</span>
+            <div className="inline-flex rounded-full border border-slate-200 dark:border-white/10 p-0.5 bg-white dark:bg-[#050806]">
+              {SORTS.map((s) => {
+                const active = sort === s.value
+                return (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() => setSort(s.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${
+                      active
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-[#22C55E]'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* ─── Result Count ─── */}
       <div className="flex items-center justify-between mb-5 text-sm">
         <p className="text-slate-500 dark:text-slate-400">
-          {filtered.length} টি টিউটোরিয়াল
+          <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> টি টিউটোরিয়াল
           {activeFilters && (
             <span className="ml-2 text-xs text-[#22C55E]">(ফিল্টার করা)</span>
           )}
@@ -164,9 +199,14 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
                 className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-3 gap-2">
-                  <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-[#22C55E] transition line-clamp-2">
-                    {t.title}
-                  </h3>
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <span className="text-2xl leading-none flex-shrink-0" aria-hidden>
+                      {t.icon || '📚'}
+                    </span>
+                    <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-[#22C55E] transition line-clamp-2">
+                      {t.title}
+                    </h3>
+                  </div>
                   <span className={`flex-shrink-0 text-[10px] font-semibold uppercase px-2 py-0.5 rounded border ${diff.cls}`}>
                     {diff.text}
                   </span>
@@ -187,8 +227,13 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
                     <span className="inline-flex items-center gap-1">
                       📖 {t.chapterCount} চ্যাপ্টার
                     </span>
+                    {t.duration ? (
+                      <span className="inline-flex items-center gap-1">
+                        ⏱ {t.duration} মিনিট
+                      </span>
+                    ) : null}
                   </div>
-                  <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1 text-[#22C55E] font-semibold group-hover:gap-2 transition-all">
                     শুরু করুন →
                   </span>
                 </div>

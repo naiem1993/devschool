@@ -18,6 +18,8 @@ model Tutorial {
   title       String
   slug        String   @unique
   description String?
+  /// কার্ডে দেখানোর জন্য emoji (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক
+  icon        String?
   difficulty  String   @default("beginner")
   viewCount   Int      @default(0)
   isActive    Boolean  @default(true)

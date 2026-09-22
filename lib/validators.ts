@@ -6,6 +6,8 @@ export const createTutorialSchema = z.object({
   title: z.string().min(2).max(255),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe'),
   description: z.string().optional(),
+  /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
+  icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).default('Beginner'),
   isActive: z.boolean().default(true),
   isPublished: z.boolean().default(false),
@@ -17,6 +19,8 @@ export const updateTutorialSchema = z.object({
   title: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
   description: z.string().optional(),
+  /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
+  icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
   isActive: z.boolean().optional(),
   isPublished: z.boolean().optional(),
