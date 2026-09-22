@@ -72,8 +72,8 @@ model Tutorial {
 | Part | কাজ | অবস্থা |
 |---|---|---|
 | 0 | প্রজেক্ট পড়া ও প্রস্তুতি | ✅ **সম্পন্ন** |
-| 1 | Prisma schema-তে দুই ভাষার ঘর | ⏸️ **শুরু হয়নি** |
-| 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ⏸️ শুরু হয়নি |
+| 1 | Prisma schema-তে দুই ভাষার ঘর | ✅ **সম্পন্ন** |
+| 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ⏸️ শুরু হয়নি |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ⏸️ শুরু হয়নি |
 | 5 | সব লেখা dictionary-তে | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 0 শেষ, Part 1 শুরু করার অপেক্ষায়।
+**বর্তমান অবস্থান:** Part 2 সম্পন্ন, Part 3 শুরু করার অপেক্ষায়।
 
 ---
 
@@ -137,6 +137,44 @@ model Tutorial {
 - `edit_file`-এ **CRLF (`\r\n`)** দিতে হবে `schema.prisma`-র জন্য (Windows line ending)
 - কিন্তু `enbn.md`-এর জন্য **LF (`\n`)** ব্যবহার করতে হবে (আমি যখন তৈরি করেছি তখন LF দিয়েছি)
 - বড় ফাইল (≥১০KB) `create_file` দিয়ে overwrite করতে গেলে silent fail করে — ছোট ছোট `edit_file` ব্যবহার করাই নিরাপদ
+- `edit_multiple_files` atomic — একটার oldContent fail হলে সব বাতিল হয়। তাই একটা একটা `edit_file` নিরাপদ।
+
+---
+
+## 🟢 PART 2-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২২)
+
+### কী তৈরি হয়েছে (৬টা নতুন ফাইল)
+
+| # | ফাইল | কাজ |
+|---|---|---|
+| ১ | `lib/i18n/config.ts` | LOCALES = ['bn','en'], DEFAULT_LOCALE = 'bn', LOCALE_COOKIE = 'ds_locale', LOCALE_COOKIE_MAX_AGE, LOCALE_DISPLAY_NAMES, LOCALE_TAGS, isLocale(), getOtherLocale() |
+| ২ | `lib/i18n/locale.ts` | `getLocale()` (cookie → Accept-Language → ডিফল্ট), `getLocaleFromParams()` |
+| ৩ | `lib/i18n/dictionaries/bn.ts` | বাংলা UI লেখা — সব key-এর আসল আকার (source of truth) |
+| ৪ | `lib/i18n/dictionaries/en.ts` | ইংরেজি UI লেখা — হুবহু একই key |
+| ৫ | `lib/i18n/dictionaries/index.ts` | `getDictionary(locale)`, `getDictionarySync(locale)` |
+| ৬ | `lib/i18n/pick.ts` | `pick()`, `pickOr()` — fallback নিয়ম |
+
+### Dictionary-র key গ্রুপ
+- `nav`: tutorials, references, playground, challenges, tools, progress, search, about
+- `common`: home, next, prev, complete, loading, notFound, error, back, close, yes, no
+- `tutorial`: example, tryIt, onThisPage, chapters, lessons, previousLesson, nextLesson
+- `footer`: about, contact, privacy, terms, copyright
+- `notFound`: title, message, goHome
+- `error`: title, message, retry
+- `language`: switchTo, bengali, english
+
+### tsc যাচাই
+- `npx tsc --noEmit 2>&1 | findstr "i18n" > i18n-errors2.txt` (ইউজার নিজে terminal-এ চালিয়েছেন)
+- **ফলাফল: খালি** — মানে `lib/i18n/` ফোল্ডারে কোনো error নেই ✅
+- পুরো প্রজেক্টের tsc fail আছে — সব **Part 1-এর কারণে** (কোডে এখনো `tutorial.title` ব্যবহৃত), Part 6-এ ঠিক হবে
+
+### 🐛 যেই সমস্যা হয়েছিল এবং সমাধান
+**সমস্যা:** `bn.ts`-এ `as const` দেওয়ার কারণে TypeScript ভেবেছিল শুধু বাংলা লেখাই বৈধ। তাই `en.ts`-এ ইংরেজি লেখা দিলে error TS2322।
+**সমাধান:** `as const` মুছে ফেলা হয়েছে — এখন `typeof bn` সব key-কে `string` টাইপ হিসেবে ধরে।
+
+### যাচাই করার কমান্ড (whitelist-এ নেই)
+- `npx tsc --noEmit 2>&1 | findstr "i18n" > i18n-errors2.txt` — ইউজার নিজে চালান
+- `read_file` বড় tsc-errors.txt (৬৪KB) পড়তে পারে না — filter করে ছোট ফাইল লাগে
 
 ---
 
@@ -297,5 +335,5 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 
 ---
 
-**সর্বশেষ আপডেট:** Part 0 সম্পন্ন — ২০২৬-০৯-২২
-**পরবর্তী কাজ:** PART 1 — Prisma schema-তে `*Bn @map("...")` + `*En` যোগ করা
+**সর্বশেষ আপডেট:** Part 2 সম্পন্ন — ২০২৬-০৯-২২
+**পরবর্তী কাজ:** PART 3 — `proxy.ts`-এ ভাষা দারোয়ান (locale detection + redirect + cookie)

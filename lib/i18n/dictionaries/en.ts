@@ -1,0 +1,79 @@
+// ==========================================
+//  ENGLISH DICTIONARY (en) — English UI strings
+// ==========================================
+//  এই ফাইল bn.ts-এর হুবহু একই আকার (একই key) হতে হবে।
+//  কোনো key বাদ পড়লে TypeScript সাথে সাথে ধরে ফেলবে।
+
+import type { Dictionary } from './bn';
+
+const en: Dictionary = {
+  // ── Header navigation ──
+  nav: {
+    tutorials: 'Tutorials',
+    references: 'References',
+    playground: 'Playground',
+    challenges: 'Challenges',
+    tools: 'Tools',
+    progress: 'Progress',
+    search: 'Search',
+    about: 'About',
+  },
+
+  // ── Common buttons/labels ──
+  common: {
+    home: 'Home',
+    next: 'Next',
+    prev: 'Prev',
+    complete: 'Complete ✓',
+    loading: 'Loading...',
+    notFound: 'Not found',
+    error: 'Error',
+    back: 'Back',
+    close: 'Close',
+    yes: 'Yes',
+    no: 'No',
+  },
+
+  // ── Tutorial page ──
+  tutorial: {
+    example: 'Example',
+    tryIt: 'Try It',
+    onThisPage: 'On this page',
+    chapters: 'Chapters',
+    lessons: 'Lessons',
+    previousLesson: 'Previous lesson',
+    nextLesson: 'Next lesson',
+  },
+
+  // ── Footer ──
+  footer: {
+    about: 'About',
+    contact: 'Contact',
+    privacy: 'Privacy Policy',
+    terms: 'Terms',
+    copyright: '© DevSchool — All rights reserved',
+  },
+
+  // ── 404 page ──
+  notFound: {
+    title: 'Page not found',
+    message: 'Sorry, the page you are looking for does not exist.',
+    goHome: 'Go home',
+  },
+
+  // ── Error page ──
+  error: {
+    title: 'Something went wrong',
+    message: 'Please try again. If the problem persists, let us know.',
+    retry: 'Try again',
+  },
+
+  // ── Language switcher ──
+  language: {
+    switchTo: 'Switch language',
+    bengali: 'বাংলা',
+    english: 'English',
+  },
+};
+
+export default en;
