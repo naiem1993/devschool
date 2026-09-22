@@ -14,10 +14,12 @@ datasource db {
 //  Tutorial এখন top-level entity.
 // ==========================================
 model Tutorial {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  description String?
+  id            String   @id @default(cuid())
+  titleBn       String   @map("title")
+  titleEn       String?
+  slug          String   @unique
+  descriptionBn String?  @map("description")
+  descriptionEn String?
   /// কার্ডে দেখানোর জন্য emoji (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক
   icon        String?
   difficulty  String   @default("beginner")
@@ -49,7 +51,8 @@ model ChapterGroup {
   id         String   @id @default(cuid())
   tutorialId String
   tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  title      String
+  titleBn    String   @map("title")
+  titleEn    String?
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -74,13 +77,16 @@ model Chapter {
   groupId    String?
   group      ChapterGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
-  title     String
-  slug      String
-  sortOrder Int    @default(0)
+  titleBn       String  @map("title")
+  titleEn       String?
+  slug          String
+  sortOrder     Int     @default(0)
 
   // শুধু single-page chapter-এর জন্য (nested হলে null)
-  content     String?
-  codeExample String?
+  contentBn     String? @map("content")
+  contentEn     String?
+  codeExampleBn String? @map("codeExample")
+  codeExampleEn String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -101,11 +107,14 @@ model Lesson {
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-  title       String
-  slug        String
-  content     String
-  codeExample String?
-  sortOrder   Int     @default(0)
+  titleBn       String  @map("title")
+  titleEn       String?
+  slug          String
+  contentBn     String  @map("content")
+  contentEn     String?
+  codeExampleBn String? @map("codeExample")
+  codeExampleEn String?
+  sortOrder     Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,8 +130,10 @@ model QuizQuestion {
   id          String   @id @default(cuid())
   tutorialId  String
   tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  question    String
-  explanation String?
+  questionBn    String  @map("question")
+  questionEn    String?
+  explanationBn String? @map("explanation")
+  explanationEn String?
   orderIndex  Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -137,7 +148,8 @@ model QuizOption {
   id          String       @id @default(cuid())
   questionId  String
   question    QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  text        String
+  textBn      String       @map("text")
+  textEn      String?
   isCorrect   Boolean      @default(false)
   optionOrder Int          @default(0)
   createdAt   DateTime     @default(now())
@@ -153,9 +165,11 @@ model CodeChallenge {
   id          String   @id @default(cuid())
   tutorialId  String
   tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  title       String
-  description String
-  starterCode String?
+  titleBn       String  @map("title")
+  titleEn       String?
+  descriptionBn String  @map("description")
+  descriptionEn String?
+  starterCode   String?
   solution    String?
   difficulty  String   @default("Easy")
   points      Int      @default(0)
@@ -189,11 +203,15 @@ model Reference {
   id          String   @id @default(cuid())
   tutorialId  String
   tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
-  title       String
-  slug        String   @unique
-  description String?
-  syntax      String?
-  example     String?
+  titleBn       String  @map("title")
+  titleEn       String?
+  slug          String  @unique
+  descriptionBn String? @map("description")
+  descriptionEn String?
+  syntaxBn      String? @map("syntax")
+  syntaxEn      String?
+  exampleBn     String? @map("example")
+  exampleEn     String?
   tags        String[]
   language    String?
   createdAt   DateTime @default(now())
