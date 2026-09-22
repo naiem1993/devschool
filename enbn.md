@@ -75,7 +75,7 @@ model Tutorial {
 | 1 | Prisma schema-তে দুই ভাষার ঘর | ✅ **সম্পন্ন** |
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
-| 4 | সব পেজ `/[locale]/`-এ আনা | ⏸️ শুরু হয়নি |
+| 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ⏸️ শুরু হয়নি |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 3 সম্পন্ন, Part 4 শুরু করার অপেক্ষায়।
+**বর্তমান অবস্থান:** Part 4 সম্পন্ন, Part 5 শুরু করার অপেক্ষায়।
 
 ---
 
@@ -207,6 +207,45 @@ model Tutorial {
 ### সতর্কতা
 - Part 3 থেকে সাইট **আরো ভাঙা** — এখন `/` মানে `/bn/...` redirect করবে, কিন্তু Part 4-এ এখনো পেজগুলো সরানো হয়নি → 404 আসবে
 - **deploy নিষেধ** — Part 6 পর্যন্ত
+
+---
+
+## 🟢 PART 4-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### কী করা হয়েছে
+1. **ব্যাকআপ** — `app/layout.tsx.bak`, `app/(site)/layout.tsx.bak`, `app/(site)/page.tsx.bak`
+2. **নতুন root layout ১** — `app/(admin)/layout.tsx` (admin panel, lang="bn" hardcoded)
+3. **নতুন root layout ২** — `app/[locale]/layout.tsx` (public site, `lang={locale}` dynamic, `generateStaticParams` দিয়ে দুই ভাষা pre-render)
+4. **ফোল্ডার সরানো:**
+   - `app/(site)/` → `app/[locale]/(site)/`
+   - `app/admin/` → `app/(admin)/admin/`
+   - `app/about/` → `app/[locale]/about/`
+5. **পুরনো `app/layout.tsx` মুছে ফেলা** (ব্যাকআপ আছে)
+6. **অপরিবর্তিত:** `app/api/`, `app/global-error.tsx`, `app/not-found.tsx`, `app/robots.ts`, `app/sitemap.ts`, `app/icon.svg`, `app/globals.css`
+
+### কেন এই পদ্ধতি
+Next.js 16-এর bundled docs (layout.md, route-groups.md, internationalization.md) অনুযায়ী:
+- Multiple root layouts সম্ভব — route group দিয়ে
+- Root layout dynamic segment-এর ভেতরে থাকতে পারে (`app/[locale]/layout.tsx`)
+- `params` Next.js 16-এ **async** — `await params` লাগে
+- এক root থেকে অন্য root-এ navigation = full page load (স্বাভাবিক)
+
+### tsc যাচাই
+- ইউজার নিজে চালিয়েছেন: `npx tsc --noEmit 2>&1 | findstr "[locale] (admin)"`
+- **Part 4-এর নতুন ফাইলে ০ error** ✅
+- `.next/types/validator.ts`-এর error = পুরনো ক্যাশ (পরের dev/build-এ অটো ঠিক হবে)
+- বাকি সব = Part 1-এর প্রত্যাশিত error, Part 6-এ ঠিক হবে
+
+### সতর্কতা
+- Part 4 থেকে পাবলিক সাইট এখনো ভাঙা — কারণ ভেতরের link/নেভিগেশন এখনো `/{locale}/...` prefix ব্যবহার করছে না
+- Part 7-এ (LanguageSwitcher) আর Part 5-এ link helper যোগ হলে ঠিক হবে
+- **deploy নিষেধ**
+
+### নতুন AI-এর জন্য টিপস
+- Next.js 16-এ `params` Promise — সব page/layout-এ `await params` করতে হবে
+- `[locale]` dynamic segment root layout-এ থাকতে পারে → `next/root-params` দিয়ে যেকোনো Server Component-এ locale পড়া যায়
+- multiple root layouts থাকলে `not-found.tsx` global component কাজ করবে না সব জায়গায় — নিজের root layout-এ not-found যোগ করতে হবে
+- `.next/` ফোল্ডারের পুরনো type validator error দেখলে ভয় পাওয়ার কিছু নেই — `npm run dev` চালালেই ঠিক
 
 ---
 
@@ -367,5 +406,5 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 
 ---
 
-**সর্বশেষ আপডেট:** Part 3 সম্পন্ন — ২০২৬-০৯-২২
-**পরবর্তী কাজ:** PART 4 — সব পেজ `/[locale]/`-এ আনা
+**সর্বশেষ আপডেট:** Part 4 সম্পন্ন — ২০২৬-০৯-২৩
+**পরবর্তী কাজ:** PART 5 — সব hardcoded লেখা dictionary-তে আনা

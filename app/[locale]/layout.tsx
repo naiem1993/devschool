@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site-url";
-import "./globals.css";
+import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
+import "../globals.css";
+
+// ============================================================
+//  PUBLIC SITE ROOT LAYOUT (locale-aware)
+//  `lang` আসে URL-এর [locale] থেকে (/bn/... → bn, /en/... → en)
+// ============================================================
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,19 +21,29 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন",
-  description: "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
+  description:
+    "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
   metadataBase: new URL(SITE_URL),
-  // Icon served automatically by app/icon.svg (Next.js App Router file convention)
 };
 
-export default function RootLayout({
+// দুই ভাষার পেজ build-time-এ pre-render করার জন্য
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
+export default async function LocaleRootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : "bn";
+
   return (
     <html
-      lang="bn"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
