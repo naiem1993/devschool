@@ -16,7 +16,7 @@ export default function TerminalCard({
           <span className="text-[#22C55E]">$</span> {cmd}
         </div>
       )}
-      <div className="overflow-x-auto">{children}</div>
+      <div className="overflow-hidden">{children}</div>
     </div>
   )
 }
