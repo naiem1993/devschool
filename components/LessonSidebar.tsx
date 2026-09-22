@@ -73,7 +73,8 @@ export default function LessonSidebar({
         aria-hidden="true"
         className={[
           'fixed inset-0 z-[55] lg:hidden',
-          'bg-black/65 backdrop-blur-sm',
+          // Option C — হালকা black + subtle blur (mobile-এ smooth, background পড়া যায়)
+          'bg-black/40 backdrop-blur-[2px]',
           'transition-opacity duration-200',
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
         ].join(' ')}
@@ -82,8 +83,12 @@ export default function LessonSidebar({
       <aside
         className={[
           'w-[270px] lg:w-[250px] flex-shrink-0',
-          'fixed lg:sticky top-[105px] left-0 z-[60] lg:z-auto',
-          'h-[calc(100vh-105px)] overflow-y-auto',
+          // Mobile: top-0 + bottom-0 = full-height drawer; Desktop: sticky, header+tabs-এর নিচে
+          'fixed lg:sticky top-0 lg:top-[105px] bottom-0 lg:bottom-auto left-0 z-[60] lg:z-auto',
+          // Mobile: full viewport height; Desktop: viewport-এ cap + scroll
+          'overflow-y-auto sidebar-scroll lg:max-h-[calc(100vh-105px)]',
+          // Mobile: content header-এর নিচে নামানোর জন্য pt-16 (header z-100, drawer z-60)
+          'pt-16 lg:pt-0',
           'bg-gradient-to-b from-white to-[#F2FBF4]',
           'dark:from-[#080c0a] dark:to-[#050806]',
           'border-r border-slate-200 dark:border-emerald-900/40',
@@ -91,12 +96,13 @@ export default function LessonSidebar({
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         ].join(' ')}
       >
-        <h2 className="flex items-center gap-2 px-4 py-4 text-xs font-extrabold uppercase tracking-widest text-[#15803d] dark:text-[#4ADE80] border-b border-slate-200 dark:border-emerald-900/40">
-          <span className="w-[3px] h-[14px] rounded-sm bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,.4)]" />
-          {tutorialTitle}
-        </h2>
-
         <nav aria-label="Tutorial navigation" className="py-2 pb-6">
+          {/* Empty state — ০ chapter হলে (যেমন CSS tutorial) ফাঁকা drawer-এর বদলে মেসেজ */}
+          {sections.length === 0 && (
+            <p className="px-5 py-4 text-[13px] text-slate-500 dark:text-slate-400">
+              এই টিউটোরিয়ালে এখনো কোনো চ্যাপ্টার নেই।
+            </p>
+          )}
           <ul>
             {sections.map((section) => {
               if (section.type === 'group') {

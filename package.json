@@ -23,6 +23,7 @@
     "tc": "npx tsc --noEmit > tsc-out.txt 2>&1",
     "tscout": "tsc --noEmit > tsc-out.txt 2>&1 & exit 0",
     "seed:html": "tsx scripts/seed-html-course.ts",
+    "seed:course": "tsx scripts/seed-course.ts",
     "db:inspect": "tsx scripts/db-inspect-tutorial.ts",
     "diagnose:db": "tsx scripts/diagnose-db.ts",
     "fix:searchvec": "tsx scripts/fix-search-vec-triggers.ts",

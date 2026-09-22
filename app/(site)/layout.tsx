@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
+import LanguageTabsServer from '@/components/LanguageTabsServer'
 import { getFooterSettings } from '@/lib/site-settings'
 import prisma from '@/lib/prisma'
 
@@ -49,6 +50,10 @@ export default async function SiteLayout({
   return (
     <>
       <Header />
+      {/* w3schools-style language tabs — Header-এর ঠিক নিচে second row।
+          sticky + top value LanguageTabs নিজেই handle করে (home-এ pill nav-এর
+          জন্য আলাদা top দরকার), তাই এখানে কোনো wrapper div নেই। */}
+      <LanguageTabsServer />
       <ErrorBoundary>
         <main className="flex-1">{children}</main>
       </ErrorBoundary>

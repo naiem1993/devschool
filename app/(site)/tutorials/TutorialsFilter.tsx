@@ -13,6 +13,7 @@ export type TutorialCard = {
   duration: number | null
   rating: number | null
   chapterCount: number
+  createdAt: string
 }
 
 type SortKey = 'popular' | 'title' | 'latest'
@@ -38,7 +39,7 @@ const difficultyLabel = (d: string) => {
 export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard[] }) {
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all')
-  const [sort, setSort] = useState<SortKey>('popular')
+  const [sort, setSort] = useState<SortKey>('latest')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -60,6 +61,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
     result = [...result].sort((a, b) => {
       if (sort === 'title') return a.title.localeCompare(b.title)
       if (sort === 'popular') return b.viewCount - a.viewCount
+      if (sort === 'latest') return b.createdAt.localeCompare(a.createdAt)
       return 0
     })
 
@@ -111,6 +113,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
             aria-label="সাজানোর ধরন"
             className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
           >
+            <option value="latest">সর্বশেষ</option>
             <option value="popular">জনপ্রিয়</option>
             <option value="title">নাম (A-Z)</option>
           </select>

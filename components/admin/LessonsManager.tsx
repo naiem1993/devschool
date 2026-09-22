@@ -5,6 +5,16 @@ import { useRouter } from 'next/navigation'
 import DeleteButton from './DeleteButton'
 import RichEditor from './RichEditor'
 
+// slug auto-generate — শুধু English title-এর জন্য; বাংলা title হলে admin নিজে slug লিখবে
+const autoSlug = (v: string) =>
+  v.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+// unicode escape-এর বদলে codepoint check — escape bug এড়াতে
+const hasBangla = (v: string) =>
+  Array.from(v).some((ch) => {
+    const c = ch.charCodeAt(0)
+    return c >= 0x0980 && c <= 0x09ff
+  })
+
 export type LessonRow = {
   id: string
   title: string
@@ -353,7 +363,12 @@ function AddLessonForm({
           <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
           <input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+                const t = e.target.value
+                setTitle(t)
+                // English title হলে slug auto; বাংলা হলে admin নিজে লিখবে
+                if (!hasBangla(t)) setSlug(autoSlug(t))
+              }}
             className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
           />
         </div>

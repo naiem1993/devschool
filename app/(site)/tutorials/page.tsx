@@ -68,6 +68,7 @@ export default async function TutorialsListingPage() {
           viewCount: true,
           duration: true,
           rating: true,
+          createdAt: true,
           _count: { select: { chapters: true } },
         },
         orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
@@ -85,6 +86,7 @@ export default async function TutorialsListingPage() {
       duration: t.duration,
       rating: t.rating,
       chapterCount: t._count.chapters,
+      createdAt: t.createdAt.toISOString(),
     }))
 
     totalChapters = tutorials.reduce((sum, t) => sum + t.chapterCount, 0)

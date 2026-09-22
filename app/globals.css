@@ -157,6 +157,39 @@ body {
 }
 
 /* ============================================
+   Tutorial Sidebar — long list scroll (Style #5)
+   W3Schools-এর মতো: list বেশি হলে ভেতরে scroll,
+   সাথে thin brand-green scrollbar (visible + subtle)
+   ============================================ */
+.sidebar-scroll {
+  scrollbar-width: thin;                         /* Firefox */
+  scrollbar-color: rgba(34, 197, 94, 0.45) transparent;
+  scroll-behavior: smooth;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;                                    /* Chrome/Safari/Edge */
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.35);
+  border-radius: 9999px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.6);
+}
+.dark .sidebar-scroll {
+  scrollbar-color: rgba(74, 222, 128, 0.45) transparent;
+}
+.dark .sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(74, 222, 128, 0.35);
+}
+.dark .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 222, 128, 0.6);
+}
+
+/* ============================================
    ADMIN FORM COMPONENTS
    `admin-label`, `admin-input`, `admin-btn`,
    `admin-btn-ghost`, `admin-error`
