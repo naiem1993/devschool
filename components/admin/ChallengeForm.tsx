@@ -95,7 +95,7 @@ export default function ChallengeForm({
         <div className="space-y-3">
           {testCases.map((tc, i) => (
             <div key={i} className="border border-[#22C55E]/20 rounded p-3 space-y-2">
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input className="admin-input" placeholder="input" value={tc.input} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, input: e.target.value } : x))} />
                 <input className="admin-input" placeholder="expected output" value={tc.expectedOutput} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, expectedOutput: e.target.value } : x))} />
               </div>
