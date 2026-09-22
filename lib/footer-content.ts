@@ -42,6 +42,7 @@ export const DEFAULT_FOOTER: FooterContent = {
     { platform: 'twitter', url: 'https://twitter.com' },
     { platform: 'youtube', url: 'https://youtube.com' },
     { platform: 'discord', url: 'https://discord.com' },
+    { platform: 'facebook', url: 'https://facebook.com' },
   ],
   creditText: 'Black_Zone',
 }

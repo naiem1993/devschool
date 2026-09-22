@@ -310,6 +310,72 @@ export default function SiteSettingsForm({
       <section className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Footer</h2>
 
+        {/* Social links editor */}
+        <fieldset className="space-y-3 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <legend className="px-2 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Social Links (আইকন দেখাও / URL সেট করো)
+          </legend>
+          <p className="text-xs text-slate-500 dark:text-slate-400 -mt-1 mb-2">
+            যেগুলো URL পাবে সেগুলো footer-এ সবুজ আইকন হিসেবে দেখাবে। URL খালি রাখলে বা checkbox untick করলে লুকিয়ে যাবে।
+          </p>
+          {(['github', 'twitter', 'x', 'youtube', 'discord', 'facebook', 'linkedin', 'instagram', 'tiktok', 'telegram'] as const).map((platform) => {
+            const idx = footer.socialLinks.findIndex((s) => s.platform === platform)
+            const current = idx >= 0 ? footer.socialLinks[idx] : null
+            const enabled = !!current && !!current.url
+            const url = current?.url ?? ''
+            return (
+              <div
+                key={platform}
+                className="flex flex-col sm:flex-row sm:items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2"
+              >
+                <label className="flex items-center gap-2 cursor-pointer select-none shrink-0 sm:w-40">
+                  <input
+                    type="checkbox"
+                    checked={enabled}
+                    onChange={(e) => {
+                      const checked = e.target.checked
+                      setFooter((f) => {
+                        const links = [...f.socialLinks]
+                        const i = links.findIndex((s) => s.platform === platform)
+                        if (checked) {
+                          if (i < 0) links.push({ platform, url: url || 'https://' + platform + '.com' })
+                        } else {
+                          if (i >= 0) links.splice(i, 1)
+                        }
+                        return { ...f, socialLinks: links }
+                      })
+                      setSaved(false)
+                    }}
+                    className="w-4 h-4 accent-[#22C55E] cursor-pointer"
+                  />
+                  <span className="text-sm font-mono text-slate-700 dark:text-slate-300 capitalize">
+                    {platform}
+                  </span>
+                </label>
+                <input
+                  className="admin-input flex-1"
+                  value={url}
+                  placeholder={'https://' + platform + '.com/your-profile'}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    setFooter((f) => {
+                      const links = [...f.socialLinks]
+                      const i = links.findIndex((s) => s.platform === platform)
+                      if (i >= 0) {
+                        links[i] = { platform, url: v }
+                      } else if (v) {
+                        links.push({ platform, url: v })
+                      }
+                      return { ...f, socialLinks: links }
+                    })
+                    setSaved(false)
+                  }}
+                />
+              </div>
+            )
+          })}
+        </fieldset>
+
         <Field label="> Copyright line ({'{year}'} দিলে current year বসবে)">
           <input
             className="admin-input"
