@@ -5,6 +5,9 @@ import {
   type SocialLink,
   type SocialPlatform,
 } from "@/lib/footer-content";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { localeHref } from "@/lib/i18n/link";
 
 /**
  * Design 05 — Two-tier + Watermark (final)
@@ -20,10 +23,19 @@ import {
  * Social links admin panel (/admin/settings) থেকে manage করা যায়।
  * `creditText` admin থেকে set — default 'Black_Zone'।
  */
-export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterContent }) {
+export default function Footer({
+  footer = DEFAULT_FOOTER,
+  locale,
+  dict,
+}: {
+  footer?: FooterContent;
+  locale: Locale;
+  dict: Dictionary;
+}) {
   const year = new Date().getFullYear();
   const copyright = footer.copyright.replace(/\{year\}/g, String(year));
   const socials = footer.socialLinks ?? [];
+  const t = dict.footer;
 
   return (
     <footer className="relative overflow-hidden border-t border-gray-200 bg-[#f2fbf4] dark:border-white/[0.08] dark:bg-[#050806]">
@@ -37,7 +49,7 @@ export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterCon
         <div className="grid grid-cols-1 gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-12">
           {/* brand + tagline + socials */}
           <div>
-            <Link href="/" className="inline-flex items-center gap-2.5">
+            <Link href={localeHref(locale, "/")} className="inline-flex items-center gap-2.5">
               <span
                 aria-hidden="true"
                 className="h-2.5 w-2.5 rounded-full bg-[#22C55E] shadow-[0_0_10px_rgba(34,197,94,0.55)]"
@@ -48,7 +60,7 @@ export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterCon
             </Link>
 
             <p className="mt-4 max-w-xs text-[13.5px] leading-relaxed text-gray-600 dark:text-gray-400">
-              Practical, hands-on coding lessons. Beginner থেকে job-ready — step by step.
+              {t.tagline}
             </p>
 
             {socials.length > 0 && (
@@ -60,24 +72,24 @@ export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterCon
             )}
           </div>
 
-          <FooterCol title="Learn">
-            <FooterLink href="/tutorials">Tutorials</FooterLink>
-            <FooterLink href="/challenges">Challenges</FooterLink>
-            <FooterLink href="/references">References</FooterLink>
-            <FooterLink href="/search">Search</FooterLink>
+          <FooterCol title={t.colLearn}>
+            <FooterLink href={localeHref(locale, "/tutorials")}>{t.linkTutorials}</FooterLink>
+            <FooterLink href={localeHref(locale, "/challenges")}>{t.linkChallenges}</FooterLink>
+            <FooterLink href={localeHref(locale, "/references")}>{t.linkReferences}</FooterLink>
+            <FooterLink href={localeHref(locale, "/search")}>{t.linkSearch}</FooterLink>
           </FooterCol>
 
-          <FooterCol title="Tools">
-            <FooterLink href="/tools">All Tools</FooterLink>
-            <FooterLink href="/playground">Playground</FooterLink>
-            <FooterLink href="/progress">Progress</FooterLink>
-            <FooterLink href="/tools/json-formatter">JSON Formatter</FooterLink>
+          <FooterCol title={t.colTools}>
+            <FooterLink href={localeHref(locale, "/tools")}>{t.linkAllTools}</FooterLink>
+            <FooterLink href={localeHref(locale, "/playground")}>{t.linkPlayground}</FooterLink>
+            <FooterLink href={localeHref(locale, "/progress")}>{t.linkProgress}</FooterLink>
+            <FooterLink href={localeHref(locale, "/tools/json-formatter")}>{t.linkJsonFormatter}</FooterLink>
           </FooterCol>
 
-          <FooterCol title="Site">
-            <FooterLink href="/about">About</FooterLink>
-            <FooterLink href="/sitemap.xml">Sitemap</FooterLink>
-            <FooterLink href="/robots.txt">Robots</FooterLink>
+          <FooterCol title={t.colSite}>
+            <FooterLink href={localeHref(locale, "/about")}>{t.linkAbout}</FooterLink>
+            <FooterLink href="/sitemap.xml">{t.linkSitemap}</FooterLink>
+            <FooterLink href="/robots.txt">{t.linkRobots}</FooterLink>
             <FooterLink href={footer.donateLinkHref}>{footer.donateLinkLabel}</FooterLink>
           </FooterCol>
         </div>
@@ -107,7 +119,7 @@ export default function Footer({ footer = DEFAULT_FOOTER }: { footer?: FooterCon
               </Link>
             </span>
             <span className="text-gray-500 dark:text-gray-400">
-              Made with <span className="text-[#22C55E]">💚</span>
+              {t.madeWith}
               {footer.creditText ? (
                 <>
                   {" "}

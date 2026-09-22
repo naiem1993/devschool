@@ -51,6 +51,35 @@ const bn = {
     privacy: 'প্রাইভেসি পলিসি',
     terms: 'শর্তাবলি',
     copyright: '© DevSchool — সর্বস্বত্ব সংরক্ষিত',
+
+    // ব্র্যান্ড ট্যাগলাইন
+    tagline:
+      'হাতে-কলমে ব্যবহারিক কোডিং শেখা। একদম শুরু থেকে চাকরির উপযোগী — ধাপে ধাপে।',
+
+    // কলামের নাম
+    colLearn: 'শেখা',
+    colTools: 'টুলস',
+    colSite: 'সাইট',
+
+    // শেখার কলামের লিংক
+    linkTutorials: 'টিউটোরিয়াল',
+    linkChallenges: 'চ্যালেঞ্জ',
+    linkReferences: 'রেফারেন্স',
+    linkSearch: 'সার্চ',
+
+    // টুলস কলামের লিংক
+    linkAllTools: 'সব টুলস',
+    linkPlayground: 'প্লেগ্রাউন্ড',
+    linkProgress: 'প্রগ্রেস',
+    linkJsonFormatter: 'JSON ফরম্যাটার',
+
+    // সাইট কলামের লিংক
+    linkAbout: 'সম্পর্কে',
+    linkSitemap: 'সাইটম্যাপ',
+    linkRobots: 'Robots',
+
+    // নিচের স্ট্রিপ
+    madeWith: 'তৈরি 💚 দিয়ে',
   },
 
   // ── 404 পেজ (app/not-found.tsx) ──

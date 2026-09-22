@@ -52,6 +52,29 @@ const en: Dictionary = {
     privacy: 'Privacy Policy',
     terms: 'Terms',
     copyright: '© DevSchool — All rights reserved',
+
+    tagline:
+      'Practical, hands-on coding lessons. From beginner to job-ready — step by step.',
+
+    colLearn: 'Learn',
+    colTools: 'Tools',
+    colSite: 'Site',
+
+    linkTutorials: 'Tutorials',
+    linkChallenges: 'Challenges',
+    linkReferences: 'References',
+    linkSearch: 'Search',
+
+    linkAllTools: 'All Tools',
+    linkPlayground: 'Playground',
+    linkProgress: 'Progress',
+    linkJsonFormatter: 'JSON Formatter',
+
+    linkAbout: 'About',
+    linkSitemap: 'Sitemap',
+    linkRobots: 'Robots',
+
+    madeWith: 'Made with 💚',
   },
 
   // ── 404 page ──

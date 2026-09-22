@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | ⏸️ শুরু হয়নি |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b শেষ) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 4 সম্পন্ন, Part 5 শুরু করার অপেক্ষায়।
+**বর্তমান অবস্থান:** Part 5 চলমান — Header (5a) + Footer (5b) সম্পন্ন। বাকি: 5c HeroSection+LanguageTabs, 5d Tutorial components, 5e সব পেজ।
 
 ---
 
@@ -249,6 +249,40 @@ Next.js 16-এর bundled docs (layout.md, route-groups.md, internationalization
 
 ---
 
+## 🟡 PART 5-এর রিপোর্ট (চলমান — ২০২৬-০৯-২৩)
+
+### Part 5a — Header ✅ সম্পন্ন
+- `lib/i18n/I18nProvider.tsx` তৈরি (নতুন): client component-দের জন্য dictionary Context + `useDict()` + `useLocale()` hook
+- `lib/i18n/link.ts` তৈরি (নতুন): `localeHref(locale, path)`, `stripLocale(path)`, `hasLocalePrefix(path)`
+- `app/[locale]/layout.tsx`: I18nProvider দিয়ে children wrap
+- `components/Header.tsx`: hardcoded বাংলা + `/tutorials` লিংক → `useDict()` + `localeHref()`
+- Commit: `6fe3d02` — feat(i18n): Part 5a
+- tsc: `Header I18nProvider link.ts` → **খালি** ✅
+
+### Part 5b — Footer ✅ সম্পন্ন
+- `lib/i18n/dictionaries/bn.ts` + `en.ts`: নতুন footer key যোগ (tagline, colLearn/colTools/colSite, linkTutorials/linkChallenges/... , madeWith)
+- `components/Footer.tsx`: locale + dict props নেয়, সব লেখা dictionary থেকে, সব লিংক `localeHref()` দিয়ে
+- `app/[locale]/(site)/layout.tsx`: `params` থেকে locale নিয়ে `getDictionary(locale)` লোড করে `<Footer locale dict>` পাঠায়
+- tsc: `Footer bn.ts en.ts site layout` → **Footer/bn/en/layout এ কোনো error নেই** ✅ (যা ছিল সব `.next/` ক্যাশ বা Part 1-এর প্রত্যাশিত error)
+- Commit: **এখনো করা হয়নি** — পরবর্তী commit-এ একসাথে হবে
+
+### যা বাকি (Part 5)
+- **5c:** `HeroSection.tsx`, `LanguageTabs.tsx`, `LanguageTabsServer.tsx`
+- **5d:** `LessonSidebar.tsx`, `LessonContent.tsx`, `TryIt.tsx`, `TutorialShell.tsx`
+- **5e:** সব `page.tsx` (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+
+### কাজের নিয়ম (নিরাপদ পথ)
+- **প্রতিটা ছোট গ্রুপ শেষে tsc যাচাই** — একবারে সব না
+- প্রতিটা ফাইলের `.bak` ব্যাকআপ
+- ছোট ছোট `edit_file`, এক一个一个
+
+### নতুন AI-এর জন্য টিপস
+- Header একটা **client component** — `useDict()`/`useLocale()` hook লাগে
+- Footer একটা **server component** — props আকারে locale+dict পাঠাতে হয়
+- `stripLocale(pathname).path` দিয়ে active link মেলানো হয় (pathname-এ locale prefix থাকে)
+
+---
+
 ## 📋 PART-ওয়াইজ বিস্তারিত প্ল্যান
 
 ### PART 1 — Prisma schema-তে দুই ভাষার ঘর
@@ -406,5 +440,5 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 
 ---
 
-**সর্বশেষ আপডেট:** Part 4 সম্পন্ন — ২০২৬-০৯-২৩
-**পরবর্তী কাজ:** PART 5 — সব hardcoded লেখা dictionary-তে আনা
+**সর্বশেষ আপডেট:** Part 5 চলমান — ২০২৬-০৯-২৩
+**পরবর্তী কাজ:** PART 5c — HeroSection + LanguageTabs

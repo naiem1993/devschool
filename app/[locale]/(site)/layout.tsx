@@ -5,6 +5,8 @@ import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
 import LanguageTabsServer from '@/components/LanguageTabsServer'
 import { getFooterSettings } from '@/lib/site-settings'
 import prisma from '@/lib/prisma'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionary } from '@/lib/i18n/dictionaries'
 
 // ISR: ৫ মিনিট cache। Categories + sponsors ঘনঘন বদলায় না —
 // তাই static-safe, প্রতিটা request-এ DB hit হবে না → many-x fast।
@@ -14,9 +16,15 @@ export const revalidate = 300
 
 export default async function SiteLayout({
   children,
+  params,
 }: {
   children: React.ReactNode
+  params: Promise<{ locale: string }>
 }) {
+  // URL-এর [locale] থেকে ভাষা নিই, সাথে dictionary লোড করি
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = await getDictionary(locale)
   // ⭐ Sponsors — active, date-window-valid, priority sorted
   let sponsors: PublicSponsor[] = []
   try {
@@ -58,7 +66,7 @@ export default async function SiteLayout({
         <main className="flex-1">{children}</main>
       </ErrorBoundary>
       <SponsorRail sponsors={sponsors} />
-      <Footer footer={footer} />
+      <Footer footer={footer} locale={locale} dict={dict} />
     </>
   )
 }
