@@ -100,7 +100,43 @@ model Tutorial {
 ### গুরুত্বপূর্ণ তথ্য
 - ডেটাবেস: PostgreSQL (Supabase), `DATABASE_URL` ও `DIRECT_URL` env-এ
 - Admin auth: HMAC signed token, `ADMIN_COOKIE` দিয়ে
-- Migration history: 6টা migration আছে, নতুন migration হবে `add_bilingual_fields`
+- Migration history: নতুন migration `20260922164626_add_bilingual_fields` প্রয়োগ হয়েছে
+
+---
+
+## 🟢 PART 1-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২২)
+
+### কী করা হয়েছে
+1. `prisma/schema.prisma.bak` ব্যাকআপ নেওয়া হয়েছে
+2. **৮টা মডেলে** দুই ভাষার ঘর যোগ (CRLF মিলিয়ে `edit_file` দিয়ে):
+   - `Tutorial` → `titleBn/En`, `descriptionBn/En`
+   - `ChapterGroup` → `titleBn/En`
+   - `Chapter` → `titleBn/En`, `contentBn/En`, `codeExampleBn/En`
+   - `Lesson` → `titleBn/En`, `contentBn/En`, `codeExampleBn/En`
+   - `QuizQuestion` → `questionBn/En`, `explanationBn/En`
+   - `QuizOption` → `textBn/En`
+   - `CodeChallenge` → `titleBn/En`, `descriptionBn/En`
+   - `Reference` → `titleBn/En`, `descriptionBn/En`, `syntaxBn/En`, `exampleBn/En`
+3. `npx prisma migrate dev --name add_bilingual_fields` — ✅ সফল
+   - Migration: `20260922164626_add_bilingual_fields`
+   - Prisma Client v5.22.0 generate হয়েছে
+   - পুরনো কলাম (`title`, `content`...) DB-তে অপরিবর্তিত — বাংলা ডেটা **নিরাপদ**
+4. `npx tsc --noEmit` — **fail করেছে (প্রত্যাশিত)** — কারণ কোডে এখনো `tutorial.title` ব্যবহার হচ্ছে। Part 6-এ ঠিক হবে।
+
+### Git commit
+`9ff722c` — feat(i18n): Part 1 — add bilingual columns to Prisma schema
+
+### যা এখনো বাকি (Part 1-এর মধ্যে)
+- tsc-এর exact error সংখ্যা জানা হয়নি (tsc-errors.txt তৈরি করার কমান্ড whitelist-এ নেই)
+
+### সতর্কতা
+- Part 1 থেকে Part 6 পর্যন্ত সাইট **ভাঙা** থাকবে। **deploy নিষেধ।**
+- সব Part শেষ না হওয়া পর্যন্ত GitHub-এ push করা হবে না
+
+### নতুন AI-এর জন্য টিপস (শিখে রাখা দরকার)
+- `edit_file`-এ **CRLF (`\r\n`)** দিতে হবে `schema.prisma`-র জন্য (Windows line ending)
+- কিন্তু `enbn.md`-এর জন্য **LF (`\n`)** ব্যবহার করতে হবে (আমি যখন তৈরি করেছি তখন LF দিয়েছি)
+- বড় ফাইল (≥১০KB) `create_file` দিয়ে overwrite করতে গেলে silent fail করে — ছোট ছোট `edit_file` ব্যবহার করাই নিরাপদ
 
 ---
 
