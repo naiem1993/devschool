@@ -74,7 +74,7 @@ model Tutorial {
 | 0 | প্রজেক্ট পড়া ও প্রস্তুতি | ✅ **সম্পন্ন** |
 | 1 | Prisma schema-তে দুই ভাষার ঘর | ✅ **সম্পন্ন** |
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
-| 3 | `proxy.ts`-এ ভাষা দারোয়ান | ⏸️ শুরু হয়নি |
+| 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ⏸️ শুরু হয়নি |
 | 5 | সব লেখা dictionary-তে | ⏸️ শুরু হয়নি |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 2 সম্পন্ন, Part 3 শুরু করার অপেক্ষায়।
+**বর্তমান অবস্থান:** Part 3 সম্পন্ন, Part 4 শুরু করার অপেক্ষায়।
 
 ---
 
@@ -175,6 +175,38 @@ model Tutorial {
 ### যাচাই করার কমান্ড (whitelist-এ নেই)
 - `npx tsc --noEmit 2>&1 | findstr "i18n" > i18n-errors2.txt` — ইউজার নিজে চালান
 - `read_file` বড় tsc-errors.txt (৬৪KB) পড়তে পারে না — filter করে ছোট ফাইল লাগে
+
+---
+
+## 🟢 PART 3-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২২)
+
+### কী করা হয়েছে
+1. `proxy.ts.bak` ব্যাকআপ নেওয়া হয়েছে
+2. `proxy.ts` সম্পূর্ণ নতুন করে লেখা হয়েছে — দুই কাজ একসাথে:
+   - **Admin auth** (আগের মতোই): `/admin/*` আর `/api/admin/*` সুরক্ষিত
+   - **Locale দারোয়ান** (নতুন): URL-এ `/bn` বা `/en` না থাকলে cookie → Accept-Language → ডিফল্ট `bn` অনুযায়ী `307 redirect` + `ds_locale` cookie (১ বছর)
+3. `config.matcher` আপডেট:
+   - `/admin/:path*` ও `/api/admin/:path*` (admin auth)
+   - `/((?!_next|api|admin|.*\..*).*)` — বাকি সব পাবলিক পেজ (স্ট্যাটিক ফাইল বাদে)
+4. অফিসিয়াল ডক থেকে যাচাই করা হয়েছে (Next.js 16.3.4 bundled docs):
+   - Next.js 16-এ middleware-এর নতুন নাম → `proxy`
+   - `proxy.ts` রুটে, `export function proxy()` নামে
+   - `NextResponse.redirect(new URL(...), 307)` সিনট্যাক্স সঠিক
+
+### tsc যাচাই
+- ইউজার নিজে terminal-এ চালান: `npx tsc --noEmit 2>&1 | findstr "proxy"`
+- **ফলাফল: খালি** — মানে `proxy.ts`-এ কোনো নতুন error নেই ✅
+- পুরো প্রজেক্টের tsc fail আছে — সব **Part 1-এর কারণে**, Part 6-এ ঠিক হবে
+
+### নতুন AI-এর জন্য টিপস
+- Next.js 16-এ `middleware.ts` নেই — `proxy.ts` (একই কাজ)
+- `proxy.ts`-এ locale-এর জন্য `request.cookies.get()` আর `request.headers.get('accept-language')` ব্যবহার করা হয় (Edge runtime-এ কাজ করে)
+- `withSecurityHeaders()` helper — দুই header যোগ করে (`X-Content-Type-Options`, `X-Frame-Options`)
+- whitelist-এ pipe (`|`) সহ command নেই — filter করার command ইউজারকে দিতে হয়
+
+### সতর্কতা
+- Part 3 থেকে সাইট **আরো ভাঙা** — এখন `/` মানে `/bn/...` redirect করবে, কিন্তু Part 4-এ এখনো পেজগুলো সরানো হয়নি → 404 আসবে
+- **deploy নিষেধ** — Part 6 পর্যন্ত
 
 ---
 
@@ -335,5 +367,5 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 
 ---
 
-**সর্বশেষ আপডেট:** Part 2 সম্পন্ন — ২০২৬-০৯-২২
-**পরবর্তী কাজ:** PART 3 — `proxy.ts`-এ ভাষা দারোয়ান (locale detection + redirect + cookie)
+**সর্বশেষ আপডেট:** Part 3 সম্পন্ন — ২০২৬-০৯-২২
+**পরবর্তী কাজ:** PART 4 — সব পেজ `/[locale]/`-এ আনা
