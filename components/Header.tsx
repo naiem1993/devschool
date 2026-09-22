@@ -4,24 +4,32 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider';
+import { localeHref, stripLocale } from '@/lib/i18n/link';
 
 export default function Header() {
   const pathname = usePathname();
+  const dict = useDict();
+  const locale = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // pathname-এ এখন locale prefix আছে (/bn/... বা /en/...)।
+  // prefix কেটে আসল path বের করি (যেমন /tutorials)।
+  const { path } = stripLocale(pathname || '/');
+
   const navLinks = [
-    { name: 'টিউটোরিয়াল', href: '/tutorials' },
-    { name: 'রেফারেন্স', href: '/references' },
-    { name: 'প্লেগ্রাউন্ড', href: '/playground' },
-    { name: 'চ্যালেঞ্জ', href: '/challenges' },
-    { name: 'টুলস', href: '/tools' },
+    { name: dict.nav.tutorials, href: localeHref(locale, '/tutorials') },
+    { name: dict.nav.references, href: localeHref(locale, '/references') },
+    { name: dict.nav.playground, href: localeHref(locale, '/playground') },
+    { name: dict.nav.challenges, href: localeHref(locale, '/challenges') },
+    { name: dict.nav.tools, href: localeHref(locale, '/tools') },
   ];
 
-  const isHome = pathname === '/';
+  const isHome = path === '/';
 
   /* ---------- Shared pieces ---------- */
   const Logo = (
-    <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+    <Link href={localeHref(locale, '/')} className="flex items-center gap-2.5 group shrink-0">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 100 100"
@@ -77,7 +85,8 @@ export default function Header() {
   const DesktopNav = (
     <nav className="hidden md:flex items-center gap-0.5 lg:gap-1">
       {navLinks.map((link) => {
-        const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
+        const linkPath = stripLocale(link.href).path;
+        const isActive = path === linkPath || path?.startsWith(linkPath + '/');
         return (
           <Link
             key={link.href}
@@ -121,7 +130,8 @@ export default function Header() {
   const MobileMenuLinks = (
     <>
       {navLinks.map((link) => {
-        const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
+        const linkPath = stripLocale(link.href).path;
+        const isActive = path === linkPath || path?.startsWith(linkPath + '/');
         return (
           <Link
             key={link.href}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site-url";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { I18nProvider } from "@/lib/i18n/I18nProvider";
 import "../globals.css";
 
 // ============================================================
@@ -40,6 +42,8 @@ export default async function LocaleRootLayout({
 }) {
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "bn";
+  // এই ভাষার সব UI লেখা লোড করি — নিচে client component-দের মধ্যে ছড়িয়ে দেব
+  const dict = await getDictionary(locale);
 
   return (
     <html
@@ -55,7 +59,9 @@ export default async function LocaleRootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
-        {children}
+        <I18nProvider locale={locale} dict={dict}>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );
