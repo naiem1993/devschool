@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import CopyButton from './CopyButton'
+import { pickText, localizeReference } from '@/lib/i18n/localize'
+import type { Locale } from '@/lib/i18n/config'
 
 type PageProps = {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }
 
 export async function generateStaticParams() {
@@ -14,21 +16,30 @@ export async function generateStaticParams() {
       select: { slug: true },
       take: 500,
     })
-    return refs.map((r) => ({ slug: r.slug }))
+    // দুই ভাষার জন্যই একই slug pre-render হবে
+    return refs.flatMap((r) => [
+      { locale: 'bn', slug: r.slug },
+      { locale: 'en', slug: r.slug },
+    ])
   } catch {
     return []
   }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
   try {
     const ref = await prisma.reference.findUnique({
       where: { slug },
       select: {
-        title: true,
-        description: true,
-        syntax: true,
+        titleBn: true,
+        titleEn: true,
+        descriptionBn: true,
+        descriptionEn: true,
+        syntaxBn: true,
+        syntaxEn: true,
+        exampleBn: true,
+        exampleEn: true,
       },
     })
 
@@ -36,25 +47,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return { title: 'রেফারেন্স পাওয়া যায়নি | DevSchool', robots: { index: false } }
     }
 
+    // locale-সঠিক title — না থাকলে general fallback (পেজ নিজেই notFound() দেবে)
+    const localized = localizeReference(locale as Locale, ref)
+    if (!localized.title) {
+      return { title: 'DevSchool' }
+    }
+
     const description =
-      ref.description || `${ref.title} — syntax ও উদাহরণ।`
+      localized.description || `${localized.title} — syntax ও উদাহরণ।`
 
     return {
-      title: `${ref.title} — Syntax ও উদাহরণ | DevSchool`,
+      title: `${localized.title} — Syntax ও উদাহরণ | DevSchool`,
       description,
-      keywords: [ref.title, 'reference', 'syntax'],
-      alternates: { canonical: `/references/${slug}` },
+      keywords: [localized.title, 'reference', 'syntax'],
+      alternates: {
+        canonical: `/${locale}/references/${slug}`,
+        languages: {
+          'bn-BD': `/bn/references/${slug}`,
+          en: `/en/references/${slug}`,
+        },
+      },
       openGraph: {
-        title: ref.title,
+        title: localized.title,
         description,
         type: 'article',
-        url: `/references/${slug}`,
+        url: `/${locale}/references/${slug}`,
         siteName: 'DevSchool',
-        locale: 'bn_BD',
+        locale: locale === 'en' ? 'en_US' : 'bn_BD',
       },
       twitter: {
         card: 'summary_large_image',
-        title: ref.title,
+        title: localized.title,
         description,
       },
     }
@@ -64,18 +87,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ReferenceDetailPage({ params }: PageProps) {
-  const { slug } = await params
+  const { locale, slug } = await params
 
   const reference = await prisma.reference
     .findUnique({
       where: { slug },
       include: {
-        tutorial: { select: { id: true, title: true, slug: true } },
+        tutorial: {
+          select: { id: true, titleBn: true, titleEn: true, slug: true },
+        },
       },
     })
     .catch(() => null)
 
   if (!reference) notFound()
+
+  // locale-সঠিক লেখা বেছে নাও — title না থাকলে 404
+  const loc = localizeReference(locale as Locale, reference)
+  if (!loc.title) notFound()
+
+  // tutorial-এর locale-সঠিক title (breadcrumb/category pill-এ)
+  // এখানে শুধু title দরকার — তাই localizeTutorial-এর বদলে pickText সরাসরি
+  const tutorialTitle =
+    pickText(locale as Locale, reference.tutorial.titleBn, reference.tutorial.titleEn) ||
+    reference.tutorial.slug
 
   const related = await prisma.reference
     .findMany({
@@ -85,12 +120,14 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
       },
       select: {
         id: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
         slug: true,
-        syntax: true,
+        syntaxBn: true,
+        syntaxEn: true,
         language: true,
       },
-      orderBy: { title: 'asc' },
+      orderBy: { titleBn: 'asc' },
       take: 6,
     })
     .catch(() => [])
@@ -98,10 +135,10 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
-    name: reference.title,
-    description: reference.description,
-    inDefinedTermSet: reference.tutorial.title,
-    inLanguage: 'bn-BD',
+    name: loc.title,
+    description: loc.description,
+    inDefinedTermSet: tutorialTitle,
+    inLanguage: locale === 'en' ? 'en' : 'bn-BD',
   }
 
   return (
@@ -139,12 +176,12 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                   href={`/tutorials/${reference.tutorial.slug}`}
                   className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
-                  {reference.tutorial.title}
+                  {tutorialTitle}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[200px]">
-                {reference.title}
+                {loc.title}
               </li>
             </ol>
           </nav>
@@ -158,7 +195,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                 href={`/tutorials/${reference.tutorial.slug}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition"
               >
-                📂 {reference.tutorial.title}
+                📂 {tutorialTitle}
               </Link>
               {reference.language && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20 text-xs font-mono font-semibold uppercase tracking-wider">
@@ -168,18 +205,18 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
-              {reference.title}
+              {loc.title}
             </h1>
 
-            {reference.description && (
+            {loc.description && (
               <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                {reference.description}
+                {loc.description}
               </p>
             )}
           </header>
 
           {/* Syntax */}
-          {reference.syntax && (
+          {loc.syntax && (
             <section className="mb-8">
               <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">
                 Syntax
@@ -194,17 +231,17 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                   <span className="text-[10px] font-mono text-slate-500">
                     syntax.txt
                   </span>
-                  <CopyButton text={reference.syntax} />
+                  <CopyButton text={loc.syntax} />
                 </div>
                 <pre className="p-5 overflow-x-auto text-sm leading-relaxed font-mono text-emerald-300">
-                  <code>{reference.syntax}</code>
+                  <code>{loc.syntax}</code>
                 </pre>
               </div>
             </section>
           )}
 
           {/* Example */}
-          {reference.example && (
+          {loc.example && (
             <section className="mb-8">
               <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">
                 উদাহরণ
@@ -219,10 +256,10 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                   <span className="text-[10px] font-mono text-slate-500">
                     example.{reference.language?.toLowerCase() || 'code'}
                   </span>
-                  <CopyButton text={reference.example} />
+                  <CopyButton text={loc.example} />
                 </div>
                 <pre className="p-5 overflow-x-auto text-sm leading-relaxed font-mono text-cyan-300">
-                  <code>{reference.example}</code>
+                  <code>{loc.example}</code>
                 </pre>
               </div>
             </section>
@@ -262,7 +299,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                   >
                     <div className="flex items-center justify-between mb-2 gap-2">
                       <h3 className="font-semibold text-sm group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80] transition line-clamp-1">
-                        {r.title}
+                        {pickText(locale as Locale, r.titleBn, r.titleEn) || r.slug}
                       </h3>
                       {r.language && (
                         <span className="text-[10px] font-mono uppercase text-cyan-600 dark:text-cyan-400">
@@ -270,9 +307,9 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                         </span>
                       )}
                     </div>
-                    {r.syntax && (
+                    {pickText(locale as Locale, r.syntaxBn, r.syntaxEn) && (
                       <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 line-clamp-1">
-                        {r.syntax}
+                        {pickText(locale as Locale, r.syntaxBn, r.syntaxEn)}
                       </p>
                     )}
                   </Link>

@@ -77,14 +77,14 @@ model Tutorial {
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
-| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (ধাপ ১-৫ শেষ; components/admin/scripts বাকি) |
+| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (ধাপ ১-৬ শেষ ✅ — components-ও locale-aware প্রমাণিত; এখন পেজের হার্ডকোড লেখা → dictionary, admin/scripts বাকি) |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 6 ধাপ ১-৫ সম্পন্ন ✅ (localize.ts helper + tutorial-data.ts + tutorials/[slug] + [chapter] + [lesson] + tryit দুটো — সব locale-aware, strict no-fallback, redirect-এ locale যুক্ত)। tsc error ~২৬৩ → ~১৯১। পরের কাজ: **ধাপ ৬ — components (LessonSidebar, TutorialShell, LanguageTabsServer)**।
+**বর্তমান অবস্থান:** Part 6 ধাপ ১-৬ সম্পন্ন ✅ (localize.ts helper + tutorial-data.ts + tutorials/[slug] + [chapter] + [lesson] + tryit দুটো — সব locale-aware, strict no-fallback, redirect-এ locale যুক্ত)। tsc error ~২৬৩ → ~১৯১। **ধাপ ৬ (components) চেক করা হয়েছে — আসলেই locale-aware ✅** (details নিচের রিপোর্টে)। পরের কাজ: **ধাপ ৭ — টিউটোরিয়াল/চ্যালেঞ্জ/রেফারেন্স/টুলস পেজের হার্ডকোড বাংলা লেখা dictionary-তে আনা** (যেমন "হোম", "টিউটোরিয়াল", "এই টিউটোরিয়ালে যা যা শিখবেন")।
 
 ---
 

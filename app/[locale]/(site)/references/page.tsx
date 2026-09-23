@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import ReferencesFilter, { type ReferenceCard } from './ReferencesFilter'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
+import { pickText } from '@/lib/i18n/localize'
 
 export const revalidate = 300
 
@@ -74,19 +75,25 @@ export default async function ReferencesListingPage({
 
   try {
     const raw = await prisma.reference.findMany({
-      orderBy: { title: 'asc' },
+      // Rule #4: /en-এ শুধু যাদের titleEn আছে; /bn-এ সব
+      where: locale === 'en' ? { titleEn: { not: null } } : {},
+      // locale অনুযায়ী sort — দুই কলামে আলাদা
+      orderBy: locale === 'en' ? { titleEn: 'asc' } : { titleBn: 'asc' },
     })
 
-    references = raw.map((r) => ({
-      id: r.id,
-      title: r.title,
-      slug: r.slug,
-      description: r.description,
-      syntax: r.syntax,
-      example: r.example,
-      tags: r.tags,
-      language: r.language,
-    }))
+    references = raw
+      .map((r) => ({
+        id: r.id,
+        title: pickText(locale, r.titleBn, r.titleEn) ?? '',
+        slug: r.slug,
+        description: pickText(locale, r.descriptionBn, r.descriptionEn),
+        syntax: pickText(locale, r.syntaxBn, r.syntaxEn),
+        example: pickText(locale, r.exampleBn, r.exampleEn),
+        tags: r.tags,
+        language: r.language,
+      }))
+      // Rule #4 — null + "" + "   " সব বাদ (pickText আগেই trim করে)
+      .filter((r) => r.title !== '')
 
     languages = Array.from(
       new Set(raw.map((r) => r.language).filter((l): l is string => Boolean(l)))
