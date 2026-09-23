@@ -2,10 +2,20 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import ReferencesFilter, { type ReferenceCard } from './ReferencesFilter'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
 export const revalidate = 300
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
   try {
     const [refCount, langCount] = await Promise.all([
       prisma.reference.count(),
@@ -16,33 +26,47 @@ export async function generateMetadata(): Promise<Metadata> {
       }),
     ])
 
-    const description = `${refCount}+ টি প্রোগ্রামিং রেফারেন্স — syntax, উদাহরণ ও ট্যাগ সহ ${langCount.length} টি ভাষার সম্পূর্ণ ডিকশনারি।`
+    const description = dict.references.metaDescTpl
+      .replace('{refCount}', String(refCount))
+      .replace('{langCount}', String(langCount.length))
 
     return {
-      title: 'প্রোগ্রামিং রেফারেন্স — সম্পূর্ণ ডিকশনারি | DevSchool',
+      title: dict.references.metaTitle,
       description,
       keywords: ['reference', 'syntax', 'dictionary', 'programming', 'DevSchool'],
-      alternates: { canonical: '/references' },
+      alternates: {
+        canonical: `/${locale}/references`,
+        languages: { bn: '/bn/references', en: '/en/references' },
+      },
       openGraph: {
-        title: 'প্রোগ্রামিং রেফারেন্স | DevSchool',
+        title: dict.references.metaOgTitle,
         description,
         type: 'website',
         url: '/references',
         siteName: 'DevSchool',
-        locale: 'bn_BD',
+        locale: isEn ? 'en_US' : 'bn_BD',
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'প্রোগ্রামিং রেফারেন্স | DevSchool',
+        title: dict.references.metaOgTitle,
         description,
       },
     }
   } catch {
-    return { title: 'রেফারেন্স | DevSchool' }
+    return { title: dict.references.metaFallbackTitle }
   }
 }
 
-export default async function ReferencesListingPage() {
+export default async function ReferencesListingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+
   let references: ReferenceCard[] = []
   let languages: string[] = []
   let dbError = false
@@ -70,9 +94,9 @@ export default async function ReferencesListingPage() {
   } catch (err: any) {
     console.error('References listing error:', err)
     dbError = true
-    if (err?.code === 'P1001') errorMessage = 'ডেটাবেজে সংযোগ করা যাচ্ছে না।'
-    else if (err?.code === 'P2021') errorMessage = 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না।'
-    else errorMessage = 'রেফারেন্স লোড করতে সমস্যা হয়েছে।'
+    if (err?.code === 'P1001') errorMessage = dict.references.errNoConn
+    else if (err?.code === 'P2021') errorMessage = dict.references.errNoTable
+    else errorMessage = dict.references.errGeneric
   }
 
   if (dbError) {
@@ -81,14 +105,14 @@ export default async function ReferencesListingPage() {
         <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
           <div className="text-5xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-            সংযোগ সমস্যা
+            {dict.references.errorTitle}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
           <Link
-            href="/"
+            href={`/${locale}`}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
-            হোমপেজে ফিরে যান
+            {dict.listing.backHome}
           </Link>
         </div>
       </div>
@@ -98,9 +122,9 @@ export default async function ReferencesListingPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'প্রোগ্রামিং রেফারেন্স — DevSchool',
-    description: `${references.length} টি রেফারেন্স`,
-    inLanguage: 'bn-BD',
+    name: dict.references.jsonLdName,
+    description: dict.references.jsonLdDescTpl.replace('{count}', String(references.length)),
+    inLanguage: isEn ? 'en' : 'bn-BD',
     numberOfItems: references.length,
   }
 
@@ -127,27 +151,28 @@ export default async function ReferencesListingPage() {
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <li>
-                  <Link href="/" className="hover:text-[#22C55E] transition">
-                    হোম
+                  <Link href={`/${locale}`} className="hover:text-[#22C55E] transition">
+                    {dict.listing.breadcrumbHome}
                   </Link>
                 </li>
                 <li aria-hidden>/</li>
-                <li className="text-slate-800 dark:text-slate-200 font-medium">রেফারেন্স</li>
+                <li className="text-slate-800 dark:text-slate-200 font-medium">
+                  {dict.nav.references}
+                </li>
               </ol>
             </nav>
 
             <div className="max-w-2xl">
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-                প্রোগ্রামিং রেফারেন্স
+                {dict.references.heroTitle}
               </h1>
               <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                প্রতিটা ফাংশন, মেথড ও সিনট্যাক্সের সম্পূর্ণ ডিকশনারি — কোড উদাহরণ,
-                ট্যাগ ও ভাষা অনুযায়ী খুঁজে নিন। আপনার পকেট ডেভেলপার।
+                {dict.references.heroSubtitle}
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <StatCard value={references.length} label="রেফারেন্স" />
-                <StatCard value={languages.length} label="ভাষা" />
+                <StatCard value={references.length} label={dict.references.statReferences} />
+                <StatCard value={languages.length} label={dict.references.statLanguages} />
               </div>
             </div>
           </div>
@@ -158,9 +183,9 @@ export default async function ReferencesListingPage() {
           {references.length === 0 ? (
             <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
               <div className="text-5xl mb-4">📚</div>
-              <h2 className="text-xl font-bold mb-2">এখনো কোনো রেফারেন্স নেই</h2>
+              <h2 className="text-xl font-bold mb-2">{dict.references.emptyTitle}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                শীঘ্রই নতুন রেফারেন্স যুক্ত করা হবে।
+                {dict.references.emptyDesc}
               </p>
             </div>
           ) : (

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 export type ChallengeCard = {
   id: string
@@ -16,6 +17,7 @@ export type ChallengeCard = {
 type DiffFilter = 'all' | 'Easy' | 'Medium' | 'Hard'
 
 export default function ChallengeFilter({ challenges }: { challenges: ChallengeCard[] }) {
+  const dict = useDict()
   const [query, setQuery] = useState('')
   const [difficulty, setDifficulty] = useState<DiffFilter>('all')
 
@@ -47,8 +49,8 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="চ্যালেঞ্জ খুঁজুন..."
-            aria-label="চ্যালেঞ্জ সার্চ"
+            placeholder={dict.challenges.searchPlaceholder}
+            aria-label={dict.challenges.searchAria}
             className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition"
           />
         </div>
@@ -63,7 +65,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
                   : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60'
               }`}
             >
-              {d === 'all' ? 'সব' : d}
+              {d === 'all' ? dict.challenges.allOption : d}
             </button>
           ))}
         </div>
@@ -71,11 +73,11 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
 
       <div className="flex items-center justify-between mb-5 text-sm">
         <p className="text-slate-500 dark:text-slate-400">
-          {filtered.length} টি চ্যালেঞ্জ
+          {dict.challenges.countTpl.replace('{count}', String(filtered.length))}
         </p>
         {(query || difficulty !== 'all') && (
           <button onClick={() => { setQuery(''); setDifficulty('all') }} className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
-            ফিল্টার মুছুন ✕
+            {dict.challenges.filterClear}
           </button>
         )}
       </div>
@@ -83,9 +85,9 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
       {filtered.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
           <div className="text-6xl mb-4">🎯</div>
-          <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">অন্য কীওয়ার্ড বা difficulty দিয়ে চেষ্টা করুন।</p>
-          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">সব চ্যালেঞ্জ দেখুন</button>
+          <h3 className="text-xl font-bold mb-2">{dict.challenges.noResultsTitle}</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{dict.challenges.noResultsDiffDesc}</p>
+          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">{dict.challenges.viewAll}</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -97,13 +99,13 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             >
               <div className="flex items-center justify-between mb-3 gap-2">
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full border text-[10px] font-semibold uppercase tracking-wider ${diffStyle(c.difficulty)}`}>{c.difficulty}</span>
-                <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {c.points} pts</span>
+                <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {c.points} {dict.challenges.pts}</span>
               </div>
               <h3 className="font-bold text-base leading-snug mb-2 group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80] transition line-clamp-2">{c.title}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">{c.description}</p>
               <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/5 text-xs text-slate-400">
                 <span className="truncate max-w-[120px]" title={c.tutorialTitle}>📚 {c.tutorialTitle}</span>
-                <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform">সমাধান →</span>
+                <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform">{dict.challenges.solve}</span>
               </div>
             </Link>
           ))}

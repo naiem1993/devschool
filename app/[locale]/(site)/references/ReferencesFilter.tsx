@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 export type ReferenceCard = {
   id: string
@@ -26,6 +27,7 @@ export default function ReferencesFilter({
   references: ReferenceCard[]
   languages: string[]
 }) {
+  const dict = useDict()
   const [query, setQuery] = useState('')
   const [languageFilter, setLanguageFilter] = useState<string>('all')
   const [sort, setSort] = useState<SortKey>('title')
@@ -78,8 +80,8 @@ export default function ReferencesFilter({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="রেফারেন্স খুঁজুন... (যেমন: map, forEach, fetch)"
-            aria-label="রেফারেন্স সার্চ"
+            placeholder={dict.references.searchPlaceholder}
+            aria-label={dict.references.searchAria}
             className={`w-full pl-11 pr-4 py-3 rounded-2xl text-sm ${inputBase}`}
           />
         </div>
@@ -88,10 +90,10 @@ export default function ReferencesFilter({
           <select
             value={languageFilter}
             onChange={(e) => setLanguageFilter(e.target.value)}
-            aria-label="ভাষা ফিল্টার"
+            aria-label={dict.references.filterLanguage}
             className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
           >
-            <option value="all">সব ভাষা</option>
+            <option value="all">{dict.references.allLanguages}</option>
             {languages.map((l) => (
               <option key={l} value={l}>
                 {l}
@@ -102,11 +104,11 @@ export default function ReferencesFilter({
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            aria-label="সাজানোর ধরন"
+            aria-label={dict.references.sortAria}
             className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
           >
-            <option value="title">নাম (A-Z)</option>
-            <option value="language">ভাষা</option>
+            <option value="title">{dict.references.sortTitle}</option>
+            <option value="language">{dict.references.sortLanguage}</option>
           </select>
         </div>
       </div>
@@ -114,9 +116,9 @@ export default function ReferencesFilter({
       {/* ─── Result Count ─── */}
       <div className="flex items-center justify-between mb-5 text-sm">
         <p className="text-slate-500 dark:text-slate-400">
-          {filtered.length} টি রেফারেন্স
+          {dict.references.countTpl.replace('{count}', String(filtered.length))}
           {activeFilters && (
-            <span className="ml-2 text-xs text-[#22C55E]">(ফিল্টার করা)</span>
+            <span className="ml-2 text-xs text-[#22C55E]">{dict.references.filteredLabel}</span>
           )}
         </p>
         {activeFilters && (
@@ -124,7 +126,7 @@ export default function ReferencesFilter({
             onClick={reset}
             className="text-xs text-slate-500 hover:text-[#22C55E] transition"
           >
-            সব ফিল্টার মুছুন ✕
+            {dict.references.clearFilters}
           </button>
         )}
       </div>
@@ -133,15 +135,15 @@ export default function ReferencesFilter({
       {filtered.length === 0 ? (
         <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
           <div className="text-5xl mb-4">📭</div>
-          <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
+          <h3 className="text-xl font-bold mb-2">{dict.references.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-            অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।
+            {dict.references.noResultsDesc}
           </p>
           <button
             onClick={reset}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
-            সব রেফারেন্স দেখুন
+            {dict.references.viewAll}
           </button>
         </div>
       ) : (
@@ -175,7 +177,7 @@ export default function ReferencesFilter({
                 </p>
               ) : (
                 <p className="text-sm text-slate-400 italic mb-3 flex-1">
-                  বিস্তারিত শীঘ্রই যুক্ত হবে
+                  {dict.references.detailsSoon}
                 </p>
               )}
 

@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d+5e-1+5e-2 শেষ, এখন 5e-3) |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5e-3 আংশিক: references+challenges শেষ) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -528,4 +528,23 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 - ফাইল CRLF — তাই edit-এ CRLF দেওয়া হয়েছে (২টা edit প্রথমে fail → CRLF দিয়ে ঠিক)
 - ব্যাকআপ: ৪টা `.bak` ✅
 
-**পরবর্তী কাজ:** PART 5e-3 — বাকি listing পেজ (challenges, references, tools, playground, progress, search, about) + `challenges/error.tsx`, `references/error.tsx` (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+## 🟢 PART 5e-3-এর রিপোর্ট (আংশিক — ২০২৬-০৯-২৩)
+
+### সম্পন্ন: references + challenges
+| ফাইল | কাজ |
+|---|---|
+| `references/page.tsx` | locale-aware metadata + hreflang, DB err, JSON-LD, breadcrumb, hero, stat, empty |
+| `references/ReferencesFilter.tsx` | client — useDict, placeholder, filter/sort labels, count, empty, detailsSoon |
+| `references/error.tsx` | useDict — title, message, tryAgain, homePage |
+| `challenges/page.tsx` | locale-aware metadata + hreflang, DB err, JSON-LD, breadcrumb, hero, stat, empty |
+| `challenges/ChallengeFilter.tsx` | client — useDict, search, allOption, count, clear, empty, solve, pts |
+| `challenges/error.tsx` | useDict — title, message, tryAgain, homePage |
+
+### নতুন dictionary কী
+- `references` ঘর (bn+en): metaTitle, metaOgTitle, metaDescTpl, heroTitle, heroSubtitle, statReferences, statLanguages, jsonLdName, jsonLdDescTpl, errNoConn/NoTable/Generic, emptyTitle, emptyDesc, searchPlaceholder, searchAria, countTpl, viewAll, filterLanguage, allLanguages, sortAria, sortTitle, sortLanguage, filteredLabel, clearFilters, noResultsTitle, noResultsDesc, detailsSoon, errorTitle, errorMessage
+- `challenges` ঘর (bn+en): metaTitle, metaOgTitle, metaDescTpl, heroTitle, heroSubtitle, statChallenges, jsonLdName, jsonLdDescTpl, errNoConn/NoTable/Generic, emptyTitle, emptyDesc, searchPlaceholder, searchAria, allOption, filterClear, noResultsTitle, noResultsDiffDesc, viewAll, solve, pts, errLoadTitle, errLoadMsg
+
+### বাকি (5e-3-এর অংশ)
+- tools, playground, progress, search, about পেজ + slug not-found/error পেজ
+
+**পরবর্তী কাজ:** PART 5e-3 (বাকি) — tools, playground, progress, search, about + slug not-found/error (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

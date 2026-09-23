@@ -2,34 +2,56 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import ChallengeFilter, { type ChallengeCard } from './ChallengeFilter'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
 export const revalidate = 300
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
   try {
     const count = await prisma.codeChallenge.count()
-    const description = `${count}+ টি হ্যান্ডস-অন কোডিং চ্যালেঞ্জ — বাস্তব সমস্যা সমাধান করে প্রোগ্রামিং শিখুন।`
+    const description = dict.challenges.metaDescTpl.replace('{count}', String(count))
     return {
-      title: 'কোড চ্যালেঞ্জ — প্র্যাকটিস করুন | DevSchool',
+      title: dict.challenges.metaTitle,
       description,
       keywords: ['challenges', 'coding', 'practice', 'problems', 'DevSchool'],
-      alternates: { canonical: '/challenges' },
+      alternates: {
+        canonical: `/${locale}/challenges`,
+        languages: { bn: '/bn/challenges', en: '/en/challenges' },
+      },
       openGraph: {
-        title: 'কোড চ্যালেঞ্জ | DevSchool',
+        title: dict.challenges.metaOgTitle,
         description,
         type: 'website',
         url: '/challenges',
         siteName: 'DevSchool',
-        locale: 'bn_BD',
+        locale: isEn ? 'en_US' : 'bn_BD',
       },
-      twitter: { card: 'summary_large_image', title: 'কোড চ্যালেঞ্জ | DevSchool', description },
+      twitter: { card: 'summary_large_image', title: dict.challenges.metaOgTitle, description },
     }
   } catch {
-    return { title: 'চ্যালেঞ্জ | DevSchool' }
+    return { title: dict.challenges.metaFallbackTitle }
   }
 }
 
-export default async function ChallengesListingPage() {
+export default async function ChallengesListingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+
   let challenges: ChallengeCard[] = []
   let dbError = false
   let errorMessage = ''
@@ -55,9 +77,9 @@ export default async function ChallengesListingPage() {
   } catch (err: any) {
     console.error('Challenges listing error:', err)
     dbError = true
-    if (err?.code === 'P1001') errorMessage = 'ডেটাবেজে সংযোগ করা যাচ্ছে না।'
-    else if (err?.code === 'P2021') errorMessage = 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না।'
-    else errorMessage = 'চ্যালেঞ্জ লোড করতে সমস্যা হয়েছে।'
+    if (err?.code === 'P1001') errorMessage = dict.challenges.errNoConn
+    else if (err?.code === 'P2021') errorMessage = dict.challenges.errNoTable
+    else errorMessage = dict.challenges.errGeneric
   }
 
   if (dbError) {
@@ -65,9 +87,9 @@ export default async function ChallengesListingPage() {
       <div className="min-h-[70vh] flex items-center justify-center bg-white dark:bg-[#050806] p-4">
         <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
           <div className="text-5xl mb-4">🔌</div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">সংযোগ সমস্যা</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{dict.listing.dbConnectError}</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
-          <Link href="/" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">হোমপেজে ফিরে যান</Link>
+          <Link href={`/${locale}`} className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">{dict.listing.backHome}</Link>
         </div>
       </div>
     )
@@ -76,9 +98,9 @@ export default async function ChallengesListingPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'কোড চ্যালেঞ্জ — DevSchool',
-    description: `${challenges.length} টি কোডিং চ্যালেঞ্জ`,
-    inLanguage: 'bn-BD',
+    name: dict.challenges.jsonLdName,
+    description: dict.challenges.jsonLdDescTpl.replace('{count}', String(challenges.length)),
+    inLanguage: isEn ? 'en' : 'bn-BD',
     numberOfItems: challenges.length,
   }
 
@@ -99,19 +121,18 @@ export default async function ChallengesListingPage() {
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-2">
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <li><Link href="/" className="hover:text-[#22C55E] transition">হোম</Link></li>
+                <li><Link href={`/${locale}`} className="hover:text-[#22C55E] transition">{dict.listing.breadcrumbHome}</Link></li>
                 <li aria-hidden>/</li>
-                <li className="text-slate-800 dark:text-slate-200 font-medium">চ্যালেঞ্জ</li>
+                <li className="text-slate-800 dark:text-slate-200 font-medium">{dict.nav.challenges}</li>
               </ol>
             </nav>
             <div className="max-w-2xl">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">কোড চ্যালেঞ্জ</h1>
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">{dict.challenges.heroTitle}</h1>
               <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                বাস্তব কোডিং সমস্যা সমাধান করুন, টেস্ট কেস পাস করে নিজের দক্ষতা প্রমাণ করুন।
-                প্রতিটা চ্যালেঞ্জে আছে ইন্টারঅ্যাকটিভ এডিটর, লাইভ রান ও অটো-টেস্ট।
+                {dict.challenges.heroSubtitle}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <StatCard value={challenges.length} label="চ্যালেঞ্জ" />
+                <StatCard value={challenges.length} label={dict.challenges.statChallenges} />
                 <StatCard value={challenges.filter((c) => c.difficulty === 'Easy').length} label="Easy" />
                 <StatCard value={challenges.filter((c) => c.difficulty === 'Medium').length} label="Medium" />
                 <StatCard value={challenges.filter((c) => c.difficulty === 'Hard').length} label="Hard" />
@@ -123,8 +144,8 @@ export default async function ChallengesListingPage() {
           {challenges.length === 0 ? (
             <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
               <div className="text-5xl mb-4">⚔️</div>
-              <h2 className="text-xl font-bold mb-2">এখনো কোনো চ্যালেঞ্জ নেই</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">শীঘ্রই নতুন চ্যালেঞ্জ যুক্ত করা হবে।</p>
+              <h2 className="text-xl font-bold mb-2">{dict.challenges.emptyTitle}</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{dict.challenges.emptyDesc}</p>
             </div>
           ) : (
             <ChallengeFilter challenges={challenges} />
