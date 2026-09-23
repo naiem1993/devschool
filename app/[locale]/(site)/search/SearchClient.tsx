@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 type TutorialHit = {
   id: string
@@ -47,6 +48,7 @@ const POPULAR = [
 ]
 
 export default function SearchClient({ languages }: { languages: string[] }) {
+  const t = useDict()
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -159,9 +161,9 @@ export default function SearchClient({ languages }: { languages: string[] }) {
   const showReferences = type === 'all' || type === 'references'
 
   const tabs: { key: TabKey; label: string; icon: string }[] = [
-    { key: 'all', label: 'সব', icon: '🔍' },
-    { key: 'tutorials', label: 'টিউটোরিয়াল', icon: '📚' },
-    { key: 'references', label: 'রেফারেন্স', icon: '📖' },
+    { key: 'all', label: t.searchUi.tabAll, icon: '🔍' },
+    { key: 'tutorials', label: t.searchUi.tabTutorials, icon: '📚' },
+    { key: 'references', label: t.searchUi.tabReferences, icon: '📖' },
   ]
 
   return (
@@ -176,8 +178,8 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="কী শিখতে চান? (যেমন: JavaScript, Python, React...)"
-          aria-label="সার্চ"
+          placeholder={t.searchUi.placeholder}
+          aria-label={t.searchUi.ariaLabel}
           autoFocus
           className="w-full pl-14 pr-24 py-4 sm:py-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-base sm:text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg focus:outline-none focus:border-[#22C55E] focus:ring-4 focus:ring-[#22C55E]/10 transition"
         />
@@ -188,7 +190,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           {query && (
             <button
               onClick={() => setQuery('')}
-              aria-label="ক্লিয়ার"
+              aria-label={t.searchUi.clearLabel}
               className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
             >
               ✕
@@ -200,7 +202,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
       {/* ─── Popular suggestions (empty state) ─── */}
       {!hasQuery && (
         <div className="mt-6 flex flex-wrap items-center gap-2 justify-center">
-          <span className="text-xs text-slate-400 mr-1">জনপ্রিয়:</span>
+          <span className="text-xs text-slate-400 mr-1">{t.searchUi.popularLabel}</span>
           {POPULAR.map((p) => (
             <button
               key={p.q}
@@ -316,7 +318,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
             <span className="font-semibold text-slate-700 dark:text-slate-200">
               {result.total}
             </span>{' '}
-            টি ফলাফল
+            {t.searchUi.resultCount}
             {result.fallback && (
               <span className="ml-2 text-[10px] text-amber-600 dark:text-amber-400">
                 (fallback mode)
@@ -336,7 +338,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
             <span className="font-mono text-[#15803d] dark:text-[#4ADE80]">
               “{result.query}”
             </span>{' '}
-            এর জন্য কোনো ফলাফল নেই। অন্য কীওয়ার্ড চেষ্টা করুন।
+            {t.searchUi.noResults}
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
             {POPULAR.slice(0, 4).map((p) => (

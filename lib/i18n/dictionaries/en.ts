@@ -339,6 +339,120 @@ const en: Dictionary = {
     bengali: 'বাংলা',
     english: 'English',
   },
+
+  // ─────────────────────────────────────────
+  //  New sections — Part 5e-3 (Client UI + About)
+  // ─────────────────────────────────────────
+
+  // ── Search UI (SearchClient.tsx — client component) ──
+  searchUi: {
+    placeholder: 'What do you want to learn? (e.g. JavaScript, Python, React...)',
+    ariaLabel: 'Search',
+    clearLabel: 'Clear',
+    popularLabel: 'Popular:',
+    tabAll: 'All',
+    tabTutorials: 'Tutorials',
+    tabReferences: 'References',
+    resultCount: 'results',
+    noResults: 'No results found. Try another keyword.',
+    tryHint: 'Type at least 2 characters',
+    searching: 'Searching...',
+    errorTitle: 'Search is not working',
+    errorDesc: 'Please try again in a moment.',
+  },
+
+  // ── Playground UI (PlaygroundClient.tsx — client) ──
+  playgroundUi: {
+    editorLoading: 'Loading editor...',
+    running: '⌛ Running...',
+    run: '▶ Run',
+    copy: 'Copy',
+    copied: 'Copied ✓',
+    outputTitle: 'Output',
+    previewTitle: 'Preview',
+    cssPreview: 'CSS preview — your styles will appear here',
+    noOutput: '(no output)',
+  },
+
+  // ── Progress UI (ProgressClient.tsx — client) ──
+  progressUi: {
+    loadError: 'Cannot load',
+    retry: 'Try again',
+    emptyTitle: 'No progress yet',
+    emptyDesc:
+      'Start with a quiz or solve a coding challenge — your data will appear here right away.',
+    viewChallenges: '⚔️ View challenges',
+    viewTutorials: '📚 View tutorials',
+    quizAccuracy: 'Quiz accuracy',
+    quizAccuracySubTpl: '{correct}/{total} correct',
+    challengePassed: 'Challenges passed',
+    challengePassedSubTpl: 'out of {attempted} attempts',
+    totalPoints: 'Total points',
+    totalPointsSub: 'from passed challenges',
+    quizPerformance: 'Quiz performance',
+    recentActivity: 'Recent activity',
+    passed: '✓ Passed',
+    failed: '✗ Failed',
+    refresh: '↻ Refresh',
+  },
+
+  // ── About page (app/[locale]/about/page.tsx) ──
+  about: {
+    metaTitle: 'About | DevSchool',
+    metaDesc: 'What DevSchool is, why it was built and who is behind it.',
+    heroTitle: 'About DevSchool',
+    heroSubtitle: 'A platform for learning programming for free, in Bengali, by doing.',
+    missionTitle: 'Our mission',
+    missionDesc:
+      'To bring quality, completely free programming education in the Bengali language within everyone\u2019s reach.',
+    visionTitle: 'Our vision',
+    visionDesc:
+      'Any Bengali learner, in their own language, with just an internet connection, can go from zero to professional developer.',
+    valuesTitle: 'Our values',
+    valuesFree: 'Always free',
+    valuesFreeDesc: 'No paid courses, no hidden charges.',
+    valuesPractical: 'Hands-on learning',
+    valuesPracticalDesc: 'Not just reading — write, run, make mistakes, learn.',
+    valuesBengali: 'Bengali first',
+    valuesBengaliDesc: 'Everything is built with Bengali-speaking learners in mind.',
+    contactTitle: 'Contact',
+    contactDesc: 'If you have any question, feedback or problem, let us know.',
+  },
+
+  // ── slug-level not-found / error pages ──
+  slugPages: {
+    tutorialNotFoundTitle: 'Tutorial not found',
+    tutorialNotFoundMsg:
+      'The tutorial you are looking for does not exist, has been removed, or is not published yet.',
+    tutorialErrorTitle: 'Could not load tutorial',
+    tutorialErrorMsg:
+      'An error occurred while loading this tutorial. Please try again.',
+
+    referenceNotFoundTitle: 'Reference not found',
+    referenceNotFoundMsg: 'No reference with this name exists, or it has been removed.',
+    referenceErrorTitle: 'Could not load reference',
+    referenceErrorMsg:
+      'An error occurred while loading this reference. Please try again.',
+
+    challengeNotFoundTitle: 'Challenge not found',
+    challengeNotFoundMsg: 'This challenge does not exist, or it has been removed.',
+    challengeErrorTitle: 'Could not load challenge',
+    challengeErrorMsg:
+      'An error occurred while loading this challenge. Please try again.',
+
+    chapterNotFoundTitle: 'This chapter does not exist',
+    chapterNotFoundMsg:
+      'The chapter you are looking for does not exist, the number is wrong, or it is not published yet.',
+    chapterErrorTitle: 'Could not load chapter',
+    chapterErrorMsg:
+      'An error occurred while loading this chapter. Please try again.',
+
+    viewAllTutorials: 'View all tutorials',
+    viewAllReferences: 'View all references',
+    viewAllChallenges: 'View all challenges',
+    goHome: 'Back to homepage',
+    retry: 'Try again 🔄',
+  },
 };
 
 export default en;

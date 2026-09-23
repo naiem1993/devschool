@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5e-3 প্রায় শেষ — client components + about বাকি) |
+| 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 5 চলমান — 5a/5b/5c/5d + 5e-1 + 5e-2 (Home + Tutorials) সম্পন্ন। বাকি: 5e-3 (বাকি listing), 5e-4 (detail পেজ)।
+**বর্তমান অবস্থান:** Part 5e-3 সম্পন্ন ✅ (dictionary + ৩ client UI + about পেজ সরানো + slug not-found/error)। পরের কাজ: **5e-4 (detail পেজ)**।
 
 ---
 
@@ -569,4 +569,41 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 4. **`about/page.tsx`** — ⚠️ এখনো placeholder (`Page: about`), আসল পেজ বানানো হয়নি
 5. **slug not-found/error পেজ** — `tutorials/[slug]/not-found.tsx`, `tutorials/[slug]/[chapter]/error.tsx`, `tutorials/[slug]/[chapter]/not-found.tsx`, `references/[slug]/not-found.tsx`, `challenges/[id]/not-found.tsx`
 
-**পরবর্তী কাজ:** PART 5e-3 (শেষ) — SearchClient, PlaygroundClient, ProgressClient, about, slug not-found/error। তারপর 5e-4 (detail পেজ)। (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+## 🟢 PART 5e-3-এর চূড়ান্ত রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### কী কী শেষ হলো
+
+**১) dictionary-তে ৪টা নতুন সেকশন যোগ (bn.ts + en.ts):**
+- `searchUi` — ট্যাব লেবেল, placeholder, জনপ্রিয়, clear, resultCount, noResults
+- `playgroundUi` — editorLoading, run, running, copy, copied, cssPreview
+- `progressUi` — ১৬টি key (loadError, retry, emptyTitle/Desc, viewChallenges/Tutorials, quizAccuracy, challengePassed, totalPoints, quizPerformance, recentActivity, passed, failed, refresh)
+- `about` — heroTitle, mission, vision, values, contact
+- `slugPages` — tutorial/reference/challenge/chapter এর not-found ও error লেখা
+
+**২) ৩টা client component locale-aware:**
+| ফাইল | পরিবর্তন |
+|---|---|
+| `search/SearchClient.tsx` | `useDict()` — tabs, placeholder, aria, popular, resultCount, noResults |
+| `playground/PlaygroundClient.tsx` | `useDict()` + `PlaygroundLoadingLabel` wrapper (Monaco loading hook-এর জন্য) |
+| `progress/ProgressClient.tsx` | `useDict()` + `useLocale()` — ১৬টি লেখা + তারিখ EN/Bn |
+
+**৩) About পেজ সরানো:**
+- পুরনো: `app/[locale]/about/page.tsx` (placeholder) → **মুছে দেওয়া**
+- নতুন: `app/[locale]/(site)/about/page.tsx` — Home-এর মতো গ্রিন-গ্লো স্টাইলে, Header/Footer সহ, দুই ভাষার
+
+**৪) slug not-found/error পেজ (৮টা ফাইল):**
+- `tutorials/[slug]/not-found.tsx` — client-side locale ✅
+- `tutorials/[slug]/error.tsx` — **নতুন** ✅
+- `tutorials/[slug]/[chapter]/not-found.tsx` — client-side locale ✅
+- `tutorials/[slug]/[chapter]/error.tsx` — locale-aware ✅
+- `references/[slug]/not-found.tsx` ✅ + `error.tsx` **নতুন** ✅
+- `challenges/[id]/not-found.tsx` ✅ + `error.tsx` **নতুন** ✅
+
+### গুরুত্বপূর্ণ প্যাটার্ন (ভবিষ্যতের জন্য)
+- **not-found.tsx** → client component + `usePathname()` দিয়ে locale detect (কারণ not-found এ params পায় না)
+- **error.tsx** → client component + `useDict()`/`useLocale()` (layout-এর I18nProvider থেকে)
+
+### tsc যাচাই
+- `npx tsc --noEmit` → **fail (প্রত্যাশিত)** — পুরনো Part 1-এর `tutorial.title` ইস্যু, Part 6-এ ঠিক হবে
+
+**পরবর্তী কাজ:** PART 5e-4 — detail পেজ (tutorials/[slug], [chapter], references/[slug], challenges/[id])-এ ডেটাবেস থেকে ভাষা-সঠিক titleBn/En দেখানো। (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

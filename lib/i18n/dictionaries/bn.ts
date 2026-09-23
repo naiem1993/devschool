@@ -344,6 +344,120 @@ const bn = {
     bengali: 'বাংলা',
     english: 'English',
   },
+
+  // ─────────────────────────────────────────
+  //  নতুন সেকশনসমূহ — Part 5e-3 (Client UI + About)
+  // ─────────────────────────────────────────
+
+  // ── Search UI (SearchClient.tsx — ক্লায়েন্ট কম্পোনেন্ট) ──
+  searchUi: {
+    placeholder: 'কী শিখতে চান? (যেমন: JavaScript, Python, React...)',
+    ariaLabel: 'সার্চ',
+    clearLabel: 'ক্লিয়ার',
+    popularLabel: 'জনপ্রিয়:',
+    tabAll: 'সব',
+    tabTutorials: 'টিউটোরিয়াল',
+    tabReferences: 'রেফারেন্স',
+    resultCount: 'টি ফলাফল',
+    noResults: 'এর জন্য কোনো ফলাফল নেই। অন্য কীওয়ার্ড চেষ্টা করুন।',
+    tryHint: 'কমপক্ষে ২টি অক্ষর লিখুন',
+    searching: 'খোঁজা হচ্ছে...',
+    errorTitle: 'খোঁজা যাচ্ছে না',
+    errorDesc: 'একটু পরে আবার চেষ্টা করুন।',
+  },
+
+  // ── Playground UI (PlaygroundClient.tsx — ক্লায়েন্ট) ──
+  playgroundUi: {
+    editorLoading: 'এডিটর লোড হচ্ছে...',
+    running: '⌛ চলছে...',
+    run: '▶ রান',
+    copy: 'কপি',
+    copied: 'কপি হয়েছে ✓',
+    outputTitle: 'আউটপুট',
+    previewTitle: 'প্রিভিউ',
+    cssPreview: 'CSS প্রিভিউ — এখানে তোমার স্টাইল দেখাবে',
+    noOutput: '(কোনো আউটপুট নেই)',
+  },
+
+  // ── Progress UI (ProgressClient.tsx — ক্লায়েন্ট) ──
+  progressUi: {
+    loadError: 'লোড করা যাচ্ছে না',
+    retry: 'আবার চেষ্টা করুন',
+    emptyTitle: 'এখনো কোনো অগ্রগতি নেই',
+    emptyDesc:
+      'একটা কুইজ দিয়ে শুরু করুন অথবা একটা কোডিং চ্যালেঞ্জ সমাধান করুন — তখনই এখানে ডেটা দেখা যাবে।',
+    viewChallenges: '⚔️ চ্যালেঞ্জ দেখুন',
+    viewTutorials: '📚 টিউটোরিয়াল দেখুন',
+    quizAccuracy: 'কুইজ নির্ভুলতা',
+    quizAccuracySubTpl: '{correct}/{total} সঠিক',
+    challengePassed: 'চ্যালেঞ্জ পাস',
+    challengePassedSubTpl: '{attempted} টি চেষ্টার মধ্যে',
+    totalPoints: 'মোট পয়েন্ট',
+    totalPointsSub: 'পাস করা চ্যালেঞ্জ থেকে',
+    quizPerformance: 'কুইজ পারফরম্যান্স',
+    recentActivity: 'সাম্প্রতিক অ্যাক্টিভিটি',
+    passed: '✓ পাস',
+    failed: '✗ ফেইল',
+    refresh: '↻ রিফ্রেশ',
+  },
+
+  // ── About পেজ (app/[locale]/about/page.tsx) ──
+  about: {
+    metaTitle: 'সম্পর্কে | DevSchool',
+    metaDesc: 'DevSchool কী, কেন বানানো, কারা এর পেছনে — সব জানুন।',
+    heroTitle: 'DevSchool সম্পর্কে',
+    heroSubtitle: 'বিনামূল্যে, বাংলায়, হাতে-কলমে প্রোগ্রামিং শেখার একটি প্ল্যাটফর্ম।',
+    missionTitle: 'আমাদের লক্ষ্য',
+    missionDesc:
+      'বাংলা ভাষায় গুণগত মানের, সম্পূর্ণ বিনামূল্যের প্রোগ্রামিং শিক্ষা সবার হাতের নাগালে পৌঁছে দেওয়া।',
+    visionTitle: 'আমাদের ভিশন',
+    visionDesc:
+      'যেকোনো বাঙালি শিক্ষার্থী, নিজের ভাষায়, ইন্টারনেট সংযোগ থাকলেই যেন শূন্য থেকে প্রফেশনাল ডেভেলপার হতে পারে।',
+    valuesTitle: 'আমাদের মূল্যবোধ',
+    valuesFree: 'সবসময় বিনামূল্যে',
+    valuesFreeDesc: 'কোনো পেইড কোর্স নেই, কোনো লুকানো চার্জ নেই।',
+    valuesPractical: 'হাতে-কলমে শেখা',
+    valuesPracticalDesc: 'শুধু পড়া নয় — লিখুন, রান করুন, ভুল করুন, শিখুন।',
+    valuesBengali: 'বাংলায় আগে',
+    valuesBengaliDesc: 'বাংলা ভাষী শিক্ষার্থীদের কথা ভেবেই সবকিছু তৈরি।',
+    contactTitle: 'যোগাযোগ',
+    contactDesc: 'কোনো প্রশ্ন, মতামত বা সমস্যা থাকলে জানান।',
+  },
+
+  // ── slug-লেভেল not-found / error পেজ (tutorials/[slug], references/[slug], challenges/[id]) ──
+  slugPages: {
+    tutorialNotFoundTitle: 'টিউটোরিয়াল পাওয়া যায়নি',
+    tutorialNotFoundMsg:
+      'আপনি যে টিউটোরিয়ালটি খুঁজছেন তা নেই, মুছে ফেলা হয়েছে, অথবা এখনো প্রকাশ করা হয়নি।',
+    tutorialErrorTitle: 'টিউটোরিয়াল লোড করতে সমস্যা',
+    tutorialErrorMsg:
+      'এই টিউটোরিয়ালটি লোড করার সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।',
+
+    referenceNotFoundTitle: 'রেফারেন্স পাওয়া যায়নি',
+    referenceNotFoundMsg: 'এই নামের কোনো রেফারেন্স নেই অথবা মুছে ফেলা হয়েছে।',
+    referenceErrorTitle: 'রেফারেন্স লোড করতে সমস্যা',
+    referenceErrorMsg:
+      'এই রেফারেন্সটি লোড করার সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।',
+
+    challengeNotFoundTitle: 'চ্যালেঞ্জ পাওয়া যায়নি',
+    challengeNotFoundMsg: 'এই চ্যালেঞ্জটি নেই অথবা মুছে ফেলা হয়েছে।',
+    challengeErrorTitle: 'চ্যালেঞ্জ লোড করতে সমস্যা',
+    challengeErrorMsg:
+      'এই চ্যালেঞ্জটি লোড করার সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।',
+
+    chapterNotFoundTitle: 'এই চ্যাপ্টারটি নেই',
+    chapterNotFoundMsg:
+      'আপনি যে চ্যাপ্টারটি খুঁজছেন তা নেই, নম্বরটি ভুল, অথবা এখনো প্রকাশ করা হয়নি।',
+    chapterErrorTitle: 'চ্যাপ্টার লোড করতে সমস্যা',
+    chapterErrorMsg:
+      'এই চ্যাপ্টারটি লোড করার সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।',
+
+    viewAllTutorials: 'সব টিউটোরিয়াল দেখুন',
+    viewAllReferences: 'সব রেফারেন্স দেখুন',
+    viewAllChallenges: 'সব চ্যালেঞ্জ দেখুন',
+    goHome: 'হোমপেজে ফিরে যান',
+    retry: 'আবার চেষ্টা করুন 🔄',
+  },
 };
 
 export default bn;

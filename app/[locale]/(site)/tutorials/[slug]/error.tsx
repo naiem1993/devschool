@@ -1,16 +1,10 @@
 'use client'
 
-// ─────────────────────────────────────────────────────────────
-//  DevSchool — Chapter error boundary
-//  [chapter] segment-এ যেকোনো runtime error ধরার লোকাল boundary।
-//  Brand: Neon Green #22C55E  •  bg #050806
-// ─────────────────────────────────────────────────────────────
-
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
-export default function ChapterError({
+export default function TutorialError({
   error,
   reset,
 }: {
@@ -22,7 +16,7 @@ export default function ChapterError({
   const base = locale === 'en' ? '/en' : '/bn'
 
   useEffect(() => {
-    console.error('[chapter] Error:', error)
+    console.error('[tutorial] Error:', error)
   }, [error])
 
   return (
@@ -45,16 +39,16 @@ export default function ChapterError({
           <div className="mb-4 flex justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[#15803d] dark:text-[#4ADE80]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-              Chapter Error
+              Tutorial Error
             </span>
           </div>
 
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            {t.chapterErrorTitle}
+            {t.tutorialErrorTitle}
           </h1>
 
           <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            {t.chapterErrorMsg}
+            {t.tutorialErrorMsg}
           </p>
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">

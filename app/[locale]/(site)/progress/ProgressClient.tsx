@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getDeviceId } from '@/lib/device'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
 type Progress = {
   quiz: { total: number; correct: number; accuracy: number }
@@ -18,6 +19,8 @@ type Progress = {
 }
 
 export default function ProgressClient() {
+  const t = useDict()
+  const locale = useLocale()
   const [data, setData] = useState<Progress | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -56,13 +59,13 @@ export default function ProgressClient() {
     return (
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center">
         <div className="text-5xl mb-4">⚠️</div>
-        <h3 className="text-lg font-bold mb-2">লোড করা যাচ্ছে না</h3>
+        <h3 className="text-lg font-bold mb-2">{t.progressUi.loadError}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{error}</p>
         <button
           onClick={load}
           className="px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
         >
-          আবার চেষ্টা করুন
+          {t.progressUi.retry}
         </button>
       </div>
     )
@@ -76,16 +79,16 @@ export default function ProgressClient() {
     return (
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
         <div className="text-6xl mb-4">🌱</div>
-        <h3 className="text-xl font-bold mb-2">এখনো কোনো অগ্রগতি নেই</h3>
+        <h3 className="text-xl font-bold mb-2">{t.progressUi.emptyTitle}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
-          একটা কুইজ দিয়ে শুরু করুন অথবা একটা কোডিং চ্যালেঞ্জ সমাধান করুন — তখনই এখানে ডেটা দেখা যাবে।
+          {t.progressUi.emptyDesc}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/challenges" className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">
-            ⚔️ চ্যালেঞ্জ দেখুন
+            {t.progressUi.viewChallenges}
           </Link>
           <Link href="/tutorials" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
-            📚 টিউটোরিয়াল দেখুন
+            {t.progressUi.viewTutorials}
           </Link>
         </div>
       </div>
@@ -98,23 +101,23 @@ export default function ProgressClient() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           icon="🧠"
-          label="কুইজ নির্ভুলতা"
+          label={t.progressUi.quizAccuracy}
           value={`${data.quiz.accuracy}%`}
-          sub={`${data.quiz.correct}/${data.quiz.total} সঠিক`}
+          sub={t.progressUi.quizAccuracySubTpl.replace('{correct}', String(data.quiz.correct)).replace('{total}', String(data.quiz.total))}
           color="green"
         />
         <StatCard
           icon="⚔️"
-          label="চ্যালেঞ্জ পাস"
+          label={t.progressUi.challengePassed}
           value={String(data.challenge.passed)}
-          sub={`${data.challenge.attempted} টি চেষ্টার মধ্যে`}
+          sub={t.progressUi.challengePassedSubTpl.replace('{attempted}', String(data.challenge.attempted))}
           color="emerald"
         />
         <StatCard
           icon="⭐"
-          label="মোট পয়েন্ট"
+          label={t.progressUi.totalPoints}
           value={String(data.challenge.totalPoints)}
-          sub="পাস করা চ্যালেঞ্জ থেকে"
+          sub={t.progressUi.totalPointsSub}
           color="amber"
         />
       </div>
@@ -123,7 +126,7 @@ export default function ProgressClient() {
       {data.quiz.total > 0 && (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold">কুইজ পারফরম্যান্স</span>
+            <span className="text-sm font-semibold">{t.progressUi.quizPerformance}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">{data.quiz.accuracy}%</span>
           </div>
           <div className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -139,7 +142,7 @@ export default function ProgressClient() {
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            সাম্প্রতিক অ্যাক্টিভিটি
+            {t.progressUi.recentActivity}
           </h2>
         </div>
         <ul className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -156,7 +159,7 @@ export default function ProgressClient() {
                       {r.title}
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      {new Date(r.at).toLocaleString('bn-BD', {
+                      {new Date(r.at).toLocaleString(locale === 'en' ? 'en-US' : 'bn-BD', {
                         dateStyle: 'medium',
                         timeStyle: 'short',
                       })}
@@ -170,7 +173,7 @@ export default function ProgressClient() {
                       : 'text-red-500 dark:text-red-400'
                   }`}
                 >
-                  {r.passed ? '✓ পাস' : '✗ ফেইল'}
+                  {r.passed ? t.progressUi.passed : t.progressUi.failed}
                 </span>
               </Link>
             </li>
@@ -183,7 +186,7 @@ export default function ProgressClient() {
           onClick={load}
           className="text-xs text-slate-500 hover:text-[#22C55E] transition"
         >
-          ↻ রিফ্রেশ
+          {t.progressUi.refresh}
         </button>
       </div>
     </div>

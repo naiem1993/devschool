@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { runInSandbox } from '@/lib/sandbox-runner'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 type MonacoEditorInstance = {
   addCommand: (keybinding: number, handler: () => void) => void
@@ -28,10 +29,17 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
   loading: () => (
     <div className="h-[520px] flex items-center justify-center bg-slate-950 text-slate-500 text-sm font-mono rounded-2xl">
-      এডিটর লোড হচ্ছে...
+      <PlaygroundLoadingLabel />
     </div>
   ),
 }) as React.ComponentType<MonacoProps>
+
+// Monaco-এর loading component component-এর বাইরে থাকে, তাই hook ব্যবহার করা যায় না।
+// এই ছোট wrapper hook ব্যবহার করে dictionary লেখা দেখায়।
+function PlaygroundLoadingLabel() {
+  const t = useDict()
+  return <>{t.playgroundUi.editorLoading}</>
+}
 
 type Lang = 'javascript' | 'typescript' | 'html' | 'css'
 
@@ -52,6 +60,7 @@ const LANGUAGES: { id: Lang; label: string; icon: string }[] = [
 ]
 
 export default function PlaygroundClient() {
+  const t = useDict()
   const [lang, setLang] = useState<Lang>('javascript')
   const [code, setCode] = useState(SAMPLES.javascript)
   const [output, setOutput] = useState('')
@@ -125,7 +134,7 @@ export default function PlaygroundClient() {
       return `<!DOCTYPE html><html><head><meta charset="utf-8"/><style>body{font-family:system-ui,sans-serif;margin:0;padding:24px;background:#fff;color:#111}</style></head><body>${code}</body></html>`
     }
     // CSS preview
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"/><style>body{font-family:system-ui,sans-serif;margin:0;padding:24px;background:#fff;color:#111}${code}</style></head><body><div class="preview-box">CSS প্রিভিউ — এখানে তোমার স্টাইল দেখাবে</div></body></html>`
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"/><style>body{font-family:system-ui,sans-serif;margin:0;padding:24px;background:#fff;color:#111}${code}</style></head><body><div class="preview-box">${t.playgroundUi.cssPreview}</div></body></html>`
   })()
 
   return (
@@ -180,13 +189,13 @@ export default function PlaygroundClient() {
             disabled={running}
             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition disabled:opacity-50"
           >
-            {running ? '⌛ চলছে...' : '▶ রান (Ctrl+Enter)'}
+            {running ? t.playgroundUi.running : `▶ ${t.playgroundUi.run} (Ctrl+Enter)`}
           </button>
           <button
             onClick={copy}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition"
           >
-            {copied ? '✓ কপি হয়েছে' : '📋 কপি'}
+            {copied ? t.playgroundUi.copied : `📋 ${t.playgroundUi.copy}`}
           </button>
           <button
             onClick={() => { setCode(SAMPLES[lang]); setOutput('') }}

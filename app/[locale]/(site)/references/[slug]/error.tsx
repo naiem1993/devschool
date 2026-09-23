@@ -1,16 +1,10 @@
 'use client'
 
-// ─────────────────────────────────────────────────────────────
-//  DevSchool — Chapter error boundary
-//  [chapter] segment-এ যেকোনো runtime error ধরার লোকাল boundary।
-//  Brand: Neon Green #22C55E  •  bg #050806
-// ─────────────────────────────────────────────────────────────
-
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
-export default function ChapterError({
+export default function ReferenceError({
   error,
   reset,
 }: {
@@ -22,7 +16,7 @@ export default function ChapterError({
   const base = locale === 'en' ? '/en' : '/bn'
 
   useEffect(() => {
-    console.error('[chapter] Error:', error)
+    console.error('[reference] Error:', error)
   }, [error])
 
   return (
@@ -45,16 +39,16 @@ export default function ChapterError({
           <div className="mb-4 flex justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[#15803d] dark:text-[#4ADE80]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-              Chapter Error
+              Reference Error
             </span>
           </div>
 
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            {t.chapterErrorTitle}
+            {t.referenceErrorTitle}
           </h1>
 
           <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            {t.chapterErrorMsg}
+            {t.referenceErrorMsg}
           </p>
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -65,10 +59,10 @@ export default function ChapterError({
               {t.retry}
             </button>
             <Link
-              href={`${base}/tutorials`}
+              href={`${base}/references`}
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#22C55E] hover:text-[#15803d] dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#22C55E]/60 dark:hover:text-[#4ADE80]"
             >
-              📚 {t.viewAllTutorials}
+              📖 {t.viewAllReferences}
             </Link>
           </div>
 
