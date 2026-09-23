@@ -6,9 +6,11 @@ import TutorialShell from '@/components/TutorialShell'
 import LessonContent from '@/components/LessonContent'
 import TryIt from '@/components/TryIt'
 import { getTutorialNav } from '@/lib/tutorial-data'
+import type { Locale } from '@/lib/i18n/config'
+import { pickText, localizeLesson } from '@/lib/i18n/localize'
 
 type PageProps = {
-  params: Promise<{ slug: string; chapter: string; lesson: string }>
+  params: Promise<{ locale: string; slug: string; chapter: string; lesson: string }>
 }
 
 export const revalidate = 86400
@@ -44,7 +46,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug, chapter, lesson } = await params
+  const { locale, slug, chapter, lesson } = await params
   try {
     const ls = await prisma.lesson.findFirst({
       where: {
@@ -52,11 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         chapter: { slug: chapter, tutorial: { slug, isPublished: true } },
       },
       select: {
-        title: true,
+        titleBn: true,
+        titleEn: true,
         chapter: {
           select: {
-            title: true,
-            tutorial: { select: { title: true } },
+            titleBn: true,
+            titleEn: true,
+            tutorial: { select: { titleBn: true, titleEn: true } },
           },
         },
       },
@@ -64,9 +68,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!ls) {
       return { title: 'পাওয়া যায়নি | DevSchool', robots: { index: false, follow: false } }
     }
+    const loc = locale as Locale
+    const lessonTitle = pickText(loc, ls.titleBn, ls.titleEn)
+    const chapterTitle = pickText(loc, ls.chapter.titleBn, ls.chapter.titleEn)
+    const tutorialTitle = pickText(loc, ls.chapter.tutorial.titleBn, ls.chapter.tutorial.titleEn)
+    if (!lessonTitle) {
+      return { title: 'DevSchool' }
+    }
+    const parts = [lessonTitle, chapterTitle, tutorialTitle].filter(Boolean)
     return {
-      title: `${ls.title} — ${ls.chapter.title} — ${ls.chapter.tutorial.title} | DevSchool`,
-      alternates: { canonical: `/tutorials/${slug}/${chapter}/${lesson}` },
+      title: `${parts.join(' — ')} | DevSchool`,
+      alternates: {
+        canonical: `/${locale}/tutorials/${slug}/${chapter}/${lesson}`,
+        languages: {
+          'bn-BD': `/bn/tutorials/${slug}/${chapter}/${lesson}`,
+          en: `/en/tutorials/${slug}/${chapter}/${lesson}`,
+        },
+      },
     }
   } catch {
     return { title: 'DevSchool' }
@@ -74,7 +92,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function LessonPage({ params }: PageProps) {
-  const { slug, chapter, lesson } = await params
+  const { locale, slug, chapter, lesson } = await params
+  const loc = locale as Locale
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -82,28 +101,36 @@ export default async function LessonPage({ params }: PageProps) {
       select: {
         id: true,
         slug: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
       },
     })
     .catch(() => null)
 
   if (!tutorial) notFound()
 
+  const tutorialTitle = pickText(loc, tutorial.titleBn, tutorial.titleEn)
+  if (!tutorialTitle) notFound()
+
   const ch = await prisma.chapter.findFirst({
     where: { tutorialId: tutorial.id, slug: chapter },
     select: {
       id: true,
       slug: true,
-      title: true,
+      titleBn: true,
+      titleEn: true,
       sortOrder: true,
       lessons: {
         orderBy: { sortOrder: 'asc' },
         select: {
           id: true,
           slug: true,
-          title: true,
-          content: true,
-          codeExample: true,
+          titleBn: true,
+          titleEn: true,
+          contentBn: true,
+          contentEn: true,
+          codeExampleBn: true,
+          codeExampleEn: true,
           sortOrder: true,
         },
       },
@@ -112,18 +139,22 @@ export default async function LessonPage({ params }: PageProps) {
 
   if (!ch) notFound()
 
-  // First lesson-এর canonical URL হলো chapter URL (D3/D4) — redirect
+  // First lesson-এর canonical URL হলো chapter URL (D3/D4) — redirect (locale-aware)
   const firstLesson = ch.lessons[0]
   if (firstLesson && firstLesson.slug === lesson) {
-    permanentRedirect(`/tutorials/${slug}/${chapter}`)
+    permanentRedirect(`/${locale}/tutorials/${slug}/${chapter}`)
   }
 
   const current = ch.lessons.find((l) => l.slug === lesson)
   if (!current) notFound()
 
-  const nav = await getTutorialNav(tutorial.id)
+  const nav = await getTutorialNav(tutorial.id, loc)
   const sortedChapters = [...nav.chapters].sort((a, b) => a.sortOrder - b.sortOrder)
   const chIdx = sortedChapters.findIndex((c) => c.id === ch.id)
+
+  const chapterTitle = pickText(loc, ch.titleBn, ch.titleEn)
+  const currentL = localizeLesson(loc, current)
+  if (!currentL.title) notFound()
 
   // Prev / Next — lesson-এর ভেতরে, তারপর chapter bound হলে chapter-এ
   const lessonIdx = ch.lessons.findIndex((l) => l.id === current.id)
@@ -131,14 +162,17 @@ export default async function LessonPage({ params }: PageProps) {
   const nextLesson =
     lessonIdx >= 0 && lessonIdx < ch.lessons.length - 1 ? ch.lessons[lessonIdx + 1] : null
 
+  const firstLessonL = firstLesson ? localizeLesson(loc, firstLesson) : null
+  const prevLessonL = prevLesson ? localizeLesson(loc, prevLesson) : null
+
   let prevHref: string
   let prevLabel: string
-  if (prevLesson) {
+  if (prevLesson && prevLessonL?.title) {
     prevHref = `/tutorials/${slug}/${chapter}/${prevLesson.slug}`
-    prevLabel = '❮ ' + prevLesson.title
-  } else if (firstLesson) {
+    prevLabel = '❮ ' + prevLessonL.title
+  } else if (firstLessonL?.title) {
     prevHref = `/tutorials/${slug}/${chapter}`
-    prevLabel = '❮ ' + firstLesson.title
+    prevLabel = '❮ ' + firstLessonL.title
   } else {
     prevHref = `/tutorials/${slug}`
     prevLabel = '❮ Home'
@@ -156,7 +190,7 @@ export default async function LessonPage({ params }: PageProps) {
   return (
     <TutorialShell
       tutorialSlug={tutorial.slug}
-      tutorialTitle={tutorial.title}
+      tutorialTitle={tutorialTitle}
       nav={nav}
       active={{ chapterSlug: chapter, lessonSlug: current.slug }}
     >
@@ -164,39 +198,39 @@ export default async function LessonPage({ params }: PageProps) {
         <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
         <span>/</span>
         <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
-          {tutorial.title}
+          {tutorialTitle}
         </Link>
         <span>/</span>
         <Link
           href={`/tutorials/${tutorial.slug}/${chapter}`}
           className="hover:text-[#22C55E]"
         >
-          {ch.title}
+          {chapterTitle}
         </Link>
         <span>/</span>
-        <span className="text-slate-700 dark:text-slate-300">{current.title}</span>
+        <span className="text-slate-700 dark:text-slate-300">{currentL.title}</span>
       </nav>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold mb-6">{current.title}</h1>
+      <h1 className="text-3xl sm:text-4xl font-extrabold mb-6">{currentL.title}</h1>
 
-      {current.content && (
+      {currentL.content && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={current.content} lessonPath={lessonPath} />
+          <LessonContent content={currentL.content} lessonPath={lessonPath} />
         </div>
       )}
 
-      {current.codeExample && (
+      {currentL.codeExample && (
         <div className="mt-6 rounded-lg overflow-hidden border border-emerald-200/60 dark:border-emerald-900/40">
           <div className="px-3 py-2 bg-[#0a0f0c] text-[11px] text-slate-500 font-mono border-b border-emerald-900/30">
             example.html
           </div>
           <pre className="bg-[#050806] text-[#4ADE80] p-4 overflow-x-auto text-sm font-mono">
-            <code>{current.codeExample}</code>
+            <code>{currentL.codeExample}</code>
           </pre>
         </div>
       )}
 
-      {current.codeExample && <TryIt code={current.codeExample} lessonPath={lessonPath} />}
+      {currentL.codeExample && <TryIt code={currentL.codeExample} lessonPath={lessonPath} />}
 
       <div className="flex justify-between items-center gap-3 mt-10 pt-6 border-t border-emerald-200/60 dark:border-emerald-900/40">
         <Link

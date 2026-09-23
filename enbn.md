@@ -77,14 +77,14 @@ model Tutorial {
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
-| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
+| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (ধাপ ১-৫ শেষ; components/admin/scripts বাকি) |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 5e-3 সম্পন্ন ✅ (dictionary + ৩ client UI + about পেজ সরানো + slug not-found/error)। পরের কাজ: **5e-4 (detail পেজ)**।
+**বর্তমান অবস্থান:** Part 6 ধাপ ১-৫ সম্পন্ন ✅ (localize.ts helper + tutorial-data.ts + tutorials/[slug] + [chapter] + [lesson] + tryit দুটো — সব locale-aware, strict no-fallback, redirect-এ locale যুক্ত)। tsc error ~২৬৩ → ~১৯১। পরের কাজ: **ধাপ ৬ — components (LessonSidebar, TutorialShell, LanguageTabsServer)**।
 
 ---
 

@@ -2,33 +2,44 @@ import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import TryItFullClient from '@/components/TryItFullClient'
+import type { Locale } from '@/lib/i18n/config'
+import { pickText, localizeChapter, localizeLesson } from '@/lib/i18n/localize'
 
 type PageProps = {
-  params: Promise<{ slug: string; chapter: string }>
+  params: Promise<{ locale: string; slug: string; chapter: string }>
 }
 
 const EMPTY_CODE = '<!-- এখানে তোমার HTML লিখো -->\n<h1>Hello World</h1>'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug, chapter } = await params
+  const { locale, slug, chapter } = await params
   try {
     const ch = await prisma.chapter.findFirst({
       where: { slug: chapter, tutorial: { slug, isPublished: true } },
       select: {
-        title: true,
-        content: true,
+        titleBn: true,
+        titleEn: true,
+        contentBn: true,
+        contentEn: true,
         lessons: {
           orderBy: { sortOrder: 'asc' },
           take: 1,
-          select: { title: true },
+          select: { titleBn: true, titleEn: true },
         },
-        tutorial: { select: { title: true } },
+        tutorial: { select: { titleBn: true, titleEn: true } },
       },
     })
     if (!ch) return { title: 'Try it | DevSchool', robots: { index: false } }
-    const display = ch.content ? ch.title : (ch.lessons[0]?.title ?? ch.title)
+    const loc = locale as Locale
+    const chapterTitle = pickText(loc, ch.titleBn, ch.titleEn)
+    const contentL = pickText(loc, ch.contentBn, ch.contentEn)
+    const firstLesson = ch.lessons[0]
+    const lessonTitle = firstLesson ? pickText(loc, firstLesson.titleBn, firstLesson.titleEn) : null
+    const display = contentL ? chapterTitle : (lessonTitle ?? chapterTitle)
+    const tutorialTitle = pickText(loc, ch.tutorial.titleBn, ch.tutorial.titleEn)
+    if (!display) return { title: 'Try it | DevSchool', robots: { index: false } }
     return {
-      title: `Try it: ${display} — ${ch.tutorial.title} | DevSchool`,
+      title: `Try it: ${display} — ${tutorialTitle ?? 'DevSchool'} | DevSchool`,
       robots: { index: false, follow: false },
     }
   } catch {
@@ -37,27 +48,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function TryItChapterPage({ params }: PageProps) {
-  const { slug, chapter } = await params
+  const { locale, slug, chapter } = await params
+  const loc = locale as Locale
 
   const tutorial = await prisma.tutorial
     .findUnique({
       where: { slug, isPublished: true },
-      select: { id: true, slug: true, title: true },
+      select: { id: true, slug: true, titleBn: true, titleEn: true },
     })
     .catch(() => null)
 
   if (!tutorial) notFound()
 
+  const tutorialTitle = pickText(loc, tutorial.titleBn, tutorial.titleEn)
+  if (!tutorialTitle) notFound()
+
   const ch = await prisma.chapter.findFirst({
     where: { tutorialId: tutorial.id, slug: chapter },
     select: {
       slug: true,
-      title: true,
-      content: true,
-      codeExample: true,
+      titleBn: true,
+      titleEn: true,
+      contentBn: true,
+      contentEn: true,
+      codeExampleBn: true,
+      codeExampleEn: true,
       lessons: {
         orderBy: { sortOrder: 'asc' },
-        select: { slug: true, title: true, content: true, codeExample: true },
+        select: {
+          slug: true,
+          titleBn: true,
+          titleEn: true,
+          contentBn: true,
+          contentEn: true,
+          codeExampleBn: true,
+          codeExampleEn: true,
+        },
       },
     },
   })
@@ -67,17 +93,23 @@ export default async function TryItChapterPage({ params }: PageProps) {
   const isSinglePage = ch.lessons.length === 0
   const firstLesson = ch.lessons[0] ?? null
 
-  // nested হলে chapter URL = first lesson URL — এই route-এ প্রথম lesson হবে না (canonical protection)
-  // তবে nested chapter-এর প্রথম lesson-এর tryit হলে সেটা এই route থেকেই serve হবে (same URL segment)
-  // কারণ chapter URL = first lesson URL। তাই এখানে কিছু redirect করার দরকার নেই।
+  const chapterL = localizeChapter(loc, ch)
+  const firstLessonL = firstLesson ? localizeLesson(loc, firstLesson) : null
 
-  const displayTitle = isSinglePage ? ch.title : (firstLesson?.title ?? ch.title)
-  const code = (isSinglePage ? ch.codeExample : firstLesson?.codeExample) || EMPTY_CODE
+  // strict: title না থাকলে 404 (আগের ধাপের নিয়ম)
+  const displayTitle = isSinglePage
+    ? chapterL.title
+    : (firstLessonL?.title ?? chapterL.title)
+  if (!displayTitle) notFound()
+
+  // codeExample খালি হলে EMPTY_CODE placeholder (আপনার অনুমোদিত)
+  const rawCode = isSinglePage ? chapterL.codeExample : firstLessonL?.codeExample
+  const code = rawCode || EMPTY_CODE
 
   return (
     <TryItFullClient
       code={code}
-      tutorialTitle={tutorial.title}
+      tutorialTitle={tutorialTitle}
       chapterTitle={displayTitle}
       slug={tutorial.slug}
       lessonPath={ch.slug}

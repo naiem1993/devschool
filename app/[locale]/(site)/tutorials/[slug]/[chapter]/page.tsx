@@ -6,9 +6,11 @@ import TutorialShell from '@/components/TutorialShell'
 import LessonContent from '@/components/LessonContent'
 import TryIt from '@/components/TryIt'
 import { getTutorialNav } from '@/lib/tutorial-data'
+import type { Locale } from '@/lib/i18n/config'
+import { pickText, localizeChapter, localizeLesson } from '@/lib/i18n/localize'
 
 type PageProps = {
-  params: Promise<{ slug: string; chapter: string }>
+  params: Promise<{ locale: string; slug: string; chapter: string }>
 }
 
 export const revalidate = 86400
@@ -30,29 +32,45 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug, chapter } = await params
+  const { locale, slug, chapter } = await params
   try {
     const ch = await prisma.chapter.findFirst({
       where: { slug: chapter, tutorial: { slug, isPublished: true } },
       select: {
-        title: true,
-        content: true,
+        titleBn: true,
+        titleEn: true,
+        contentBn: true,
+        contentEn: true,
         lessons: {
           orderBy: { sortOrder: 'asc' },
           take: 1,
-          select: { title: true, content: true },
+          select: { titleBn: true, titleEn: true },
         },
-        tutorial: { select: { title: true } },
+        tutorial: { select: { titleBn: true, titleEn: true } },
       },
     })
     if (!ch) {
       return { title: 'পাওয়া যায়নি | DevSchool', robots: { index: false, follow: false } }
     }
+    const loc = locale as Locale
+    const chapterTitle = pickText(loc, ch.titleBn, ch.titleEn)
     const firstLesson = ch.lessons[0]
-    const displayTitle = ch.content ? ch.title : (firstLesson?.title ?? ch.title)
+    const lessonTitle = firstLesson ? pickText(loc, firstLesson.titleBn, firstLesson.titleEn) : null
+    const contentL = pickText(loc, ch.contentBn, ch.contentEn)
+    const displayTitle = contentL ? chapterTitle : (lessonTitle ?? chapterTitle)
+    const tutorialTitle = pickText(loc, ch.tutorial.titleBn, ch.tutorial.titleEn)
+    if (!displayTitle) {
+      return { title: 'DevSchool' }
+    }
     return {
-      title: `${displayTitle} — ${ch.tutorial.title} | DevSchool`,
-      alternates: { canonical: `/tutorials/${slug}/${chapter}` },
+      title: `${displayTitle} — ${tutorialTitle ?? 'DevSchool'} | DevSchool`,
+      alternates: {
+        canonical: `/${locale}/tutorials/${slug}/${chapter}`,
+        languages: {
+          'bn-BD': `/bn/tutorials/${slug}/${chapter}`,
+          en: `/en/tutorials/${slug}/${chapter}`,
+        },
+      },
     }
   } catch {
     return { title: 'DevSchool' }
@@ -60,7 +78,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ChapterPage({ params }: PageProps) {
-  const { slug, chapter } = await params
+  const { locale, slug, chapter } = await params
+  const loc = locale as Locale
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -68,30 +87,40 @@ export default async function ChapterPage({ params }: PageProps) {
       select: {
         id: true,
         slug: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
       },
     })
     .catch(() => null)
 
   if (!tutorial) notFound()
 
+  const tutorialTitle = pickText(loc, tutorial.titleBn, tutorial.titleEn)
+  if (!tutorialTitle) notFound()
+
   const ch = await prisma.chapter.findFirst({
     where: { tutorialId: tutorial.id, slug: chapter },
     select: {
       id: true,
       slug: true,
-      title: true,
-      content: true,
-      codeExample: true,
+      titleBn: true,
+      titleEn: true,
+      contentBn: true,
+      contentEn: true,
+      codeExampleBn: true,
+      codeExampleEn: true,
       sortOrder: true,
       lessons: {
         orderBy: { sortOrder: 'asc' },
         select: {
           id: true,
           slug: true,
-          title: true,
-          content: true,
-          codeExample: true,
+          titleBn: true,
+          titleEn: true,
+          contentBn: true,
+          contentEn: true,
+          codeExampleBn: true,
+          codeExampleEn: true,
           sortOrder: true,
         },
       },
@@ -100,15 +129,25 @@ export default async function ChapterPage({ params }: PageProps) {
 
   if (!ch) notFound()
 
-  const nav = await getTutorialNav(tutorial.id)
+  const nav = await getTutorialNav(tutorial.id, loc)
 
   // প্রথম lesson (nested হলে) অথবা chapter নিজেই (single-page)
   const firstLesson = ch.lessons[0] ?? null
   const isSinglePage = ch.lessons.length === 0
 
-  const displayTitle = isSinglePage ? ch.title : (firstLesson?.title ?? ch.title)
-  const displayContent = isSinglePage ? (ch.content ?? '') : (firstLesson?.content ?? '')
-  const displayCode = isSinglePage ? ch.codeExample : firstLesson?.codeExample
+  const chapterL = localizeChapter(loc, ch)
+  const firstLessonL = firstLesson ? localizeLesson(loc, firstLesson) : null
+
+  // strict: title না থাকলে 404
+  const displayTitle = isSinglePage
+    ? chapterL.title
+    : (firstLessonL?.title ?? chapterL.title)
+  if (!displayTitle) notFound()
+
+  // content: না থাকলে সেকশন বাদ (খালি null)
+  const displayContent = isSinglePage ? chapterL.content : firstLessonL?.content
+  // codeExample: না থাকলে null (section বাদ)
+  const displayCode = isSinglePage ? chapterL.codeExample : firstLessonL?.codeExample
 
   // Previous / Next — chapters-এর flat list বানিয়ে
   const sortedChapters = [...nav.chapters].sort((a, b) => a.sortOrder - b.sortOrder)
@@ -122,7 +161,7 @@ export default async function ChapterPage({ params }: PageProps) {
   return (
     <TutorialShell
       tutorialSlug={tutorial.slug}
-      tutorialTitle={tutorial.title}
+      tutorialTitle={tutorialTitle}
       nav={nav}
       active={{ chapterSlug: ch.slug, lessonSlug: null }}
     >
@@ -131,14 +170,14 @@ export default async function ChapterPage({ params }: PageProps) {
         <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
         <span>/</span>
         <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
-          {tutorial.title}
+          {tutorialTitle}
         </Link>
         <span>/</span>
-        <span className="text-slate-700 dark:text-slate-300">{ch.title}</span>
-        {!isSinglePage && firstLesson && (
+        <span className="text-slate-700 dark:text-slate-300">{chapterL.title}</span>
+        {!isSinglePage && firstLessonL && (
           <>
             <span>/</span>
-            <span className="text-slate-700 dark:text-slate-300">{firstLesson.title}</span>
+            <span className="text-slate-700 dark:text-slate-300">{firstLessonL.title}</span>
           </>
         )}
       </nav>
