@@ -9,6 +9,7 @@ import HomeErrorPanel from '@/components/HomeErrorPanel';
 import { getHeroSettings, getReviewsSettings, getFaqSettings } from '@/lib/site-settings';
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config';
 import { getDictionarySync } from '@/lib/i18n/dictionaries';
+import { pickText } from '@/lib/i18n/localize';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
@@ -23,7 +24,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
   const dict = getDictionarySync(locale)
 
-  const tutorialCount = await prisma.tutorial.count({ where: { isPublished: true } });
+  const tutorialCount = await prisma.tutorial.count({
+    where:
+      locale === 'en'
+        ? { isPublished: true, titleEn: { not: null } }
+        : { isPublished: true },
+  });
 
   const title = dict.home.metaTitleTpl.replace('{count}', String(tutorialCount))
   const description = dict.home.metaDescTpl.replace('{count}', String(tutorialCount))
@@ -68,11 +74,15 @@ export default async function HomePage({
   let errorMessage = '';
 
   try {
-    popularTutorials = await prisma.tutorial.findMany({
-      where: { isPublished: true },
+    const popularRaw = await prisma.tutorial.findMany({
+      where:
+        locale === 'en'
+          ? { isPublished: true, titleEn: { not: null } }
+          : { isPublished: true },
       select: {
         id: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
         slug: true,
         difficulty: true,
         viewCount: true,
@@ -83,11 +93,25 @@ export default async function HomePage({
       take: 6,
     });
 
-    latestTutorials = await prisma.tutorial.findMany({
-      where: { isPublished: true },
+    popularTutorials = popularRaw.map((t) => ({
+      id: t.id,
+      title: pickText(locale, t.titleBn, t.titleEn) ?? '',
+      slug: t.slug,
+      difficulty: t.difficulty,
+      views: t.viewCount,
+      duration: t.duration,
+      rating: t.rating,
+    }));
+
+    const latestRaw = await prisma.tutorial.findMany({
+      where:
+        locale === 'en'
+          ? { isPublished: true, titleEn: { not: null } }
+          : { isPublished: true },
       select: {
         id: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
         slug: true,
         difficulty: true,
         viewCount: true,
@@ -98,18 +122,45 @@ export default async function HomePage({
       take: 6,
     });
 
-    allTutorialsForSearch = await prisma.tutorial.findMany({
-      where: { isPublished: true },
+    latestTutorials = latestRaw.map((t) => ({
+      id: t.id,
+      title: pickText(locale, t.titleBn, t.titleEn) ?? '',
+      slug: t.slug,
+      difficulty: t.difficulty,
+      views: t.viewCount,
+      duration: t.duration,
+      rating: t.rating,
+    }));
+
+    const allTutorialsRaw = await prisma.tutorial.findMany({
+      where:
+        locale === 'en'
+          ? { isPublished: true, titleEn: { not: null } }
+          : { isPublished: true },
       select: {
         id: true,
-        title: true,
+        titleBn: true,
+        titleEn: true,
         slug: true,
         difficulty: true,
         viewCount: true,
-        chapters: { select: { id: true, slug: true, title: true } },
+        chapters: { select: { id: true, slug: true, titleBn: true, titleEn: true } },
       },
       take: 50,
     });
+
+    allTutorialsForSearch = allTutorialsRaw.map((t) => ({
+      id: t.id,
+      title: pickText(locale, t.titleBn, t.titleEn) ?? '',
+      slug: t.slug,
+      difficulty: t.difficulty,
+      viewCount: t.viewCount,
+      chapters: t.chapters.map((c) => ({
+        id: c.id,
+        slug: c.slug,
+        title: pickText(locale, c.titleBn, c.titleEn) ?? '',
+      })),
+    }));
 
     [tutorialCount, quizCount, challengeCount] = await Promise.all([
       prisma.tutorial.count({ where: { isPublished: true } }),
@@ -135,12 +186,17 @@ export default async function HomePage({
 
     // Marquee-র tech list: সব tutorial-এর নাম
     const allTuts = await prisma.tutorial.findMany({
-      where: { isPublished: true },
-      select: { title: true },
+      where:
+        locale === 'en'
+          ? { isPublished: true, titleEn: { not: null } }
+          : { isPublished: true },
+      select: { titleBn: true, titleEn: true },
       orderBy: { viewCount: 'desc' },
       take: 12,
     });
-    allCategoryNames = allTuts.map((t) => t.title);
+    allCategoryNames = allTuts
+      .map((t) => pickText(locale, t.titleBn, t.titleEn))
+      .filter((v): v is string => v !== null);
   } catch (error: any) {
     console.error('Database error:', error);
     dbError = true;

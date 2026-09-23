@@ -77,14 +77,28 @@ model Tutorial {
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
-| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (ধাপ ১-৬ শেষ ✅ — components-ও locale-aware প্রমাণিত; এখন পেজের হার্ডকোড লেখা → dictionary, admin/scripts বাকি) |
+| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (tutorials tree ✅ + references tree ✅ (commit 666556d) + challenges tree ✅ (commit af91304) + home + tutorials listing ✅ (PART 6 step 6); এখন admin/API/scripts/prisma-seed বাকি) |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 6 ধাপ ১-৬ সম্পন্ন ✅ (localize.ts helper + tutorial-data.ts + tutorials/[slug] + [chapter] + [lesson] + tryit দুটো — সব locale-aware, strict no-fallback, redirect-এ locale যুক্ত)। tsc error ~২৬৩ → ~১৯১। **ধাপ ৬ (components) চেক করা হয়েছে — আসলেই locale-aware ✅** (details নিচের রিপোর্টে)। পরের কাজ: **ধাপ ৭ — টিউটোরিয়াল/চ্যালেঞ্জ/রেফারেন্স/টুলস পেজের হার্ডকোড বাংলা লেখা dictionary-তে আনা** (যেমন "হোম", "টিউটোরিয়াল", "এই টিউটোরিয়ালে যা যা শিখবেন")।
+**বর্তমান অবস্থান:** Part 6 চলছে ✅ — পাবলিক সাইটের সব tree locale-aware (সর্বশেষ: home + tutorials listing — PART 6 step 6)। নিচের tree গুলো সম্পূর্ণ locale-aware:
+
+- **tutorials tree** ✅ — localize.ts + tutorial-data.ts + [slug] + [chapter] + [lesson] + tryit দুটো।
+- **references tree** ✅ (commit `666556d`) — [slug] detail + listing।
+- **challenges tree** ✅ (commit `af91304`) — [id] detail + listing।
+
+**tsc error ~২৬৩ → ~১৩৫** (এখনো fail, কিন্তু এগোচ্ছে)।
+
+⚠️ **ভাষা নীতি (চূড়ান্ত):** admin panel থেকে ইউজার নিজে BN+EN দুই ফিল্ডে ইনপুট দেবেন। কোনো auto-translate বা language-detect নেই। `/bn` পেজ শুধু `*Bn` ফিল্ড দেখাবে, `/en` পেজ শুধু `*En`। strict no-fallback। টেকনিক্যাল টার্ম (Easy/Medium/Advanced, HTML, API ইত্যাদি) ইংরেজিতেই থাকবে দুই পেজে।
+
+⚠️ **listing-এ strict filter (Rule #4):** `/en`-এ শুধু যেসব আইটেমের `titleEn` non-empty। সাথে map-এর পরে `.filter()` দিয়ে খালি string + trim()-করা খালি string বাদ (references + challenges listing-এ করা হয়েছে)।
+
+✅ **PART 6 step 6 (home + tutorials listing):** `app/[locale]/(site)/page.tsx` ও `app/[locale]/(site)/tutorials/page.tsx` — দুইটাই locale-aware। home-এ ৫টা query (popular/latest/search/chapters/marquee) Rule #4 filter + `pickText` পেয়েছে; `generateMetadata`-এর count-ও locale-aware। tutorials listing-এ select-এ `titleBn/En + descriptionBn/En`, Rule #4 filter, ভাষা-নির্ভর `orderBy`, map-এ `pickText` + `.filter()`। পাবলিক সাইটের সব tree ✅ সম্পূর্ণ। commit (step 6) বাকি — শুধু user 'হ্যাঁ' বললে হবে।
+
+**পরের কাজ:** admin পেজ → API routes → prisma/seed → scripts (এই ক্রমে)। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
 
 ---
 

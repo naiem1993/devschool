@@ -5,6 +5,7 @@ import TutorialsFilter, { type TutorialCard } from './TutorialsFilter'
 import { absoluteUrl } from '@/lib/site-url'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
+import { pickText } from '@/lib/i18n/localize'
 
 // ─────────────────────────────────────────────────────────────
 //  ISR — revalidate every 5 minutes
@@ -89,12 +90,17 @@ export default async function TutorialsListingPage({
   try {
     const [raw, refCount] = await Promise.all([
       prisma.tutorial.findMany({
-        where: { isPublished: true },
+        where:
+          locale === 'en'
+            ? { isPublished: true, titleEn: { not: null } }
+            : { isPublished: true },
         select: {
           id: true,
-          title: true,
+          titleBn: true,
+          titleEn: true,
           slug: true,
-          description: true,
+          descriptionBn: true,
+          descriptionEn: true,
           icon: true,
           difficulty: true,
           viewCount: true,
@@ -103,24 +109,29 @@ export default async function TutorialsListingPage({
           createdAt: true,
           _count: { select: { chapters: true } },
         },
-        orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+        orderBy:
+          locale === 'en'
+            ? [{ titleEn: 'asc' }]
+            : [{ titleBn: 'asc' }],
       }),
       prisma.reference.count(),
     ])
 
-    tutorials = raw.map((t) => ({
-      id: t.id,
-      title: t.title,
-      slug: t.slug,
-      description: t.description,
-      icon: t.icon,
-      difficulty: t.difficulty,
-      viewCount: t.viewCount,
-      duration: t.duration,
-      rating: t.rating,
-      chapterCount: t._count.chapters,
-      createdAt: t.createdAt.toISOString(),
-    }))
+    tutorials = raw
+      .map((t) => ({
+        id: t.id,
+        title: pickText(locale, t.titleBn, t.titleEn) ?? '',
+        slug: t.slug,
+        description: pickText(locale, t.descriptionBn, t.descriptionEn),
+        icon: t.icon,
+        difficulty: t.difficulty,
+        viewCount: t.viewCount,
+        duration: t.duration,
+        rating: t.rating,
+        chapterCount: t._count.chapters,
+        createdAt: t.createdAt.toISOString(),
+      }))
+      .filter((t) => t.title !== '')
 
     totalChapters = tutorials.reduce((sum, t) => sum + t.chapterCount, 0)
     totalReferences = refCount
