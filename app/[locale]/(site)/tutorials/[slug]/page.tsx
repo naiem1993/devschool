@@ -4,9 +4,11 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import TutorialShell from '@/components/TutorialShell'
 import { getTutorialNav } from '@/lib/tutorial-data'
+import type { Locale } from '@/lib/i18n/config'
+import { localizeTutorial } from '@/lib/i18n/localize'
 
 type PageProps = {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }
 
 // Pure static — admin save করলে `revalidateTutorialPaths()` দিয়ে on-demand refresh হয়।
@@ -27,13 +29,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
   try {
     const tutorial = await prisma.tutorial.findUnique({
       where: { slug },
       select: {
-        title: true,
-        description: true,
+        titleBn: true,
+        titleEn: true,
+        descriptionBn: true,
+        descriptionEn: true,
         difficulty: true,
       },
     })
@@ -43,20 +47,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         robots: { index: false, follow: false },
       }
     }
+    const localized = localizeTutorial(locale as Locale, tutorial)
+    // locale-সঠিক title না থাকলে metadata fallback — main component notFound() দেবে
+    if (!localized.title) {
+      return { title: 'DevSchool' }
+    }
     const description =
-      tutorial.description ||
-      `${tutorial.title} — ${tutorial.difficulty} লেভেলের টিউটোরিয়াল`
+      localized.description ||
+      `${localized.title} — ${tutorial.difficulty}`
     return {
-      title: `${tutorial.title} | DevSchool`,
+      title: `${localized.title} | DevSchool`,
       description,
-      alternates: { canonical: `/tutorials/${slug}` },
+      alternates: {
+        canonical: `/${locale}/tutorials/${slug}`,
+        languages: {
+          'bn-BD': `/bn/tutorials/${slug}`,
+          en: `/en/tutorials/${slug}`,
+        },
+      },
       openGraph: {
-        title: tutorial.title,
+        title: localized.title,
         description,
         type: 'article',
-        url: `/tutorials/${slug}`,
+        url: `/${locale}/tutorials/${slug}`,
         siteName: 'DevSchool',
-        locale: 'bn_BD',
+        locale: locale === 'en' ? 'en_US' : 'bn_BD',
       },
     }
   } catch {
@@ -65,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function TutorialPage({ params }: PageProps) {
-  const { slug } = await params
+  const { locale, slug } = await params
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -73,15 +88,21 @@ export default async function TutorialPage({ params }: PageProps) {
       select: {
         id: true,
         slug: true,
-        title: true,
-        description: true,
+        titleBn: true,
+        titleEn: true,
+        descriptionBn: true,
+        descriptionEn: true,
       },
     })
     .catch(() => null)
 
   if (!tutorial) notFound()
 
-  const nav = await getTutorialNav(tutorial.id)
+  // locale-সঠিক title বেছে নাও — না থাকলে 404
+  const localized = localizeTutorial(locale as Locale, tutorial)
+  if (!localized.title) notFound()
+
+  const nav = await getTutorialNav(tutorial.id, locale as Locale)
   const sortedChapters = [...nav.chapters].sort((a, b) => a.sortOrder - b.sortOrder)
   const firstChapterUrl = sortedChapters[0]
     ? `/tutorials/${tutorial.slug}/${sortedChapters[0].slug}`
@@ -90,7 +111,7 @@ export default async function TutorialPage({ params }: PageProps) {
   return (
     <TutorialShell
       tutorialSlug={tutorial.slug}
-      tutorialTitle={tutorial.title}
+      tutorialTitle={localized.title}
       nav={nav}
       active={{ chapterSlug: null, lessonSlug: null }}
     >
@@ -104,11 +125,11 @@ export default async function TutorialPage({ params }: PageProps) {
         </Link>
       </nav>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold mb-4">{tutorial.title}</h1>
+      <h1 className="text-3xl sm:text-4xl font-extrabold mb-4">{localized.title}</h1>
 
-      {tutorial.description && (
+      {localized.description && (
         <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-          {tutorial.description}
+          {localized.description}
         </p>
       )}
 

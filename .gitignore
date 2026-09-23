@@ -41,3 +41,7 @@ next-env.d.ts
 
 # local browser automation artifacts
 .browser-screenshots/
+
+# tsc debug files (temporary — untracked, kept on disk)
+tsc-*.txt
+tsc-errors*.txt
