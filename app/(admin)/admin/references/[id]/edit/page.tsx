@@ -6,7 +6,7 @@ import Link from 'next/link'
 export default async function EditReferencePage({ params }: { params: { id: string } }) {
   const [r, tutorials] = await Promise.all([
     prisma.reference.findUnique({ where: { id: params.id } }),
-    prisma.tutorial.findMany({ orderBy: { title: 'asc' } }),
+    prisma.tutorial.findMany({ orderBy: { titleBn: 'asc' } }),
   ])
   if (!r) return notFound()
 
@@ -19,15 +19,15 @@ export default async function EditReferencePage({ params }: { params: { id: stri
           initial={{
             id: r.id,
             tutorialId: r.tutorialId,
-            title: r.title,
+            titleBn: r.titleBn,
             slug: r.slug,
-            description: r.description || '',
-            syntax: r.syntax || '',
-            example: r.example || '',
+            descriptionBn: r.descriptionBn || '',
+            syntaxBn: r.syntaxBn || '',
+            exampleBn: r.exampleBn || '',
             tags: r.tags.join(', '),
             language: r.language || 'javascript',
           }}
-          tutorials={tutorials.map((t) => ({ id: t.id, title: t.title }))}
+          tutorials={tutorials.map((t) => ({ id: t.id, title: t.titleBn }))}
           mode="edit"
         />
       </div>

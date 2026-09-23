@@ -27,12 +27,12 @@ export async function GET(
       where: { tutorialId: id },
       select: {
         id: true,
-        question: true,
-        explanation: true,
+        questionBn: true,
+        explanationBn: true,
         options: {
           select: {
             id: true,
-            text: true,
+            textBn: true,
             // Don't expose isCorrect to client — simply omit it from select
           },
           orderBy: { id: 'asc' },
@@ -91,7 +91,7 @@ export async function POST(
         options: {
           select: {
             id: true,
-            text: true,
+            textBn: true,
             isCorrect: true,
           },
         },
@@ -110,7 +110,7 @@ export async function POST(
       return {
         questionId: q.id,
         isCorrect,
-        correctAnswer: correctOption?.text,
+        correctAnswer: correctOption?.textBn,
       }
     })
     

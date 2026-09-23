@@ -16,17 +16,17 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { question, explanation, orderIndex, options } = await req.json()
+    const { questionBn, explanationBn, orderIndex, options } = await req.json()
     await prisma.quizOption.deleteMany({ where: { questionId: id } })
     const q = await prisma.quizQuestion.update({
       where: { id },
       data: {
-        question,
-        explanation,
+        questionBn,
+        explanationBn,
         orderIndex,
         options: {
           create: options.map((o: any, i: number) => ({
-            text: o.text,
+            textBn: o.textBn,
             isCorrect: !!o.isCorrect,
             optionOrder: i,
           })),

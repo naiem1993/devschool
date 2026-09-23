@@ -9,7 +9,7 @@ export default async function EditQuizPage({ params }: { params: { id: string } 
       where: { id: params.id },
       include: { options: { orderBy: { optionOrder: 'asc' } } },
     }),
-    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { title: 'asc' } }),
+    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { titleBn: 'asc' } }),
   ])
   if (!q) return notFound()
 
@@ -22,12 +22,12 @@ export default async function EditQuizPage({ params }: { params: { id: string } 
           initial={{
             id: q.id,
             tutorialId: q.tutorialId,
-            question: q.question,
-            explanation: q.explanation || '',
+            questionBn: q.questionBn,
+            explanationBn: q.explanationBn || '',
             orderIndex: q.orderIndex,
-            options: q.options.map((o) => ({ text: o.text, isCorrect: o.isCorrect })),
+            options: q.options.map((o) => ({ textBn: o.textBn, isCorrect: o.isCorrect })),
           }}
-          tutorials={tutorials.map((t) => ({ id: t.id, title: t.title }))}
+          tutorials={tutorials.map((t) => ({ id: t.id, title: t.titleBn }))}
           mode="edit"
         />
       </div>

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 type Tutorial = { id: string; title: string }
-type Option = { text: string; isCorrect: boolean }
+type Option = { textBn: string; isCorrect: boolean }
 
 export default function QuizForm({
   initial,
@@ -18,13 +18,13 @@ export default function QuizForm({
   const router = useRouter()
   const [form, setForm] = useState({
     tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
-    question: initial?.question || '',
-    explanation: initial?.explanation || '',
+    questionBn: initial?.questionBn || '',
+    explanationBn: initial?.explanationBn || '',
   })
   const [options, setOptions] = useState<Option[]>(
     initial?.options?.length
-      ? initial.options.map((o: any) => ({ text: o.text, isCorrect: o.isCorrect }))
-      : [{ text: '', isCorrect: true }, { text: '', isCorrect: false }]
+      ? initial.options.map((o: any) => ({ textBn: o.textBn, isCorrect: o.isCorrect }))
+      : [{ textBn: '', isCorrect: true }, { textBn: '', isCorrect: false }]
   )
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -54,23 +54,23 @@ export default function QuizForm({
       </div>
       <div>
         <label className="admin-label">&gt; Question</label>
-        <textarea className="admin-input" rows={2} value={form.question} onChange={(e) => setForm((f) => ({ ...f, question: e.target.value }))} required />
+        <textarea className="admin-input" rows={2} value={form.questionBn} onChange={(e) => setForm((f) => ({ ...f, questionBn: e.target.value }))} required />
       </div>
       <div>
         <label className="admin-label">&gt; Explanation</label>
-        <textarea className="admin-input" rows={2} value={form.explanation || ''} onChange={(e) => setForm((f) => ({ ...f, explanation: e.target.value }))} />
+        <textarea className="admin-input" rows={2} value={form.explanationBn || ''} onChange={(e) => setForm((f) => ({ ...f, explanationBn: e.target.value }))} />
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="admin-label mb-0">&gt; Options</span>
-          <button type="button" className="text-xs text-cyan-400 hover:text-[#22C55E]" onClick={() => setOptions((o) => [...o, { text: '', isCorrect: false }])}>+ add</button>
+          <button type="button" className="text-xs text-cyan-400 hover:text-[#22C55E]" onClick={() => setOptions((o) => [...o, { textBn: '', isCorrect: false }])}>+ add</button>
         </div>
         <div className="space-y-2">
           {options.map((opt, i) => (
             <div key={i} className="flex gap-2 items-center">
               <input type="radio" name="correct" checked={opt.isCorrect} className="accent-[#22C55E]" onChange={() => setOptions((o) => o.map((x, j) => ({ ...x, isCorrect: j === i })))} />
-              <input className="admin-input" value={opt.text} placeholder={`option ${i + 1}`} onChange={(e) => setOptions((o) => o.map((x, j) => j === i ? { ...x, text: e.target.value } : x))} required />
+              <input className="admin-input" value={opt.textBn} placeholder={`option ${i + 1}`} onChange={(e) => setOptions((o) => o.map((x, j) => j === i ? { ...x, textBn: e.target.value } : x))} required />
               {options.length > 2 && (
                 <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setOptions((o) => o.filter((_, j) => j !== i))}>rm</button>
               )}

@@ -16,11 +16,11 @@ export default function ReferenceForm({
 }) {
   const router = useRouter()
   const [form, setForm] = useState({
-    title: initial?.title || '',
+    titleBn: initial?.titleBn || '',
     slug: initial?.slug || '',
-    description: initial?.description || '',
-    syntax: initial?.syntax || '',
-    example: initial?.example || '',
+    descriptionBn: initial?.descriptionBn || '',
+    syntaxBn: initial?.syntaxBn || '',
+    exampleBn: initial?.exampleBn || '',
     tags: (initial?.tags || []).join(', '),
     language: initial?.language || '',
     tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
@@ -53,7 +53,7 @@ export default function ReferenceForm({
     <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
       <div>
         <label className="admin-label">&gt; Title</label>
-        <input className="admin-input" value={form.title} onChange={(e) => { const t = e.target.value; setForm((f) => ({ ...f, title: t, slug: mode === 'create' ? autoSlug(t) : f.slug })) }} required />
+        <input className="admin-input" value={form.titleBn} onChange={(e) => { const t = e.target.value; setForm((f) => ({ ...f, titleBn: t, slug: mode === 'create' ? autoSlug(t) : f.slug })) }} required />
       </div>
       <div>
         <label className="admin-label">&gt; Slug</label>
@@ -73,15 +73,15 @@ export default function ReferenceForm({
       </div>
       <div>
         <label className="admin-label">&gt; Description</label>
-        <textarea className="admin-input" rows={2} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
+        <textarea className="admin-input" rows={2} value={form.descriptionBn} onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))} />
       </div>
       <div>
         <label className="admin-label">&gt; Syntax</label>
-        <textarea className="admin-input" rows={2} value={form.syntax} onChange={(e) => setForm((f) => ({ ...f, syntax: e.target.value }))} />
+        <textarea className="admin-input" rows={2} value={form.syntaxBn} onChange={(e) => setForm((f) => ({ ...f, syntaxBn: e.target.value }))} />
       </div>
       <div>
         <label className="admin-label">&gt; Example</label>
-        <textarea className="admin-input" rows={4} value={form.example} onChange={(e) => setForm((f) => ({ ...f, example: e.target.value }))} />
+        <textarea className="admin-input" rows={4} value={form.exampleBn} onChange={(e) => setForm((f) => ({ ...f, exampleBn: e.target.value }))} />
       </div>
       <div>
         <label className="admin-label">&gt; Tags (comma separated)</label>

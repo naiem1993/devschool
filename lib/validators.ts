@@ -74,14 +74,14 @@ export const updateLessonSchema = z.object({
 
 export const createQuizQuestionSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
-  question: z.string().min(5).max(500),
-  explanation: z.string().optional(),
+  questionBn: z.string().min(5).max(500),
+  explanationBn: z.string().optional(),
   orderIndex: z.number().int().nonnegative().default(0),
 })
 
 export const createQuizOptionSchema = z.object({
   questionId: z.string().cuid({ message: 'Valid questionId is required' }),
-  text: z.string().min(1).max(255),
+  textBn: z.string().min(1).max(255),
   isCorrect: z.boolean().default(false),
 })
 
@@ -89,21 +89,21 @@ export const createQuizOptionSchema = z.object({
 
 export const createReferenceSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
-  title: z.string().min(2).max(255),
+  titleBn: z.string().min(2).max(255),
   slug: z.string().min(2).max(255),
-  description: z.string().optional(),
-  syntax: z.string().optional(),
-  example: z.string().optional(),
+  descriptionBn: z.string().optional(),
+  syntaxBn: z.string().optional(),
+  exampleBn: z.string().optional(),
   language: z.string().trim().max(50).optional().nullable(),
   tags: z.array(z.string()).default([]),
 })
 
 export const updateReferenceSchema = z.object({
-  title: z.string().min(2).max(255).optional(),
+  titleBn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
-  description: z.string().optional(),
-  syntax: z.string().optional(),
-  example: z.string().optional(),
+  descriptionBn: z.string().optional(),
+  syntaxBn: z.string().optional(),
+  exampleBn: z.string().optional(),
   tags: z.array(z.string()).optional(),
   language: z.string().trim().max(50).optional().nullable(),
 })
