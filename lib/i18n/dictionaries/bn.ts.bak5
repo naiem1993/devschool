@@ -140,58 +140,6 @@ const bn = {
       'HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ',
   },
 
-  // ── Listing পেজ (tutorials, challenges, references, tools...) ──
-  listing: {
-    breadcrumbHome: 'হোম',
-    tutorialsTitle: 'সব টিউটোরিয়াল',
-    tutorialsSubtitle:
-      'আপনার পছন্দের প্রোগ্রামিং ভাষা বেছে নিন এবং স্ট্রাকচার্ড টিউটোরিয়াল দিয়ে শেখা শুরু করুন। সব কন্টেন্ট ১০০% বিনামূল্যে।',
-    statTutorials: 'টিউটোরিয়াল',
-    statChapters: 'চ্যাপ্টার',
-    statReferences: 'রেফারেন্স',
-    dbConnectError: 'সংযোগ সমস্যা',
-    backHome: 'হোমপেজে ফিরে যান',
-    dbErrNoConn: 'ডেটাবেজ সার্ভারে সংযোগ করা যাচ্ছে না।',
-    dbErrNoTable: 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না। মাইগ্রেশন চালান।',
-    dbErrGeneric: 'টিউটোরিয়াল লোড করতে সমস্যা হয়েছে।',
-    emptyTutorials: 'এখনো কোনো টিউটোরিয়াল নেই।',
-  },
-
-  // ── Home page (app/[locale]/(site)/page.tsx) ──
-  home: {
-    metaTitleTpl: 'DevSchool — {count}+ টি টিউটোরিয়াল',
-    metaTitleStatic: 'DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন',
-    metaDescTpl:
-      'বিনামূল্যে প্রোগ্রামিং শিখুন। {count} টি টিউটোরিয়াল, ইন্টারঅ্যাকটিভ কুইজ ও প্র্যাকটিস চ্যালেঞ্জ।',
-    metaOgDesc: '{count} টি টিউটোরিয়াল সহ সম্পূর্ণ ফ্রি লার্নিং প্ল্যাটফর্ম',
-    trackTitle: '🗺️ ক্যারিয়ার লার্নিং ট্র্যাক',
-    trackSubtitle:
-      'শূন্য থেকে প্রফেশনাল ডেভেলপার হওয়ার স্টেপ-বাই-স্টেপ রোডম্যাপ',
-    frontendTitle: 'Frontend Master',
-    frontendDesc:
-      'HTML, CSS, JavaScript, React, Next.js শিখুন এবং মডার্ন ইউজার ইন্টারফেস তৈরি করুন।',
-    backendTitle: 'Backend Engineer',
-    backendDesc:
-      'Node.js, Express, Python, Databases, API Design এবং সার্ভার আর্কিটেকচার মাস্টার করুন।',
-    fullstackTitle: 'Full Stack Developer',
-    fullstackDesc:
-      'ফ্রন্টএন্ড ও ব্যাকএন্ড দুই দিকেই দক্ষ হন। ডাটাবেস, ডিপ্লয়মেন্ট, অথেন্টিকেশন সব শিখুন।',
-    startTrack: 'ট্র্যাক শুরু করুন →',
-    errNoConn: 'ডেটাবেজ সার্ভারে সংযোগ করা যাচ্ছে না। নেটওয়ার্ক চেক করুন।',
-    errNoTable: 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না। মাইগ্রেশন চালান।',
-    errUnknown: 'অজানা সমস্যা হয়েছে। আমরা সমাধানে কাজ করছি।',
-  },
-
-  // ── HomeErrorPanel (components/HomeErrorPanel.tsx) ──
-  homeError: {
-    title: 'সংযোগ সমস্যা',
-    retry: 'আবার চেষ্টা করুন 🔄',
-    continueBrowsing: 'ব্রাউজিং চালিয়ে যান →',
-    supportPre: 'সমস্যা থাকলে আমাদের',
-    supportLink: 'সাপোর্টে',
-    supportPost: 'জানান',
-  },
-
   // ── LanguageTabs (components/LanguageTabs.tsx) ──
   tabs: {
     tutorialMenu: 'টিউটোরিয়াল মেনু',

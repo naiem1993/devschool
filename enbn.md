@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d+5e-1 শেষ, এখন 5e-2) |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d+5e-1+5e-2 শেষ, এখন 5e-3) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 5 চলমান — 5a/5b/5c/5d + 5e-1 (root layout metadata, 404, error) সম্পন্ন। বাকি: 5e-2 (Home+Tutorials), 5e-3 (বাকি listing), 5e-4 (detail পেজ)।
+**বর্তমান অবস্থান:** Part 5 চলমান — 5a/5b/5c/5d + 5e-1 + 5e-2 (Home + Tutorials) সম্পন্ন। বাকি: 5e-3 (বাকি listing), 5e-4 (detail পেজ)।
 
 ---
 
@@ -512,4 +512,20 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 ### সাইড-নোট (5e-3-এর জন্য)
 - `challenges/error.tsx` ও `references/error.tsx`-এও হার্ডকোড "কিছু একটা ভুল হয়েছে" আছে — 5e-3-তে ঠিক হবে।
 
-**পরবর্তী কাজ:** PART 5e-2 — Home (`app/[locale]/(site)/page.tsx`) + Tutorials listing (`.../tutorials/page.tsx`) (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+## 🟢 PART 5e-2-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### কী করা হয়েছে
+- `app/[locale]/(site)/tutorials/page.tsx` — locale-aware generateMetadata (hreflang সহ), locale + dict; DB ত্রুটি বার্তা, DB error ব্লক, JSON-LD, Breadcrumb, হিরো শিরোনাম/বর্ণনা, ৩টা StatCard — সব `dict.listing` থেকে
+- `app/[locale]/(site)/page.tsx` (Home) — ইতিমধ্যেই `dict.home` (২৪ জায়গায়) + `dict.homeError` ব্যবহার করছিল; যাচাই করে নিশ্চিত হলাম ✅
+
+### নতুন dictionary কী
+- `listing` ঘর (bn + en): breadcrumbHome, tutorialsTitle, tutorialsSubtitle, statTutorials/Chapters/References, dbConnectError, backHome, dbErrNoConn/NoTable/Generic, emptyTutorials
+- `home` ও `homeError` ঘর আগেই bn+en-এ ছিল (আগের সেশনের কাজ)
+
+### যাচাই
+- `dict.listing` ১১ জায়গায় ✅
+- `dict.home` ২৪ জায়গায়, `dict.homeError` ৬ জায়গায় ✅
+- ফাইল CRLF — তাই edit-এ CRLF দেওয়া হয়েছে (২টা edit প্রথমে fail → CRLF দিয়ে ঠিক)
+- ব্যাকআপ: ৪টা `.bak` ✅
+
+**পরবর্তী কাজ:** PART 5e-3 — বাকি listing পেজ (challenges, references, tools, playground, progress, search, about) + `challenges/error.tsx`, `references/error.tsx` (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

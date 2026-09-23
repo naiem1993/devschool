@@ -135,58 +135,6 @@ const en: Dictionary = {
       'Tutorials, quizzes and coding challenges in 20+ languages including HTML, CSS, JavaScript and Python',
   },
 
-  // ── Listing pages (tutorials, challenges, references, tools...) ──
-  listing: {
-    breadcrumbHome: 'Home',
-    tutorialsTitle: 'All Tutorials',
-    tutorialsSubtitle:
-      'Pick your favourite programming language and start learning with structured tutorials. All content is 100% free.',
-    statTutorials: 'Tutorials',
-    statChapters: 'Chapters',
-    statReferences: 'References',
-    dbConnectError: 'Connection problem',
-    backHome: 'Back to homepage',
-    dbErrNoConn: 'Cannot connect to the database server.',
-    dbErrNoTable: 'Database table not found. Please run migrations.',
-    dbErrGeneric: 'Could not load tutorials.',
-    emptyTutorials: 'No tutorials yet.',
-  },
-
-  // ── Home page (app/[locale]/(site)/page.tsx) ──
-  home: {
-    metaTitleTpl: 'DevSchool — {count}+ tutorials',
-    metaTitleStatic: 'DevSchool — Learn programming for free',
-    metaDescTpl:
-      'Learn programming for free. {count} tutorials, interactive quizzes and practice challenges.',
-    metaOgDesc: 'A completely free learning platform with {count} tutorials',
-    trackTitle: '🗺️ Career Learning Track',
-    trackSubtitle:
-      'A step-by-step roadmap from zero to professional developer',
-    frontendTitle: 'Frontend Master',
-    frontendDesc:
-      'Learn HTML, CSS, JavaScript, React and Next.js, and build modern user interfaces.',
-    backendTitle: 'Backend Engineer',
-    backendDesc:
-      'Master Node.js, Express, Python, Databases, API design and server architecture.',
-    fullstackTitle: 'Full Stack Developer',
-    fullstackDesc:
-      'Become skilled on both frontend and backend. Learn databases, deployment and authentication.',
-    startTrack: 'Start this track →',
-    errNoConn: 'Cannot connect to the database server. Please check your network.',
-    errNoTable: 'Database table not found. Please run migrations.',
-    errUnknown: 'An unknown problem occurred. We are working on a fix.',
-  },
-
-  // ── HomeErrorPanel (components/HomeErrorPanel.tsx) ──
-  homeError: {
-    title: 'Connection problem',
-    retry: 'Try again 🔄',
-    continueBrowsing: 'Continue browsing →',
-    supportPre: 'If the problem persists, contact our',
-    supportLink: 'support',
-    supportPost: '',
-  },
-
   // ── LanguageTabs ──
   tabs: {
     tutorialMenu: 'Tutorial menu',

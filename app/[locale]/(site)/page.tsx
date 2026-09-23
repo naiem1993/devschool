@@ -7,29 +7,52 @@ import HeroSection from '@/components/HeroSection';
 import HomeExtras from '@/components/HomeExtras';
 import HomeErrorPanel from '@/components/HomeErrorPanel';
 import { getHeroSettings, getReviewsSettings, getFaqSettings } from '@/lib/site-settings';
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config';
+import { getDictionarySync } from '@/lib/i18n/dictionaries';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
 export const revalidate = 300;
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+
   const tutorialCount = await prisma.tutorial.count({ where: { isPublished: true } });
 
+  const title = dict.home.metaTitleTpl.replace('{count}', String(tutorialCount))
+  const description = dict.home.metaDescTpl.replace('{count}', String(tutorialCount))
+  const ogDesc = dict.home.metaOgDesc.replace('{count}', String(tutorialCount))
+
   return {
-    title: `DevSchool — ${tutorialCount}+ টি টিউটোরিয়াল`,
-    description: `বিনামূল্যে প্রোগ্রামিং শিখুন। ${tutorialCount} টি টিউটোরিয়াল, ইন্টারঅ্যাকটিভ কুইজ ও প্র্যাকটিস চ্যালেঞ্জ।`,
+    title,
+    description,
     alternates: {
-      canonical: 'https://devschool.com',
+      canonical: `/${locale}`,
+      languages: { bn: '/bn', en: '/en' },
     },
     openGraph: {
-      title: 'DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন',
-      description: `${tutorialCount} টি টিউটোরিয়াল সহ সম্পূর্ণ ফ্রি লার্নিং প্ল্যাটফর্ম`,
+      title: dict.home.metaTitleStatic,
+      description: ogDesc,
       url: '/',
     },
   };
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+
   let popularTutorials: any[] = [];
   let latestTutorials: any[] = [];
   let allTutorialsForSearch: any[] = [];
@@ -123,11 +146,11 @@ export default async function HomePage() {
     dbError = true;
 
     if (error.code === 'P1001') {
-      errorMessage = 'ডেটাবেজ সার্ভারে সংযোগ করা যাচ্ছে না। নেটওয়ার্ক চেক করুন।';
+      errorMessage = dict.home.errNoConn;
     } else if (error.code === 'P2021') {
-      errorMessage = 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না। মাইগ্রেশন চালান।';
+      errorMessage = dict.home.errNoTable;
     } else {
-      errorMessage = 'অজানা সমস্যা হয়েছে। আমরা সমাধানে কাজ করছি।';
+      errorMessage = dict.home.errUnknown;
     }
   }
 
@@ -161,9 +184,9 @@ export default async function HomePage() {
       {/* === লার্নিং ট্র্যাক / রোডম্যাপ সেকশন === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold tracking-tight">🗺️ ক্যারিয়ার লার্নিং ট্র্যাক</h2>
+          <h2 className="text-3xl font-extrabold tracking-tight">{dict.home.trackTitle}</h2>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            শূন্য থেকে প্রফেশনাল ডেভেলপার হওয়ার স্টেপ-বাই-স্টেপ রোডম্যাপ
+            {dict.home.trackSubtitle}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -171,15 +194,15 @@ export default async function HomePage() {
             <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
               🌐
             </div>
-            <h3 className="text-xl font-bold">Frontend Master</h3>
+            <h3 className="text-xl font-bold">{dict.home.frontendTitle}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-              HTML, CSS, JavaScript, React, Next.js শিখুন এবং মডার্ন ইউজার ইন্টারফেস তৈরি করুন।
+              {dict.home.frontendDesc}
             </p>
             <Link
               href="/tutorials"
               className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition"
             >
-              ট্র্যাক শুরু করুন →
+              {dict.home.startTrack}
             </Link>
           </div>
 
@@ -187,15 +210,15 @@ export default async function HomePage() {
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
               ⚙️
             </div>
-            <h3 className="text-xl font-bold">Backend Engineer</h3>
+            <h3 className="text-xl font-bold">{dict.home.backendTitle}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-              Node.js, Express, Python, Databases, API Design এবং সার্ভার আর্কিটেকচার মাস্টার করুন।
+              {dict.home.backendDesc}
             </p>
             <Link
               href="/tutorials"
               className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition"
             >
-              ট্র্যাক শুরু করুন →
+              {dict.home.startTrack}
             </Link>
           </div>
 
@@ -203,15 +226,15 @@ export default async function HomePage() {
             <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
               🧠
             </div>
-            <h3 className="text-xl font-bold">Full Stack Developer</h3>
+            <h3 className="text-xl font-bold">{dict.home.fullstackTitle}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-              ফ্রন্টএন্ড ও ব্যাকএন্ড দুই দিকেই দক্ষ হন। ডাটাবেস, ডিপ্লয়মেন্ট, অথেন্টিকেশন সব শিখুন।
+              {dict.home.fullstackDesc}
             </p>
             <Link
               href="/tutorials"
               className="inline-flex items-center gap-1 text-sm font-semibold text-[#15803d] dark:text-[#4ADE80] mt-6 group-hover:translate-x-1 transition"
             >
-              ট্র্যাক শুরু করুন →
+              {dict.home.startTrack}
             </Link>
           </div>
         </div>

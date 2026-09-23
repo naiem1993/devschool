@@ -3,6 +3,8 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import TutorialsFilter, { type TutorialCard } from './TutorialsFilter'
 import { absoluteUrl } from '@/lib/site-url'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
 // ─────────────────────────────────────────────────────────────
 //  ISR — revalidate every 5 minutes
@@ -12,43 +14,72 @@ export const revalidate = 300
 // ─────────────────────────────────────────────────────────────
 //  METADATA (SEO)
 // ─────────────────────────────────────────────────────────────
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const isEn = locale === 'en'
+  const fallback = isEn
+    ? 'All Tutorials | DevSchool'
+    : 'সব টিউটোরিয়াল | DevSchool'
+
   try {
     const [tutCount, refCount] = await Promise.all([
       prisma.tutorial.count({ where: { isPublished: true } }),
       prisma.reference.count(),
     ])
 
-    const description = `${tutCount}+ টি টিউটোরিয়াল ও ${refCount} টি প্রোগ্রামিং রেফারেন্স — HTML, CSS, JavaScript, Python সহ সব প্রোগ্রামিং ভাষা বিনামূল্যে শিখুন।`
+    const description = isEn
+      ? `${tutCount}+ tutorials and ${refCount} programming references — learn HTML, CSS, JavaScript, Python and more, for free.`
+      : `${tutCount}+ টি টিউটোরিয়াল ও ${refCount} টি প্রোগ্রামিং রেফারেন্স — HTML, CSS, JavaScript, Python সহ সব প্রোগ্রামিং ভাষা বিনামূল্যে শিখুন।`
+
+    const pageTitle = isEn
+      ? 'All Tutorials — Browse | DevSchool'
+      : 'সব টিউটোরিয়াল — ব্রাউজ করুন | DevSchool'
 
     return {
-      title: 'সব টিউটোরিয়াল — ব্রাউজ করুন | DevSchool',
+      title: pageTitle,
       description,
       keywords: ['tutorials', 'programming', 'learn to code', 'DevSchool'],
-      alternates: { canonical: '/tutorials' },
+      alternates: {
+        canonical: `/${locale}/tutorials`,
+        languages: { bn: '/bn/tutorials', en: '/en/tutorials' },
+      },
       openGraph: {
-        title: 'সব টিউটোরিয়াল | DevSchool',
+        title: fallback,
         description,
         type: 'website',
         url: '/tutorials',
         siteName: 'DevSchool',
-        locale: 'bn_BD',
+        locale: isEn ? 'en_US' : 'bn_BD',
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'সব টিউটোরিয়াল | DevSchool',
+        title: fallback,
         description,
       },
     }
   } catch {
-    return { title: 'সব টিউটোরিয়াল | DevSchool' }
+    return { title: fallback }
   }
 }
 
 // ─────────────────────────────────────────────────────────────
 //  PAGE
 // ─────────────────────────────────────────────────────────────
-export default async function TutorialsListingPage() {
+export default async function TutorialsListingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+
   let tutorials: TutorialCard[] = []
   let totalChapters = 0
   let totalReferences = 0
@@ -97,11 +128,11 @@ export default async function TutorialsListingPage() {
     console.error('Tutorials listing error:', err)
     dbError = true
     if (err?.code === 'P1001') {
-      errorMessage = 'ডেটাবেজ সার্ভারে সংযোগ করা যাচ্ছে না।'
+      errorMessage = dict.listing.dbErrNoConn
     } else if (err?.code === 'P2021') {
-      errorMessage = 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না। মাইগ্রেশন চালান।'
+      errorMessage = dict.listing.dbErrNoTable
     } else {
-      errorMessage = 'টিউটোরিয়াল লোড করতে সমস্যা হয়েছে।'
+      errorMessage = dict.listing.dbErrGeneric
     }
   }
 
@@ -112,14 +143,14 @@ export default async function TutorialsListingPage() {
         <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
           <div className="text-5xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-            সংযোগ সমস্যা
+            {dict.listing.dbConnectError}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
           <Link
-            href="/"
+            href={`/${locale}`}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
-            হোমপেজে ফিরে যান
+            {dict.listing.backHome}
           </Link>
         </div>
       </div>
@@ -130,9 +161,13 @@ export default async function TutorialsListingPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'সব টিউটোরিয়াল — DevSchool',
-    description: `${tutorials.length} টি টিউটোরিয়াল`,
-    inLanguage: 'bn-BD',
+    name: isEn
+      ? 'All Tutorials — DevSchool'
+      : 'সব টিউটোরিয়াল — DevSchool',
+    description: isEn
+      ? `${tutorials.length} tutorials`
+      : `${tutorials.length} টি টিউটোরিয়াল`,
+    inLanguage: isEn ? 'en' : 'bn-BD',
     numberOfItems: tutorials.length,
     hasPart: tutorials.slice(0, 20).map((t) => ({
       '@type': 'Course',
@@ -166,29 +201,30 @@ export default async function TutorialsListingPage() {
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <li>
-                  <Link href="/" className="hover:text-[#22C55E] transition">
-                    হোম
+                  <Link href={`/${locale}`} className="hover:text-[#22C55E] transition">
+                    {dict.listing.breadcrumbHome}
                   </Link>
                 </li>
                 <li aria-hidden>/</li>
-                <li className="text-slate-800 dark:text-slate-200 font-medium">টিউটোরিয়াল</li>
+                <li className="text-slate-800 dark:text-slate-200 font-medium">
+                  {dict.nav.tutorials}
+                </li>
               </ol>
             </nav>
 
             <div className="max-w-2xl">
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-                সব টিউটোরিয়াল
+                {dict.listing.tutorialsTitle}
               </h1>
               <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                আপনার পছন্দের প্রোগ্রামিং ভাষা বেছে নিন এবং স্ট্রাকচার্ড টিউটোরিয়াল দিয়ে
-                শেখা শুরু করুন। সব কন্টেন্ট ১০০% বিনামূল্যে।
+                {dict.listing.tutorialsSubtitle}
               </p>
 
               {/* Stats */}
               <div className="mt-8 flex flex-wrap gap-3">
-                <StatCard value={tutorials.length} label="টিউটোরিয়াল" />
-                <StatCard value={totalChapters} label="চ্যাপ্টার" />
-                <StatCard value={totalReferences} label="রেফারেন্স" />
+                <StatCard value={tutorials.length} label={dict.listing.statTutorials} />
+                <StatCard value={totalChapters} label={dict.listing.statChapters} />
+                <StatCard value={totalReferences} label={dict.listing.statReferences} />
               </div>
             </div>
           </div>
