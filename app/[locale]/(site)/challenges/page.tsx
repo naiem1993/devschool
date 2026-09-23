@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import ChallengeFilter, { type ChallengeCard } from './ChallengeFilter'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
+import { pickText } from '@/lib/i18n/localize'
 
 export const revalidate = 300
 
@@ -58,22 +59,30 @@ export default async function ChallengesListingPage({
 
   try {
     const raw = await prisma.codeChallenge.findMany({
+      // Rule #4: /en-এ শুধু যাদের titleEn non-null
+      where: locale === 'en' ? { titleEn: { not: null } } : {},
       include: {
-        tutorial: { select: { title: true, slug: true } },
+        tutorial: { select: { titleBn: true, titleEn: true, slug: true } },
         _count: { select: { testCases: true } },
       },
       orderBy: [{ difficulty: 'asc' }, { createdAt: 'desc' }],
     })
 
-    challenges = raw.map((c) => ({
-      id: c.id,
-      title: c.title,
-      description: c.description,
-      difficulty: c.difficulty,
-      points: c.points,
-      tutorialTitle: c.tutorial.title,
-      testCaseCount: c._count.testCases,
-    }))
+    challenges = raw
+      .map((c) => ({
+        id: c.id,
+        title: pickText(locale as Locale, c.titleBn, c.titleEn) ?? '',
+        description:
+          pickText(locale as Locale, c.descriptionBn, c.descriptionEn) ?? '',
+        difficulty: c.difficulty,
+        points: c.points,
+        tutorialTitle:
+          pickText(locale as Locale, c.tutorial.titleBn, c.tutorial.titleEn) ||
+          c.tutorial.slug,
+        testCaseCount: c._count.testCases,
+      }))
+      // Rule #4 — null + "" + "   " সব বাদ
+      .filter((c) => c.title !== '')
   } catch (err: any) {
     console.error('Challenges listing error:', err)
     dbError = true
