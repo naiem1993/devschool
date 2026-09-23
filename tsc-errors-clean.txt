@@ -1,0 +1,685 @@
+﻿
+app/(admin)/admin/challenges/[id]/edit/page.tsx(12,70): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/challenges/[id]/edit/page.tsx(25,22): error TS2551: Property 'title' does not exist on type '{ testCases: { id: string; createdAt: Date; updatedAt: 
+Date; input: string; expectedOutput: string; isHidden: boolean; testCaseOrder: number; challengeId: string; }[]; } & { id: string; ... 10 more ...; points: number; }'. 
+Did you mean 'titleBn'?
+app/(admin)/admin/challenges/[id]/edit/page.tsx(26,28): error TS2551: Property 'description' does not exist on type '{ testCases: { id: string; createdAt: Date; 
+updatedAt: Date; input: string; expectedOutput: string; isHidden: boolean; testCaseOrder: number; challengeId: string; }[]; } & { id: string; ... 10 more ...; points: 
+number; }'. Did you mean 'descriptionBn'?
+app/(admin)/admin/challenges/[id]/edit/page.tsx(33,65): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/(admin)/admin/challenges/new/page.tsx(6,92): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/challenges/new/page.tsx(13,78): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did 
+you mean 'titleBn'?
+app/(admin)/admin/challenges/page.tsx(12,38): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/(admin)/admin/challenges/page.tsx(42,62): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/(admin)/admin/challenges/page.tsx(43,64): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/(admin)/admin/quizzes/[id]/edit/page.tsx(12,70): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/quizzes/[id]/edit/page.tsx(25,25): error TS2551: Property 'question' does not exist on type '{ options: { id: string; createdAt: Date; updatedAt: 
+Date; textBn: string; textEn: string | null; isCorrect: boolean; optionOrder: number; questionId: string; }[]; } & { id: string; createdAt: Date; ... 6 more ...; 
+orderIndex: number; }'. Did you mean 'questionBn'?
+app/(admin)/admin/quizzes/[id]/edit/page.tsx(26,28): error TS2551: Property 'explanation' does not exist on type '{ options: { id: string; createdAt: Date; updatedAt: 
+Date; textBn: string; textEn: string | null; isCorrect: boolean; optionOrder: number; questionId: string; }[]; } & { id: string; createdAt: Date; ... 6 more ...; 
+orderIndex: number; }'. Did you mean 'explanationBn'?
+app/(admin)/admin/quizzes/[id]/edit/page.tsx(28,54): error TS2339: Property 'text' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; textBn: 
+string; textEn: string | null; isCorrect: boolean; optionOrder: number; questionId: string; }'.
+app/(admin)/admin/quizzes/[id]/edit/page.tsx(30,65): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did 
+you mean 'titleBn'?
+app/(admin)/admin/quizzes/new/page.tsx(6,92): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/quizzes/new/page.tsx(13,73): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did 
+you mean 'titleBn'?
+app/(admin)/admin/quizzes/page.tsx(11,38): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/(admin)/admin/quizzes/page.tsx(40,80): error TS2551: Property 'question' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; tutorialId: string; 
+questionBn: string; questionEn: string | null; explanationBn: string | null; explanationEn: string | null; orderIndex: number; }'. Did you mean 'questionBn'?
+app/(admin)/admin/quizzes/page.tsx(41,64): error TS2551: Property 'tutorial' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; tutorialId: string; 
+questionBn: string; questionEn: string | null; explanationBn: string | null; explanationEn: string | null; orderIndex: number; }'. Did you mean 'tutorialId'?
+app/(admin)/admin/quizzes/page.tsx(42,65): error TS2339: Property '_count' does not exist on type '{ id: string; createdAt: Date; updatedAt: Date; tutorialId: string; 
+questionBn: string; questionEn: string | null; explanationBn: string | null; explanationEn: string | null; orderIndex: number; }'.
+app/(admin)/admin/references/[id]/edit/page.tsx(9,43): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/references/[id]/edit/page.tsx(22,22): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/(admin)/admin/references/[id]/edit/page.tsx(24,28): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string 
+| null; }'. Did you mean 'descriptionBn'?
+app/(admin)/admin/references/[id]/edit/page.tsx(25,23): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/(admin)/admin/references/[id]/edit/page.tsx(26,24): error TS2551: Property 'example' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'exampleBn'?
+app/(admin)/admin/references/[id]/edit/page.tsx(30,65): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/(admin)/admin/references/new/page.tsx(6,65): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'TutorialOrderByWithRelationInput | TutorialOrderByWithRelationInput[]'.
+app/(admin)/admin/references/new/page.tsx(13,78): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did 
+you mean 'titleBn'?
+app/(admin)/admin/references/page.tsx(12,38): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/(admin)/admin/references/page.tsx(41,62): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | null; }'. 
+Did you mean 'titleBn'?
+app/(admin)/admin/references/page.tsx(42,64): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | null; }'. 
+Did you mean 'tutorialId'?
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(30,40): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ChapterGroupSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(38,42): error TS2339: Property 'groups' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'.
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(38,54): error TS7006: Parameter 'g' implicitly has an 'any' type.
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(45,46): error TS2339: Property 'chapters' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'.
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(45,60): error TS7006: Parameter 'c' implicitly has an 'any' type.
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(54,29): error TS7006: Parameter 'l' implicitly has an 'any' type.
+app/(admin)/admin/tutorials/[id]/chapters/page.tsx(74,32): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/(admin)/admin/tutorials/[id]/edit/page.tsx(39,29): error TS2551: Property 'title' does not exist on type '{ _count: { groups: number; chapters: number; }; } & { id: 
+string; titleBn: string; titleEn: string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; ... 7 more ...; 
+updatedAt: Date; }'. Did you mean 'titleBn'?
+app/(admin)/admin/tutorials/[id]/edit/page.tsx(41,35): error TS2551: Property 'description' does not exist on type '{ _count: { groups: number; chapters: number; }; } & 
+{ id: string; titleBn: string; titleEn: string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; ... 7 more ...; 
+updatedAt: Date; }'. Did you mean 'descriptionBn'?
+app/(admin)/admin/tutorials/page.tsx(52,64): error TS2551: Property 'title' does not exist on type '{ _count: { groups: number; chapters: number; }; } & { id: string; 
+titleBn: string; titleEn: string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; ... 7 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(23,89): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(26,27): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(26,47): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(28,19): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(30,20): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(30,29): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/[id]/page.tsx(32,29): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(33,56): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(47,41): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(58,21): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(59,28): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(75,112): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(83,51): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/[id]/page.tsx(83,304): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/[id]/page.tsx(87,105): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(88,125): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; 
+solution: string | null; points: number; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/challenges/[id]/page.tsx(95,34): error TS2339: Property 'testCases' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'.
+app/[locale]/(site)/challenges/[id]/page.tsx(95,49): error TS7006: Parameter 't' implicitly has an 'any' type.
+app/[locale]/(site)/challenges/[id]/page.tsx(101,37): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/[id]/page.tsx(102,38): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/page.tsx(62,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/challenges/page.tsx(70,16): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/challenges/page.tsx(71,22): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/challenges/page.tsx(74,24): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/challenges/page.tsx(75,24): error TS2339: Property '_count' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+descriptionBn: string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: 
+string | null; points: number; }'.
+app/[locale]/(site)/page.tsx(75,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialSelect<DefaultArgs>'. 
+Did you mean to write 'titleBn'?
+app/[locale]/(site)/page.tsx(90,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialSelect<DefaultArgs>'. 
+Did you mean to write 'titleBn'?
+app/[locale]/(site)/page.tsx(109,53): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'ChapterSelect<DefaultArgs>'. 
+Did you mean to write 'titleBn'?
+app/[locale]/(site)/page.tsx(139,17): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialSelect<DefaultArgs>'. 
+Did you mean to write 'titleBn'?
+app/[locale]/(site)/page.tsx(143,45): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: string; 
+descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did you 
+mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(29,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ReferenceSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(40,11): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string 
+| null; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(40,33): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(43,21): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(45,22): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(48,20): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(57,20): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(73,41): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(88,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ReferenceSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(93,18): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'ReferenceOrderByWithRelationInput | ReferenceOrderByWithRelationInput[]'.
+app/[locale]/(site)/references/[slug]/page.tsx(101,21): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(102,28): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string 
+| null; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(103,33): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/references/[slug]/page.tsx(139,49): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/references/[slug]/page.tsx(142,30): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/references/[slug]/page.tsx(147,28): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(158,47): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/references/[slug]/page.tsx(161,31): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/references/[slug]/page.tsx(171,26): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(174,24): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string 
+| null; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(176,28): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string 
+| null; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(182,22): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(197,47): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(200,36): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(207,22): error TS2551: Property 'example' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'exampleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(222,47): error TS2551: Property 'example' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'exampleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(225,36): error TS2551: Property 'example' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'exampleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(265,28): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(273,24): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/[slug]/page.tsx(275,28): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/page.tsx(77,18): error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 
+'ReferenceOrderByWithRelationInput | ReferenceOrderByWithRelationInput[]'.
+app/[locale]/(site)/references/page.tsx(82,16): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | null; }'. 
+Did you mean 'titleBn'?
+app/[locale]/(site)/references/page.tsx(84,22): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | 
+null; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/references/page.tsx(85,17): error TS2551: Property 'syntax' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | null; }'. 
+Did you mean 'syntaxBn'?
+app/[locale]/(site)/references/page.tsx(86,18): error TS2551: Property 'example' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; ... 5 more ...; exampleEn: string | null; }'. 
+Did you mean 'exampleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(59,35): error TS2561: Object literal may only specify known properties, but 'title' does not exist in 
+type 'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(68,20): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; 
+codeExampleEn: string | null; chapterId: string; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(68,34): error TS2551: Property 'chapter' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; 
+codeExampleEn: string | null; chapterId: string; }'. Did you mean 'chapterId'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(68,56): error TS2551: Property 'chapter' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; 
+codeExampleEn: string | null; chapterId: string; }'. Did you mean 'chapterId'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(85,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in 
+type 'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(104,11): error TS2561: Object literal may only specify known properties, but 'title' does not exist in 
+type 'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(116,26): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(121,22): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(121,36): error TS7006: Parameter 'l' implicitly has an 'any' type.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(129,24): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(129,43): error TS7006: Parameter 'l' implicitly has an 'any' type.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(130,41): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(132,38): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(132,62): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(159,31): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; 
+updatedAt: Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(167,21): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; 
+updatedAt: Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/page.tsx(174,15): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(22,52): error TS2561: Object literal may only specify known properties, but 'title' does not 
+exist in type 'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(27,28): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; 
+codeExampleEn: string | null; chapterId: string; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(27,42): error TS2551: Property 'chapter' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; 
+codeExampleEn: string | null; chapterId: string; }'. Did you mean 'chapterId'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(41,39): error TS2561: Object literal may only specify known properties, but 'title' does not 
+exist in type 'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(53,31): error TS2561: Object literal may only specify known properties, but 'title' does not 
+exist in type 'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(60,20): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(65,22): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(65,36): error TS7006: Parameter 'l' implicitly has an 'any' type.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/[lesson]/tryit/page.tsx(71,31): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more 
+...; updatedAt: Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(43,21): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(45,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(51,28): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(52,29): error TS2551: Property 'content' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'contentBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(52,42): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; 
+codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(52,76): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; 
+codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(54,38): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(71,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(92,11): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(106,26): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(107,27): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(109,42): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; 
+codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(109,76): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; 
+codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(110,45): error TS2551: Property 'content' does not exist on type '{ id: string; titleBn: string; titleEn: string 
+| null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | 
+null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'contentBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(111,41): error TS2551: Property 'codeExample' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'codeExampleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(125,31): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(134,21): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/page.tsx(137,66): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; 
+codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(23,21): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(25,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(29,24): error TS2551: Property 'content' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'contentBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(29,37): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(29,49): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(29,73): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(31,41): error TS2551: Property 'tutorial' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'tutorialId'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(45,39): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(60,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(67,27): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(68,26): error TS2339: Property 'lessons' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'.
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(74,42): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(74,76): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: 
+string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(75,35): error TS2551: Property 'codeExample' does not exist on type '{ id: string; titleBn: string; 
+titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; 
+contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }'. Did you mean 'codeExampleBn'?
+app/[locale]/(site)/tutorials/[slug]/[chapter]/tryit/page.tsx(80,31): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: 
+string | null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; 
+updatedAt: Date; }'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(35,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(47,16): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(48,19): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(50,26): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(54,25): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(76,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(93,31): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(107,74): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'titleBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(109,17): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/tutorials/[slug]/page.tsx(111,21): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | 
+null; slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: 
+Date; }'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/tutorials/page.tsx(95,11): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/[locale]/(site)/tutorials/page.tsx(113,16): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'. Did 
+you mean 'titleBn'?
+app/[locale]/(site)/tutorials/page.tsx(115,22): error TS2551: Property 'description' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; 
+slug: string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; 
+}'. Did you mean 'descriptionBn'?
+app/[locale]/(site)/tutorials/page.tsx(121,23): error TS2339: Property '_count' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: 
+string; descriptionBn: string | null; descriptionEn: string | null; icon: string | null; difficulty: string; viewCount: number; ... 5 more ...; updatedAt: Date; }'.
+app/api/admin/challenges/[id]/route.ts(24,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'(Without<CodeChallengeUpdateInput, CodeChallengeUncheckedUpdateInput> & CodeChallengeUncheckedUpdateInput) | (Without<...> & CodeChallengeUpdateInput)'. Did you mean 
+to write 'titleBn'?
+app/api/admin/challenges/route.ts(13,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'(Without<CodeChallengeCreateInput, CodeChallengeUncheckedCreateInput> & CodeChallengeUncheckedCreateInput) | (Without<...> & CodeChallengeCreateInput)'. Did you mean 
+to write 'titleBn'?
+app/api/admin/quiz/[id]/route.ts(24,9): error TS2561: Object literal may only specify known properties, but 'question' does not exist in type 
+'(Without<QuizQuestionUpdateInput, QuizQuestionUncheckedUpdateInput> & QuizQuestionUncheckedUpdateInput) | (Without<...> & QuizQuestionUpdateInput)'. Did you mean to 
+write 'questionBn'?
+app/api/admin/quiz/route.ts(21,11): error TS2322: Type '{ text: any; isCorrect: boolean; optionOrder: number; }[]' is not assignable to type 
+'(Without<QuizOptionCreateWithoutQuestionInput, QuizOptionUncheckedCreateWithoutQuestionInput> & QuizOptionUncheckedCreateWithoutQuestionInput) | (Without<...> & 
+QuizOptionCreateWithoutQuestionInput) | QuizOptionCreateWithoutQuestionInput[] | QuizOptionUncheckedCreateWithoutQuestionInput[] | undefined'.
+  Type '{ text: any; isCorrect: boolean; optionOrder: number; }[]' is not assignable to type 'QuizOptionCreateWithoutQuestionInput[]'.
+    Property 'textBn' is missing in type '{ text: any; isCorrect: boolean; optionOrder: number; }' but required in type 'QuizOptionCreateWithoutQuestionInput'.
+app/api/admin/references/route.ts(10,49): error TS2322: Type '{ slug: string; tutorialId: string; title: string; description?: string | undefined; syntax?: string | 
+undefined; example?: string | undefined; language?: string | null | undefined; tags?: string[] | undefined; }' is not assignable to type '(Without<ReferenceCreateInput, 
+ReferenceUncheckedCreateInput> & ReferenceUncheckedCreateInput) | (Without<...> & ReferenceCreateInput)'.
+  Type '{ slug: string; tutorialId: string; title: string; description?: string | undefined; syntax?: string | undefined; example?: string | undefined; language?: 
+string | null | undefined; tags?: string[] | undefined; }' is not assignable to type 'Without<ReferenceCreateInput, ReferenceUncheckedCreateInput> & 
+ReferenceUncheckedCreateInput'.
+    Property 'titleBn' is missing in type '{ slug: string; tutorialId: string; title: string; description?: string | undefined; syntax?: string | undefined; example?: 
+string | undefined; language?: string | null | undefined; tags?: string[] | undefined; }' but required in type 'ReferenceUncheckedCreateInput'.
+app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts(82,32): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'Without<LessonCreateInput, LessonUncheckedCreateInput> & LessonUncheckedCreateInput'. Did you mean to write 'titleBn'?
+app/api/admin/tutorials/[id]/chapters/route.ts(32,38): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ChapterGroupSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/admin/tutorials/[id]/chapters/route.ts(79,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'Without<ChapterCreateInput, ChapterUncheckedCreateInput> & ChapterUncheckedCreateInput'. Did you mean to write 'titleBn'?
+app/api/admin/tutorials/[id]/chapters/route.ts(125,47): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ChapterGroupSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/admin/tutorials/[id]/groups/[gid]/route.ts(32,84): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'(Without<ChapterGroupUpdateInput, ChapterGroupUncheckedUpdateInput> & ChapterGroupUncheckedUpdateInput) | (Without<...> & ChapterGroupUpdateInput)'. Did you mean to 
+write 'titleBn'?
+app/api/admin/tutorials/[id]/groups/route.ts(51,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'Without<ChapterGroupCreateInput, ChapterGroupUncheckedCreateInput> & ChapterGroupUncheckedCreateInput'. Did you mean to write 'titleBn'?
+app/api/admin/tutorials/route.ts(26,7): error TS2322: Type '{ slug: string; title: string; icon?: string | null | undefined; difficulty?: "Beginner" | "Intermediate" | 
+"Advanced" | undefined; isActive?: boolean | undefined; isPublished?: boolean | undefined; description?: string | undefined; }' is not assignable to type 
+'(Without<TutorialCreateInput, TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'.
+  Type '{ slug: string; title: string; icon?: string | null | undefined; difficulty?: "Beginner" | "Intermediate" | "Advanced" | undefined; isActive?: boolean | 
+undefined; isPublished?: boolean | undefined; description?: string | undefined; }' is not assignable to type 'Without<TutorialUncheckedCreateInput, TutorialCreateInput> 
+& TutorialCreateInput'.
+    Property 'titleBn' is missing in type '{ slug: string; title: string; icon?: string | null | undefined; difficulty?: "Beginner" | "Intermediate" | "Advanced" | 
+undefined; isActive?: boolean | undefined; isPublished?: boolean | undefined; description?: string | undefined; }' but required in type 'TutorialCreateInput'.
+app/api/attempts/[deviceId]/route.ts(37,83): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'TutorialSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/attempts/[deviceId]/route.ts(45,46): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'CodeChallengeSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/attempts/[deviceId]/route.ts(61,18): error TS2551: Property 'question' does not exist on type '{ id: string; createdAt: Date; isCorrect: boolean; questionId: 
+string; deviceId: string; selectedId: string | null; timeTakenSec: number | null; }'. Did you mean 'questionId'?
+app/api/attempts/[deviceId]/route.ts(62,31): error TS2551: Property 'question' does not exist on type '{ id: string; createdAt: Date; isCorrect: boolean; questionId: 
+string; deviceId: string; selectedId: string | null; timeTakenSec: number | null; }'. Did you mean 'questionId'?
+app/api/attempts/[deviceId]/route.ts(69,18): error TS2551: Property 'challenge' does not exist on type '{ id: string; createdAt: Date; challengeId: string; deviceId: 
+string; timeTakenSec: number | null; passed: boolean; passedCount: number; totalCount: number; codeSubmitted: string | null; }'. Did you mean 'challengeId'?
+app/api/attempts/[deviceId]/route.ts(70,32): error TS2551: Property 'challenge' does not exist on type '{ id: string; createdAt: Date; challengeId: string; deviceId: 
+string; timeTakenSec: number | null; passed: boolean; passedCount: number; totalCount: number; codeSubmitted: string | null; }'. Did you mean 'challengeId'?
+app/api/challenges/[id]/route.ts(31,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'CodeChallengeSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/quizzes/[id]/route.ts(35,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionSelect<DefaultArgs>'.
+app/api/quizzes/[id]/route.ts(94,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionSelect<DefaultArgs>'.
+app/api/references/[slug]/route.ts(32,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ReferenceSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/search/route.ts(126,23): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialWhereInput'. Did you mean 
+to write 'titleBn'?
+app/api/search/route.ts(127,23): error TS2561: Object literal may only specify known properties, but 'description' does not exist in type 'TutorialWhereInput'. Did you 
+mean to write 'descriptionBn'?
+app/api/search/route.ts(135,15): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialSelect<DefaultArgs>'. Did 
+you mean to write 'titleBn'?
+app/api/tutorials/[slug]/route.ts(43,31): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'ChapterGroupSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/tutorials/[slug]/route.ts(59,17): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'LessonSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/tutorials/[slug]/route.ts(77,17): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 
+'QuizOptionSelect<DefaultArgs>'.
+app/api/tutorials/[slug]/route.ts(87,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 
+'CodeChallengeSelect<DefaultArgs>'. Did you mean to write 'titleBn'?
+app/api/tutorials/route.ts(47,11): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'TutorialSelect<DefaultArgs>'. Did 
+you mean to write 'titleBn'?
+app/api/tutorials/route.ts(111,7): error TS2322: Type '{ slug: string; difficulty: "Beginner" | "Intermediate" | "Advanced"; isActive: boolean; isPublished: boolean; 
+title: string; icon?: string | null | undefined; description?: string | undefined; }' is not assignable to type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'.
+  Type '{ slug: string; difficulty: "Beginner" | "Intermediate" | "Advanced"; isActive: boolean; isPublished: boolean; title: string; icon?: string | null | undefined; 
+description?: string | undefined; }' is not assignable to type 'Without<TutorialUncheckedCreateInput, TutorialCreateInput> & TutorialCreateInput'.
+    Property 'titleBn' is missing in type '{ slug: string; difficulty: "Beginner" | "Intermediate" | "Advanced"; isActive: boolean; isPublished: boolean; title: string; 
+icon?: string | null | undefined; description?: string | undefined; }' but required in type 'TutorialCreateInput'.
+lib/tutorial-data.ts(14,27): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'ChapterGroupSelect<DefaultArgs>'. Did 
+you mean to write 'titleBn'?
+lib/tutorial-data.ts(27,43): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonSelect<DefaultArgs>'. Did you 
+mean to write 'titleBn'?
+lib/tutorial-data.ts(34,13): error TS2352: Conversion of type '{ id: string; titleBn: string; titleEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: 
+string; sortOrder: number; }[]' to type 'GroupNav[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the 
+expression to 'unknown' first.
+  Property 'title' is missing in type '{ id: string; titleBn: string; titleEn: string | null; createdAt: Date; updatedAt: Date; tutorialId: string; sortOrder: number; 
+}' but required in type 'GroupNav'.
+lib/tutorial-data.ts(35,15): error TS2352: Conversion of type '{ id: string; titleBn: string; titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; 
+tutorialId: string; groupId: string | null; sortOrder: number; contentBn: string | null; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | 
+null; }[]' to type 'ChapterNav[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 
+'unknown' first.
+  Type '{ id: string; titleBn: string; titleEn: string | null; slug: string; createdAt: Date; updatedAt: Date; tutorialId: string; groupId: string | null; sortOrder: 
+number; contentBn: string | null; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; }' is missing the following properties from type 
+'ChapterNav': title, lessons
+prisma/seed-challenge.ts(34,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+prisma/seed-challenge.ts(44,14): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'CodeChallengeWhereInput'. Did you 
+mean to write 'titleBn'?
+prisma/seed-challenge.ts(51,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<CodeChallengeCreateInput, 
+CodeChallengeUncheckedCreateInput> & CodeChallengeUncheckedCreateInput'. Did you mean to write 'titleBn'?
+prisma/seed-challenge.ts(73,39): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; descriptionBn: string; 
+descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: string | null; points: 
+number; }'. Did you mean 'titleBn'?
+prisma/seed-challenge.ts(74,39): error TS2339: Property 'testCases' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; descriptionBn: 
+string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: string | null; 
+points: number; }'.
+prisma/seed-challenge.ts(75,13): error TS2339: Property 'testCases' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; descriptionBn: 
+string; descriptionEn: string | null; difficulty: string; createdAt: Date; updatedAt: Date; tutorialId: string; starterCode: string | null; solution: string | null; 
+points: number; }'.
+prisma/seed-challenge.ts(75,32): error TS7006: Parameter 'tc' implicitly has an 'any' type.
+prisma/seed.ts(11,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+prisma/seed.ts(28,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonUncheckedCreateWithoutChapterInput'. 
+Did you mean to write 'titleBn'?
+prisma/seed.ts(37,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonUncheckedCreateWithoutChapterInput'. 
+Did you mean to write 'titleBn'?
+prisma/seed.ts(53,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ChapterCreateInput, 
+ChapterUncheckedCreateInput> & ChapterUncheckedCreateInput'. Did you mean to write 'titleBn'?
+prisma/seed.ts(69,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(70,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(71,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(72,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(85,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(86,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(87,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(88,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(97,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ReferenceCreateInput, 
+ReferenceUncheckedCreateInput> & ReferenceUncheckedCreateInput'. Did you mean to write 'titleBn'?
+prisma/seed.ts(111,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+prisma/seed.ts(127,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonUncheckedCreateWithoutChapterInput'. 
+Did you mean to write 'titleBn'?
+prisma/seed.ts(149,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonUncheckedCreateWithoutChapterInput'. 
+Did you mean to write 'titleBn'?
+prisma/seed.ts(171,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 
+'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(172,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 
+'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(173,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 
+'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(174,13): error TS2353: Object literal may only specify known properties, and 'text' does not exist in type 
+'QuizOptionUncheckedCreateWithoutQuestionInput'.
+prisma/seed.ts(184,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<CodeChallengeCreateInput, 
+CodeChallengeUncheckedCreateInput> & CodeChallengeUncheckedCreateInput'. Did you mean to write 'titleBn'?
+prisma/seed.ts(202,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ReferenceCreateInput, 
+ReferenceUncheckedCreateInput> & ReferenceUncheckedCreateInput'. Did you mean to write 'titleBn'?
+prisma/seed.ts(217,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+prisma/seed.ts(233,13): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'LessonUncheckedCreateWithoutChapterInput'. 
+Did you mean to write 'titleBn'?
+prisma/seed.ts(248,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ReferenceCreateInput, 
+ReferenceUncheckedCreateInput> & ReferenceUncheckedCreateInput'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(219,15): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialUpdateInput, 
+TutorialUncheckedUpdateInput> & TutorialUncheckedUpdateInput) | (Without<...> & TutorialUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(221,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(234,15): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<ChapterUpdateInput, 
+ChapterUncheckedUpdateInput> & ChapterUncheckedUpdateInput) | (Without<...> & ChapterUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(237,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ChapterCreateInput, 
+ChapterUncheckedCreateInput> & ChapterUncheckedCreateInput'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(256,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<LessonUpdateInput, 
+LessonUncheckedUpdateInput> & LessonUncheckedUpdateInput) | (Without<...> & LessonUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-course.ts(263,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<LessonCreateInput, 
+LessonUncheckedCreateInput> & LessonUncheckedCreateInput'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(171,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialUpdateInput, 
+TutorialUncheckedUpdateInput> & TutorialUncheckedUpdateInput) | (Without<...> & TutorialUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(175,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<TutorialCreateInput, 
+TutorialUncheckedCreateInput> & TutorialUncheckedCreateInput) | (Without<...> & TutorialCreateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(192,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<ChapterUpdateInput, 
+ChapterUncheckedUpdateInput> & ChapterUncheckedUpdateInput) | (Without<...> & ChapterUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(197,7): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<ChapterCreateInput, 
+ChapterUncheckedCreateInput> & ChapterUncheckedCreateInput'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(219,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type '(Without<LessonUpdateInput, 
+LessonUncheckedUpdateInput> & LessonUncheckedUpdateInput) | (Without<...> & LessonUpdateInput)'. Did you mean to write 'titleBn'?
+scripts/seed-html-course.ts(226,9): error TS2561: Object literal may only specify known properties, but 'title' does not exist in type 'Without<LessonCreateInput, 
+LessonUncheckedCreateInput> & LessonUncheckedCreateInput'. Did you mean to write 'titleBn'?
+scripts/verify-html-seed.ts(27,39): error TS2551: Property 'title' does not exist on type '{ chapters: ({ lessons: { id: string; titleBn: string; titleEn: string | 
+null; slug: string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: 
+string | null; chapterId: string; }[]; } & { ...; })[]; } & { ...; }'. Did you mean 'titleBn'?
+scripts/verify-html-seed.ts(32,56): error TS2551: Property 'title' does not exist on type '{ lessons: { id: string; titleBn: string; titleEn: string | null; slug: 
+string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; 
+chapterId: string; }[]; } & { ...; }'. Did you mean 'titleBn'?
+scripts/verify-html-seed.ts(33,38): error TS2551: Property 'content' does not exist on type '{ lessons: { id: string; titleBn: string; titleEn: string | null; slug: 
+string; createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; 
+chapterId: string; }[]; } & { ...; }'. Did you mean 'contentBn'?
+scripts/verify-html-seed.ts(36,52): error TS2551: Property 'title' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: string; 
+createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; chapterId: 
+string; }'. Did you mean 'titleBn'?
+scripts/verify-html-seed.ts(37,43): error TS2551: Property 'content' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: string; 
+createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; chapterId: 
+string; }'. Did you mean 'contentBn'?
+scripts/verify-html-seed.ts(37,75): error TS2551: Property 'codeExample' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: string; 
+createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; chapterId: 
+string; }'. Did you mean 'codeExampleBn'?
+scripts/verify-html-seed.ts(37,91): error TS2551: Property 'codeExample' does not exist on type '{ id: string; titleBn: string; titleEn: string | null; slug: string; 
+createdAt: Date; updatedAt: Date; sortOrder: number; contentBn: string; contentEn: string | null; codeExampleBn: string | null; codeExampleEn: string | null; chapterId: 
+string; }'. Did you mean 'codeExampleBn'?
+
+
