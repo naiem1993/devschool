@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d শেষ, এখন 5e) |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d+5e-1 শেষ, এখন 5e-2) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 5 চলমান — Header (5a) + Footer (5b) + HeroSection/LanguageTabs (5c) + Tutorial components (5d) সম্পন্ন। বাকি: 5e সব পেজ।
+**বর্তমান অবস্থান:** Part 5 চলমান — 5a/5b/5c/5d + 5e-1 (root layout metadata, 404, error) সম্পন্ন। বাকি: 5e-2 (Home+Tutorials), 5e-3 (বাকি listing), 5e-4 (detail পেজ)।
 
 ---
 
@@ -480,4 +480,36 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 - `npx tsc --noEmit` — ❌ fail (Part 1 থেকে প্রত্যাশিত)
 - ব্যাকআপ: bn.ts.bak, en.ts.bak, LessonSidebar.tsx.bak, TryIt.tsx.bak ✅
 
-**পরবর্তী কাজ:** PART 5e — সব `page.tsx` (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+### Git commit
+`394eb1c` — feat(i18n): Part 5c+5d — HeroSection demo + Tutorial components use dictionary
+
+## 🟢 PART 5e-1-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### 🔎 বড় আবিষ্কার
+- `app/layout.tsx` **নেই** — `app/[locale]/layout.tsx`-ই একমাত্র মূল layout।
+- তাই root metadata locale-aware করা সহজ ছিল।
+- `app/not-found.tsx` মূল [locale]-এর বাইরে → ভাষা জানতে client-side URL দরকার।
+
+### নতুন dictionary কী
+- `error`: statusPill, bigTitle, bigMessage, tryAgain, homePage, footerText
+- `notFound`: metaTitle, metaDescription, statusPill, bigTitle, bigMessage, backHome, searchSomething, popularLabel, linkTutorials/Challenges/References/Search, footerText
+- নতুন `meta` ঘর: siteTitle, siteDescription
+
+### কোন ফাইলে কী হলো
+| ফাইল | কাজ |
+|---|---|
+| `lib/i18n/dictionaries/bn.ts` + `en.ts` | উপরের কী যোগ |
+| `app/[locale]/layout.tsx` | স্থির metadata → locale-aware `generateMetadata` + hreflang |
+| `components/NotFoundContent.tsx` | **নতুন** — client-side URL দেখে ভাষা |
+| `app/not-found.tsx` | slim — client component-এ metadata চলে না |
+| `app/[locale]/(site)/error.tsx` | ৬টা লেখা dict থেকে |
+
+### যাচাই
+- `npx tsc --noEmit 2>&1 | findstr "NotFoundContent layout.tsx not-found error.tsx"` — **খালি** ✅
+- `dict.error` ৬ জায়গায়, `dict.tutorial` ৭, `dict.heroDemo` ৪ ✅
+- ব্যাকআপ: ৫টা `.bak` ✅
+
+### সাইড-নোট (5e-3-এর জন্য)
+- `challenges/error.tsx` ও `references/error.tsx`-এও হার্ডকোড "কিছু একটা ভুল হয়েছে" আছে — 5e-3-তে ঠিক হবে।
+
+**পরবর্তী কাজ:** PART 5e-2 — Home (`app/[locale]/(site)/page.tsx`) + Tutorials listing (`.../tutorials/page.tsx`) (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

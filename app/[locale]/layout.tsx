@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site-url";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
-import { getDictionary } from "@/lib/i18n/dictionaries";
+import { getDictionary, getDictionarySync } from "@/lib/i18n/dictionaries";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
 import "../globals.css";
 
@@ -21,12 +21,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন",
-  description:
-    "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
-  metadataBase: new URL(SITE_URL),
+// URL-এর ভাষা অনুযায়ী SEO title/description — bn পেজে বাংলা, en পেজে ইংরেজি
+const META_BY_LOCALE: Record<Locale, { title: string; description: string }> = {
+  bn: {
+    title: "DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন",
+    description:
+      "HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ",
+  },
+  en: {
+    title: "DevSchool — Learn programming for free",
+    description:
+      "Tutorials, quizzes and coding challenges in 20+ languages including HTML, CSS, JavaScript and Python",
+  },
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : "bn";
+  const m = META_BY_LOCALE[locale];
+
+  return {
+    title: m.title,
+    description: m.description,
+    metadataBase: new URL(SITE_URL),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        bn: "/bn",
+        en: "/en",
+      },
+    },
+  };
+}
 
 // দুই ভাষার পেজ build-time-এ pre-render করার জন্য
 export function generateStaticParams() {

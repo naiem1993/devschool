@@ -99,22 +99,6 @@ const bn = {
     title: 'পেজটি পাওয়া যায়নি',
     message: 'দুঃখিত, আপনি যেই পেজ খুঁজছেন সেটি পাওয়া যায়নি।',
     goHome: 'হোমে ফিরে যান',
-
-    // ── app/not-found.tsx — পূর্ণ 404 পেজ (client-side locale) ──
-    metaTitle: '৪০৪ — পেজটি পাওয়া যায়নি | DevSchool',
-    metaDescription: 'আপনি যে পেজটি খুঁজছেন সেটি নেই বা সরিয়ে ফেলা হয়েছে।',
-    statusPill: 'Page Not Found',
-    bigTitle: 'পেজটি খুঁজে পাওয়া যায়নি',
-    bigMessage:
-      'আপনি যে লিংকটি খুলেছেন তা ভুল, মুছে ফেলা হয়েছে, অথবা কখনোই ছিল না। নিচের অপশন থেকে শেখা চালিয়ে যান।',
-    backHome: 'হোমপেজে ফিরে যান',
-    searchSomething: 'কিছু খুঁজুন',
-    popularLabel: 'জনপ্রিয় বিভাগ',
-    linkTutorials: 'টিউটোরিয়াল',
-    linkChallenges: 'চ্যালেঞ্জ',
-    linkReferences: 'রেফারেন্স',
-    linkSearch: 'সার্চ',
-    footerText: 'DevSchool · বিনামূল্যে প্রোগ্রামিং শিখুন',
   },
 
   // ── Error পেজ (app/error.tsx) ──
@@ -122,22 +106,6 @@ const bn = {
     title: 'কিছু ভুল হয়েছে',
     message: 'দয়া করে আবার চেষ্টা করুন। সমস্যা থেকে গেলে আমাদের জানান।',
     retry: 'আবার চেষ্টা করুন',
-
-    // ── (site)/error.tsx — site-level error boundary ──
-    statusPill: 'Something went wrong',
-    bigTitle: 'কিছু একটা ভুল হয়েছে',
-    bigMessage:
-      'পেজটি লোড করার সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন — সমস্যা থেকে গেলে হোমপেজে ফিরে যান।',
-    tryAgain: 'আবার চেষ্টা করুন 🔄',
-    homePage: '🏠 হোমপেজ',
-    footerText: 'DevSchool · বিনামূল্যে প্রোগ্রামিং শিখুন',
-  },
-
-  // ── Root layout SEO (app/[locale]/layout.tsx) ──
-  meta: {
-    siteTitle: 'DevSchool — বিনামূল্যে প্রোগ্রামিং শিখুন',
-    siteDescription:
-      'HTML, CSS, JavaScript, Python সহ ২০+ টি ভাষায় টিউটোরিয়াল, কুইজ ও কোড চ্যালেঞ্জ',
   },
 
   // ── LanguageTabs (components/LanguageTabs.tsx) ──

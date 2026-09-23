@@ -8,6 +8,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 export default function SiteError({
   error,
@@ -16,6 +17,8 @@ export default function SiteError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const dict = useDict()
+
   useEffect(() => {
     console.error('[site] Error:', error)
   }, [error])
@@ -43,17 +46,16 @@ export default function SiteError({
           <div className="mb-4 flex justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[#15803d] dark:text-[#4ADE80]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-              Something went wrong
+              {dict.error.statusPill}
             </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            কিছু একটা ভুল হয়েছে
+            {dict.error.bigTitle}
           </h1>
 
           <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            পেজটি লোড করার সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন —
-            সমস্যা থেকে গেলে হোমপেজে ফিরে যান।
+            {dict.error.bigMessage}
           </p>
 
           {/* CTAs */}
@@ -62,13 +64,13 @@ export default function SiteError({
               onClick={reset}
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-bold text-[#050806] transition hover:bg-[#4ADE80] hover:shadow-[0_0_28px_rgba(34,197,94,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ADE80] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050806]"
             >
-              আবার চেষ্টা করুন 🔄
+              {dict.error.tryAgain}
             </button>
             <Link
               href="/"
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#22C55E] hover:text-[#15803d] dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#22C55E]/60 dark:hover:text-[#4ADE80]"
             >
-              🏠 হোমপেজ
+              {dict.error.homePage}
             </Link>
           </div>
 
@@ -81,7 +83,7 @@ export default function SiteError({
         </div>
 
         <p className="mt-6 text-center font-mono text-[11px] text-slate-400 dark:text-slate-600">
-          DevSchool · বিনামূল্যে প্রোগ্রামিং শিখুন
+          {dict.error.footerText}
         </p>
       </div>
     </main>

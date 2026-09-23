@@ -94,22 +94,6 @@ const en: Dictionary = {
     title: 'Page not found',
     message: 'Sorry, the page you are looking for does not exist.',
     goHome: 'Go home',
-
-    // ── app/not-found.tsx — full 404 page (client-side locale) ──
-    metaTitle: '404 — Page not found | DevSchool',
-    metaDescription: 'The page you are looking for does not exist or has been removed.',
-    statusPill: 'Page Not Found',
-    bigTitle: 'Page not found',
-    bigMessage:
-      'The link you opened is wrong, has been removed, or never existed. Keep learning from the options below.',
-    backHome: 'Back to homepage',
-    searchSomething: 'Search something',
-    popularLabel: 'Popular sections',
-    linkTutorials: 'Tutorials',
-    linkChallenges: 'Challenges',
-    linkReferences: 'References',
-    linkSearch: 'Search',
-    footerText: 'DevSchool · Learn programming for free',
   },
 
   // ── Error page ──
@@ -117,22 +101,6 @@ const en: Dictionary = {
     title: 'Something went wrong',
     message: 'Please try again. If the problem persists, let us know.',
     retry: 'Try again',
-
-    // ── (site)/error.tsx — site-level error boundary ──
-    statusPill: 'Something went wrong',
-    bigTitle: 'Something went wrong',
-    bigMessage:
-      'An error occurred while loading this page. Please try again — if it persists, go back to the homepage.',
-    tryAgain: 'Try again 🔄',
-    homePage: '🏠 Homepage',
-    footerText: 'DevSchool · Learn programming for free',
-  },
-
-  // ── Root layout SEO (app/[locale]/layout.tsx) ──
-  meta: {
-    siteTitle: 'DevSchool — Learn programming for free',
-    siteDescription:
-      'Tutorials, quizzes and coding challenges in 20+ languages including HTML, CSS, JavaScript and Python',
   },
 
   // ── LanguageTabs ──
