@@ -8,7 +8,7 @@ export default async function QuizzesPage() {
   const items = await prisma.quizQuestion.findMany({
     orderBy: { createdAt: 'desc' },
     take: 100,
-    include: { tutorial: { select: { title: true } }, _count: { select: { options: true } } },
+    include: { tutorial: { select: { titleBn: true } }, _count: { select: { options: true } } },
   })
 
   return (
@@ -37,8 +37,8 @@ export default async function QuizzesPage() {
           <tbody>
             {items.map((it) => (
               <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                <td className="px-4 py-2 text-[#22C55E] max-w-md truncate">{it.question}</td>
-                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.title}</td>
+                <td className="px-4 py-2 text-[#22C55E] max-w-md truncate">{it.questionBn}</td>
+                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it._count.options}</td>
                 <td className="px-4 py-2 text-right">
                   <Link href={`/admin/quizzes/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>

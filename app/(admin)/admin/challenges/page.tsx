@@ -9,7 +9,7 @@ export default async function ChallengesPage() {
   const items = await prisma.codeChallenge.findMany({
     orderBy: { createdAt: 'desc' },
     take: 100,
-    include: { tutorial: { select: { title: true } }, _count: { select: { testCases: true } } },
+    include: { tutorial: { select: { titleBn: true } }, _count: { select: { testCases: true } } },
   })
 
   return (
@@ -39,8 +39,8 @@ export default async function ChallengesPage() {
           <tbody>
             {items.map((it) => (
               <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                <td className="px-4 py-2 text-[#22C55E]">{it.title}</td>
-                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.title}</td>
+                <td className="px-4 py-2 text-[#22C55E]">{it.titleBn}</td>
+                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
                 <td className="px-4 py-2 text-cyan-400">{it.points}</td>
                 <td className="px-4 py-2 text-right space-x-3">

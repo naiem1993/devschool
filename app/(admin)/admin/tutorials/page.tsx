@@ -49,7 +49,7 @@ export default async function TutorialsPage() {
               const groupCount = it._count.groups
               return (
                 <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                  <td className="px-4 py-2 text-[#22C55E]">{it.title}</td>
+                  <td className="px-4 py-2 text-[#22C55E]">{it.titleBn}</td>
                   <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
 
                   <td className="px-4 py-2">
