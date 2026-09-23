@@ -77,14 +77,14 @@ model Tutorial {
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
-| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (tutorials tree ✅ + references tree ✅ (commit 666556d) + challenges tree ✅ (commit af91304) + home + tutorials listing ✅ (PART 6 step 6); এখন admin/API/scripts/prisma-seed বাকি) |
+| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (tutorials tree ✅ + references tree ✅ (commit 666556d) + challenges tree ✅ (commit af91304) + home + tutorials listing ✅ (PART 6 step 6) + chapters + groups admin tree ✅ (PART 6 step 7a); এখন বাকি admin-এর অন্য পেজ + API routes + scripts/prisma-seed) |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 6 চলছে ✅ — পাবলিক সাইটের সব tree locale-aware (সর্বশেষ: home + tutorials listing — PART 6 step 6)। নিচের tree গুলো সম্পূর্ণ locale-aware:
+**বর্তমান অবস্থান:** Part 6 চলছে ✅ — পাবলিক সাইটের সব tree locale-aware। সর্বশেষ: chapters + groups admin tree (PART 6 step 7a) ✅ — page + ৫টা API route (POST/PATCH) সব `titleBn`/`contentBn`/`codeExampleBn`-এ; client components (ChaptersManager, GroupsManager, LessonsManager) আগেই ঠিক ছিল। নিচের tree গুলো সম্পূর্ণ locale-aware:
 
 - **tutorials tree** ✅ — localize.ts + tutorial-data.ts + [slug] + [chapter] + [lesson] + tryit দুটো।
 - **references tree** ✅ (commit `666556d`) — [slug] detail + listing।
@@ -98,7 +98,20 @@ model Tutorial {
 
 ✅ **PART 6 step 6 (home + tutorials listing):** `app/[locale]/(site)/page.tsx` ও `app/[locale]/(site)/tutorials/page.tsx` — দুইটাই locale-aware। home-এ ৫টা query (popular/latest/search/chapters/marquee) Rule #4 filter + `pickText` পেয়েছে; `generateMetadata`-এর count-ও locale-aware। tutorials listing-এ select-এ `titleBn/En + descriptionBn/En`, Rule #4 filter, ভাষা-নির্ভর `orderBy`, map-এ `pickText` + `.filter()`। পাবলিক সাইটের সব tree ✅ সম্পূর্ণ। commit (step 6) বাকি — শুধু user 'হ্যাঁ' বললে হবে।
 
-**পরের কাজ:** admin পেজ → API routes → prisma/seed → scripts (এই ক্রমে)। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
+✅ **PART 6 step 7a (chapters + groups admin tree):** নিচের ৮টা ফাইল locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু নাম বদল):
+- `app/(admin)/admin/tutorials/[id]/chapters/page.tsx`
+- `app/api/admin/tutorials/[id]/chapters/route.ts` (GET+POST+PATCH)
+- `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` (PATCH)
+- `app/api/admin/tutorials/[id]/groups/route.ts` (POST)
+- `app/api/admin/tutorials/[id]/groups/[gid]/route.ts` (PATCH)
+- `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` (POST)
+- `components/admin/ChaptersManager.tsx` ✅
+- `components/admin/GroupsManager.tsx` ✅
+- `components/admin/LessonsManager.tsx` ✅
+
+⚠️ **গুরুত্বপূর্ণ শিক্ষা:** `select`/`include`-এর ভেতরের nested `title: true` চোখে পড়া কঠিন — যেমন `group: { select: { id: true, title: true } }`। এটা বারবার মিস হয়। তাই প্রতিটা API route-এ `grep title` চালানো বাঞ্ছনীয়।
+
+**পরের কাজ:** admin-এর বাকি পেজ (references/quizzes/challenges listing + edit + form component + API route) → তারপর admin API routes → prisma/seed → scripts। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
 
 ---
 

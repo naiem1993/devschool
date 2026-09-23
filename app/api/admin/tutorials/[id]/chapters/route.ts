@@ -29,7 +29,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       where: { tutorialId: id },
       orderBy: { sortOrder: 'asc' },
       include: {
-        group: { select: { id: true, title: true } },
+        group: { select: { id: true, titleBn: true } },
         _count: { select: { lessons: true } },
       },
     })
@@ -47,13 +47,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const body = await req.json().catch(() => ({}))
 
-  const title = String(body?.title ?? '').trim()
+  const titleBn = String(body?.titleBn ?? '').trim()
   const slug = normSlug(body?.slug)
   const groupId = body?.groupId ? String(body.groupId) : null
-  const content = body?.content != null && String(body.content).trim() !== '' ? String(body.content) : null
-  const codeExample = body?.codeExample ? String(body.codeExample).trim() : null
+  const contentBn = body?.contentBn != null && String(body.contentBn).trim() !== '' ? String(body.contentBn) : null
+  const codeExampleBn = body?.codeExampleBn ? String(body.codeExampleBn).trim() : null
 
-  if (!title) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe হতে হবে (lowercase, hyphens)' }, { status: 400 })
 
   try {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.chapter.create({
-      data: { tutorialId: id, title, slug, groupId, content, codeExample, sortOrder: nextOrder },
+      data: { tutorialId: id, titleBn, slug, groupId, contentBn, codeExampleBn, sortOrder: nextOrder },
     })
     await revalidateTutorialPaths(id)
     return NextResponse.json(created, { status: 201 })
@@ -122,7 +122,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const fresh = await prisma.chapter.findMany({
       where: { tutorialId: id },
       orderBy: { sortOrder: 'asc' },
-      include: { group: { select: { id: true, title: true } }, _count: { select: { lessons: true } } },
+      include: { group: { select: { id: true, titleBn: true } }, _count: { select: { lessons: true } } },
     })
     return NextResponse.json(fresh)
   } catch (e: any) {

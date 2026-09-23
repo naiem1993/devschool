@@ -174,10 +174,10 @@ function LessonItem({
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: draft.title.trim(),
+          titleBn: draft.title.trim(),
           slug: draft.slug.trim(),
-          content: draft.content,
-          codeExample: draft.codeExample || null,
+          contentBn: draft.content,
+          codeExampleBn: draft.codeExample || null,
         }),
       })
       if (res.ok) {
@@ -320,10 +320,10 @@ function AddLessonForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: title.trim(),
+          titleBn: title.trim(),
           slug: slug.trim(),
-          content,
-          codeExample: codeExample || null,
+          contentBn: content,
+          codeExampleBn: codeExample || null,
         }),
       })
       if (res.ok) {

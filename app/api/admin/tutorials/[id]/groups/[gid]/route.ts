@@ -21,15 +21,15 @@ export async function PATCH(
 
   const { id, gid } = await params
   const body = await req.json().catch(() => ({}))
-  const title = String(body?.title ?? '').trim()
-  if (!title) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  const titleBn = String(body?.titleBn ?? '').trim()
+  if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
 
   try {
     const existing = await prisma.chapterGroup.findUnique({ where: { id: gid } })
     if (!existing || existing.tutorialId !== id) {
       return NextResponse.json({ error: 'Group not found' }, { status: 404 })
     }
-    const updated = await prisma.chapterGroup.update({ where: { id: gid }, data: { title } })
+    const updated = await prisma.chapterGroup.update({ where: { id: gid }, data: { titleBn } })
     return NextResponse.json(updated)
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })

@@ -185,11 +185,11 @@ function ChapterCard({
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            title: draft.title.trim(),
+            titleBn: draft.title.trim(),
             slug: draft.slug.trim(),
             groupId: draft.groupId || null,
-            content: draft.content || null,
-            codeExample: draft.codeExample || null,
+            contentBn: draft.content || null,
+            codeExampleBn: draft.codeExample || null,
           }),
         }
       )
@@ -372,11 +372,11 @@ function AddChapterForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: title.trim(),
+          titleBn: title.trim(),
           slug: slug.trim(),
           groupId: groupId || null,
-          content: content || null,
-          codeExample: codeExample || null,
+          contentBn: content || null,
+          codeExampleBn: codeExample || null,
         }),
       })
       if (res.ok) {

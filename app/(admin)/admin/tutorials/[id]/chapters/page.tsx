@@ -27,7 +27,7 @@ export default async function ChaptersPage({
       chapters: {
         orderBy: { sortOrder: 'asc' },
         include: {
-          group: { select: { id: true, title: true } },
+          group: { select: { id: true, titleBn: true } },
           lessons: { orderBy: { sortOrder: 'asc' } },
         },
       },
@@ -37,26 +37,26 @@ export default async function ChaptersPage({
 
   const groupRows: GroupRow[] = tutorial.groups.map((g) => ({
     id: g.id,
-    title: g.title,
+    title: g.titleBn,
     sortOrder: g.sortOrder,
     chapterCount: g._count.chapters,
   }))
 
   const chapterRows: ChapterRow[] = tutorial.chapters.map((c) => ({
     id: c.id,
-    title: c.title,
+    title: c.titleBn,
     slug: c.slug,
     groupId: c.groupId,
-    groupTitle: c.group?.title ?? null,
-    content: c.content,
-    codeExample: c.codeExample,
+    groupTitle: c.group?.titleBn ?? null,
+    content: c.contentBn,
+    codeExample: c.codeExampleBn,
     sortOrder: c.sortOrder,
     lessons: c.lessons.map((l) => ({
       id: l.id,
-      title: l.title,
+      title: l.titleBn,
       slug: l.slug,
-      content: l.content,
-      codeExample: l.codeExample,
+      content: l.contentBn,
+      codeExample: l.codeExampleBn,
       sortOrder: l.sortOrder,
     })),
   }))
@@ -71,7 +71,7 @@ export default async function ChaptersPage({
 
       <div className="mt-2 mb-1 flex flex-wrap items-center gap-3">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Chapters — {tutorial.title}
+          Chapters — {tutorial.titleBn}
         </h1>
         {!tutorial.isPublished && (
           <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded border border-amber-500/40 text-amber-600 dark:text-amber-400">

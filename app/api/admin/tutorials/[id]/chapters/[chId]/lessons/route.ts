@@ -53,14 +53,14 @@ export async function POST(
   const { id, chId } = await params
   const body = await req.json().catch(() => ({}))
 
-  const title = String(body?.title ?? '').trim()
+  const titleBn = String(body?.titleBn ?? '').trim()
   const slug = normSlug(body?.slug)
-  const content = String(body?.content ?? '').trim()
-  const codeExample = body?.codeExample ? String(body.codeExample).trim() : null
+  const contentBn = String(body?.contentBn ?? '').trim()
+  const codeExampleBn = body?.codeExampleBn ? String(body.codeExampleBn).trim() : null
 
-  if (!title) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
-  if (!content) return NextResponse.json({ error: 'content দরকার' }, { status: 400 })
+  if (!contentBn) return NextResponse.json({ error: 'content দরকার' }, { status: 400 })
 
   try {
     const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { id: true, tutorialId: true } })
@@ -79,7 +79,7 @@ export async function POST(
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.lesson.create({
-      data: { chapterId: chId, title, slug, content, codeExample, sortOrder: nextOrder },
+      data: { chapterId: chId, titleBn, slug, contentBn, codeExampleBn, sortOrder: nextOrder },
     })
 
     // D6a — first lesson হলে chapter-এর slug sync করি

@@ -143,7 +143,7 @@ function GroupItem({
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/groups/${group.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title.trim() }),
+        body: JSON.stringify({ titleBn: title.trim() }),
       })
       if (res.ok) {
         onFlash('group সেভ হয়েছে ✓')
@@ -250,7 +250,7 @@ function AddGroupForm({
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/groups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title.trim() }),
+        body: JSON.stringify({ titleBn: title.trim() }),
       })
       if (res.ok) {
         setTitle('')

@@ -30,25 +30,25 @@ export async function PATCH(
   const { id, chId, lid } = await params
   const body = await req.json().catch(() => ({}))
 
-  const data: { title?: string; slug?: string; content?: string; codeExample?: string | null } = {}
+  const data: { titleBn?: string; slug?: string; contentBn?: string; codeExampleBn?: string | null } = {}
 
-  if (typeof body?.title === 'string') {
-    const t = body.title.trim()
+  if (typeof body?.titleBn === 'string') {
+    const t = body.titleBn.trim()
     if (!t) return NextResponse.json({ error: 'title খালি রাখা যাবে না' }, { status: 400 })
-    data.title = t
+    data.titleBn = t
   }
   if (typeof body?.slug === 'string') {
     const s = normSlug(body.slug)
     if (!s) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
     data.slug = s
   }
-  if (typeof body?.content === 'string') {
-    const c = body.content.trim()
+  if (typeof body?.contentBn === 'string') {
+    const c = body.contentBn.trim()
     if (!c) return NextResponse.json({ error: 'content খালি রাখা যাবে না' }, { status: 400 })
-    data.content = c
+    data.contentBn = c
   }
-  if ('codeExample' in (body ?? {})) {
-    data.codeExample = body.codeExample ? String(body.codeExample).trim() : null
+  if ('codeExampleBn' in (body ?? {})) {
+    data.codeExampleBn = body.codeExampleBn ? String(body.codeExampleBn).trim() : null
   }
 
   if (Object.keys(data).length === 0) {

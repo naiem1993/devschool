@@ -33,8 +33,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params
   const body = await req.json().catch(() => ({}))
-  const title = String(body?.title ?? '').trim()
-  if (!title) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  const titleBn = String(body?.titleBn ?? '').trim()
+  if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
 
   try {
     const tutorial = await prisma.tutorial.findUnique({ where: { id }, select: { id: true } })
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.chapterGroup.create({
-      data: { tutorialId: id, title, sortOrder: nextOrder },
+      data: { tutorialId: id, titleBn, sortOrder: nextOrder },
     })
     return NextResponse.json(created, { status: 201 })
   } catch (e: any) {

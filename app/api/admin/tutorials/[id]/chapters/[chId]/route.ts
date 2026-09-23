@@ -31,17 +31,17 @@ export async function PATCH(
   const body = await req.json().catch(() => ({}))
 
   const data: {
-    title?: string
+    titleBn?: string
     slug?: string
     groupId?: string | null
-    content?: string | null
-    codeExample?: string | null
+    contentBn?: string | null
+    codeExampleBn?: string | null
   } = {}
 
-  if (typeof body?.title === 'string') {
-    const t = body.title.trim()
+  if (typeof body?.titleBn === 'string') {
+    const t = body.titleBn.trim()
     if (!t) return NextResponse.json({ error: 'title খালি রাখা যাবে না' }, { status: 400 })
-    data.title = t
+    data.titleBn = t
   }
   if (typeof body?.slug === 'string') {
     const s = normSlug(body.slug)
@@ -51,11 +51,11 @@ export async function PATCH(
   if ('groupId' in (body ?? {})) {
     data.groupId = body.groupId ? String(body.groupId) : null
   }
-  if ('content' in (body ?? {})) {
-    data.content = body.content != null && String(body.content).trim() !== '' ? String(body.content) : null
+  if ('contentBn' in (body ?? {})) {
+    data.contentBn = body.contentBn != null && String(body.contentBn).trim() !== '' ? String(body.contentBn) : null
   }
-  if ('codeExample' in (body ?? {})) {
-    data.codeExample = body.codeExample ? String(body.codeExample).trim() : null
+  if ('codeExampleBn' in (body ?? {})) {
+    data.codeExampleBn = body.codeExampleBn ? String(body.codeExampleBn).trim() : null
   }
 
   if (Object.keys(data).length === 0) {
