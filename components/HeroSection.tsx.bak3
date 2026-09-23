@@ -5,7 +5,6 @@ import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
 import { DEFAULT_HERO, type HeroContent } from '@/lib/hero-content'
-import { useDict } from '@/lib/i18n/I18nProvider'
 
 const transition: Transition = { duration: 0.6, ease: 'easeOut' }
 const fadeUp = {
@@ -53,7 +52,6 @@ function buildDoc(html: string, css: string, js: string) {
 }
 
 export default function HeroSection({ hero = DEFAULT_HERO, tutorials, stats }: HeroSectionProps) {
-  const dict = useDict()
   const statValues = [
     `${stats.languageCount}+`,
     `${stats.tutorialCount}+`,
@@ -62,12 +60,7 @@ export default function HeroSection({ hero = DEFAULT_HERO, tutorials, stats }: H
   ]
 
   const [activeTab, setActiveTab] = useState<FileKey>('html')
-  // ডেমো কোড dictionary থেকে — ভাষা বদলালে html/js বদলাবে (css সব ভাষায় একই)
-  const [code, setCode] = useState<Record<FileKey, string>>({
-    ...INITIAL_CODE,
-    html: dict.heroDemo.html,
-    js: dict.heroDemo.js,
-  })
+  const [code, setCode] = useState<Record<FileKey, string>>(INITIAL_CODE)
   const [docSrc, setDocSrc] = useState('')
   const [typedText, setTypedText] = useState('')
   const [prefersReduced, setPrefersReduced] = useState(false)
@@ -89,8 +82,8 @@ export default function HeroSection({ hero = DEFAULT_HERO, tutorials, stats }: H
 
   // 3) typing terminal — শুধু motion allowed হলে
   useEffect(() => {
-    if (prefersReduced) { setTypedText(dict.heroDemo.typing1); return }
-    const lines = [dict.heroDemo.typing1, dict.heroDemo.typing2]
+    if (prefersReduced) { setTypedText('npm create devschool@latest'); return }
+    const lines = ['npm create devschool@latest', 'শেখা শুরু হোক 🚀']
     let li = 0, ci = 0, del = false
     let timer: ReturnType<typeof setTimeout>
     const tick = () => {

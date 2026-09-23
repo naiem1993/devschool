@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDict } from '@/lib/i18n/I18nProvider'
 
 type Props = {
   /** ইউজার যা এডিট করবে — প্রাথমিক HTML কোড */
@@ -30,13 +29,11 @@ type Props = {
  */
 export default function TryIt({
   code,
-  label,
+  label = 'রান করুন',
   title = 'index.html',
   slug,
   lessonPath,
 }: Props) {
-  const dict = useDict()
-  const btnLabel = label ?? dict.tutorial.run
   const [open, setOpen] = useState(false)
   const [src, setSrc] = useState(code)
   const [isDark, setIsDark] = useState(true)
@@ -126,7 +123,7 @@ export default function TryIt({
           >
             {open ? '✕' : '▶'}
           </span>
-          {open ? dict.tutorial.close : btnLabel}
+          {open ? 'বন্ধ করুন' : label}
         </button>
 
         {/* ↗ নতুন ট্যাবে — শুধু slug+lessonPath থাকলে দেখায় */}
@@ -138,7 +135,7 @@ export default function TryIt({
             className="inline-flex items-center gap-1.5 border border-emerald-300/70 dark:border-emerald-800/70 text-slate-700 dark:text-slate-200 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] font-semibold text-[13.5px] px-4 py-2.5 rounded-lg transition-colors"
           >
             <span aria-hidden="true">🖥️</span>
-            {dict.tutorial.editor}
+            এডিটর
             <span aria-hidden="true">↗</span>
           </a>
         ) : null}
@@ -154,7 +151,7 @@ export default function TryIt({
                 <i className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 block" />
                 <i className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 block" />
               </span>
-              {dict.tutorial.editorTitle}
+              Try it Yourself — Editor
             </span>
             <button
               type="button"

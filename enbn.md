@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b শেষ) |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5a+5b+5c+5d শেষ, এখন 5e) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -84,7 +84,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 5 চলমান — Header (5a) + Footer (5b) সম্পন্ন। বাকি: 5c HeroSection+LanguageTabs, 5d Tutorial components, 5e সব পেজ।
+**বর্তমান অবস্থান:** Part 5 চলমান — Header (5a) + Footer (5b) + HeroSection/LanguageTabs (5c) + Tutorial components (5d) সম্পন্ন। বাকি: 5e সব পেজ।
 
 ---
 
@@ -441,4 +441,43 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 ---
 
 **সর্বশেষ আপডেট:** Part 5 চলমান — ২০২৬-০৯-২৩
-**পরবর্তী কাজ:** PART 5c — HeroSection + LanguageTabs
+## 🟢 PART 5c-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### কী করা হয়েছে
+- `components/LanguageTabs.tsx` ও `LanguageTabsServer.tsx` — আগের সেশনেই locale-aware হয়ে গেছে (useDict, pickOr দিয়ে titleBn/titleEn) ✅
+- `components/HeroSection.tsx`-এ ৪টা ছোট edit:
+  ১) `import { useDict } from '@/lib/i18n/I18nProvider'` যোগ
+  ২) কম্পোনেন্টের ভেতরে `const dict = useDict()`
+  ৩) `useState(INITIAL_CODE)` → `useState({ ...INITIAL_CODE, html: dict.heroDemo.html, js: dict.heroDemo.js })`
+  ৪) টাইপিং লাইন → `dict.heroDemo.typing1` / `dict.heroDemo.typing2`
+- `components/HeroSection.tsx.bak` ব্যাকআপ নেওয়া হয়েছে
+- **যা ছোঁয়া হয়নি (ইচ্ছাকৃত):** হেডিং/ব্যাজ/সাবটাইটেল/বাটন/স্ট্যাট লেবেল (ওগুলো DB থেকে আসে → Part 6-এর কাজ), CSS ডেমো, `npm create devschool@latest` কমান্ড
+
+### যাচাই
+- grep-এ `dict.heroDemo` ৪ জায়গায় বসেছে ✅
+- পুরনো `INITIAL_CODE`-এর বাংলা html/js fallback হিসেবে রয়ে গেছে (ইচ্ছাকৃত)
+- `npx tsc --noEmit` — ❌ fail (Part 1 থেকে প্রত্যাশিত; বিস্তারিত error ফিল্টার করে দেখতে হবে)
+
+### সতর্কতা
+- সাইট এখনো ভাঙা — Part 6 পর্যন্ত deploy / GitHub push নিষেধ
+
+## 🟢 PART 5d-এর রিপোর্ট (সম্পন্ন — ২০২৬-০৯-২৩)
+
+### নতুন dictionary কী যোগ (tutorial ঘরে, bn + en দুইটাতেই)
+`navLabel`, `emptyChapters`, `collapse`, `expand`, `run`, `editor`, `editorTitle`, `close`
+
+### কোন ফাইলে কী হলো
+| ফাইল | কাজ |
+|---|---|
+| `TutorialShell.tsx` | কিছুই না — কোনো UI লেখা নেই, layout-only ✅ |
+| `LessonContent.tsx` | কিছুই না — শুধু marker পার্স করে ✅ |
+| `LessonSidebar.tsx` | ৩টা লেখা dict থেকে — navLabel, emptyChapters, collapse/expand |
+| `TryIt.tsx` | ৪টা লেখা dict থেকে — run (label default), close, editor, editorTitle |
+
+### যাচাই
+- `dict.tutorial` এখন ৭ জায়গায় বসেছে ✅
+- পুরনো হার্ডকোড বাংলা লেখা শুধু dictionary ফাইলে আছে ✅
+- `npx tsc --noEmit` — ❌ fail (Part 1 থেকে প্রত্যাশিত)
+- ব্যাকআপ: bn.ts.bak, en.ts.bak, LessonSidebar.tsx.bak, TryIt.tsx.bak ✅
+
+**পরবর্তী কাজ:** PART 5e — সব `page.tsx` (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

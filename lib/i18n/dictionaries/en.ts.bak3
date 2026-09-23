@@ -43,18 +43,6 @@ const en: Dictionary = {
     lessons: 'Lessons',
     previousLesson: 'Previous lesson',
     nextLesson: 'Next lesson',
-
-    // ── LessonSidebar (components/LessonSidebar.tsx) ──
-    navLabel: 'Tutorial navigation',
-    emptyChapters: 'This tutorial has no chapters yet.',
-    collapse: 'Collapse',
-    expand: 'Expand',
-
-    // ── TryIt editor (components/TryIt.tsx) ──
-    run: 'Run',
-    editor: 'Editor',
-    editorTitle: 'Try it Yourself — Editor',
-    close: 'Close',
   },
 
   // ── Footer ──

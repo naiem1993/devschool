@@ -11,6 +11,7 @@ import {
   chapterTargetUrl,
   lessonUrl,
 } from '@/lib/tutorial-types'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 export default function LessonSidebar({
   tutorialSlug,
@@ -23,6 +24,7 @@ export default function LessonSidebar({
   nav: TutorialNav
   active: SidebarActive
 }) {
+  const dict = useDict()
   const [open, setOpen] = useState(false)
 
   const [expanded, setExpanded] = useState<Set<string>>(() => {
@@ -96,11 +98,11 @@ export default function LessonSidebar({
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         ].join(' ')}
       >
-        <nav aria-label="Tutorial navigation" className="py-2 pb-6">
+        <nav aria-label={dict.tutorial.navLabel} className="py-2 pb-6">
           {/* Empty state — ০ chapter হলে (যেমন CSS tutorial) ফাঁকা drawer-এর বদলে মেসেজ */}
           {sections.length === 0 && (
             <p className="px-5 py-4 text-[13px] text-slate-500 dark:text-slate-400">
-              এই টিউটোরিয়ালে এখনো কোনো চ্যাপ্টার নেই।
+              {dict.tutorial.emptyChapters}
             </p>
           )}
           <ul>
@@ -149,7 +151,7 @@ export default function LessonSidebar({
                     {hasLessons && (
                       <button
                         type="button"
-                        aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                        aria-label={isExpanded ? dict.tutorial.collapse : dict.tutorial.expand}
                         aria-expanded={isExpanded}
                         onClick={() => toggleChapter(ch.id)}
                         className="px-3 text-slate-400 dark:text-slate-500 hover:text-[#22C55E] transition-colors"

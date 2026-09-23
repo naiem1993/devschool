@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
+import { localeHref, stripLocale } from '@/lib/i18n/link'
+import type { Locale } from '@/lib/i18n/config'
 
 export type LanguageTab = {
   slug: string
@@ -22,8 +25,17 @@ export type LanguageTab = {
  * dynamic ভাবে দেখানো/লুকানো হয়। ResizeObserver + scroll listener + window
  * resize — তিনটাই handle করা।
  */
-export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
+export default function LanguageTabs({
+  tabs,
+  locale,
+}: {
+  tabs: LanguageTab[]
+  locale: Locale
+}) {
   const pathname = usePathname()
+  const dict = useDict()
+  // pathname-এ locale prefix থাকে (/bn/... বা /en/...) — সেটা কেটে আসল path
+  const { path } = stripLocale(pathname || '/')
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
@@ -61,12 +73,12 @@ export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
   }
 
   // Home page-এ tab row hide (floating pill nav-এর সাথে clash করে)
-  const isHome = pathname === '/'
+  const isHome = path === '/'
   if (isHome) return null
 
   // ☰ Mobile tutorial-menu button — শুধু tutorial lesson/chapter page-এ দেখাবে
   // (sidebar শুধু ওখানেই render হয়; listing page-এ dead button এড়াতে gate করা)
-  const showMobileMenu = /^\/tutorials\/.+/.test(pathname || '')
+  const showMobileMenu = /^\/tutorials\/.+/.test(path)
 
   const arrowBtnClass =
     'hidden sm:flex shrink-0 w-8 items-center justify-center text-slate-500 hover:text-emerald-700 dark:hover:text-[#4ADE80] transition-colors'
@@ -80,7 +92,7 @@ export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
         {showMobileMenu && (
           <button
             type="button"
-            aria-label="টিউটোরিয়াল মেনু"
+            aria-label={dict.tabs.tutorialMenu}
             onClick={() => window.dispatchEvent(new Event('toggle-tutorial-sidebar'))}
             className="lg:hidden shrink-0 flex items-center justify-center w-12 bg-[#0a0f0c] text-white hover:text-[#4ADE80] active:bg-[#111a15] transition-colors border-r border-emerald-900/30"
           >
@@ -104,7 +116,7 @@ export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
         {canScrollLeft && (
           <button
             type="button"
-            aria-label="আগের tab"
+            aria-label={dict.tabs.prevTab}
             onClick={() => scroll(-1)}
             className={arrowBtnClass}
           >
@@ -130,8 +142,9 @@ export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
           className="flex-1 flex items-stretch overflow-x-auto scrollbar-hide"
         >
           {tabs.map((t) => {
-            const href = `/tutorials/${t.slug}`
-            const active = pathname === href || pathname?.startsWith(href + '/')
+            const href = localeHref(locale, `/tutorials/${t.slug}`)
+            const linkPath = stripLocale(href).path
+            const active = path === linkPath || path?.startsWith(linkPath + '/')
             return (
               <Link
                 key={t.slug}
@@ -153,7 +166,7 @@ export default function LanguageTabs({ tabs }: { tabs: LanguageTab[] }) {
         {canScrollRight && (
           <button
             type="button"
-            aria-label="পরের tab"
+            aria-label={dict.tabs.nextTab}
             onClick={() => scroll(1)}
             className={arrowBtnClass}
           >
