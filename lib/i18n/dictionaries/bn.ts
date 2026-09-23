@@ -218,6 +218,64 @@ const bn = {
     errLoadMsg: 'চ্যালেঞ্জ লোড করার সময় একটি ত্রুটি ঘটেছে।',
   },
 
+  // ── Search পেজ (app/[locale]/(site)/search/*) ──
+  search: {
+    metaTitle: 'সার্চ — টিউটোরিয়াল ও রেফারেন্স খুঁজুন | DevSchool',
+    metaDesc:
+      'DevSchool-এর সম্পূর্ণ কনটেন্ট সার্চ করুন — টিউটোরিয়াল, রেফারেন্স, সিনট্যাক্স ও কোড উদাহরণ, সব এক জায়গায়।',
+    metaOgTitle: 'সার্চ | DevSchool',
+    metaOgDesc: 'টিউটোরিয়াল ও রেফারেন্স খুঁজুন',
+    jsonLdName: 'DevSchool Search',
+    heroTitle: 'সার্চ',
+    heroSubtitle:
+      'পুরো DevSchool-এর টিউটোরিয়াল, রেফারেন্স ও সিনট্যাক্স — সেকেন্ডেই খুঁজে নিন।',
+  },
+
+  // ── Playground পেজ (app/[locale]/(site)/playground/*) ──
+  playground: {
+    metaTitle: 'কোড প্লেগ্রাউন্ড — লিখুন, চালান, শিখুন | DevSchool',
+    metaDesc:
+      'ব্রাউজারেই JavaScript, TypeScript, HTML, CSS কোড লিখুন, সাথে সাথেই চালান। কোনো সেটআপ নেই, কোনো ইনস্টল নেই।',
+    metaOgTitle: 'কোড প্লেগ্রাউন্ড | DevSchool',
+    metaOgDesc: 'ব্রাউজারেই কোড লিখুন ও চালান।',
+    heroTitle: 'কোড প্লেগ্রাউন্ড',
+    heroSubtitlePre: 'ব্রাউজারেই কোড লিখুন, সাথে সাথে চালান। কোনো সেটআপ নেই, কোনো ইনস্টল নেই।',
+    heroSubtitleHighlight: 'শুধু লিখো, রান করো, শেখো।',
+  },
+
+  // ── Progress পেজ (app/[locale]/(site)/progress/*) ──
+  progress: {
+    metaTitle: 'আমার অগ্রগতি — DevSchool',
+    metaDesc: 'আপনার কুইজ ও চ্যালেঞ্জ অগ্রগতি দেখুন। সব ডেটা আপনার ডিভাইসে সংরক্ষিত।',
+    breadcrumbDashboard: 'ড্যাশবোর্ড',
+    heroTitle: 'আমার অগ্রগতি',
+    heroSubtitle:
+      'আপনার কুইজ ও চ্যালেঞ্জের অগ্রগতি দেখুন। সব ডেটা আপনার ব্রাউজারে নিরাপদে সংরক্ষিত — কোনো লগইন লাগে না। ব্রাউজার ক্লিয়ার করলে ডেটা রিসেট হবে।',
+  },
+
+  // ── Tools পেজ (app/[locale]/(site)/tools/*) ──
+  tools: {
+    metaTitle: 'ডেভেলপার টুলস — DevSchool',
+    metaDesc:
+      'ডেভেলপারদের কাজের জন্য দরকারি ছোট ছোট টুল — JSON formatter, Base64, color picker, UUID generator আরও অনেক কিছু।',
+    metaOgTitle: 'ডেভেলপার টুলস | DevSchool',
+    metaOgDesc: 'ডেভেলপারদের কাজের জন্য দরকারি ছোট ছোট টুল।',
+    heroTitle: 'ডেভেলপার টুলস',
+    heroSubtitle:
+      'ডেভেলপারদের কাজের জন্য দরকারি ছোট ছোট টুল — এক জায়গায়। নতুন টুল ধীরে ধীরে যুক্ত হবে।',
+    searchPlaceholder: 'টুল খুঁজুন... (যেমন: json, base64, color)',
+    searchAria: 'টুল সার্চ',
+    allCategory: 'সব',
+    countTpl: '{count} টি টুল',
+    clearFilters: 'ফিল্টার মুছুন ✕',
+    noResultsTitle: 'কোনো টুল পাওয়া যায়নি',
+    noResultsDesc: 'অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।',
+    viewAll: 'সব টুল দেখুন',
+    comingSoon: 'শীঘ্রই',
+    comingSoonArrow: 'শীঘ্রই →',
+    open: 'খুলুন →',
+  },
+
   // ── References পেজ (app/[locale]/(site)/references/*) ──
   references: {
     metaTitle: 'প্রোগ্রামিং রেফারেন্স — সম্পূর্ণ ডিকশনারি | DevSchool',

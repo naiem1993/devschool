@@ -3,25 +3,39 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import prisma from '@/lib/prisma'
 import SearchClient from './SearchClient'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'সার্চ — টিউটোরিয়াল ও রেফারেন্স খুঁজুন | DevSchool',
-  description:
-    'DevSchool-এর সম্পূর্ণ কনটেন্ট সার্চ করুন — টিউটোরিয়াল, রেফারেন্স, সিনট্যাক্স ও কোড উদাহরণ, সব এক জায়গায়।',
-  keywords: ['search', 'tutorial', 'reference', 'programming', 'DevSchool'],
-  alternates: { canonical: '/search' },
-  openGraph: {
-    title: 'সার্চ | DevSchool',
-    description: 'টিউটোরিয়াল ও রেফারেন্স খুঁজুন',
-    type: 'website',
-    url: '/search',
-    siteName: 'DevSchool',
-    locale: 'bn_BD',
-  },
-  twitter: { card: 'summary_large_image' },
-  robots: { index: false, follow: true },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+  return {
+    title: dict.search.metaTitle,
+    description: dict.search.metaDesc,
+    keywords: ['search', 'tutorial', 'reference', 'programming', 'DevSchool'],
+    alternates: {
+      canonical: `/${locale}/search`,
+      languages: { bn: '/bn/search', en: '/en/search' },
+    },
+    openGraph: {
+      title: dict.search.metaOgTitle,
+      description: dict.search.metaOgDesc,
+      type: 'website',
+      url: '/search',
+      siteName: 'DevSchool',
+      locale: isEn ? 'en_US' : 'bn_BD',
+    },
+    twitter: { card: 'summary_large_image' },
+    robots: { index: false, follow: true },
+  }
 }
 
 async function getFilterData() {
@@ -43,14 +57,22 @@ async function getFilterData() {
   }
 }
 
-export default async function SearchPage() {
+export default async function SearchPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
   const { languages } = await getFilterData()
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SearchResultsPage',
-    name: 'DevSchool Search',
-    inLanguage: 'bn-BD',
+    name: dict.search.jsonLdName,
+    inLanguage: isEn ? 'en' : 'bn-BD',
     url: '/search',
   }
 
@@ -77,22 +99,21 @@ export default async function SearchPage() {
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <li>
-                  <Link href="/" className="hover:text-[#22C55E] transition">
-                    হোম
+                  <Link href={`/${locale}`} className="hover:text-[#22C55E] transition">
+                    {dict.listing.breadcrumbHome}
                   </Link>
                 </li>
                 <li aria-hidden>/</li>
-                <li className="text-slate-800 dark:text-slate-200 font-medium">সার্চ</li>
+                <li className="text-slate-800 dark:text-slate-200 font-medium">{dict.nav.search}</li>
               </ol>
             </nav>
 
             <div className="max-w-2xl">
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-                সার্চ
+                {dict.search.heroTitle}
               </h1>
               <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                পুরো DevSchool-এর টিউটোরিয়াল, রেফারেন্স ও সিনট্যাক্স — সেকেন্ডেই খুঁজে
-                নিন।
+                {dict.search.heroSubtitle}
               </p>
             </div>
           </div>

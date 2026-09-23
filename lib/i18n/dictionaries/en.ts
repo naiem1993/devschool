@@ -213,6 +213,64 @@ const en: Dictionary = {
     errLoadMsg: 'An error occurred while loading challenges.',
   },
 
+  // ── Search page (app/[locale]/(site)/search/*) ──
+  search: {
+    metaTitle: 'Search — Find Tutorials & References | DevSchool',
+    metaDesc:
+      'Search all DevSchool content — tutorials, references, syntax and code examples, all in one place.',
+    metaOgTitle: 'Search | DevSchool',
+    metaOgDesc: 'Find tutorials and references',
+    jsonLdName: 'DevSchool Search',
+    heroTitle: 'Search',
+    heroSubtitle:
+      'Search across all of DevSchool — tutorials, references and syntax — in seconds.',
+  },
+
+  // ── Playground page (app/[locale]/(site)/playground/*) ──
+  playground: {
+    metaTitle: 'Code Playground — Write, Run, Learn | DevSchool',
+    metaDesc:
+      'Write and run JavaScript, TypeScript, HTML and CSS right in your browser. No setup, no install.',
+    metaOgTitle: 'Code Playground | DevSchool',
+    metaOgDesc: 'Write and run code right in your browser.',
+    heroTitle: 'Code Playground',
+    heroSubtitlePre: 'Write and run code right in your browser. No setup, no install.',
+    heroSubtitleHighlight: 'Just write, run, learn.',
+  },
+
+  // ── Progress page (app/[locale]/(site)/progress/*) ──
+  progress: {
+    metaTitle: 'My Progress — DevSchool',
+    metaDesc: 'See your quiz and challenge progress. All data is stored on your device.',
+    breadcrumbDashboard: 'Dashboard',
+    heroTitle: 'My Progress',
+    heroSubtitle:
+      'See your quiz and challenge progress. All data is stored safely in your browser — no login required. Clearing your browser resets the data.',
+  },
+
+  // ── Tools page (app/[locale]/(site)/tools/*) ──
+  tools: {
+    metaTitle: 'Developer Tools — DevSchool',
+    metaDesc:
+      'Handy little tools for developers — JSON formatter, Base64, color picker, UUID generator and more.',
+    metaOgTitle: 'Developer Tools | DevSchool',
+    metaOgDesc: 'Handy little tools for developers.',
+    heroTitle: 'Developer Tools',
+    heroSubtitle:
+      'Handy little tools for developers — all in one place. New tools will be added over time.',
+    searchPlaceholder: 'Search tools... (e.g. json, base64, color)',
+    searchAria: 'Search tools',
+    allCategory: 'All',
+    countTpl: '{count} tools',
+    clearFilters: 'Clear filters ✕',
+    noResultsTitle: 'No tools found',
+    noResultsDesc: 'Try another keyword or reset the filters.',
+    viewAll: 'View all tools',
+    comingSoon: 'Soon',
+    comingSoonArrow: 'Soon →',
+    open: 'Open →',
+  },
+
   // ── References page (app/[locale]/(site)/references/*) ──
   references: {
     metaTitle: 'Programming References — Full Dictionary | DevSchool',

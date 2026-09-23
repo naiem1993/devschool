@@ -76,7 +76,7 @@ model Tutorial {
 | 2 | i18n ভিত্তি (config, locale, dictionary, pick) | ✅ **সম্পন্ন** |
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
-| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5e-3 আংশিক: references+challenges শেষ) |
+| 5 | সব লেখা dictionary-তে | 🟡 **চলমান** (5e-3 প্রায় শেষ — client components + about বাকি) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ⏸️ শুরু হয়নি |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
@@ -547,4 +547,26 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 ### বাকি (5e-3-এর অংশ)
 - tools, playground, progress, search, about পেজ + slug not-found/error পেজ
 
-**পরবর্তী কাজ:** PART 5e-3 (বাকি) — tools, playground, progress, search, about + slug not-found/error (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`
+## 🟢 PART 5e-3-এর রিপোর্ট (প্রায় সম্পন্ন — ২০২৬-০৯-২৩)
+
+### সম্পন্ন (এই সেশনে)
+| ফাইল | কাজ |
+|---|---|
+| `references/*` (৩ ফাইল) | ✅ শেষ |
+| `challenges/*` (৩ ফাইল) | ✅ শেষ |
+| `tools/page.tsx` + `ToolsGrid.tsx` | ✅ শেষ |
+| `playground/page.tsx` | ✅ শেষ (PlaygroundClient বাকি?) |
+| `progress/page.tsx` | ✅ শেষ (ProgressClient বাকি?) |
+| `search/page.tsx` | ✅ শেষ (SearchClient বাকি) |
+
+### নতুন dictionary ঘর (bn+en)
+- `references`, `challenges`, `tools`, `playground`, `progress`, `search`
+
+### ⚠️ বাকি (5e-3)
+1. **`search/SearchClient.tsx`** — ট্যাব লেবেল, placeholder, রেজাল্ট টেক্সট (client component)
+2. **`playground/PlaygroundClient.tsx`** — ডেমো কোড, বাটন (client)
+3. **`progress/ProgressClient.tsx`** — লেখা (client)
+4. **`about/page.tsx`** — ⚠️ এখনো placeholder (`Page: about`), আসল পেজ বানানো হয়নি
+5. **slug not-found/error পেজ** — `tutorials/[slug]/not-found.tsx`, `tutorials/[slug]/[chapter]/error.tsx`, `tutorials/[slug]/[chapter]/not-found.tsx`, `references/[slug]/not-found.tsx`, `challenges/[id]/not-found.tsx`
+
+**পরবর্তী কাজ:** PART 5e-3 (শেষ) — SearchClient, PlaygroundClient, ProgressClient, about, slug not-found/error। তারপর 5e-4 (detail পেজ)। (home, tutorials, references, challenges, playground, progress, search, tools, about) + `not-found.tsx` + `error.tsx`

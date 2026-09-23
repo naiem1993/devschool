@@ -1,14 +1,36 @@
 import { Metadata } from 'next'
 import ProgressClient from './ProgressClient'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
-export const metadata: Metadata = {
-  title: 'আমার অগ্রগতি — DevSchool',
-  description: 'আপনার কুইজ ও চ্যালেঞ্জ অগ্রগতি দেখুন। সব ডেটা আপনার ডিভাইসে সংরক্ষিত।',
-  alternates: { canonical: '/progress' },
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  return {
+    title: dict.progress.metaTitle,
+    description: dict.progress.metaDesc,
+    alternates: {
+      canonical: `/${locale}/progress`,
+      languages: { bn: '/bn/progress', en: '/en/progress' },
+    },
+    robots: { index: false, follow: false },
+  }
 }
 
-export default function ProgressPage() {
+export default async function ProgressPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
       {/* ══════════ HERO — clean black + single green glow ══════════ */}
@@ -24,13 +46,12 @@ export default function ProgressPage() {
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-2">
           <nav aria-label="Breadcrumb" className="mb-6">
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-              <li className="text-slate-800 dark:text-slate-200 font-medium">ড্যাশবোর্ড</li>
+              <li className="text-slate-800 dark:text-slate-200 font-medium">{dict.progress.breadcrumbDashboard}</li>
             </ol>
           </nav>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">আমার অগ্রগতি</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">{dict.progress.heroTitle}</h1>
           <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
-            আপনার কুইজ ও চ্যালেঞ্জের অগ্রগতি দেখুন। সব ডেটা আপনার ব্রাউজারে securely সংরক্ষিত —
-            কোনো লগইন লাগে না। ব্রাউজার ক্লিয়ার করলে ডেটা রিসেট হবে।
+            {dict.progress.heroSubtitle}
           </p>
         </div>
       </section>

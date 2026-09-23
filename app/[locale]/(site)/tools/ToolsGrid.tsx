@@ -7,11 +7,13 @@ import {
   type DevTool,
   type ToolCategory,
 } from '@/lib/tools'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 const inputBase =
   'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
 
 export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
+  const dict = useDict()
   const [query, setQuery] = useState('')
   const [cat, setCat] = useState<'all' | ToolCategory>('all')
 
@@ -42,8 +44,8 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="টুল খুঁজুন... (যেমন: json, base64, color)"
-            aria-label="টুল সার্চ"
+            placeholder={dict.tools.searchPlaceholder}
+            aria-label={dict.tools.searchAria}
             className={`w-full pl-11 pr-4 py-3 rounded-2xl text-sm ${inputBase}`}
           />
         </div>
@@ -58,7 +60,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
                 : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10'
             }`}
           >
-            সব ({tools.length})
+            {dict.tools.allCategory} ({tools.length})
           </button>
           {catKeys.map((k) => (
             <button
@@ -79,7 +81,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
 
       {/* ─── Result Count ─── */}
       <div className="flex items-center justify-between mb-5 text-sm">
-        <p className="text-slate-500 dark:text-slate-400">{filtered.length} টি টুল</p>
+        <p className="text-slate-500 dark:text-slate-400">{dict.tools.countTpl.replace('{count}', String(filtered.length))}</p>
         {(query || cat !== 'all') && (
           <button
             onClick={() => {
@@ -88,7 +90,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
             }}
             className="text-xs text-slate-500 hover:text-[#22C55E] transition"
           >
-            ফিল্টার মুছুন ✕
+            {dict.tools.clearFilters}
           </button>
         )}
       </div>
@@ -97,9 +99,9 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
       {filtered.length === 0 ? (
         <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
           <div className="text-5xl mb-4">🔎</div>
-          <h3 className="text-xl font-bold mb-2">কোনো টুল পাওয়া যায়নি</h3>
+          <h3 className="text-xl font-bold mb-2">{dict.tools.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-            অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।
+            {dict.tools.noResultsDesc}
           </p>
           <button
             onClick={() => {
@@ -108,7 +110,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
             }}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
-            সব টুল দেখুন
+            {dict.tools.viewAll}
           </button>
         </div>
       ) : (
@@ -122,7 +124,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
                   </div>
                   {t.comingSoon ? (
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded-full">
-                      শীঘ্রই
+                      {dict.tools.comingSoon}
                     </span>
                   ) : (
                     <span className="text-[10px] font-mono text-slate-400 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2 py-1 rounded-full">
@@ -157,7 +159,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
                     {TOOL_CATEGORY_LABELS[t.category]}
                   </span>
                   <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                    {t.comingSoon ? 'শীঘ্রই →' : 'খুলুন →'}
+                    {t.comingSoon ? dict.tools.comingSoonArrow : dict.tools.open}
                   </span>
                 </div>
               </>
