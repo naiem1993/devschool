@@ -85,7 +85,7 @@ model Tutorial {
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 8 (SEO) ✅ সম্পন্ন (8b + 8c.2 + 8f)** — tsc ০ error, npm run build সফল (৫৪ পেজ)।
+**বর্তমান অবস্থান:** **PART 8 (SEO) ✅ সম্পন্ন (8b + 8c.2 + 8e + 8f)** — tsc ০ error, npm run build সফল (৫৪ পেজ)।
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 
@@ -113,7 +113,16 @@ model Tutorial {
 
 **8d (স্থগিত)** — tools/* sub-pages (base64 etc.) locale-aware করতে হবে (canonical + generateMetadata + hero localization) — PART 9-এ যাবে।
 
-**8e (স্থগিত)** — `app/robots.ts` locale-aware disallow — পরের রাউন্ডে।
+**8e — robots.ts locale-aware disallow ✅ (PART 8e, commit pending)**:
+- ৮টা pattern entry: `/admin/`, `/api/`, `/bn/progress`, `/en/progress`, `/bn/search`, `/en/search`, `/bn/tools/`, `/en/tools/`
+- পুরনো locale-হীন `/progress` ও `/search` (no-op) বাদ দিয়ে locale-প্রিফিক্স যোগ
+- tools/* sub-pages-এর জন্য pattern entry (`/bn/tools/`, `/en/tools/`) — tools listing (trailing slash ছাড়া) কে disallow করে না, কিন্তু সব sub-path ধরে
+- prefix-matching RFC 9309 §2.2.2 standard — `/bn/tools/` (trailing slash সহ) listing বাদ দেয় না, sub-paths ধরে
+- build pass, `/robots.txt` output verified
+
+⚠️ Tools/* sub-pages robots-এ disallow — temporary।
+PART 9-এ admin dual-input শেষে tools localized হবে →
+তখন disallow সরিয়ে sitemap-এ যোগ করা হবে।
 
 ### ✅ PART 7.5 — Console fix + Hero localization + /en ComingSoon
 
