@@ -34,6 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const body = await req.json().catch(() => ({}))
   const titleBn = String(body?.titleBn ?? '').trim()
+  const titleEn = String(body?.titleEn ?? '').trim() || null
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
 
   try {
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.chapterGroup.create({
-      data: { tutorialId: id, titleBn, sortOrder: nextOrder },
+      data: { tutorialId: id, titleBn, titleEn, sortOrder: nextOrder },
     })
     return NextResponse.json(created, { status: 201 })
   } catch (e: any) {

@@ -7,6 +7,7 @@ import DeleteButton from './DeleteButton'
 export type GroupRow = {
   id: string
   title: string
+  titleEn: string | null
   sortOrder: number
   chapterCount: number
 }
@@ -132,9 +133,11 @@ function GroupItem({
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [title, setTitle] = useState(group.title)
+  const [titleEn, setTitleEn] = useState(group.titleEn ?? '')
   const [saving, setSaving] = useState(false)
 
   useEffect(() => setTitle(group.title), [group.title])
+  useEffect(() => setTitleEn(group.titleEn ?? ''), [group.titleEn])
 
   const save = async () => {
     if (!title.trim()) return onFlash('title দরকার')
@@ -143,7 +146,7 @@ function GroupItem({
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/groups/${group.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titleBn: title.trim() }),
+        body: JSON.stringify({ titleBn: title.trim(), titleEn: titleEn.trim() || null }),
       })
       if (res.ok) {
         onFlash('group সেভ হয়েছে ✓')
@@ -169,6 +172,12 @@ function GroupItem({
             onChange={(e) => setTitle(e.target.value)}
             className="flex-1 min-w-0 text-sm px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
           />
+          <input
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder="Title (English) — optional"
+            className="flex-1 min-w-0 text-sm px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
           <button
             type="button"
             onClick={save}
@@ -182,6 +191,7 @@ function GroupItem({
             onClick={() => {
               setEditing(false)
               setTitle(group.title)
+              setTitleEn(group.titleEn ?? '')
             }}
             className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 text-gray-500"
           >
@@ -240,6 +250,7 @@ function AddGroupForm({
   onDone: (m: string) => void
 }) {
   const [title, setTitle] = useState('')
+  const [titleEn, setTitleEn] = useState('')
   const [saving, setSaving] = useState(false)
 
   const submit = async (e: React.FormEvent) => {
@@ -250,10 +261,11 @@ function AddGroupForm({
       const res = await fetch(`/api/admin/tutorials/${tutorialId}/groups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titleBn: title.trim() }),
+        body: JSON.stringify({ titleBn: title.trim(), titleEn: titleEn.trim() || null }),
       })
       if (res.ok) {
         setTitle('')
+        setTitleEn('')
         onDone('নতুন group যোগ হয়েছে ✓')
       } else {
         const d = await res.json().catch(() => ({}))
@@ -268,6 +280,12 @@ function AddGroupForm({
 
   return (
     <form onSubmit={submit} className="flex items-center gap-2">
+        <input
+          value={titleEn}
+          onChange={(e) => setTitleEn(e.target.value)}
+          placeholder="New group title (English) — optional"
+          className="flex-1 min-w-0 text-sm px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+        />
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}

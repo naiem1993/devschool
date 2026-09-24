@@ -138,9 +138,9 @@ PART 9-এ admin dual-input শেষে tools localized হবে →
 
 | Sub-part | কাজ | ফাইল | সময় | ঝুঁকি |
 |---|---|---|---|---|
-| **9a** | Foundation: Validators-এ `*En` ফিল্ড | `lib/validators.ts` (~৩১০ লাইন) | ২০ মিনিট | 🟡 মাঝারি |
-| **9b** | TutorialForm — titleEn + descriptionEn | `components/admin/TutorialForm.tsx` (৫.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
-| **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
+| ✅ **9a** | Foundation: Validators-এ `*En` ফিল্ড | `lib/validators.ts` (~৩১০ লাইন) | ২০ মিনিট | 🟡 মাঝারি |
+| ✅ **9b** | TutorialForm — titleEn + descriptionEn | `components/admin/TutorialForm.tsx` (৫.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| ✅ **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
 | **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
 | **9e** | LessonsManager — titleEn + contentEn + codeExampleEn | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ১ API route | ৩০ মিনিট | 🟡 মাঝারি |
 | **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |

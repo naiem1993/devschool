@@ -38,6 +38,7 @@ export default async function ChaptersPage({
   const groupRows: GroupRow[] = tutorial.groups.map((g) => ({
     id: g.id,
     title: g.titleBn,
+    titleEn: g.titleEn,
     sortOrder: g.sortOrder,
     chapterCount: g._count.chapters,
   }))
