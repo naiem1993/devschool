@@ -18,8 +18,8 @@ export default function ChallengeForm({
   const router = useRouter()
   const [form, setForm] = useState({
     tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
-    title: initial?.title || '',
-    description: initial?.description || '',
+    titleBn: initial?.titleBn || '',
+    descriptionBn: initial?.descriptionBn || '',
     starterCode: initial?.starterCode || '',
     solution: initial?.solution || '',
     difficulty: initial?.difficulty || 'Easy',
@@ -66,11 +66,11 @@ export default function ChallengeForm({
       </div>
       <div>
         <label className="admin-label">&gt; Title</label>
-        <input className="admin-input" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required />
+        <input className="admin-input" value={form.titleBn} onChange={(e) => setForm((f) => ({ ...f, titleBn: e.target.value }))} required />
       </div>
       <div>
         <label className="admin-label">&gt; Description</label>
-        <textarea className="admin-input" rows={3} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} required />
+        <textarea className="admin-input" rows={3} value={form.descriptionBn} onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))} required />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>

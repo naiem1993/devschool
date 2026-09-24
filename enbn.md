@@ -111,6 +111,14 @@ model Tutorial {
 
 ⚠️ **গুরুত্বপূর্ণ শিক্ষা:** `select`/`include`-এর ভেতরের nested `title: true` চোখে পড়া কঠিন — যেমন `group: { select: { id: true, title: true } }`। এটা বারবার মিস হয়। তাই প্রতিটা API route-এ `grep title` চালানো বাঞ্ছনীয়।
 
+✅ **PART 6 step 7b (quizzes edit tree) [commit `0a35718`]:** `app/(admin)/admin/quizzes/[id]/edit/page.tsx` + `app/api/admin/quiz/route.ts` + `app/api/admin/quiz/[id]/route.ts` + `components/admin/QuizForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (Quiz schemas) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। বাড়তি: `app/api/quizzes/[id]/route.ts` (public) — field rename হয়েছে; locale-awareness step 8-এ যোগ হবে। tsc: ~১১২ → ~৮৫।
+
+📌 **tsc ডিবাগ নিয়ম (মনে রাখতে হবে):** tsc ডিবাগ ফাইল বানাতে `Set-Content -Encoding UTF8` ব্যবহার করো (`Out-File` নয় — BOM যোগ করে MCP tool আটকে দেয়)। উদাহরণ: `npx tsc --noEmit 2>&1 | Select-String -NotMatch "\.next","node_modules" | Set-Content -Encoding UTF8 tsc-raw.txt`
+
+✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (`createChallengeSchema`) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। testCases ছোঁয়া হয়নি (input/expectedOutput ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০ (৫টা কমেছে)। commit এখনো হয়নি — jোড়া ৪-এর সাথে একসাথে হবে।
+
+✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (createChallengeSchema) locale-aware। testCases ছোঁয়া হয়নি (input/expectedOutput/isHidden ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০।
+
 **পরের কাজ:** admin-এর বাকি পেজ (references/quizzes/challenges listing + edit + form component + API route) → তারপর admin API routes → prisma/seed → scripts। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
 
 ---

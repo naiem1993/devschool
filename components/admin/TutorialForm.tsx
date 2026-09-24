@@ -12,9 +12,9 @@ export default function TutorialForm({
 }) {
   const router = useRouter()
   const [form, setForm] = useState({
-    title: initial?.title || '',
+    titleBn: initial?.titleBn || '',
     slug: initial?.slug || '',
-    description: initial?.description || '',
+    descriptionBn: initial?.descriptionBn || '',
     icon: initial?.icon || '',
     difficulty: initial?.difficulty || 'Beginner',
     duration: initial?.duration ?? 0,
@@ -77,12 +77,12 @@ export default function TutorialForm({
         <label className="admin-label">&gt; Title</label>
         <input
           className="admin-input"
-          value={form.title}
+          value={form.titleBn}
           onChange={(e) => {
             const t = e.target.value
             setForm((f) => ({
               ...f,
-              title: t,
+              titleBn: t,
               slug: mode === 'create' ? autoSlug(t) : f.slug,
             }))
           }}
@@ -105,8 +105,8 @@ export default function TutorialForm({
         <textarea
           className="admin-input"
           rows={3}
-          value={form.description || ''}
-          onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+          value={form.descriptionBn || ''}
+          onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))}
         />
       </div>
 

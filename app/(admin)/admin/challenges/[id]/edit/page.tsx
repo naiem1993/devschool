@@ -9,7 +9,7 @@ export default async function EditChallengePage({ params }: { params: { id: stri
       where: { id: params.id },
       include: { testCases: { orderBy: { testCaseOrder: 'asc' } } },
     }),
-    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { title: 'asc' } }),
+    prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { titleBn: 'asc' } }),
   ])
   if (!c) return notFound()
 
@@ -22,15 +22,15 @@ export default async function EditChallengePage({ params }: { params: { id: stri
           initial={{
             id: c.id,
             tutorialId: c.tutorialId,
-            title: c.title,
-            description: c.description,
+            titleBn: c.titleBn,
+            descriptionBn: c.descriptionBn,
             starterCode: c.starterCode || '',
             solution: c.solution || '',
             difficulty: c.difficulty,
             points: c.points,
             testCases: c.testCases.map((t) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden })),
           }}
-          tutorials={tutorials.map((t) => ({ id: t.id, title: t.title }))}
+          tutorials={tutorials.map((t) => ({ id: t.id, title: t.titleBn }))}
           mode="edit"
         />
       </div>

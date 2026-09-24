@@ -36,9 +36,9 @@ export default async function EditTutorialPage({
         <TutorialForm
           initial={{
             id: tutorial.id,
-            title: tutorial.title,
+            titleBn: tutorial.titleBn,
             slug: tutorial.slug,
-            description: tutorial.description || '',
+            descriptionBn: tutorial.descriptionBn || '',
             difficulty: tutorial.difficulty,
             duration: tutorial.duration,
             isActive: tutorial.isActive,

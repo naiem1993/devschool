@@ -3,9 +3,9 @@ import { z } from 'zod'
 // ─── Tutorial Validators ───────────────────────────────────────────────────────
 
 export const createTutorialSchema = z.object({
-  title: z.string().min(2).max(255),
+  titleBn: z.string().min(2).max(255),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe'),
-  description: z.string().optional(),
+  descriptionBn: z.string().optional(),
   /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
   icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).default('Beginner'),
@@ -16,9 +16,9 @@ export const createTutorialSchema = z.object({
 })
 
 export const updateTutorialSchema = z.object({
-  title: z.string().min(2).max(255).optional(),
+  titleBn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
-  description: z.string().optional(),
+  descriptionBn: z.string().optional(),
   /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
   icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
@@ -112,8 +112,8 @@ export const updateReferenceSchema = z.object({
 
 export const createChallengeSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
-  title: z.string().min(2).max(255),
-  description: z.string().optional(),
+  titleBn: z.string().min(2).max(255),
+  descriptionBn: z.string().optional(),
   starterCode: z.string().optional(),
   solution: z.string().optional(),
   difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Easy'),
