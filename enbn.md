@@ -92,7 +92,7 @@ _(পুরনো নোট, ইতিহাসের জন্য)_ সর্�
 - **references tree** ✅ (commit `666556d`) — [slug] detail + listing।
 - **challenges tree** ✅ (commit `af91304`) — [id] detail + listing।
 
-**tsc error ~২৬৩ → ~১৩৫** (এখনো fail, কিন্তু এগোচ্ছে)।
+**tsc error ~২৬৩ → ~১৩৫** (এই নোটটা পুরনো — PART 6 শেষে tsc এখন **০ error**)।
 
 ⚠️ **ভাষা নীতি (চূড়ান্ত):** admin panel থেকে ইউজার নিজে BN+EN দুই ফিল্ডে ইনপুট দেবেন। কোনো auto-translate বা language-detect নেই। `/bn` পেজ শুধু `*Bn` ফিল্ড দেখাবে, `/en` পেজ শুধু `*En`। strict no-fallback। টেকনিক্যাল টার্ম (Easy/Medium/Advanced, HTML, API ইত্যাদি) ইংরেজিতেই থাকবে দুই পেজে।
 
@@ -125,7 +125,6 @@ _(পুরনো নোট, ইতিহাসের জন্য)_ সর্�
 
 ✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (`createChallengeSchema`) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। testCases ছোঁয়া হয়নি (input/expectedOutput ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০ (৫টা কমেছে)। commit এখনো হয়নি — jোড়া ৪-এর সাথে একসাথে হবে।
 
-✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (createChallengeSchema) locale-aware। testCases ছোঁয়া হয়নি (input/expectedOutput/isHidden ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০।
 
 **পরের কাজ:** admin-এর বাকি পেজ (references/quizzes/challenges listing + edit + form component + API route) → তারপর admin API routes → prisma/seed → scripts। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
 
