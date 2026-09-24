@@ -78,7 +78,7 @@ model Tutorial {
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (commit `a6a17f6`) |
-| 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
+| 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |

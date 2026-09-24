@@ -6,6 +6,7 @@ import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider';
 import { localeHref, stripLocale } from '@/lib/i18n/link';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
   const pathname = usePathname();
@@ -169,6 +170,7 @@ export default function Header() {
               {DesktopNav}
 
               <div className="flex items-center gap-2 shrink-0">
+                <LanguageSwitcher />
                 <ThemeToggle />
               </div>
             </div>
@@ -203,6 +205,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </div>
