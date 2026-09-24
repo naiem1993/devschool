@@ -4,8 +4,10 @@ import { z } from 'zod'
 
 export const createTutorialSchema = z.object({
   titleBn: z.string().min(2).max(255),
+  titleEn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe'),
   descriptionBn: z.string().optional(),
+  descriptionEn: z.string().optional(),
   /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
   icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).default('Beginner'),
@@ -17,8 +19,10 @@ export const createTutorialSchema = z.object({
 
 export const updateTutorialSchema = z.object({
   titleBn: z.string().min(2).max(255).optional(),
+  titleEn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
   descriptionBn: z.string().optional(),
+  descriptionEn: z.string().optional(),
   /** কার্ডে দেখানোর জন্য emoji/short icon (যেমন 🌐, 🎨, 🟨) — ঐচ্ছিক */
   icon: z.string().trim().max(20).optional().nullable(),
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
@@ -32,42 +36,56 @@ const urlSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 export const createGroupSchema = z.object({
   title: z.string().min(1).max(255),
+  titleEn: z.string().min(1).max(255).optional(),
   sortOrder: z.number().int().optional(),
 })
 
 export const updateGroupSchema = z.object({
   title: z.string().min(1).max(255).optional(),
+  titleEn: z.string().min(1).max(255).optional(),
   sortOrder: z.number().int().optional(),
 })
 
 export const createChapterSchema = z.object({
   title: z.string().min(1).max(255),
+  titleEn: z.string().min(1).max(255).optional(),
   slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)'),
   groupId: z.string().cuid().nullable().optional(),
   content: z.string().nullable().optional(),
+  contentEn: z.string().nullable().optional(),
   codeExample: z.string().nullable().optional(),
+  codeExampleEn: z.string().nullable().optional(),
 })
 
 export const updateChapterSchema = z.object({
   title: z.string().min(1).max(255).optional(),
+  titleEn: z.string().min(1).max(255).optional(),
   slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
   groupId: z.string().cuid().nullable().optional(),
   content: z.string().nullable().optional(),
+  contentEn: z.string().nullable().optional(),
   codeExample: z.string().nullable().optional(),
+  codeExampleEn: z.string().nullable().optional(),
 })
 
 export const createLessonSchema = z.object({
   title: z.string().min(1).max(255),
+  titleEn: z.string().min(1).max(255).optional(),
   slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)'),
   content: z.string().min(1),
+  contentEn: z.string().nullable().optional(),
   codeExample: z.string().nullable().optional(),
+  codeExampleEn: z.string().nullable().optional(),
 })
 
 export const updateLessonSchema = z.object({
   title: z.string().min(1).max(255).optional(),
+  titleEn: z.string().min(1).max(255).optional(),
   slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
   content: z.string().min(1).optional(),
+  contentEn: z.string().nullable().optional(),
   codeExample: z.string().nullable().optional(),
+  codeExampleEn: z.string().nullable().optional(),
 })
 
 // ─── Quiz Question Validators ──────────────────────────────────────────────────
@@ -75,13 +93,16 @@ export const updateLessonSchema = z.object({
 export const createQuizQuestionSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
   questionBn: z.string().min(5).max(500),
+  questionEn: z.string().min(5).max(500).optional(),
   explanationBn: z.string().optional(),
+  explanationEn: z.string().optional(),
   orderIndex: z.number().int().nonnegative().default(0),
 })
 
 export const createQuizOptionSchema = z.object({
   questionId: z.string().cuid({ message: 'Valid questionId is required' }),
   textBn: z.string().min(1).max(255),
+  textEn: z.string().min(1).max(255).optional(),
   isCorrect: z.boolean().default(false),
 })
 
@@ -90,20 +111,28 @@ export const createQuizOptionSchema = z.object({
 export const createReferenceSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
   titleBn: z.string().min(2).max(255),
+  titleEn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255),
   descriptionBn: z.string().optional(),
+  descriptionEn: z.string().optional(),
   syntaxBn: z.string().optional(),
+  syntaxEn: z.string().optional(),
   exampleBn: z.string().optional(),
+  exampleEn: z.string().optional(),
   language: z.string().trim().max(50).optional().nullable(),
   tags: z.array(z.string()).default([]),
 })
 
 export const updateReferenceSchema = z.object({
   titleBn: z.string().min(2).max(255).optional(),
+  titleEn: z.string().min(2).max(255).optional(),
   slug: z.string().min(2).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe').optional(),
   descriptionBn: z.string().optional(),
+  descriptionEn: z.string().optional(),
   syntaxBn: z.string().optional(),
+  syntaxEn: z.string().optional(),
   exampleBn: z.string().optional(),
+  exampleEn: z.string().optional(),
   tags: z.array(z.string()).optional(),
   language: z.string().trim().max(50).optional().nullable(),
 })
@@ -113,7 +142,9 @@ export const updateReferenceSchema = z.object({
 export const createChallengeSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
   titleBn: z.string().min(2).max(255),
+  titleEn: z.string().min(2).max(255).optional(),
   descriptionBn: z.string().optional(),
+  descriptionEn: z.string().optional(),
   starterCode: z.string().optional(),
   solution: z.string().optional(),
   difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Easy'),
