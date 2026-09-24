@@ -13,8 +13,10 @@ export default function TutorialForm({
   const router = useRouter()
   const [form, setForm] = useState({
     titleBn: initial?.titleBn || '',
+    titleEn: initial?.titleEn || '',
     slug: initial?.slug || '',
     descriptionBn: initial?.descriptionBn || '',
+    descriptionEn: initial?.descriptionEn || '',
     icon: initial?.icon || '',
     difficulty: initial?.difficulty || 'Beginner',
     duration: initial?.duration ?? 0,
@@ -91,6 +93,16 @@ export default function TutorialForm({
       </div>
 
       <div>
+        <label className="admin-label">&gt; Title (English)</label>
+        <input
+          className="admin-input"
+          value={form.titleEn || ''}
+          onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))}
+          placeholder="Optional — English title"
+        />
+      </div>
+
+      <div>
         <label className="admin-label">&gt; Slug</label>
         <input
           className="admin-input"
@@ -107,6 +119,17 @@ export default function TutorialForm({
           rows={3}
           value={form.descriptionBn || ''}
           onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))}
+        />
+      </div>
+
+      <div>
+        <label className="admin-label">&gt; Description (English)</label>
+        <textarea
+          className="admin-input"
+          rows={3}
+          value={form.descriptionEn || ''}
+          onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))}
+          placeholder="Optional — English description"
         />
       </div>
 
