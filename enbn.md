@@ -86,6 +86,10 @@ model Tutorial {
 
 **বর্তমান অবস্থান:** **PART 6 ✅ ১০০% সম্পূর্ণ** (commit `a6a17f6`) — tsc ০ error, npm run build সফল (৫৪ পেজ, /bn + /en দুইটাই)। সব tree locale-aware + admin + API + seed/scripts। পরের কাজ: **PART 7 — LanguageSwitcher (EN | বাং button)**।
 
+> ⚠️ **নোট:** এই সেকশনের নিচের সব কিছু **ঐতিহাসিক** (পুরনো নোট)।
+> **PART 6 ✅ ১০০% সম্পূর্ণ** — commit `a6a17f6`।
+> নিচের যেখানে "commit বাকি" / "পরের কাজ" লেখা আছে — সেগুলো এখন **সব শেষ**; এখন আর বাকি নেই।
+
 _(পুরনো নোট, ইতিহাসের জন্য)_ সর্বশেষ step ছিল: chapters + groups admin tree (PART 6 step 7a) ✅ — page + ৫টা API route (POST/PATCH) সব `titleBn`/`contentBn`/`codeExampleBn`-এ; client components (ChaptersManager, GroupsManager, LessonsManager) আগেই ঠিক ছিল। নিচের tree গুলো সম্পূর্ণ locale-aware:
 
 - **tutorials tree** ✅ — localize.ts + tutorial-data.ts + [slug] + [chapter] + [lesson] + tryit দুটো।
