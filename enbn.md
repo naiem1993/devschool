@@ -80,7 +80,7 @@ model Tutorial {
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (commit `a6a17f6`) |
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
-| 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8f সব commit হয়েছে |
+| 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
@@ -113,7 +113,7 @@ model Tutorial {
 
 **8d (স্থগিত)** — tools/* sub-pages (base64 etc.) locale-aware করতে হবে (canonical + generateMetadata + hero localization) — PART 9-এ যাবে।
 
-**8e — robots.ts locale-aware disallow ✅ (PART 8e, commit pending)**:
+**8e — robots.ts locale-aware disallow ✅ (PART 8e, committed 7211e9d)**:
 - ৮টা pattern entry: `/admin/`, `/api/`, `/bn/progress`, `/en/progress`, `/bn/search`, `/en/search`, `/bn/tools/`, `/en/tools/`
 - পুরনো locale-হীন `/progress` ও `/search` (no-op) বাদ দিয়ে locale-প্রিফিক্স যোগ
 - tools/* sub-pages-এর জন্য pattern entry (`/bn/tools/`, `/en/tools/`) — tools listing (trailing slash ছাড়া) কে disallow করে না, কিন্তু সব sub-path ধরে
@@ -123,6 +123,163 @@ model Tutorial {
 ⚠️ Tools/* sub-pages robots-এ disallow — temporary।
 PART 9-এ admin dual-input শেষে tools localized হবে →
 তখন disallow সরিয়ে sitemap-এ যোগ করা হবে।
+
+---
+
+## 🚀 PART 9 — Admin dual-input (৯টা sub-part)
+
+> **PART 9-এর মূল কাজ:** প্রতিটা admin form-এ `*En` ইনপুট যোগ করা — যাতে DB-তে ইংরেজি ভার্সনও সেভ করা যায় (titleEn, descriptionEn, contentEn ইত্যাদি)।
+> **বর্তমান অবস্থা:** PART 8 পর্যন্ত ✅। এখন পর্যন্ত শুধু `*Bn` ফিল্ড (titleBn, descriptionBn) আছে — `*En` নেই।
+> **কেন ভাগ করছি:** PART 9 বড় — ৭টা admin form + ৭টা API route। একবারে করলে ভুল বেশি জায়গায় ছড়াবে। ছোট ছোট sub-part-এ ভাগ করলে প্রতিটা শেষে tsc + build verify করা যাবে।
+
+**সহজ উদাহরণ:** বড় চায়ের হাঁড়ি একবারে উনুনে দিলে উপচে যায়। ছোট ছোট কাপে ভরে একটার পর একটা করলে প্রতিটা ঠিকভাবে দেখা যায়। তেমনিই — ৯টা sub-part = ৯টা কাপ।
+
+### 📦 PART 9-এর ৯টা sub-part
+
+| Sub-part | কাজ | ফাইল | সময় | ঝুঁকি |
+|---|---|---|---|---|
+| **9a** | Foundation: Validators-এ `*En` ফিল্ড | `lib/validators.ts` (~৩১০ লাইন) | ২০ মিনিট | 🟡 মাঝারি |
+| **9b** | TutorialForm — titleEn + descriptionEn | `components/admin/TutorialForm.tsx` (৫.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
+| **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
+| **9e** | LessonsManager — titleEn + contentEn + codeExampleEn | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ১ API route | ৩০ মিনিট | 🟡 মাঝারি |
+| **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| **9g** | ChallengeForm — titleEn + descriptionEn | `components/admin/ChallengeForm.tsx` (৫.৯ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
+| **9h** | QuizForm — questionEn + explanationEn + textEn | `components/admin/QuizForm.tsx` (৩.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| **9i** | SiteSettingsForm — শুধু hero_en | `components/admin/SiteSettingsForm.tsx` (১৯.৭ KB) + settings API | ৩০ মিনিট | 🔴 বেশি |
+| **9j** | Final verification — সব form হাতে test + tsc + build + enbn.md আপডেট | — | ২০ মিনিট | 🟢 কম |
+
+**মোট সময়:** ~৩.৫ ঘণ্টা (৩-৪ session-এ)
+
+### 🎯 PART 9a — Foundation (Validators)
+
+**সবার আগে এটা কেন:** সব form আর API এই Zod schema-র উপর নির্ভর করে। Foundation ঠিক হলে বাকিগুলো সহজ।
+
+**কোন কোন schema-তে কী যোগ হবে:**
+
+```
+- createTutorialSchema / updateTutorialSchema:
+    titleEn: z.string().min(2).max(255).optional()
+    descriptionEn: z.string().optional()
+
+- createGroupSchema / updateGroupSchema:
+    titleEn: z.string().min(1).max(255).optional()
+
+- createChapterSchema / updateChapterSchema:
+    titleEn: z.string().min(1).max(255).optional()
+    contentEn: z.string().nullable().optional()
+    codeExampleEn: z.string().nullable().optional()
+
+- createLessonSchema / updateLessonSchema:
+    titleEn: z.string().min(1).max(255).optional()
+    contentEn: z.string().nullable().optional()
+    codeExampleEn: z.string().nullable().optional()
+
+- Reference schemas:
+    titleEn, descriptionEn, syntaxEn, exampleEn — সব optional
+
+- Challenge schemas:
+    titleEn, descriptionEn — সব optional
+
+- Quiz schemas:
+    questionEn, explanationEn, textEn — সব optional
+```
+
+**গুরুত্বপূর্ণ:** সব `*En` ফিল্ড **optional** — পুরনো `*Bn` ফিল্ড অপরিবর্তিত থাকবে। কোনো required ফিল্ড ভাঙা যাবে না।
+
+### 📋 প্রতিটা sub-part-এর জন্য AI-কে যা দিতে হবে
+
+প্রতিবার এই ৪টা অংশ থাকবে:
+
+**১) Context (প্রসঙ্গ)** — PART 9-এর কোন sub-part, কী ফাইল।
+
+**২) Rules (নিয়ম)** — সবসময় থাকবে:
+```
+- কোনো ফাইল edit করার আগে read_file দিয়ে পুরো ফাইল পড়বে
+- কী বদলাবে সহজ বাংলায় প্রিভিউ দেবে
+- "হ্যাঁ" পেলে তবেই edit
+- প্রতিটা edit-এর আগে .bak backup
+- edit-এর পর npx tsc --noEmit → ০ error যাচাই
+- error থাকলে পরের step-এ যাবে না
+- push নিষেধ (শুধু local commit)
+- .bak / *.bakN git-এ add করবে না
+- প্রতিটা commit-এর আগে আলাদা "হ্যাঁ" নেবে
+```
+
+**৩) কাজ (Task)** — sub-part-এর নির্দিষ্ট কাজ।
+
+**৪) Verify criteria** — কী দেখে বুঝবেন কাজ সফল:
+```
+- npx tsc --noEmit → ০ error
+- read_file দিয়ে দেখাও নতুন ফিল্ড
+- পুরনো *Bn ফিল্ড অপরিবর্তিত
+```
+
+### 📝 উদাহরণ — 9a-এর জন্য পাঠানোর টেক্সট
+
+```
+DevSchool — PART 9a: Validators (Foundation)
+
+আমি নতুন চ্যাটে আছি। রুটে enbn.md আছে — প্রথমে পড়ো।
+
+পরিস্থিতি: PART 8 সম্পূর্ণ ✅। এখন PART 9a — lib/validators.ts-এ
+সব Zod schema-তে *En ফিল্ড যোগ করা।
+
+━━━ কঠোর নিয়ম ━━━
+- edit করার আগে read_file দিয়ে পুরো ফাইল পড়ো
+- প্রিভিউ দাও — কোন কোন schema-তে কী কী ফিল্ড যোগ হবে
+- "হ্যাঁ" পেলে তবেই edit
+- .bak backup আগে
+- npx tsc --noEmit → ০ error যাচাই
+- push নিষেধ
+- commit-এর আগে আলাদা "হ্যাঁ" নাও
+
+━━━ কাজ ━━━
+lib/validators.ts (৩১০ লাইন) পড়ে প্রতিটা schema-তে *En
+ফিল্ড যোগ করো (উপরে PART 9a সেকশনে তালিকা আছে)।
+
+━━━ verify ━━━
+- npx tsc --noEmit → ০ error
+- read_file দেখাও: প্রতিটা schema-তে নতুন ফিল্ড
+- কোথাও কোনো required ফিল্ড ভাঙেনি
+
+━━━ রিপোর্ট + commit ━━━
+- কী কী ফিল্ড যোগ হলো — সংক্ষিপ্ত তালিকা
+- .bak তৈরি হয়েছে কিনা জানাও
+- commit proposal (message اقتراح)
+- "হ্যাঁ" পেলে commit → git log --oneline -3
+```
+
+**9b থেকে 9j পর্যন্ত একই প্যাটার্ন** — শুধু "কাজ" অংশ বদলাবে।
+
+### 🔴 বিশেষ সতর্কতা — 9i (SiteSettingsForm)
+
+- ফাইলটা **১৯.৭ KB** — hero + footer + faq + reviews — ৪টা section একসাথে
+- **সুপারিশ:** 9i-তে **শুধু hero_en**। বাকি footer/faq/reviews — আলাদা PART-এ (এখন সিদ্ধান্ত দরকার নেই)।
+- **কারণ:** hero_en দিলেই `/en` পেজ আর "Content coming soon" দেখাবে না — সবচেয়ে বড় visual improvement।
+
+### 🎯 কীভাবে এগোবেন — ২টা পথ
+
+**পথ A** — এক session-এ ২-৩টা sub-part (দ্রুত, কিন্তু ভুল ছড়াতে পারে)
+
+**পথ B** — এক session-এ ১টা sub-part (নিরাপদ, কিন্তু বেশি session লাগবে)
+
+**সুপারিশ (পথ A-র সাথে সাজানো):**
+- Session ১: 9a + 9b + 9c (~৫৫ মিনিট)
+- Session ২: 9d + 9e (~৬০ মিনিট)
+- Session ৩: 9f + 9g + 9h (~৫৫ মিনিট)
+- Session ৪: 9i + 9j (~৫০ মিনিট)
+
+মোট ৪ session — প্রতিটা ৪৫-৬০ মিনিট।
+
+### 📋 প্রতিটা sub-part শেষে করণীয়
+
+১) `npx tsc --noEmit` → ০ error যাচাই
+২) `npm run build` → সফল
+৩) `git log --oneline -2` → commit verify
+৪) নতুন sub-part শুরু করার আগে — নতুন চ্যাট খুলবেন কি না সিদ্ধান্ত নিন (বড় sub-part 9d/9e/9i হলে নতুন চ্যাট সুপারিশ)
+
+---
 
 ### ✅ PART 7.5 — Console fix + Hero localization + /en ComingSoon
 
@@ -495,6 +652,10 @@ Part 1-এ যে error গুলো এসেছিল, এখানে সব 
 - `lib/revalidate-tutorial.ts` — দুই path revalidate
 
 ### PART 9 — Admin panel-এ দুই ভাষার ইনপুট
+
+> ⚠️ **SUPERSEDED (২০২৬-০৯-২৪):** এই PART 9-এর বিস্তারিত পরিকল্পনা
+> উপরে line 129-এ আছে (9a-9j — ৯টা sub-step টেবিল সহ)। নিচের অংশটা
+> শুধু ঐতিহাসিক রেফারেন্স।
 
 প্রতিটা admin form-এ দুই সেট ইনপুট (বাংলা required, ইংরেজি optional):
 - `TutorialForm.tsx`, `ChaptersManager.tsx`, `LessonsManager.tsx`, `GroupsManager.tsx`, `ReferenceForm.tsx`, `QuizForm.tsx`, `ChallengeForm.tsx`
