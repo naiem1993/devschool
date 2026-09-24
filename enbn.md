@@ -102,7 +102,7 @@ _(পুরনো নোট, ইতিহাসের জন্য)_ সর্�
 
 ⚠️ **listing-এ strict filter (Rule #4):** `/en`-এ শুধু যেসব আইটেমের `titleEn` non-empty। সাথে map-এর পরে `.filter()` দিয়ে খালি string + trim()-করা খালি string বাদ (references + challenges listing-এ করা হয়েছে)।
 
-✅ **PART 6 step 6 (home + tutorials listing):** `app/[locale]/(site)/page.tsx` ও `app/[locale]/(site)/tutorials/page.tsx` — দুইটাই locale-aware। home-এ ৫টা query (popular/latest/search/chapters/marquee) Rule #4 filter + `pickText` পেয়েছে; `generateMetadata`-এর count-ও locale-aware। tutorials listing-এ select-এ `titleBn/En + descriptionBn/En`, Rule #4 filter, ভাষা-নির্ভর `orderBy`, map-এ `pickText` + `.filter()`। পাবলিক সাইটের সব tree ✅ সম্পূর্ণ। commit (step 6) বাকি — শুধু user 'হ্যাঁ' বললে হবে।
+✅ **PART 6 step 6 (home + tutorials listing):** `app/[locale]/(site)/page.tsx` ও `app/[locale]/(site)/tutorials/page.tsx` — দুইটাই locale-aware। home-এ ৫টা query (popular/latest/search/chapters/marquee) Rule #4 filter + `pickText` পেয়েছে; `generateMetadata`-এর count-ও locale-aware। tutorials listing-এ select-এ `titleBn/En + descriptionBn/En`, Rule #4 filter, ভাষা-নির্ভর `orderBy`, map-এ `pickText` + `.filter()`। পাবলিক সাইটের সব tree ✅ সম্পূর্ণ। commit a9a6b84 ✅ সম্পন্ন।
 
 ✅ **PART 6 step 7a (chapters + groups admin tree):** নিচের ৮টা ফাইল locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু নাম বদল):
 - `app/(admin)/admin/tutorials/[id]/chapters/page.tsx`
@@ -127,10 +127,10 @@ _(পুরনো নোট, ইতিহাসের জন্য)_ সর্�
 
 ✅ **PART 6 step 7e (tutorials edit tree) [commit `a326da3`]:** `app/(admin)/admin/tutorials/[id]/edit/page.tsx` + `components/admin/TutorialForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (createTutorialSchema + updateTutorialSchema) locale-aware। API routes (POST/PUT) ছোঁয়া হয়নি — schema rename হলেই `tutorialData` নতুন নামে আসে, Prisma মিলে যায়। tsc: ~৮০ → ~৭৩।
 
-✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (`createChallengeSchema`) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। testCases ছোঁয়া হয়নি (input/expectedOutput ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০ (৫টা কমেছে)। commit এখনো হয়নি — jোড়া ৪-এর সাথে একসাথে হবে।
+✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (`createChallengeSchema`) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। testCases ছোঁয়া হয়নি (input/expectedOutput ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০ (৫টা কমেছে)। commit a6a17f6-এ অন্তর্ভুক্ত ✅।
 
 
-**পরের কাজ:** admin-এর বাকি পেজ (references/quizzes/challenges listing + edit + form component + API route) → তারপর admin API routes → prisma/seed → scripts। শেষে `tsc = ০` + `npm run build` সফল হতে হবে।
+**পরের কাজ:** PART 7 — LanguageSwitcher.tsx (হেডারে `EN | বাং` বাটন)।
 
 ---
 
