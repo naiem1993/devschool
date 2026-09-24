@@ -19,11 +19,8 @@ type ChangeFreq =
  * এক route-এর দুই ভাষার sitemap entry বানায়।
  * প্রতি entry-তে hreflang alternates (bn + en)।
  *
- * ⚠️ x-default বাদ — MetadataRoute.Sitemap-এ x-default সাপোর্ট
- * ১০০% যাচাই করা হয়নি, তাই নিরাপদ পথে বাদ দিলাম।
- * (Metadata.alternates.languages-এ x-default কাজ করে — যেমন
- * challenges/[id]/page.tsx-এ ব্যবহৃত — কিন্তু MetadataRoute.Sitemap
- * আলাদা API surface।)
+ * ✅ x-default: MetadataRoute.Sitemap-এ সাপোর্ট নিশ্চিত
+ * (Next.js 16.3.4-এ build pass হয়েছে — /sitemap.xml-এ x-default নির্গত)।
  */
 function withAlternates(
   bnPath: string,
@@ -37,6 +34,7 @@ function withAlternates(
   const languages = {
     bn: `${SITE_URL}${bnPath}`,
     en: `${SITE_URL}${enPath}`,
+    'x-default': `${SITE_URL}${bnPath}`,
   }
   return [
     { url: `${SITE_URL}${bnPath}`, ...rest, alternates: { languages } },

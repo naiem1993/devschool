@@ -80,12 +80,40 @@ model Tutorial {
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (commit `a6a17f6`) |
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
-| 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
+| 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8f সব commit হয়েছে |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 7.5 ✅ সম্পূর্ণ** (PHASE A+B+C একসাথে) — tsc ০ error, npm run build সফল (৫৪ পেজ)।
+**বর্তমান অবস্থান:** **PART 8 (SEO) ✅ সম্পন্ন (8b + 8c.2 + 8f)** — tsc ০ error, npm run build সফল (৫৪ পেজ)।
+
+### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
+
+**8b — locale-aware sitemap** (`app/sitemap.ts`):
+- প্রতিটা route-এর দুই ভাষার entry (bn + en) + reciprocating hreflang alternates
+- tutorial/chapter/lesson/reference/challenge detail URL সব locale-aware
+- `/playground` static route যোগ
+- commit `745ddfd`-এ যুক্ত
+
+**8c.2 — hreflang consistency + x-default everywhere (১৫ ফাইল)**:
+- **8c.1**: `challenges/[id]/page.tsx` — `'bn-BD'` → `bn` (bn-BD মোট ৪টা ফাইলে ছিল)
+- **8c.2 দল ক (৪টা)**: `references/[slug]`, `tutorials/[slug]`, `tutorials/[slug]/[chapter]`, `tutorials/[slug]/[chapter]/[lesson]` — প্রতিটাতে `bn-BD` → `bn` + `x-default` যোগ
+- **8c.2 দল খ (১০টা)**: layout + home + tutorials/references/challenges listing + playground + progress + search + about + tools — শুধু `x-default` যোগ
+- commit `745ddfd`-এ যুক্ত (196 insertions, 55 deletions)
+
+**8f — sitemap x-default (build-verified)**:
+- `withAlternates()` helper-এ `'x-default': SITE_URL + bnPath` যোগ
+- Next.js 16.3.4-এ build pass, `/sitemap.xml`-এ `hreflang="x-default"` নির্গত ✅
+- **প্রমাণ:** Next.js 16.3.4-এ `npm run build` pass, এবং `.next/server/app/sitemap.xml.body`-এ `hreflang="x-default"` নির্গত। (TypeScript-এর `MetadataRoute.Sitemap` type স্বীকৃতি দিয়েছে — `npx tsc --noEmit` ০ error।)
+
+**টেকনিক্যাল শিক্ষা:**
+- `backup_file` MCP tool `.bak` নাম দেয়; custom suffix দরকার হলে `read_file` + `create_file` MCP দিয়ে করতে হয়
+- Shell quotes MCP wrapper-এ ভাঙে → commit message-এর জন্য `git commit -F <file>` ব্যবহার করা নিরাপদ
+- `backup_file` বিদ্যমান `.bak` overwrite করে না (mtime সংরক্ষণ করে)
+
+**8d (স্থগিত)** — tools/* sub-pages (base64 etc.) locale-aware করতে হবে (canonical + generateMetadata + hero localization) — PART 9-এ যাবে।
+
+**8e (স্থগিত)** — `app/robots.ts` locale-aware disallow — পরের রাউন্ডে।
 
 ### ✅ PART 7.5 — Console fix + Hero localization + /en ComingSoon
 
