@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
-import { type HeroContent } from '@/lib/hero-content'
+import { DEFAULT_HERO, type HeroContent } from '@/lib/hero-content'
 import { useDict } from '@/lib/i18n/I18nProvider'
 
 const transition: Transition = { duration: 0.6, ease: 'easeOut' }
@@ -18,8 +18,7 @@ const staggerContainer = {
 }
 
 interface HeroSectionProps {
-  /** locale-সঠিক hero — parent সবসময় পাঠাবে (bn বা en), কখনো ডিফল্ট নয় */
-  hero: HeroContent
+  hero?: HeroContent
   tutorials: any[]
   stats: {
     languageCount: number
@@ -53,7 +52,7 @@ function buildDoc(html: string, css: string, js: string) {
   )
 }
 
-export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps) {
+export default function HeroSection({ hero = DEFAULT_HERO, tutorials, stats }: HeroSectionProps) {
   const dict = useDict()
   const statValues = [
     `${stats.languageCount}+`,

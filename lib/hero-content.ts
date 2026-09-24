@@ -16,10 +16,14 @@ export interface HeroContent {
   statLabels: string[]
 }
 
+/** বাংলা hero-র DB key (পুরনো, অপরিবর্তিত)। */
 export const HERO_SETTINGS_KEY = 'hero'
 
-/** DB-তে কিছু না থাকলে HeroSection এই default দেখাবে। */
-export const DEFAULT_HERO: HeroContent = {
+/** ইংরেজি hero-র DB key (নতুন, PART 7.5b)। */
+export const HERO_EN_SETTINGS_KEY = 'hero_en'
+
+/** বাংলা ডিফল্ট hero — DB-তে কিছু না থাকলে bn পেজে এটাই দেখাবে। */
+export const DEFAULT_HERO_BN: HeroContent = {
   badge: '✨ আপনার প্রোগ্রামিং ক্যারিয়া গড়া বিশ্বস্ত প্ল্যাটফর্ম',
   heading: 'আধুনিক প্রযুক্তি শিখুন,',
   headingHighlight: 'নিজের গতিকে মাস্টার হন',
@@ -39,34 +43,73 @@ export const DEFAULT_HERO: HeroContent = {
 }
 
 /**
- * DB থেকে আসা partial value-কে safe ভাবে পূর্ণ HeroContent-এ রূপ দেয়।
- * যেকোনো missing/invalid field default-এ fallback করবে — তাই কখনো crash হবে না।
+ * ইংরেজি ডিফল্ট hero — admin থেকে 'hero_en' লেখা না হওয়া পর্যন্ত
+ * /en পেজে এটা placeholder হিসেবে ব্যবহার হবে (PHASE C-তে যা
+ * ContentComingSoon-এ replace হতে পারে)।
  */
-export function mergeHero(raw: unknown): HeroContent {
-  if (!raw || typeof raw !== 'object') return DEFAULT_HERO
+export const DEFAULT_HERO_EN: HeroContent = {
+  badge: '✨ Your trusted platform for building a programming career',
+  heading: 'Learn modern technologies,',
+  headingHighlight: 'master at your own pace',
+  subtitle:
+    'Learn coding hands-on through interactive tutorials, real-world projects, coding challenges and quizzes.',
+  searchPlaceholder:
+    'What do you want to learn? (e.g. JavaScript, Python, React...)',
+  cta1Label: '🚀 Browse tutorials',
+  cta1Href: '/tutorials',
+  cta2Label: '⚡ Try code challenges',
+  cta2Href: '/challenges',
+  statLabels: [
+    'Programming languages & technologies',
+    'Detailed tutorials',
+    'Interactive quizzes',
+    'Practice challenges',
+  ],
+}
+
+/**
+ * backward-compat alias — পুরনো code যেখানে `DEFAULT_HERO` import করে,
+ * সেটা যাতে না ভাঙে। এখন থেকে bn-এর ডিফল্ট = DEFAULT_HERO_BN।
+ */
+export const DEFAULT_HERO = DEFAULT_HERO_BN
+
+/**
+ * DB থেকে আসা partial value-কে safe ভাবে পূর্ণ HeroContent-এ রূপ দেয়।
+ * যেকোনো missing/invalid field দিলে `fallback`-এ যাবে — তাই কখনো crash হবে না।
+ *
+ * @param raw — DB থেকে আসা কাঁচা value (unknown)
+ * @param fallback — কোন ভাষার ডিফল্ট (DEFAULT_HERO_BN বা DEFAULT_HERO_EN)
+ */
+export function mergeHero(
+  raw: unknown,
+  fallback: HeroContent = DEFAULT_HERO_BN
+): HeroContent {
+  if (!raw || typeof raw !== 'object') return fallback
   const r = raw as Record<string, unknown>
-  const str = (key: keyof HeroContent, fallback: string) =>
-    typeof r[key] === 'string' && (r[key] as string).length > 0 ? (r[key] as string) : fallback
+  const str = (key: keyof HeroContent, fb: string) =>
+    typeof r[key] === 'string' && (r[key] as string).length > 0
+      ? (r[key] as string)
+      : fb
 
   const labels = Array.isArray(r.statLabels) ? (r.statLabels as unknown[]) : null
   const statLabels = labels
     ? [0, 1, 2, 3].map((i) =>
         typeof labels[i] === 'string' && (labels[i] as string).length > 0
           ? (labels[i] as string)
-          : DEFAULT_HERO.statLabels[i]
+          : fallback.statLabels[i]
       )
-    : DEFAULT_HERO.statLabels
+    : fallback.statLabels
 
   return {
-    badge: str('badge', DEFAULT_HERO.badge),
-    heading: str('heading', DEFAULT_HERO.heading),
-    headingHighlight: str('headingHighlight', DEFAULT_HERO.headingHighlight),
-    subtitle: str('subtitle', DEFAULT_HERO.subtitle),
-    searchPlaceholder: str('searchPlaceholder', DEFAULT_HERO.searchPlaceholder),
-    cta1Label: str('cta1Label', DEFAULT_HERO.cta1Label),
-    cta1Href: str('cta1Href', DEFAULT_HERO.cta1Href),
-    cta2Label: str('cta2Label', DEFAULT_HERO.cta2Label),
-    cta2Href: str('cta2Href', DEFAULT_HERO.cta2Href),
+    badge: str('badge', fallback.badge),
+    heading: str('heading', fallback.heading),
+    headingHighlight: str('headingHighlight', fallback.headingHighlight),
+    subtitle: str('subtitle', fallback.subtitle),
+    searchPlaceholder: str('searchPlaceholder', fallback.searchPlaceholder),
+    cta1Label: str('cta1Label', fallback.cta1Label),
+    cta1Href: str('cta1Href', fallback.cta1Href),
+    cta2Label: str('cta2Label', fallback.cta2Label),
+    cta2Href: str('cta2Href', fallback.cta2Href),
     statLabels,
   }
 }

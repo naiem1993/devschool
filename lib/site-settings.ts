@@ -1,21 +1,50 @@
 import prisma from '@/lib/prisma'
-import { DEFAULT_HERO, HERO_SETTINGS_KEY, mergeHero, type HeroContent } from '@/lib/hero-content'
+import {
+  DEFAULT_HERO_BN,
+  DEFAULT_HERO_EN,
+  HERO_SETTINGS_KEY,
+  HERO_EN_SETTINGS_KEY,
+  mergeHero,
+  type HeroContent,
+} from '@/lib/hero-content'
+import type { Locale } from '@/lib/i18n/config'
 import { DEFAULT_FOOTER, FOOTER_SETTINGS_KEY, mergeFooter, type FooterContent } from '@/lib/footer-content'
 import { DEFAULT_REVIEWS, REVIEWS_SETTINGS_KEY, mergeReviews, type ReviewsSettings } from '@/lib/reviews-content'
 import { DEFAULT_FAQ, FAQ_SETTINGS_KEY, mergeFaq, type FaqSettings } from '@/lib/faq-content'
 
 /**
- * DB থেকে hero settings পড়ে।
- * Row না থাকলে বা DB error হলে silent ভাবে DEFAULT_HERO return করে — homepage কখনো ভাঙবে না।
+ * DB থেকে hero settings পড়ে — locale-নির্ভর।
+ *  - locale='bn' → 'hero' key পড়ে; না থাকলে DEFAULT_HERO_BN (কখনো null নয়)
+ *  - locale='en' → 'hero_en' key পড়ে; না থাকলে null
+ *                   (null মানে: এখনো admin ইংরেজি hero লেখেননি — PHASE C-তে
+ *                    home এলে ContentComingSoon দেখাবে)
  */
-export async function getHeroSettings(): Promise<HeroContent> {
+export async function getHeroSettings(
+  locale: Locale = 'bn'
+): Promise<HeroContent | null> {
+  if (locale === 'en') {
+    try {
+      const row = await prisma.siteSettings.findUnique({
+        where: { key: HERO_EN_SETTINGS_KEY },
+      })
+      if (!row) return null
+      return mergeHero(row.value, DEFAULT_HERO_EN)
+    } catch (e) {
+      console.error('[site-settings] getHeroSettings(en) failed:', e)
+      return null
+    }
+  }
+
+  // locale === 'bn' (default) — পুরনো আচরণ, কখনো null নয়
   try {
-    const row = await prisma.siteSettings.findUnique({ where: { key: HERO_SETTINGS_KEY } })
-    if (!row) return DEFAULT_HERO
-    return mergeHero(row.value)
+    const row = await prisma.siteSettings.findUnique({
+      where: { key: HERO_SETTINGS_KEY },
+    })
+    if (!row) return DEFAULT_HERO_BN
+    return mergeHero(row.value, DEFAULT_HERO_BN)
   } catch (e) {
-    console.error('[site-settings] getHeroSettings failed — using defaults:', e)
-    return DEFAULT_HERO
+    console.error('[site-settings] getHeroSettings(bn) failed — using defaults:', e)
+    return DEFAULT_HERO_BN
   }
 }
 
@@ -63,7 +92,10 @@ export async function getSiteSettings(): Promise<{
   faq: FaqSettings
 }> {
   const [hero, footer, reviews, faq] = await Promise.all([
-    getHeroSettings(),
+    // admin সবসময় বাংলায় — তাই স্পষ্টভাবে 'bn' পাস করছি।
+    // getHeroSettings('bn') ব্যাবহারিকভাবে কখনো null দেয় না; তবুও TS-নিরাপদ
+    // রাখতে ?? DEFAULT_HERO_BN বসানো হলো।
+    getHeroSettings('bn').then((h) => h ?? DEFAULT_HERO_BN),
     getFooterSettings(),
     getReviewsSettings(),
     getFaqSettings(),

@@ -79,12 +79,34 @@ model Tutorial {
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
 | 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (commit `a6a17f6`) |
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
+| 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 6 ✅ ১০০% সম্পূর্ণ** (commit `a6a17f6`) — tsc ০ error, npm run build সফল (৫৪ পেজ, /bn + /en দুইটাই)। সব tree locale-aware + admin + API + seed/scripts। পরের কাজ: **PART 7 — LanguageSwitcher (EN | বাং button)**।
+**বর্তমান অবস্থান:** **PART 7.5 ✅ সম্পূর্ণ** (PHASE A+B+C একসাথে) — tsc ০ error, npm run build সফল (৫৪ পেজ)।
+
+### ✅ PART 7.5 — Console fix + Hero localization + /en ComingSoon
+
+**PHASE A (console fix):** `app/[locale]/layout.tsx` — raw `<script>` → `next/script` এর `<Script id="theme-init" strategy="beforeInteractive">`। React 19 warning গেল।
+
+**PHASE B (hero localization):**
+- `lib/hero-content.ts` — `DEFAULT_HERO` → `DEFAULT_HERO_BN` (+ alias রাখা হয়েছে), নতুন `DEFAULT_HERO_EN`, নতুন `HERO_EN_SETTINGS_KEY = 'hero_en'`, `mergeHero(raw, fallback?)` — fallback প্যারামিটার যোগ।
+- `lib/site-settings.ts` — `getHeroSettings(locale = 'bn'): Promise<HeroContent | null>` (bn → `'hero'` key; en → `'hero_en'` key; না থাকলে en-এ null); `getSiteSettings()` ভেতরে `getHeroSettings('bn').then(h => h ?? DEFAULT_HERO_BN)` — admin অপরিবর্তিত।
+- `components/HeroSection.tsx` — `hero: HeroContent` (required, ডিফল্ট বাদ)।
+- `app/[locale]/(site)/page.tsx` — `getHeroSettings(locale)`; hero null হলে `<ContentComingSoon />`।
+
+**PHASE C (/en placeholder):**
+- নতুন `components/ContentComingSoon.tsx` — badge + heading + message + বাংলা লিঙ্ক।
+- `lib/i18n/dictionaries/bn.ts` + `en.ts` — `home` ঘরে ৪টা নতুন key: `comingSoonBadge`, `comingSoonTitle`, `comingSoonMessage`, `comingSoonCta`।
+
+**আচরণ:**
+- `/bn` → বাংলা hero ✅
+- `/en` → "Content coming soon" (কারণ DB-তে `hero_en` এখনো নেই) ✅
+- ভবিষ্যতে admin থেকে `hero_en` লেখা হলে /en-এ ইংরেজি hero দেখাবে (PART 9)
+
+**পরের কাজ: PART 8 — SEO (hreflang, canonical, sitemap)**।
 
 > ⚠️ **নোট:** এই সেকশনের নিচের সব কিছু **ঐতিহাসিক** (পুরনো নোট)।
 > **PART 6 ✅ ১০০% সম্পূর্ণ** — commit `a6a17f6`।

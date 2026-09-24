@@ -175,13 +175,6 @@ const en: Dictionary = {
     errNoConn: 'Cannot connect to the database server. Please check your network.',
     errNoTable: 'Database table not found. Please run migrations.',
     errUnknown: 'An unknown problem occurred. We are working on a fix.',
-
-    // ── /en placeholder (components/ContentComingSoon.tsx) ──
-    comingSoonBadge: 'Coming soon',
-    comingSoonTitle: 'English content is on the way',
-    comingSoonMessage:
-      "We're working on the English version — launching soon. Meanwhile, you can read in Bengali.",
-    comingSoonCta: 'View in Bengali',
   },
 
   // ── Challenges page (app/[locale]/(site)/challenges/*) ──

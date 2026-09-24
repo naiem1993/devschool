@@ -4,7 +4,6 @@ import Link from 'next/link';
 import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
-import ContentComingSoon from '@/components/ContentComingSoon';
 import HomeExtras from '@/components/HomeExtras';
 import HomeErrorPanel from '@/components/HomeErrorPanel';
 import { getHeroSettings, getReviewsSettings, getFaqSettings } from '@/lib/site-settings';
@@ -215,23 +214,18 @@ export default async function HomePage({
     return <HomeErrorPanel message={errorMessage} />;
   }
 
-  const hero = await getHeroSettings(locale)
+  const hero = await getHeroSettings()
   const reviewsSettings = await getReviewsSettings()
   const faqSettings = await getFaqSettings()
 
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">
       {/* === হিরো সেকশন === */}
-      {hero ? (
-        <HeroSection
-          hero={hero}
-          tutorials={allTutorialsForSearch}
-          stats={{ languageCount, tutorialCount, quizCount, challengeCount }}
-        />
-      ) : (
-        /* locale='en' কিন্তু DB-তে 'hero_en' এখনো লেখা হয়নি → ComingSoon */
-        <ContentComingSoon />
-      )}
+      <HeroSection
+        hero={hero}
+        tutorials={allTutorialsForSearch}
+        stats={{ languageCount, tutorialCount, quizCount, challengeCount }}
+      />
 
       {/* === নতুন সেকশনগুলো (marquee / bento / timeline / reviews / FAQ / CTA) === */}
       <HomeExtras

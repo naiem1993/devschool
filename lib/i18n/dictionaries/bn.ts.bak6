@@ -180,13 +180,6 @@ const bn = {
     errNoConn: 'ডেটাবেজ সার্ভারে সংযোগ করা যাচ্ছে না। নেটওয়ার্ক চেক করুন।',
     errNoTable: 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না। মাইগ্রেশন চালান।',
     errUnknown: 'অজানা সমস্যা হয়েছে। আমরা সমাধানে কাজ করছি।',
-
-    // ── /en পেজের ComingSoon placeholder (components/ContentComingSoon.tsx) ──
-    comingSoonBadge: 'শীঘ্রই আসছে',
-    comingSoonTitle: 'ইংরেজি কনটেন্ট এখনো তৈরি হচ্ছে',
-    comingSoonMessage:
-      'আমরা ইংরেজি ভার্সনের কাজ করছি — শীঘ্রই চালু হবে। ততক্ষণ বাংলায় পড়তে পারেন।',
-    comingSoonCta: 'বাংলায় দেখুন',
   },
 
   // ── Challenges পেজ (app/[locale]/(site)/challenges/*) ──
