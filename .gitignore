@@ -38,6 +38,7 @@ next-env.d.ts
 *.bak
 *.bak1
 *.bak2
+*.bak*
 
 # local browser automation artifacts
 .browser-screenshots/
