@@ -31,9 +31,11 @@ async function main() {
     where: { slug: TUTORIAL_SLUG },
     update: {},
     create: {
-      title: 'Sandbox Demo Tutorial',
+      titleBn: '',
+      titleEn: 'Sandbox Demo Tutorial',
       slug: TUTORIAL_SLUG,
-      description: 'Tutorial for testing sandbox code execution',
+      descriptionBn: null,
+      descriptionEn: 'Tutorial for testing sandbox code execution',
       difficulty: 'beginner',
       isPublished: true,
     },
@@ -41,16 +43,24 @@ async function main() {
 
   // 3. একই title-এর পুরনো challenge থাকলে মুছে দাও (testCases cascade-এ মুছে যাবে)
   await prisma.codeChallenge.deleteMany({
-    where: { title: CHALLENGE_TITLE, tutorialId: tutorial.id },
+    where: {
+      tutorialId: tutorial.id,
+      OR: [
+        { titleBn: CHALLENGE_TITLE },
+        { titleEn: CHALLENGE_TITLE },
+      ],
+    },
   })
 
   // 4. নতুন challenge + test cases
   const challenge = await prisma.codeChallenge.create({
     data: {
       tutorialId: tutorial.id,
-      title: CHALLENGE_TITLE,
-      description:
+      titleBn: '',
+      titleEn: CHALLENGE_TITLE,
+      descriptionBn:
         'একটা ফাংশন `solve(input)` লেখো যেটা "a b" ফরম্যাটের একটা string নেয় (যেমন "2 3") এবং দুইটা সংখ্যার যোগফল string আকারে return করে (যেমন "5")।',
+      descriptionEn: null,
       starterCode: STARTER_CODE,
       solution: SOLUTION_CODE,
       difficulty: 'Easy',
@@ -70,7 +80,7 @@ async function main() {
   console.log('')
   console.log('📌 Challenge:')
   console.log('   ID    :', challenge.id)
-  console.log('   Title :', challenge.title)
+  console.log('   Title :', challenge.titleEn)
   console.log('   Test  :', challenge.testCases.length, 'টা (১ visible + ২ hidden)')
   challenge.testCases.forEach((tc) => {
     console.log(`     ${tc.isHidden ? '🔒' : '👁 '} #${tc.testCaseOrder}  input="${tc.input}"  expected="${tc.expectedOutput}"`)

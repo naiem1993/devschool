@@ -216,11 +216,18 @@ async function seedChapter(course: CourseConfig, filename: string) {
   // 1. Tutorial upsert
   const tutorial = await prisma.tutorial.upsert({
     where: { slug: course.slug },
-    update: { title: course.title, description: course.description },
+    update: {
+      titleBn: course.title,
+      titleEn: course.title,
+      descriptionBn: course.description,
+      descriptionEn: null,
+    },
     create: {
-      title: course.title,
+      titleBn: course.title,
+      titleEn: course.title,
       slug: course.slug,
-      description: course.description,
+      descriptionBn: course.description,
+      descriptionEn: null,
       difficulty: course.difficulty,
       isPublished: true,
     },
@@ -231,10 +238,10 @@ async function seedChapter(course: CourseConfig, filename: string) {
     where: {
       tutorialId_slug: { tutorialId: tutorial.id, slug: parsed.slug },
     },
-    update: { title: parsed.title, sortOrder: parsed.number },
+    update: { titleBn: parsed.title, sortOrder: parsed.number },
     create: {
       tutorialId: tutorial.id,
-      title: parsed.title,
+      titleBn: parsed.title,
       slug: parsed.slug,
       sortOrder: parsed.number,
     },
@@ -253,17 +260,19 @@ async function seedChapter(course: CourseConfig, filename: string) {
         chapterId_slug: { chapterId: chapter.id, slug: lesson.slug },
       },
       update: {
-        title: lesson.title,
-        content: lesson.content,
-        codeExample: lesson.codeExample,
+        titleBn: lesson.title,
+        contentBn: lesson.content,
+        codeExampleBn: lesson.codeExample,
+        codeExampleEn: lesson.codeExample,
         sortOrder: lesson.sortOrder,
       },
       create: {
         chapterId: chapter.id,
-        title: lesson.title,
+        titleBn: lesson.title,
         slug: lesson.slug,
-        content: lesson.content,
-        codeExample: lesson.codeExample,
+        contentBn: lesson.content,
+        codeExampleBn: lesson.codeExample,
+        codeExampleEn: lesson.codeExample,
         sortOrder: lesson.sortOrder,
       },
     })
