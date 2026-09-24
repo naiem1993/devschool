@@ -63,8 +63,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       alternates: {
         canonical: `/${locale}/references/${slug}`,
         languages: {
-          'bn-BD': `/bn/references/${slug}`,
+          bn: `/bn/references/${slug}`,
           en: `/en/references/${slug}`,
+          'x-default': `/bn/references/${slug}`,
         },
       },
       openGraph: {

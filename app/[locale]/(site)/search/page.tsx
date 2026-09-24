@@ -23,7 +23,7 @@ export async function generateMetadata({
     keywords: ['search', 'tutorial', 'reference', 'programming', 'DevSchool'],
     alternates: {
       canonical: `/${locale}/search`,
-      languages: { bn: '/bn/search', en: '/en/search' },
+      languages: { bn: '/bn/search', en: '/en/search', 'x-default': '/bn/search' },
     },
     openGraph: {
       title: dict.search.metaOgTitle,

@@ -16,7 +16,7 @@ export async function generateMetadata({
     description: dict.progress.metaDesc,
     alternates: {
       canonical: `/${locale}/progress`,
-      languages: { bn: '/bn/progress', en: '/en/progress' },
+      languages: { bn: '/bn/progress', en: '/en/progress', 'x-default': '/bn/progress' },
     },
     robots: { index: false, follow: false },
   }

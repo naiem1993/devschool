@@ -47,7 +47,11 @@ export async function generateMetadata({
       keywords: ['tutorials', 'programming', 'learn to code', 'DevSchool'],
       alternates: {
         canonical: `/${locale}/tutorials`,
-        languages: { bn: '/bn/tutorials', en: '/en/tutorials' },
+        languages: {
+          bn: '/bn/tutorials',
+          en: '/en/tutorials',
+          'x-default': '/bn/tutorials',
+        },
       },
       openGraph: {
         title: fallback,

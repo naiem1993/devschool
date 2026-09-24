@@ -54,6 +54,7 @@ export async function generateMetadata({
       languages: {
         bn: "/bn",
         en: "/en",
+        "x-default": "/bn",
       },
     },
   };

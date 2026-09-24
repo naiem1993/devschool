@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       alternates: {
         canonical: `/${locale}/challenges/${id}`,
         languages: {
-          'bn-BD': `/bn/challenges/${id}`,
+          bn: `/bn/challenges/${id}`,
           en: `/en/challenges/${id}`,
           'x-default': `/bn/challenges/${id}`,
         },

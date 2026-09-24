@@ -37,7 +37,7 @@ export async function generateMetadata({
       keywords: ['reference', 'syntax', 'dictionary', 'programming', 'DevSchool'],
       alternates: {
         canonical: `/${locale}/references`,
-        languages: { bn: '/bn/references', en: '/en/references' },
+        languages: { bn: '/bn/references', en: '/en/references', 'x-default': '/bn/references' },
       },
       openGraph: {
         title: dict.references.metaOgTitle,

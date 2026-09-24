@@ -26,7 +26,7 @@ export async function generateMetadata({
       keywords: ['challenges', 'coding', 'practice', 'problems', 'DevSchool'],
       alternates: {
         canonical: `/${locale}/challenges`,
-        languages: { bn: '/bn/challenges', en: '/en/challenges' },
+        languages: { bn: '/bn/challenges', en: '/en/challenges', 'x-default': '/bn/challenges' },
       },
       openGraph: {
         title: dict.challenges.metaOgTitle,

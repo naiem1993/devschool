@@ -89,7 +89,7 @@ model Tutorial {
 
 ### ✅ PART 7.5 — Console fix + Hero localization + /en ComingSoon
 
-**PHASE A (console fix):** `app/[locale]/layout.tsx` — raw `<script>` → `next/script` এর `<Script id="theme-init" strategy="beforeInteractive">`। React 19 warning গেল।
+**PHASE A:** ⚠️ **accepted (dev-only)** — React 19-এর নতুন dev-only warning। React 19 + Next.js 16.3.4-এ <Script> strategy='beforeInteractive' root layout-এ [locale] segment switch-এর সময় client re-mount হলে warning দেয়। Production build-এ আসে না, theme ঠিকই কাজ করছে। docs/script.md মেনে pattern সঠিকই আছে। কোনো fix দরকার নেই।
 
 **PHASE B (hero localization):**
 - `lib/hero-content.ts` — `DEFAULT_HERO` → `DEFAULT_HERO_BN` (+ alias রাখা হয়েছে), নতুন `DEFAULT_HERO_EN`, নতুন `HERO_EN_SETTINGS_KEY = 'hero_en'`, `mergeHero(raw, fallback?)` — fallback প্যারামিটার যোগ।

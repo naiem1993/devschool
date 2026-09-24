@@ -17,7 +17,7 @@ export async function generateMetadata({
     description: dict.about.metaDesc,
     alternates: {
       canonical: `/${locale}/about`,
-      languages: { bn: '/bn/about', en: '/en/about' },
+      languages: { bn: '/bn/about', en: '/en/about', 'x-default': '/bn/about' },
     },
     openGraph: {
       title: dict.about.metaTitle,

@@ -19,7 +19,7 @@ export async function generateMetadata({
     keywords: ['playground', 'code editor', 'javascript', 'live code', 'DevSchool'],
     alternates: {
       canonical: `/${locale}/playground`,
-      languages: { bn: '/bn/playground', en: '/en/playground' },
+      languages: { bn: '/bn/playground', en: '/en/playground', 'x-default': '/bn/playground' },
     },
     openGraph: {
       title: dict.playground.metaOgTitle,

@@ -20,7 +20,7 @@ export async function generateMetadata({
     keywords: ['tools', 'developer', 'json', 'base64', 'color picker', 'DevSchool'],
     alternates: {
       canonical: `/${locale}/tools`,
-      languages: { bn: '/bn/tools', en: '/en/tools' },
+      languages: { bn: '/bn/tools', en: '/en/tools', 'x-default': '/bn/tools' },
     },
     openGraph: {
       title: dict.tools.metaOgTitle,

@@ -67,8 +67,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       alternates: {
         canonical: `/${locale}/tutorials/${slug}/${chapter}`,
         languages: {
-          'bn-BD': `/bn/tutorials/${slug}/${chapter}`,
+          bn: `/bn/tutorials/${slug}/${chapter}`,
           en: `/en/tutorials/${slug}/${chapter}`,
+          'x-default': `/bn/tutorials/${slug}/${chapter}`,
         },
       },
     }
