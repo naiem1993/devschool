@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { useDict } from '@/lib/i18n/I18nProvider'
 import { localeHref, stripLocale } from '@/lib/i18n/link'
 
 /**
@@ -12,7 +12,6 @@ import { localeHref, stripLocale } from '@/lib/i18n/link'
  */
 export default function ContentComingSoon() {
   const dict = useDict()
-  const locale = useLocale()
   const pathname = usePathname()
   const { path } = stripLocale(pathname || '/')
 
