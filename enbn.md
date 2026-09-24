@@ -77,14 +77,16 @@ model Tutorial {
 | 3 | `proxy.ts`-এ ভাষা দারোয়ান | ✅ **সম্পন্ন** |
 | 4 | সব পেজ `/[locale]/`-এ আনা | ✅ **সম্পন্ন** |
 | 5 | সব লেখা dictionary-তে | ✅ **সম্পন্ন** (5e-3 শেষ — client UI + about + slug) |
-| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | 🔄 চলছে (tutorials tree ✅ + references tree ✅ (commit 666556d) + challenges tree ✅ (commit af91304) + home + tutorials listing ✅ (PART 6 step 6) + chapters + groups admin tree ✅ (PART 6 step 7a); এখন বাকি admin-এর অন্য পেজ + API routes + scripts/prisma-seed) |
+| 6 | ডেটাবেস থেকে ভাষা-সঠিক লেখা (fallback) | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (commit `a6a17f6`) |
 | 7 | হেডারে EN / বাং বাটন | ⏸️ শুরু হয়নি |
 | 8 | SEO (hreflang, canonical, sitemap) | ⏸️ শুরু হয়নি |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** Part 6 চলছে ✅ — পাবলিক সাইটের সব tree locale-aware। সর্বশেষ: chapters + groups admin tree (PART 6 step 7a) ✅ — page + ৫টা API route (POST/PATCH) সব `titleBn`/`contentBn`/`codeExampleBn`-এ; client components (ChaptersManager, GroupsManager, LessonsManager) আগেই ঠিক ছিল। নিচের tree গুলো সম্পূর্ণ locale-aware:
+**বর্তমান অবস্থান:** **PART 6 ✅ ১০০% সম্পূর্ণ** (commit `a6a17f6`) — tsc ০ error, npm run build সফল (৫৪ পেজ, /bn + /en দুইটাই)। সব tree locale-aware + admin + API + seed/scripts। পরের কাজ: **PART 7 — LanguageSwitcher (EN | বাং button)**।
+
+_(পুরনো নোট, ইতিহাসের জন্য)_ সর্বশেষ step ছিল: chapters + groups admin tree (PART 6 step 7a) ✅ — page + ৫টা API route (POST/PATCH) সব `titleBn`/`contentBn`/`codeExampleBn`-এ; client components (ChaptersManager, GroupsManager, LessonsManager) আগেই ঠিক ছিল। নিচের tree গুলো সম্পূর্ণ locale-aware:
 
 - **tutorials tree** ✅ — localize.ts + tutorial-data.ts + [slug] + [chapter] + [lesson] + tryit দুটো।
 - **references tree** ✅ (commit `666556d`) — [slug] detail + listing।
