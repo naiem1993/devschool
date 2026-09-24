@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     if (q) {
       where.AND = [
-        { title: { search: q } },
+        { titleBn: { search: q } },
         ...(difficulty ? [{ difficulty }] : []),
       ]
     } else {
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         where,
         select: {
           id: true,
-          title: true,
+          titleBn: true,
           slug: true,
           difficulty: true,
           viewCount: true,
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
           rating: true,
           createdAt: true,
         },
-        orderBy: { [sort]: order },
+        orderBy: { [sort === 'title' ? 'titleBn' : sort]: order },
         skip,
         take: limit,
       }),

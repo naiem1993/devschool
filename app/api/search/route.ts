@@ -123,8 +123,8 @@ export async function GET(request: NextRequest) {
               AND: [
                 {
                   OR: [
-                    { title: { contains: q, mode: 'insensitive' } },
-                    { description: { contains: q, mode: 'insensitive' } },
+                    { titleBn: { contains: q, mode: 'insensitive' } },
+                    { descriptionBn: { contains: q, mode: 'insensitive' } },
                   ],
                 },
                 difficulty ? { difficulty } : {},
@@ -132,9 +132,9 @@ export async function GET(request: NextRequest) {
             },
             select: {
               id: true,
-              title: true,
+              titleBn: true,
               slug: true,
-              description: true,
+              descriptionBn: true,
               difficulty: true,
             },
             take: limit,

@@ -34,7 +34,7 @@ export async function GET(
           orderBy: { createdAt: 'desc' },
           take: 10,
           include: {
-            question: { select: { id: true, question: true, tutorial: { select: { title: true, slug: true } } } },
+            question: { select: { id: true, questionBn: true, tutorial: { select: { titleBn: true, slug: true } } } },
           },
         }),
         prisma.challengeAttempt.findMany({
@@ -42,7 +42,7 @@ export async function GET(
           orderBy: { createdAt: 'desc' },
           take: 10,
           include: {
-            challenge: { select: { id: true, title: true, points: true, difficulty: true } },
+            challenge: { select: { id: true, titleBn: true, points: true, difficulty: true } },
           },
         }),
       ])
@@ -58,7 +58,7 @@ export async function GET(
         id: a.id,
         at: a.createdAt,
         passed: a.isCorrect,
-        title: a.question.question,
+        title: a.question.questionBn,
         href: `/tutorials/${a.question.tutorial.slug}`,
       })),
       ...challengeRecent.map((a) => ({
@@ -66,7 +66,7 @@ export async function GET(
         id: a.id,
         at: a.createdAt,
         passed: a.passed,
-        title: a.challenge.title,
+        title: a.challenge.titleBn,
         href: `/challenges/${a.challenge.id}`,
       })),
     ]

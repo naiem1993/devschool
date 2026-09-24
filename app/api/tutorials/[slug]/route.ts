@@ -27,9 +27,9 @@ export async function GET(
       where: { slug },
       select: {
         id: true,
-        title: true,
+        titleBn: true,
         slug: true,
-        description: true,
+        descriptionBn: true,
         difficulty: true,
         viewCount: true,
         duration: true,
@@ -40,25 +40,25 @@ export async function GET(
         updatedAt: true,
         // ─── Nested selects for related data ────────────────────────────────
         groups: {
-          select: { id: true, title: true, sortOrder: true },
+          select: { id: true, titleBn: true, sortOrder: true },
           orderBy: { sortOrder: 'asc' },
         },
         chapters: {
           select: {
             id: true,
             slug: true,
-            title: true,
+            titleBn: true,
             sortOrder: true,
             groupId: true,
-            content: true,
-            codeExample: true,
+            contentBn: true,
+            codeExampleBn: true,
             lessons: {
               select: {
                 id: true,
                 slug: true,
-                title: true,
-                content: true,
-                codeExample: true,
+                titleBn: true,
+                contentBn: true,
+                codeExampleBn: true,
                 sortOrder: true,
               },
               orderBy: { sortOrder: 'asc' },
@@ -69,12 +69,12 @@ export async function GET(
         quizzes: {
           select: {
             id: true,
-            question: true,
-            explanation: true,
+            questionBn: true,
+            explanationBn: true,
             options: {
               select: {
                 id: true,
-                text: true,
+                textBn: true,
                 // Don't expose isCorrect to client
               },
               orderBy: { id: 'asc' },
@@ -84,8 +84,8 @@ export async function GET(
         challenges: {
           select: {
             id: true,
-            title: true,
-            description: true,
+            titleBn: true,
+            descriptionBn: true,
             starterCode: true,
             testCases: {
               select: {

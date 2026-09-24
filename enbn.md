@@ -115,6 +115,10 @@ model Tutorial {
 
 📌 **tsc ডিবাগ নিয়ম (মনে রাখতে হবে):** tsc ডিবাগ ফাইল বানাতে `Set-Content -Encoding UTF8` ব্যবহার করো (`Out-File` নয় — BOM যোগ করে MCP tool আটকে দেয়)। উদাহরণ: `npx tsc --noEmit 2>&1 | Select-String -NotMatch "\.next","node_modules" | Set-Content -Encoding UTF8 tsc-raw.txt`
 
+✅ **PART 6 step 7f (new pages tutorial dropdown) [commit `c822da1`]:** `admin/challenges/new` + `admin/quizzes/new` + `admin/references/new` — tutorial dropdown-এ `orderBy: { titleBn: 'asc' }` + `title: t.titleBn`। tsc: ~৭৩ → ~৬৭।
+
+⚠️ **PART 6 step 8 (public API) — locale-awareness নোট (বাকি):** `api/search/route.ts` — $queryRaw অংশ DB-কলামেই আছে (title @map-এর কারণে) — ঠিক আছে; কিন্তু Prisma fallback অংশে locale-নির্ভর ফিল্টার (bn→titleBn, en→titleEn) এখনো বাকি — PART 7-এর পরে সাব-স্টেপে হবে। `api/tutorials/route.ts` — dynamic sort map করা হয়েছে (`sort === 'title'` হলে ভেতরে `titleBn`; URL `?sort=title` অপরিবর্তিত)।
+
 ✅ **PART 6 step 7e (tutorials edit tree) [commit `a326da3`]:** `app/(admin)/admin/tutorials/[id]/edit/page.tsx` + `components/admin/TutorialForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (createTutorialSchema + updateTutorialSchema) locale-aware। API routes (POST/PUT) ছোঁয়া হয়নি — schema rename হলেই `tutorialData` নতুন নামে আসে, Prisma মিলে যায়। tsc: ~৮০ → ~৭৩।
 
 ✅ **PART 6 step 7c-challenge (challenges edit tree):** `app/(admin)/admin/challenges/[id]/edit/page.tsx` + `app/api/admin/challenges/route.ts` + `app/api/admin/challenges/[id]/route.ts` + `components/admin/ChallengeForm.tsx` (Path A — state key-ও `Bn`) + `lib/validators.ts` (`createChallengeSchema`) — সব locale-aware (admin, locale-প্যারামিটার ছাড়া — শুধু field rename)। testCases ছোঁয়া হয়নি (input/expectedOutput ভাষা-নিরপেক্ষ)। tsc: ~৮৫ → ~৮০ (৫টা কমেছে)। commit এখনো হয়নি — jোড়া ৪-এর সাথে একসাথে হবে।

@@ -28,8 +28,8 @@ export async function GET(
       select: {
         id: true,
         tutorialId: true,
-        title: true,
-        description: true,
+        titleBn: true,
+        descriptionBn: true,
         starterCode: true,
         difficulty: true,
         createdAt: true,
