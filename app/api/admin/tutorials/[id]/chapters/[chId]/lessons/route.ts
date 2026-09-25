@@ -58,6 +58,11 @@ export async function POST(
   const contentBn = String(body?.contentBn ?? '').trim()
   const codeExampleBn = body?.codeExampleBn ? String(body.codeExampleBn).trim() : null
 
+  // PART 9e — ইংরেজি ভার্সন (optional, না দিলে null)
+  const titleEn = body?.titleEn ? String(body.titleEn).trim() : null
+  const contentEn = body?.contentEn != null && String(body.contentEn).trim() !== '' ? String(body.contentEn) : null
+  const codeExampleEn = body?.codeExampleEn ? String(body.codeExampleEn).trim() : null
+
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
   if (!contentBn) return NextResponse.json({ error: 'content দরকার' }, { status: 400 })
@@ -79,7 +84,17 @@ export async function POST(
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.lesson.create({
-      data: { chapterId: chId, titleBn, slug, contentBn, codeExampleBn, sortOrder: nextOrder },
+      data: {
+        chapterId: chId,
+        titleBn,
+        titleEn,
+        slug,
+        contentBn,
+        contentEn,
+        codeExampleBn,
+        codeExampleEn,
+        sortOrder: nextOrder,
+      },
     })
 
     // D6a — first lesson হলে chapter-এর slug sync করি

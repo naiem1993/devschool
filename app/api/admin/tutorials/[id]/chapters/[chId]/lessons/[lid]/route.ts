@@ -30,7 +30,15 @@ export async function PATCH(
   const { id, chId, lid } = await params
   const body = await req.json().catch(() => ({}))
 
-  const data: { titleBn?: string; slug?: string; contentBn?: string; codeExampleBn?: string | null } = {}
+  const data: {
+    titleBn?: string
+    titleEn?: string | null
+    slug?: string
+    contentBn?: string
+    contentEn?: string | null
+    codeExampleBn?: string | null
+    codeExampleEn?: string | null
+  } = {}
 
   if (typeof body?.titleBn === 'string') {
     const t = body.titleBn.trim()
@@ -49,6 +57,16 @@ export async function PATCH(
   }
   if ('codeExampleBn' in (body ?? {})) {
     data.codeExampleBn = body.codeExampleBn ? String(body.codeExampleBn).trim() : null
+  }
+  // PART 9e — ইংরেজি ভার্সন (optional; undefined = ছোঁব না)
+  if ('titleEn' in (body ?? {})) {
+    data.titleEn = body.titleEn ? String(body.titleEn).trim() : null
+  }
+  if ('contentEn' in (body ?? {})) {
+    data.contentEn = body.contentEn != null && String(body.contentEn).trim() !== '' ? String(body.contentEn) : null
+  }
+  if ('codeExampleEn' in (body ?? {})) {
+    data.codeExampleEn = body.codeExampleEn ? String(body.codeExampleEn).trim() : null
   }
 
   if (Object.keys(data).length === 0) {
