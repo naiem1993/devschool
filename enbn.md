@@ -81,11 +81,11 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e-1 ✅ |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e ✅ |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e-1 ✅ (API)**। পরবর্তী: **9e-2 (UI)**।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e ✅ সম্পূর্ণ**। পরবর্তী: **9f (ReferenceForm)**।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
@@ -100,7 +100,7 @@ model Tutorial {
 - নতুন "English (optional)" box **বাংলার নিচে** — dashed border, same design
 - `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
 
-### 🔄 PART 9e — LessonsManager dual-input (চলছে)
+### ✅ PART 9e — LessonsManager dual-input (সম্পূর্ণ)
 
 **9e-1 — API routes (committed `9ae852e`):**
 - `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` — POST-এ `titleEn/contentEn/codeExampleEn` গ্রহণ
@@ -108,9 +108,12 @@ model Tutorial {
 - D6a slug-sync (first lesson → chapter slug) অপরিবর্তিত; DELETE + PIN verify অপরিবর্তিত
 - `npx tsc --noEmit` ০ error ✅
 
-**9e-2 — UI (বাকি):**
-- `components/admin/LessonsManager.tsx` — `LessonRow` type + `LessonItem` (draft/save/JSX) + `AddLessonForm`-এ ৩টা ইনপুট
+**9e-2 — UI (committed `d49ed8e`):**
 - `app/(admin)/admin/tutorials/[id]/chapters/page.tsx` — `lessons.map()`-এ ৩টা `*En` DB থেকে আনা
+- `components/admin/LessonsManager.tsx` — `LessonRow` type + `LessonItem` (draft/save/JSX) + `AddLessonForm` (state/submit/reset/JSX)-এ ৩টা ইনপুট
+- নতুন "English (optional)" box **বাংলার নিচে** (দুই জায়গায়); dashed border, same design
+- D6a slug-sync + বাংলা `hasBangla`/`autoSlug` logic অপরিবর্তিত
+- `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 

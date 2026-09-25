@@ -17,10 +17,14 @@ export default function ReferenceForm({
   const router = useRouter()
   const [form, setForm] = useState({
     titleBn: initial?.titleBn || '',
+    titleEn: initial?.titleEn || '',
     slug: initial?.slug || '',
     descriptionBn: initial?.descriptionBn || '',
+    descriptionEn: initial?.descriptionEn || '',
     syntaxBn: initial?.syntaxBn || '',
+    syntaxEn: initial?.syntaxEn || '',
     exampleBn: initial?.exampleBn || '',
+    exampleEn: initial?.exampleEn || '',
     tags: (initial?.tags || []).join(', '),
     language: initial?.language || '',
     tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
@@ -83,6 +87,29 @@ export default function ReferenceForm({
         <label className="admin-label">&gt; Example</label>
         <textarea className="admin-input" rows={4} value={form.exampleBn} onChange={(e) => setForm((f) => ({ ...f, exampleBn: e.target.value }))} />
       </div>
+      {/* PART 9f — ইংরেজি ভার্সন (optional) */}
+      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
+        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+          English (optional — /en সাইটে দেখাবে)
+        </p>
+        <div>
+          <label className="admin-label">&gt; Title (EN)</label>
+          <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Array map" />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Description (EN)</label>
+          <textarea className="admin-input" rows={2} value={form.descriptionEn} onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))} />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Syntax (EN)</label>
+          <textarea className="admin-input" rows={2} value={form.syntaxEn} onChange={(e) => setForm((f) => ({ ...f, syntaxEn: e.target.value }))} />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Example (EN)</label>
+          <textarea className="admin-input" rows={4} value={form.exampleEn} onChange={(e) => setForm((f) => ({ ...f, exampleEn: e.target.value }))} />
+        </div>
+      </div>
+
       <div>
         <label className="admin-label">&gt; Tags (comma separated)</label>
         <input className="admin-input" value={form.tags} onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))} placeholder="array, method, es6" />
