@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 import { heroSettingsSchema, footerSettingsSchema, reviewsSettingsSchema, faqSettingsSchema, validateBody } from '@/lib/validators'
 import { getSiteSettings } from '@/lib/site-settings'
 import { HERO_SETTINGS_KEY, HERO_EN_SETTINGS_KEY } from '@/lib/hero-content'
-import { FOOTER_SETTINGS_KEY } from '@/lib/footer-content'
+import { FOOTER_SETTINGS_KEY, FOOTER_EN_SETTINGS_KEY } from '@/lib/footer-content'
 import { REVIEWS_SETTINGS_KEY } from '@/lib/reviews-content'
 import { FAQ_SETTINGS_KEY } from '@/lib/faq-content'
 
@@ -25,6 +25,11 @@ export async function PUT(req: NextRequest) {
 
   const footerRes = validateBody(footerSettingsSchema, body?.footer)
   if (footerRes.error) return NextResponse.json({ error: 'footer: ' + footerRes.error }, { status: 400 })
+
+  // ইংরেজি footer (PART 9j) — required
+  const footerEnRes = validateBody(footerSettingsSchema, body?.footerEn)
+  if (footerEnRes.error)
+    return NextResponse.json({ error: 'footerEn: ' + footerEnRes.error }, { status: 400 })
 
   const reviewsRes = validateBody(reviewsSettingsSchema, body?.reviews)
   if (reviewsRes.error) return NextResponse.json({ error: 'reviews: ' + reviewsRes.error }, { status: 400 })
@@ -64,6 +69,18 @@ export async function PUT(req: NextRequest) {
       },
     })
 
+    // ইংরেজি footer (PART 9j) — socialLinks bn-এর সাথে share হবে, তাই এখানে সংরক্ষণ করলেও
+    // পাঠক site এ bn-এর socialLinks ব্যবহার হবে (site-settings.ts দেখুন)
+    await prisma.siteSettings.upsert({
+      where: { key: FOOTER_EN_SETTINGS_KEY },
+      update: { value: footerEnRes.data as any },
+      create: {
+        key: FOOTER_EN_SETTINGS_KEY,
+        value: footerEnRes.data as any,
+        description: 'Site footer content (English)',
+      },
+    })
+
     await prisma.siteSettings.upsert({
       where: { key: REVIEWS_SETTINGS_KEY },
       update: { value: reviewsRes.data as any },
@@ -93,6 +110,7 @@ export async function PUT(req: NextRequest) {
       hero: heroRes.data,
       heroEn: heroEnRes.data,
       footer: footerRes.data,
+      footerEn: footerEnRes.data,
       reviews: reviewsRes.data,
       faq: faqRes.data,
     })

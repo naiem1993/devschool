@@ -53,7 +53,7 @@ export default async function SiteLayout({
     sponsors = []
   }
 
-  const footer = await getFooterSettings()
+  const footer = await getFooterSettings(locale)
 
   return (
     <>

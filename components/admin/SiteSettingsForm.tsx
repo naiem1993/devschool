@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { DEFAULT_HERO_EN, type HeroContent } from '@/lib/hero-content'
-import type { FooterContent } from '@/lib/footer-content'
+import { DEFAULT_FOOTER_EN, type FooterContent } from '@/lib/footer-content'
 import type { ReviewsSettings } from '@/lib/reviews-content'
 import type { FaqSettings, FaqItem } from '@/lib/faq-content'
 import type { SocialPlatform } from '@/lib/footer-content'
@@ -24,12 +24,14 @@ export default function SiteSettingsForm({
   initialHero,
   initialHeroEn,
   initialFooter,
+  initialFooterEn,
   initialReviews,
   initialFaq,
 }: {
   initialHero: HeroContent
   initialHeroEn: HeroContent | null
   initialFooter: FooterContent
+  initialFooterEn: FooterContent | null
   initialReviews: ReviewsSettings
   initialFaq: FaqSettings
 }) {
@@ -38,6 +40,8 @@ export default function SiteSettingsForm({
   // ইউজারকে প্রতি বার টাইপ করতে না হয়)
   const [heroEn, setHeroEn] = useState<HeroContent>(initialHeroEn ?? DEFAULT_HERO_EN)
   const [footer, setFooter] = useState<FooterContent>(initialFooter)
+  // ইংরেজি footer — DB-তে 'footer_en' না থাকলে ডিফল্ট (socialLinks bn থেকেই দেখাবে, এখানে এডিট করব না)
+  const [footerEn, setFooterEn] = useState<FooterContent>(initialFooterEn ?? DEFAULT_FOOTER_EN)
   const [reviews, setReviews] = useState<ReviewsSettings>(initialReviews)
   const [faq, setFaq] = useState<FaqSettings>(initialFaq)
   const [error, setError] = useState('')
@@ -56,6 +60,11 @@ export default function SiteSettingsForm({
 
   const updateFooter = (patch: Partial<FooterContent>) => {
     setFooter((f) => ({ ...f, ...patch }))
+    setSaved(false)
+  }
+
+  const updateFooterEn = (patch: Partial<FooterContent>) => {
+    setFooterEn((f) => ({ ...f, ...patch }))
     setSaved(false)
   }
 
@@ -105,7 +114,7 @@ export default function SiteSettingsForm({
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hero, heroEn, footer, reviews, faq }),
+        body: JSON.stringify({ hero, heroEn, footer, footerEn, reviews, faq }),
       })
       if (res.ok) {
         setSaved(true)
@@ -435,8 +444,48 @@ export default function SiteSettingsForm({
                     setSaved(false)
                   }}
                   placeholder="যেমন: হ্যাঁ, ১০০% ফ্রি। কোনো কার্ড, ট্রায়াল বা লুকানো চার্জ নেই।"
+                  required
                 />
               </Field>
+
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-700 p-3 space-y-3 bg-slate-50/40 dark:bg-slate-900/30">
+                <p className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  🇬🇧 English (required)
+                </p>
+                <Field label="> Question (English)">
+                  <input
+                    className="admin-input"
+                    value={item.qEn ?? ''}
+                    onChange={(e) => {
+                      setFaq((f) => {
+                        const items = [...f.items]
+                        items[i] = { ...items[i], qEn: e.target.value }
+                        return { items }
+                      })
+                      setSaved(false)
+                    }}
+                    placeholder="e.g. Is DevSchool really free?"
+                    required
+                  />
+                </Field>
+                <Field label="> Answer (English)">
+                  <textarea
+                    className="admin-input"
+                    rows={3}
+                    value={item.aEn ?? ''}
+                    onChange={(e) => {
+                      setFaq((f) => {
+                        const items = [...f.items]
+                        items[i] = { ...items[i], aEn: e.target.value }
+                        return { items }
+                      })
+                      setSaved(false)
+                    }}
+                    placeholder="e.g. Yes, 100% free. No card, no trial, no hidden charges."
+                    required
+                  />
+                </Field>
+              </div>
             </div>
           ))}
         </div>
@@ -444,7 +493,9 @@ export default function SiteSettingsForm({
         <button
           type="button"
           onClick={() => {
-            setFaq((f) => ({ items: [...f.items, { q: '', a: '' } as FaqItem] }))
+            setFaq((f) => ({
+              items: [...f.items, { q: '', a: '', qEn: '', aEn: '' } as FaqItem],
+            }))
             setSaved(false)
           }}
           className="text-sm font-semibold text-[#15803D] dark:text-[#4ADE80] border border-[#22C55E]/40 rounded-xl px-4 py-2 hover:bg-[#22C55E]/10 transition"
@@ -625,6 +676,62 @@ export default function SiteSettingsForm({
             />
           </Field>
         </div>
+      </section>
+
+      {/* ═══ FOOTER (ENGLISH) ═══ */}
+      <section className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Footer (English) 🇬🇧</h2>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            এই লেখাগুলো /en পেজের ফুটারে দেখাবে। social links বাংলা ভার্সনের সাথে শেয়ার হয় — উপরে যা সেট করেছেন সেটাই দুই ভাষাতেই থাকবে। সব ফিল্ড required — একটি খালি থাকলে সেভ হবে না।
+          </p>
+        </div>
+
+        <Field label="> Copyright line ({year} দিলে current year বসবে)">
+          <input
+            className="admin-input"
+            value={footerEn.copyright}
+            onChange={(e) => updateFooterEn({ copyright: e.target.value })}
+            required
+          />
+        </Field>
+
+        <Field label="> Donate Prompt">
+          <input
+            className="admin-input"
+            value={footerEn.donatePrompt}
+            onChange={(e) => updateFooterEn({ donatePrompt: e.target.value })}
+            required
+          />
+        </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="> Donate Link Label">
+            <input
+              className="admin-input"
+              value={footerEn.donateLinkLabel}
+              onChange={(e) => updateFooterEn({ donateLinkLabel: e.target.value })}
+              required
+            />
+          </Field>
+          <Field label="> Donate Link Href">
+            <input
+              className="admin-input"
+              value={footerEn.donateLinkHref}
+              onChange={(e) => updateFooterEn({ donateLinkHref: e.target.value })}
+              placeholder="/donate"
+              required
+            />
+          </Field>
+        </div>
+
+        <Field label="> Credit Text (bottom strip-এ ‘Made with 💚’ এর পরে)">
+          <input
+            className="admin-input"
+            value={footerEn.creditText}
+            onChange={(e) => updateFooterEn({ creditText: e.target.value })}
+          />
+        </Field>
       </section>
 
       {error && <div className="admin-error">[!] {error}</div>}

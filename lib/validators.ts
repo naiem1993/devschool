@@ -264,13 +264,17 @@ export const reviewsSettingsSchema = z.object({
   enabled: z.boolean(),
 })
 
-/** FAQ section content — SiteSettings key='faq' */
+/** FAQ section content — SiteSettings key='faq' (PART 9j — bn+en paired) */
 export const faqSettingsSchema = z.object({
   items: z
     .array(
       z.object({
+        // বাংলা required
         q: z.string().trim().min(1).max(300),
         a: z.string().trim().min(1).max(2000),
+        // ইংরেজি — admin form required, তবু schema-তে optional (পুরনো data tolerate করার জন্য)
+        qEn: z.string().trim().max(300).optional().nullable(),
+        aEn: z.string().trim().max(2000).optional().nullable(),
       }),
     )
     .max(50),

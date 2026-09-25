@@ -217,7 +217,7 @@ export default async function HomePage({
 
   const hero = await getHeroSettings(locale)
   const reviewsSettings = await getReviewsSettings()
-  const faqSettings = await getFaqSettings()
+  const faqSettings = await getFaqSettings(locale)
 
   return (
     <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">

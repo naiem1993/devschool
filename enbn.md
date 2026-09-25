@@ -81,11 +81,11 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9i সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9j সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9i সব শেষ; tsc ০ error। পরবর্তী: **Part 10 (Seed/content workflow)**।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9j সব শেষ; tsc ০ error। পরবর্তী: **Part 10 (Seed/content workflow)**।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
@@ -200,6 +200,46 @@ model Tutorial {
 - Save চাপলে বাংলা + ইংরেজি দুটোই DB-তে যাবে।
 - `/en` পেজে এখন (admin-এ সেভ করার পরে) ইংরেজি hero দেখাবে — "Content coming soon" আর দেখাবে না।
 
+### ✅ PART 9j — Footer + FAQ English (Reviews-এ কিছু লাগেনি) (সম্পূর্ণ)
+
+**বিশেষ নোট:** Reviews-এর settings shape = `{ enabled: boolean }` — শুধু একটা চালু/বন্ধ সুইচ। ওতে লেখা নেই, তাই ইংরেজি যোগ করার কিছু নেই। Site-section heading dictionary-তে আছে, আসল রিভিউ ইউজারের ভাষায়। তাই 9j-তে শুধু **Footer + FAQ।**
+
+**ইউজারের সিদ্ধান্ত (২০২৬-০৯-২৫):**
+- FAQ: **যুক্ত (paired) পদ্ধতি 🅰️** — প্রতিটা FAQ item-এ ৪টা ইনপুট: `q, a, qEn, aEn`; db-তে এক item-এ দুটো ভাষা পাশাপাশি।
+- Footer + FAQ দুটোতেই ইংরেজি required (admin form-এ required attr)।
+- Social links bn/en দুই view-এ শেয়ার (URL-এ ভাষা নেই)।
+
+**যেই ৭টা ফাইল বদলেছে:**
+1. `lib/footer-content.ts` (১০১ → ~১২২ লাইন) — `FOOTER_EN_SETTINGS_KEY='footer_en'`; `DEFAULT_FOOTER_EN`; `mergeFooter(raw, fallback)` fallback প্যারামিটার যোগ
+2. `lib/faq-content.ts` (৫৪ → ~৯৪ লাইন) — `FaqItem`-এ `qEn?, aEn?`; `DEFAULT_FAQ`-এ প্রতি item-এ ইংরেজি লেখা যোগ; `DEFAULT_FAQ_EN` (bn row না থাকলে /en পেজে); `mergeFaq(raw, fallback)` — qEn/aEn পার্স করে
+3. `lib/site-settings.ts` — `getFooterSettings(locale)` locale-aware (en → 'footer_en' key; socialLinks bn থেকে share); `getFaqSettings(locale)` locale-aware (en → items-এর qEn/aEn, খালিগুলো বাদ); `getSiteSettings()` return-এ `footerEn` যোগ
+4. `app/[locale]/(site)/layout.tsx` — `getFooterSettings(locale)` locale পাস
+5. `app/[locale]/(site)/page.tsx` — `getFaqSettings(locale)` locale পাস
+6. `components/admin/SiteSettingsForm.tsx` (৫২১ → ~৭৪০ লাইন) — নতুন `footerEn` state (DEFAULT_FOOTER_EN fallback); `updateFooterEn` helper; FAQ প্রতি item-এ '🇬🇧 English (required)' বক্স (qEn/aEn); নতুন "+ নতুন প্রশ্ন"-এ qEn/aEn '';
+7. `app/(admin)/admin/settings/page.tsx` — `initialFooterEn={footerEn}` prop
+
+**API route (`app/api/admin/settings/route.ts`):**
+- PUT-এ `body.footerEn` validate + খালি হলে 400
+- `footer_en` key-তে upsert (socialLinks bn থেকে share হবে site-render-এ)
+- response-এ `footerEn` যোগ
+
+**lib/validators.ts:**
+- `faqSettingsSchema`-তে `qEn?, aEn?` optional যোগ (পুরনো data tolerate করার জন্য; UI-তে required)
+
+**অপরিবর্তিত:**
+- Reviews-এর কোনো কোড (সুইচ, ভাষাহীন)
+- hero-র কোড (9i)
+- ডেটাবেস স্কিমা (শুধু data, নতুন key)
+- Public bn আচরণ (হুবহু আগের মতো)
+- `HomeExtras.tsx`-এর hardcoded বাংলা (BENTO/ROADMAP) — এই PART-এ ছোঁয়া হয়নি (আলাদা PART-এ হবে)
+
+**ফলাফল:**
+- Admin-এর Site Settings-এ এখন **Footer (English)** বক্স + FAQ-তে প্রতি item-এ ইংরেজি প্রশ্ন-উত্তর
+- `/en` পেজে এখন ইংরেজি FAQ + ইংরেজি footer দেখা যাবে
+- `/bn` অপরিবর্তিত
+
+**যাচাই:** `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
 ### 🎉 PART 9 — চূড়ান্ত সারসংক্ষেপ
 
 | ধাপ | ফাইল মোট | অবস্থা |
@@ -213,6 +253,7 @@ model Tutorial {
 | 9g | ChallengeForm + 2 API | ✅ |
 | 9h | QuizForm + 2 API + edit page | ✅ |
 | 9i | SiteSettingsForm (English hero) + settings API + page + site-settings | ✅ |
+| 9j | Footer + FAQ English (Reviews লাগেনি) — ৭ ফাইল + validators | ✅ |
 
 **Part 9-এর পরে bn=en অবস্থা:**
 - Tutorial title: required | description: optional
@@ -224,7 +265,9 @@ model Tutorial {
 - Quiz question: required | option text: required | explanation: optional
 - Site hero (English): required (ডিফল্ট ইংরেজি লেখা আগে থেকে ভরা)
 - Site hero (Bangla): required (আগের মতোই)
-- Footer / Reviews / FAQ: ইংরেজি এখনো যোগ হয়নি — আলাদা PART-এ হবে
+- Site footer (English): required; socialLinks bn-এর সাথে শেয়ার
+- Site FAQ (English): required (paired — প্রতি item-এ qEn + aEn); db-তে q, a, qEn, aEn একসাথে
+- Reviews: language-free (শুধু enabled boolean); ইংরেজি যোগ করার কিছু নেই
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 

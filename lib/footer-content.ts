@@ -32,6 +32,9 @@ export interface FooterContent {
 
 export const FOOTER_SETTINGS_KEY = 'footer'
 
+/** ইংরেজি footer-এর DB key (নতুন, PART 9j)। socialLinks bn-এর সাথে share হবে। */
+export const FOOTER_EN_SETTINGS_KEY = 'footer_en'
+
 export const DEFAULT_FOOTER: FooterContent = {
   copyright: '© {year} DevSchool — ১০০% ফ্রি লার্নিং প্ল্যাটফর্ম',
   donatePrompt: '❤️ দান করতে চান?',
@@ -44,6 +47,19 @@ export const DEFAULT_FOOTER: FooterContent = {
     { platform: 'discord', url: 'https://discord.com' },
     { platform: 'facebook', url: 'https://facebook.com' },
   ],
+  creditText: 'Black_Zone',
+}
+
+/**
+ * ইংরেজি ডিফল্ট footer — DB-তে 'footer_en' না থাকলে /en পেজে এটাই দেখাবে।
+ * socialLinks এখানে placeholder; আসলে getFooterSettings('en') bn-এর socialLinks ব্যবহার করে।
+ */
+export const DEFAULT_FOOTER_EN: FooterContent = {
+  copyright: '© {year} DevSchool — 100% free learning platform',
+  donatePrompt: '❤️ Want to donate?',
+  donateLinkLabel: 'Click here',
+  donateLinkHref: '/donate',
+  socialLinks: DEFAULT_FOOTER.socialLinks,
   creditText: 'Black_Zone',
 }
 
@@ -76,25 +92,31 @@ function parseSocialLinks(raw: unknown): SocialLink[] {
   return parsed
 }
 
-/** DB থেকে আসা partial value-কে safe ভাবে পূর্ণ FooterContent-এ রূপ দেয়। */
-export function mergeFooter(raw: unknown): FooterContent {
-  if (!raw || typeof raw !== 'object') return DEFAULT_FOOTER
+/**
+ * DB থেকে আসা partial value-কে safe ভাবে পূর্ণ FooterContent-এ রূপ দেয়।
+ * fallback দিয়ে bn/en কোন ডিফল্টে যাবে ঠিক হয় (PART 9j)।
+ */
+export function mergeFooter(
+  raw: unknown,
+  fallback: FooterContent = DEFAULT_FOOTER
+): FooterContent {
+  if (!raw || typeof raw !== 'object') return fallback
   const r = raw as Record<string, unknown>
-  const str = (key: keyof FooterContent, fallback: string) =>
+  const str = (key: keyof FooterContent, fb: string) =>
     typeof r[key] === 'string' && (r[key] as string).length > 0
       ? (r[key] as string)
-      : fallback
+      : fb
 
   return {
-    copyright: str('copyright', DEFAULT_FOOTER.copyright),
-    donatePrompt: str('donatePrompt', DEFAULT_FOOTER.donatePrompt),
-    donateLinkLabel: str('donateLinkLabel', DEFAULT_FOOTER.donateLinkLabel),
-    donateLinkHref: str('donateLinkHref', DEFAULT_FOOTER.donateLinkHref),
-    // socialLinks: missing হলে empty array (user intentionally remove করতে পারে)
+    copyright: str('copyright', fallback.copyright),
+    donatePrompt: str('donatePrompt', fallback.donatePrompt),
+    donateLinkLabel: str('donateLinkLabel', fallback.donateLinkLabel),
+    donateLinkHref: str('donateLinkHref', fallback.donateLinkHref),
+    // socialLinks: missing হলে fallback-এর socialLinks
     socialLinks: Array.isArray(r.socialLinks)
       ? parseSocialLinks(r.socialLinks)
-      : DEFAULT_FOOTER.socialLinks,
-    // creditText: missing হলে default
-    creditText: typeof r.creditText === 'string' ? r.creditText : DEFAULT_FOOTER.creditText,
+      : fallback.socialLinks,
+    // creditText: missing হলে fallback
+    creditText: typeof r.creditText === 'string' ? r.creditText : fallback.creditText,
   }
 }
