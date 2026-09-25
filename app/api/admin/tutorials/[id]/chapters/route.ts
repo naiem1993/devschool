@@ -53,6 +53,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const contentBn = body?.contentBn != null && String(body.contentBn).trim() !== '' ? String(body.contentBn) : null
   const codeExampleBn = body?.codeExampleBn ? String(body.codeExampleBn).trim() : null
 
+  // PART 9d — ইংরেজি ভার্সন (optional, না দিলে null)
+  const titleEn = body?.titleEn ? String(body.titleEn).trim() : null
+  const contentEn = body?.contentEn != null && String(body.contentEn).trim() !== '' ? String(body.contentEn) : null
+  const codeExampleEn = body?.codeExampleEn ? String(body.codeExampleEn).trim() : null
+
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe হতে হবে (lowercase, hyphens)' }, { status: 400 })
 
@@ -76,7 +81,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.chapter.create({
-      data: { tutorialId: id, titleBn, slug, groupId, contentBn, codeExampleBn, sortOrder: nextOrder },
+      data: {
+        tutorialId: id,
+        titleBn,
+        titleEn,
+        slug,
+        groupId,
+        contentBn,
+        contentEn,
+        codeExampleBn,
+        codeExampleEn,
+        sortOrder: nextOrder,
+      },
     })
     await revalidateTutorialPaths(id)
     return NextResponse.json(created, { status: 201 })

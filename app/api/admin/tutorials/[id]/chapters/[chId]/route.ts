@@ -32,10 +32,13 @@ export async function PATCH(
 
   const data: {
     titleBn?: string
+    titleEn?: string | null
     slug?: string
     groupId?: string | null
     contentBn?: string | null
+    contentEn?: string | null
     codeExampleBn?: string | null
+    codeExampleEn?: string | null
   } = {}
 
   if (typeof body?.titleBn === 'string') {
@@ -56,6 +59,16 @@ export async function PATCH(
   }
   if ('codeExampleBn' in (body ?? {})) {
     data.codeExampleBn = body.codeExampleBn ? String(body.codeExampleBn).trim() : null
+  }
+  // PART 9d — ইংরেজি ভার্সন (optional; undefined = ছোঁব না, null/'' = মুছে ফেলো)
+  if ('titleEn' in (body ?? {})) {
+    data.titleEn = body.titleEn ? String(body.titleEn).trim() : null
+  }
+  if ('contentEn' in (body ?? {})) {
+    data.contentEn = body.contentEn != null && String(body.contentEn).trim() !== '' ? String(body.contentEn) : null
+  }
+  if ('codeExampleEn' in (body ?? {})) {
+    data.codeExampleEn = body.codeExampleEn ? String(body.codeExampleEn).trim() : null
   }
 
   if (Object.keys(data).length === 0) {
