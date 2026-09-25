@@ -19,11 +19,14 @@ const hasBangla = (v: string) =>
 export type ChapterRow = {
   id: string
   title: string
+  titleEn: string | null
   slug: string
   groupId: string | null
   groupTitle: string | null
   content: string | null
+  contentEn: string | null
   codeExample: string | null
+  codeExampleEn: string | null
   sortOrder: number
   lessons: LessonRow[]
 }
@@ -155,19 +158,25 @@ function ChapterCard({
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({
     title: chapter.title,
+    titleEn: chapter.titleEn || '',
     slug: chapter.slug,
     groupId: chapter.groupId || '',
     content: chapter.content || '',
+    contentEn: chapter.contentEn || '',
     codeExample: chapter.codeExample || '',
+    codeExampleEn: chapter.codeExampleEn || '',
   })
 
   useEffect(() => {
     setDraft({
       title: chapter.title,
+      titleEn: chapter.titleEn || '',
       slug: chapter.slug,
       groupId: chapter.groupId || '',
       content: chapter.content || '',
+      contentEn: chapter.contentEn || '',
       codeExample: chapter.codeExample || '',
+      codeExampleEn: chapter.codeExampleEn || '',
     })
   }, [chapter])
 
@@ -186,10 +195,13 @@ function ChapterCard({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             titleBn: draft.title.trim(),
+            titleEn: draft.titleEn.trim() || null,
             slug: draft.slug.trim(),
             groupId: draft.groupId || null,
             contentBn: draft.content || null,
+            contentEn: draft.contentEn || null,
             codeExampleBn: draft.codeExample || null,
+            codeExampleEn: draft.codeExampleEn || null,
           }),
         }
       )
@@ -327,6 +339,48 @@ function ChapterCard({
             </>
           )}
 
+          {/* PART 9d — ইংরেজি ভার্সন (optional) */}
+          <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
+            <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+              English (optional — /en সাইটে দেখাবে)
+            </p>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                Title (EN)
+              </label>
+              <input
+                value={draft.titleEn}
+                onChange={(e) => setDraft({ ...draft, titleEn: e.target.value })}
+                placeholder="e.g. HTML Paragraphs"
+                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+            {!nested && (
+              <>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                    Content (EN)
+                  </label>
+                  <RichEditor
+                    value={draft.contentEn}
+                    onChange={(e) => setDraft({ ...draft, contentEn: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                    Code example (EN, optional)
+                  </label>
+                  <textarea
+                    value={draft.codeExampleEn}
+                    onChange={(e) => setDraft({ ...draft, codeExampleEn: e.target.value })}
+                    rows={3}
+                    className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={save}
@@ -357,10 +411,13 @@ function AddChapterForm({
   onDone: (m: string) => void
 }) {
   const [title, setTitle] = useState('')
+  const [titleEn, setTitleEn] = useState('')
   const [slug, setSlug] = useState('')
   const [groupId, setGroupId] = useState('')
   const [content, setContent] = useState('')
+  const [contentEn, setContentEn] = useState('')
   const [codeExample, setCodeExample] = useState('')
+  const [codeExampleEn, setCodeExampleEn] = useState('')
   const [saving, setSaving] = useState(false)
 
   const submit = async (e: React.FormEvent) => {
@@ -373,17 +430,23 @@ function AddChapterForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           titleBn: title.trim(),
+          titleEn: titleEn.trim() || null,
           slug: slug.trim(),
           groupId: groupId || null,
           contentBn: content || null,
+          contentEn: contentEn || null,
           codeExampleBn: codeExample || null,
+          codeExampleEn: codeExampleEn || null,
         }),
       })
       if (res.ok) {
         setTitle('')
+        setTitleEn('')
         setSlug('')
         setContent('')
+        setContentEn('')
         setCodeExample('')
+        setCodeExampleEn('')
         onDone('নতুন chapter যোগ হয়েছে ✓')
       } else {
         const d = await res.json().catch(() => ({}))
@@ -458,6 +521,42 @@ function AddChapterForm({
           className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
         />
       </div>
+
+      {/* PART 9d — ইংরেজি ভার্সন (optional) */}
+      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
+        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+          English (optional — /en সাইটে দেখাবে)
+        </p>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+            Title (EN)
+          </label>
+          <input
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder="e.g. HTML Paragraphs"
+            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+            Content (EN)
+          </label>
+          <RichEditor value={contentEn} onChange={(e) => setContentEn(e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+            Code example (EN, optional)
+          </label>
+          <textarea
+            value={codeExampleEn}
+            onChange={(e) => setCodeExampleEn(e.target.value)}
+            rows={3}
+            className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+      </div>
+
       <button
         type="submit"
         disabled={saving}

@@ -46,11 +46,14 @@ export default async function ChaptersPage({
   const chapterRows: ChapterRow[] = tutorial.chapters.map((c) => ({
     id: c.id,
     title: c.titleBn,
+    titleEn: c.titleEn,
     slug: c.slug,
     groupId: c.groupId,
     groupTitle: c.group?.titleBn ?? null,
     content: c.contentBn,
+    contentEn: c.contentEn,
     codeExample: c.codeExampleBn,
+    codeExampleEn: c.codeExampleEn,
     sortOrder: c.sortOrder,
     lessons: c.lessons.map((l) => ({
       id: l.id,
