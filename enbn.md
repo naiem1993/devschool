@@ -81,11 +81,11 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e ✅ |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e, 9f ✅ |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e ✅ সম্পূর্ণ**। পরবর্তী: **9f (ReferenceForm)**।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e ✅ সম্পূর্ণ** + **9f ✅ সম্পূর্ণ**। পরবর্তী: **9g (ChallengeForm)**।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
@@ -113,6 +113,16 @@ model Tutorial {
 - `components/admin/LessonsManager.tsx` — `LessonRow` type + `LessonItem` (draft/save/JSX) + `AddLessonForm` (state/submit/reset/JSX)-এ ৩টা ইনপুট
 - নতুন "English (optional)" box **বাংলার নিচে** (দুই জায়গায়); dashed border, same design
 - D6a slug-sync + বাংলা `hasBangla`/`autoSlug` logic অপরিবর্তিত
+- `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
+### ✅ PART 9f — ReferenceForm dual-input (সম্পূর্ণ)
+
+**⚠️ পার্থক্য:** Reference API routes 9d/9e-এর মতো manual validation করে না — এরা **Zod schema** ব্যবহার করে। 9a-তে `createReferenceSchema` ও `updateReferenceSchema`-এ `titleEn/descriptionEn/syntaxEn/exampleEn` আগেই যোগ করা ছিল (validators.ts লাইন ১১১-১৩৮)। তাই API-তে **কিছুই বদলাতে হয়নি** — শুধু UI।
+
+**committed `a4324de` (২ ফাইল; enbn.md-এর 9e-আপডেটও একসাথে এই কমিটে গেছে):**
+- `components/admin/ReferenceForm.tsx` (৯৯ → ১২৬ লাইন) — `form` state-এ ৪টা `*En` + নতুন "English (optional)" box (বাংলা Example-এর পরে, Tags-এর আগে); `admin-input`/`admin-label` class অপরিবর্তিত
+- `app/(admin)/admin/references/[id]/edit/page.tsx` (৩৭ → ৪১ লাইন) — `initial`-এ ৪টা `*En` DB থেকে আনা
+- API routes ছোঁয়া হয়নি; `new/page.tsx` ছোঁয়া হয়নি (create mode-এ initial নেই)
 - `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
@@ -171,7 +181,7 @@ PART 9-এ admin dual-input শেষে tools localized হবে →
 | ✅ **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
 | ✅ **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
 | 🔄 **9e** | LessonsManager — titleEn + contentEn + codeExampleEn (9e-1 ✅ API, 9e-2 UI বাকি) | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
-| **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| ✅ **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | **9g** | ChallengeForm — titleEn + descriptionEn | `components/admin/ChallengeForm.tsx` (৫.৯ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
 | **9h** | QuizForm — questionEn + explanationEn + textEn | `components/admin/QuizForm.tsx` (৩.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | **9i** | SiteSettingsForm — শুধু hero_en | `components/admin/SiteSettingsForm.tsx` (১৯.৭ KB) + settings API | ৩০ মিনিট | 🔴 বেশি |
