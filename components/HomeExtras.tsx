@@ -2,19 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react'
 import ReviewForm from './ReviewForm'
+import type { Dictionary } from '@/lib/i18n/dictionaries'
+import type { Locale } from '@/lib/i18n/config'
+import { localeHref } from '@/lib/i18n/link'
 
 /** ================================================================
  *  HomeExtras — home page-এর নতুন সেকশনগুলো
  *  (HeroSection-এর পরে বসে; Categories/Popular/Latest অপরিবর্তিত থাকে)
  *  header/menu কোনোভাবেই touch করে না।
+ *
+ *  সব UI লেখা dict.homeExtras থেকে আসে (Part 9k)। ROADMAP-ও dictionary-তে।
  * ================================================================ */
-
-const ROADMAP = [
-  { num: '১', title: 'ভিত্তি গড়ুন', desc: 'HTML, CSS, JavaScript — একদম শুরু থেকে।' },
-  { num: '২', title: 'ফ্রেমওয়ার্ক শিখুন', desc: 'React ও Next.js দিয়ে মডার্ন অ্যাপ বানান।' },
-  { num: '৩', title: 'ব্যাকএন্ড ও ডেটাবেজ', desc: 'API, Node.js, SQL — পূর্ণ স্ট্যাক দক্ষতা।' },
-  { num: '৪', title: 'পোর্টফোলিও + ইন্টারভিউ', desc: 'প্রজেক্ট বানিয়ে জব-রেডি পোর্টফোলিও সাজান।' },
-]
 
 export type ReviewItem = {
   id: string
@@ -46,6 +44,8 @@ function useReveal() {
 }
 
 export default function HomeExtras({
+  dict,
+  locale,
   reviews = [],
   reviewsCount = 0,
   reviewsAvg = 0,
@@ -53,6 +53,8 @@ export default function HomeExtras({
   faqItems = [],
   techItems = [],
 }: {
+  dict: Dictionary
+  locale: Locale
   reviews?: ReviewItem[]
   reviewsCount?: number
   reviewsAvg?: number
@@ -62,6 +64,13 @@ export default function HomeExtras({
 }) {
   const wrapRef = useReveal()
   const [openIdx, setOpenIdx] = useState<number | null>(null)
+  const t = dict.homeExtras
+  const ROADMAP = [
+    { num: t.roadmapNums[0], title: t.roadmap1Title, desc: t.roadmap1Desc },
+    { num: t.roadmapNums[1], title: t.roadmap2Title, desc: t.roadmap2Desc },
+    { num: t.roadmapNums[2], title: t.roadmap3Title, desc: t.roadmap3Desc },
+    { num: t.roadmapNums[3], title: t.roadmap4Title, desc: t.roadmap4Desc },
+  ]
 
   // reviews সেকশন admin থেকে বন্ধ থাকলে পুরো block render হবে না (হুকস সব উপরে, তাই নিরাপদ)
   const reviewsOff = !reviewsEnabled
@@ -120,7 +129,7 @@ export default function HomeExtras({
       {!techOff && (
       <section className="border-y border-slate-200/70 dark:border-slate-800 py-8 marquee-wrap">
         <p className="text-center text-[10px] uppercase tracking-[.25em] text-slate-500 dark:text-slate-400 mb-6">
-          যা শিখতে পারবেন
+          {t.marqueeLabel}
         </p>
         <div className="marquee-fade overflow-hidden">
           <div className="marquee-track text-lg font-bold text-slate-500 dark:text-slate-400">
@@ -131,12 +140,12 @@ export default function HomeExtras({
       </section>
       )}
 
-      {/* ================= BENTO — কেন DevSchool ================= */}
+      {/* ================= BENTO ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center max-w-2xl mx-auto mb-12 reveal">
-          <span className="text-[#15803D] dark:text-[#4ADE80] text-sm font-bold uppercase tracking-wider">কেন DevSchool</span>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">শেখার পুরো অভিজ্ঞতাটাই আলাদা</h2>
-          <p className="mt-3 text-slate-600 dark:text-slate-400">শুধু ভিডিও না — লিখুন, চালান, ভুল করুন, শিখুন।</p>
+          <span className="text-[#15803D] dark:text-[#4ADE80] text-sm font-bold uppercase tracking-wider">{t.bentoBadge}</span>
+          <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">{t.bentoTitle}</h2>
+          <p className="mt-3 text-slate-600 dark:text-slate-400">{t.bentoSubtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
@@ -146,9 +155,9 @@ export default function HomeExtras({
               <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] grid place-items-center mb-4">
                 <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6M16 6l6 6-6 6" /></svg>
               </div>
-              <h3 className="text-2xl font-bold">ব্রাউজারেই কোড চালান</h3>
+              <h3 className="text-2xl font-bold">{t.bento1Title}</h3>
               <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-md">
-                কিছু ইনস্টল করার দরকার নেই। Try It Yourself-এ ক্লিক করে সাথে সাথে HTML, CSS, JS চালিয়ে ফলাফল দেখুন।
+                {t.bento1Desc}
               </p>
             </div>
             <div className="mt-6 rounded-xl bg-[#0b0f0d] border border-white/10 p-4 font-mono text-sm text-[#4ADE80]">
@@ -161,8 +170,8 @@ export default function HomeExtras({
             <div className="w-12 h-12 rounded-2xl bg-amber-400/15 text-amber-600 dark:text-amber-300 grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20" /></svg>
             </div>
-            <h3 className="text-xl font-bold">প্রতিটা লেসনের কুইজ</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">পড়া শেষে ছোট কুইজ — যা শিখেছেন তা মাথায় গেঁথে যাবে।</p>
+            <h3 className="text-xl font-bold">{t.bento2Title}</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t.bento2Desc}</p>
           </div>
 
           {/* Small 2 */}
@@ -170,8 +179,8 @@ export default function HomeExtras({
             <div className="w-12 h-12 rounded-2xl bg-sky-400/15 text-sky-600 dark:text-sky-300 grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2 4 7l8 5 8-5-8-5ZM4 17l8 5 8-5M4 12l8 5 8-5" /></svg>
             </div>
-            <h3 className="text-xl font-bold">স্টেপ-বাই-স্টেপ ট্র্যাক</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">শূন্য থেকে জব-রেডি — সাজানো রোডম্যাপ ফলো করুন।</p>
+            <h3 className="text-xl font-bold">{t.bento3Title}</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t.bento3Desc}</p>
           </div>
 
           {/* Small 3 */}
@@ -179,17 +188,17 @@ export default function HomeExtras({
             <div className="w-12 h-12 rounded-2xl bg-purple-400/15 text-purple-600 dark:text-purple-300 grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
             </div>
-            <h3 className="text-xl font-bold">প্রগ্রেস ট্র্যাকিং</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">কতদূর এগোলেন, কোথায় আটকে আছেন — সব এক জায়গায়।</p>
+            <h3 className="text-xl font-bold">{t.bento4Title}</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t.bento4Desc}</p>
           </div>
         </div>
       </section>
 
-      {/* ================= TIMELINE — ৪ ধাপে জব-রেডি ================= */}
+      {/* ================= TIMELINE ================= */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="text-center mb-12 reveal">
-          <span className="text-[#15803D] dark:text-[#4ADE80] text-sm font-bold uppercase tracking-wider">রোডম্যাপ</span>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight">৪ ধাপে জব-রেডি</h2>
+          <span className="text-[#15803D] dark:text-[#4ADE80] text-sm font-bold uppercase tracking-wider">{t.timelineBadge}</span>
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{t.timelineTitle}</h2>
         </div>
         <div className="relative">
           <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#22C55E]/60 via-[#22C55E]/25 to-transparent" />
@@ -226,15 +235,15 @@ export default function HomeExtras({
       <section className="border-y border-slate-200/70 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <h2 className="text-center text-2xl sm:text-3xl font-extrabold tracking-tight mb-4 reveal">
-            লার্নাররা যা বলছেন
+            {t.reviewsTitle}
           </h2>
           <p className="text-center text-sm text-slate-500 dark:text-slate-400 mb-10 reveal">
-            {reviewsCount} জন শিক্ষার্থীর অভিজ্ঞতা
+            {t.reviewsCountTpl.replace('{count}', String(reviewsCount))}
           </p>
 
           {reviews.length === 0 ? (
             <p className="text-center text-slate-500 dark:text-slate-400 py-10">
-              এখনো কোনো অনুমোদিত রিভিউ নেই — প্রথম রিভিউটি আপনিই দিন! ✍️
+              {t.reviewsEmpty}
             </p>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-5 items-stretch">
@@ -248,7 +257,7 @@ export default function HomeExtras({
                   {'☆'.repeat(5 - Math.round(reviewsAvg))}
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  {reviewsCount} জনের রিভিউ
+                  {t.reviewsCountShortTpl.replace('{count}', String(reviewsCount))}
                 </div>
                 <div className="mt-5 flex flex-col gap-2">
                   {[5, 4, 3, 2, 1].map((star) => {
@@ -266,7 +275,7 @@ export default function HomeExtras({
                   })}
                 </div>
                 <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                  🛡️ সব রিভিউ যাচাই করা হয়েছে
+                  {t.reviewsVerifiedLabel}
                 </div>
               </div>
 
@@ -277,7 +286,7 @@ export default function HomeExtras({
                     type="button"
                     onClick={scrollPrev}
                     disabled={atStart}
-                    aria-label="আগের রিভিউ"
+                    aria-label={t.reviewsPrevAria}
                     className="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 grid place-items-center text-slate-600 dark:text-slate-300 hover:border-[#22C55E] hover:text-[#22C55E] disabled:opacity-30 disabled:cursor-not-allowed transition"
                   >
                     ‹
@@ -286,7 +295,7 @@ export default function HomeExtras({
                     type="button"
                     onClick={scrollNext}
                     disabled={atEnd}
-                    aria-label="পরের রিভিউ"
+                    aria-label={t.reviewsNextAria}
                     className="w-10 h-10 rounded-full border-2 border-[#22C55E]/50 bg-white dark:bg-slate-800 grid place-items-center text-xl font-bold text-[#22C55E] hover:bg-[#22C55E] hover:text-[#050806] hover:border-[#22C55E] disabled:opacity-25 disabled:cursor-not-allowed transition-all shadow-sm"
                   >
                     ›
@@ -338,7 +347,7 @@ export default function HomeExtras({
                       <button
                         key={i}
                         type="button"
-                        aria-label={'পেজ ' + (i + 1)}
+                        aria-label={t.reviewsPageAriaTpl.replace('{n}', String(i + 1))}
                         onClick={() => scrollToPage(i)}
                         className={
                           'h-1.5 rounded-full transition-all ' +
@@ -356,9 +365,9 @@ export default function HomeExtras({
         {/* ================= REVIEW FORM (CTA) — রিভিউয়ের সাথেই ================= */}
         <div className="max-w-3xl mx-auto mt-2 mb-2 reveal">
           <p className="text-center text-sm text-slate-500 dark:text-slate-400 mb-3">
-            এখনো আপনার মতামত দেননি?
+            {t.reviewsCtaPrompt}
           </p>
-          <ReviewForm />
+          <ReviewForm dict={dict.reviewForm} />
         </div>
       </section>
       )}
@@ -366,7 +375,7 @@ export default function HomeExtras({
       {/* ================= FAQ ================= */}
       {!faqOff && (
       <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <h2 className="text-center text-2xl sm:text-3xl font-extrabold tracking-tight mb-10 reveal">সাধারণ প্রশ্ন</h2>
+        <h2 className="text-center text-2xl sm:text-3xl font-extrabold tracking-tight mb-10 reveal">{t.faqTitle}</h2>
         <div className="space-y-3">
           {faqItems.map((item, i) => {
             const open = openIdx === i
@@ -396,13 +405,13 @@ export default function HomeExtras({
       {/* ================= FINAL CTA ================= */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 text-center">
         <div className="gradient-border bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-12 reveal">
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">আজই শুরু করুন — একদম ফ্রি</h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-3">কোনো কার্ড লাগবে না, কোনো ট্রায়াল নেই। শুধু শেখা।</p>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">{t.ctaTitle}</h2>
+          <p className="text-slate-600 dark:text-slate-400 mt-3">{t.ctaSubtitle}</p>
           <a
-            href="/tutorials"
+            href={localeHref(locale, '/tutorials')}
             className="inline-block mt-7 px-8 py-4 rounded-2xl bg-[#22C55E] text-[#04140a] font-bold hover:scale-105 hover:bg-[#4ADE80] transition"
           >
-            🚀 এখনই শুরু করুন
+            {t.ctaButton}
           </a>
         </div>
       </section>

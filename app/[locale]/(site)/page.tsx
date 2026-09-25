@@ -235,6 +235,8 @@ export default async function HomePage({
 
       {/* === নতুন সেকশনগুলো (marquee / bento / timeline / reviews / FAQ / CTA) === */}
       <HomeExtras
+        dict={dict}
+        locale={locale}
         reviews={reviews}
         reviewsCount={reviewsCount}
         reviewsAvg={reviewsAvg}
