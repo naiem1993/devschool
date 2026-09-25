@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { HeroContent } from '@/lib/hero-content'
+import { DEFAULT_HERO_EN, type HeroContent } from '@/lib/hero-content'
 import type { FooterContent } from '@/lib/footer-content'
 import type { ReviewsSettings } from '@/lib/reviews-content'
 import type { FaqSettings, FaqItem } from '@/lib/faq-content'
@@ -22,16 +22,21 @@ const SOCIAL_PLATFORMS = [
 
 export default function SiteSettingsForm({
   initialHero,
+  initialHeroEn,
   initialFooter,
   initialReviews,
   initialFaq,
 }: {
   initialHero: HeroContent
+  initialHeroEn: HeroContent | null
   initialFooter: FooterContent
   initialReviews: ReviewsSettings
   initialFaq: FaqSettings
 }) {
   const [hero, setHero] = useState<HeroContent>(initialHero)
+  // DB-তে 'hero_en' না থাকলে ডিফল্ট ইংরেজি hero বসিয়ে দিচ্ছি (কড়া required নিয়মে
+  // ইউজারকে প্রতি বার টাইপ করতে না হয়)
+  const [heroEn, setHeroEn] = useState<HeroContent>(initialHeroEn ?? DEFAULT_HERO_EN)
   const [footer, setFooter] = useState<FooterContent>(initialFooter)
   const [reviews, setReviews] = useState<ReviewsSettings>(initialReviews)
   const [faq, setFaq] = useState<FaqSettings>(initialFaq)
@@ -44,6 +49,11 @@ export default function SiteSettingsForm({
     setSaved(false)
   }
 
+  const updateHeroEn = (patch: Partial<HeroContent>) => {
+    setHeroEn((f) => ({ ...f, ...patch }))
+    setSaved(false)
+  }
+
   const updateFooter = (patch: Partial<FooterContent>) => {
     setFooter((f) => ({ ...f, ...patch }))
     setSaved(false)
@@ -51,6 +61,15 @@ export default function SiteSettingsForm({
 
   const updateStat = (i: number, v: string) => {
     setHero((f) => {
+      const next = [...f.statLabels]
+      next[i] = v
+      return { ...f, statLabels: next }
+    })
+    setSaved(false)
+  }
+
+  const updateStatEn = (i: number, v: string) => {
+    setHeroEn((f) => {
       const next = [...f.statLabels]
       next[i] = v
       return { ...f, statLabels: next }
@@ -86,7 +105,7 @@ export default function SiteSettingsForm({
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hero, footer, reviews, faq }),
+        body: JSON.stringify({ hero, heroEn, footer, reviews, faq }),
       })
       if (res.ok) {
         setSaved(true)
@@ -204,6 +223,120 @@ export default function SiteSettingsForm({
                 className="admin-input"
                 value={label}
                 onChange={(e) => updateStat(i, e.target.value)}
+                required
+              />
+            </Field>
+          ))}
+        </fieldset>
+      </section>
+
+      {/* ═══ HERO (ENGLISH) ═══ */}
+      <section className="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Hero Section (English) 🇬🇧</h2>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            এই লেখাগুলো /en হোমপেজে দেখাবে। ডিফল্ট ইংরেজি লেখা বসানো আছে — চাইলে বদলে দিন। সব ফিল্ড required — একটি খালি থাকলে সেভ হবে না।
+          </p>
+        </div>
+
+        <Field label="> Badge (top pill text)">
+          <input
+            className="admin-input"
+            value={heroEn.badge}
+            onChange={(e) => updateHeroEn({ badge: e.target.value })}
+            required
+          />
+        </Field>
+
+        <Field label="> Heading (white line)">
+          <input
+            className="admin-input"
+            value={heroEn.heading}
+            onChange={(e) => updateHeroEn({ heading: e.target.value })}
+            required
+          />
+        </Field>
+
+        <Field label="> Heading Highlight (green gradient line)">
+          <input
+            className="admin-input"
+            value={heroEn.headingHighlight}
+            onChange={(e) => updateHeroEn({ headingHighlight: e.target.value })}
+            required
+          />
+        </Field>
+
+        <Field label="> Subtitle">
+          <textarea
+            className="admin-input"
+            rows={3}
+            value={heroEn.subtitle}
+            onChange={(e) => updateHeroEn({ subtitle: e.target.value })}
+            required
+          />
+        </Field>
+
+        <Field label="> Search box placeholder">
+          <input
+            className="admin-input"
+            value={heroEn.searchPlaceholder}
+            onChange={(e) => updateHeroEn({ searchPlaceholder: e.target.value })}
+            required
+          />
+        </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <Field label="> Primary CTA Label">
+              <input
+                className="admin-input"
+                value={heroEn.cta1Label}
+                onChange={(e) => updateHeroEn({ cta1Label: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="> Primary CTA Href">
+              <input
+                className="admin-input"
+                value={heroEn.cta1Href}
+                onChange={(e) => updateHeroEn({ cta1Href: e.target.value })}
+                placeholder="/tutorials"
+                required
+              />
+            </Field>
+          </div>
+
+          <div className="space-y-4">
+            <Field label="> Secondary CTA Label">
+              <input
+                className="admin-input"
+                value={heroEn.cta2Label}
+                onChange={(e) => updateHeroEn({ cta2Label: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="> Secondary CTA Href">
+              <input
+                className="admin-input"
+                value={heroEn.cta2Href}
+                onChange={(e) => updateHeroEn({ cta2Href: e.target.value })}
+                placeholder="/challenges"
+                required
+              />
+            </Field>
+          </div>
+        </div>
+
+        <fieldset className="space-y-3 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <legend className="px-2 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Stat Labels (৪টা)
+          </legend>
+          {heroEn.statLabels.map((label, i) => (
+            <Field key={i} label={`> Stat ${i + 1} label`}>
+              <input
+                className="admin-input"
+                value={label}
+                onChange={(e) => updateStatEn(i, e.target.value)}
                 required
               />
             </Field>

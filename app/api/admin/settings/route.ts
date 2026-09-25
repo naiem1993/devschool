@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { heroSettingsSchema, footerSettingsSchema, reviewsSettingsSchema, faqSettingsSchema, validateBody } from '@/lib/validators'
 import { getSiteSettings } from '@/lib/site-settings'
-import { HERO_SETTINGS_KEY } from '@/lib/hero-content'
+import { HERO_SETTINGS_KEY, HERO_EN_SETTINGS_KEY } from '@/lib/hero-content'
 import { FOOTER_SETTINGS_KEY } from '@/lib/footer-content'
 import { REVIEWS_SETTINGS_KEY } from '@/lib/reviews-content'
 import { FAQ_SETTINGS_KEY } from '@/lib/faq-content'
@@ -18,6 +18,10 @@ export async function PUT(req: NextRequest) {
 
   const heroRes = validateBody(heroSettingsSchema, body?.hero)
   if (heroRes.error) return NextResponse.json({ error: 'hero: ' + heroRes.error }, { status: 400 })
+
+  // ইংরেজি hero — required (admin form থেকে খালি এলে 400)
+  const heroEnRes = validateBody(heroSettingsSchema, body?.heroEn)
+  if (heroEnRes.error) return NextResponse.json({ error: 'heroEn: ' + heroEnRes.error }, { status: 400 })
 
   const footerRes = validateBody(footerSettingsSchema, body?.footer)
   if (footerRes.error) return NextResponse.json({ error: 'footer: ' + footerRes.error }, { status: 400 })
@@ -36,6 +40,17 @@ export async function PUT(req: NextRequest) {
         key: HERO_SETTINGS_KEY,
         value: heroRes.data as any,
         description: 'Homepage hero section content',
+      },
+    })
+
+    // ইংরেজি hero — /en হোমপেজের জন্য
+    await prisma.siteSettings.upsert({
+      where: { key: HERO_EN_SETTINGS_KEY },
+      update: { value: heroEnRes.data as any },
+      create: {
+        key: HERO_EN_SETTINGS_KEY,
+        value: heroEnRes.data as any,
+        description: 'Homepage hero section content (English)',
       },
     })
 
@@ -76,6 +91,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       hero: heroRes.data,
+      heroEn: heroEnRes.data,
       footer: footerRes.data,
       reviews: reviewsRes.data,
       faq: faqRes.data,

@@ -87,18 +87,21 @@ export async function getFaqSettings(): Promise<FaqSettings> {
 /** hero + footer + reviews + faq একসাথে (admin form/API-র জন্য)। */
 export async function getSiteSettings(): Promise<{
   hero: HeroContent
+  heroEn: HeroContent | null
   footer: FooterContent
   reviews: ReviewsSettings
   faq: FaqSettings
 }> {
-  const [hero, footer, reviews, faq] = await Promise.all([
+  const [hero, heroEn, footer, reviews, faq] = await Promise.all([
     // admin সবসময় বাংলায় — তাই স্পষ্টভাবে 'bn' পাস করছি।
     // getHeroSettings('bn') ব্যাবহারিকভাবে কখনো null দেয় না; তবুও TS-নিরাপদ
     // রাখতে ?? DEFAULT_HERO_BN বসানো হলো।
     getHeroSettings('bn').then((h) => h ?? DEFAULT_HERO_BN),
+    // ইংরেজি hero — DB-তে 'hero_en' না থাকলে null (admin form-এ DEFAULT_HERO_EN দেখাবে)
+    getHeroSettings('en'),
     getFooterSettings(),
     getReviewsSettings(),
     getFaqSettings(),
   ])
-  return { hero, footer, reviews, faq }
+  return { hero, heroEn, footer, reviews, faq }
 }

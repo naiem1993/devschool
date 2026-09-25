@@ -81,11 +81,11 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9h সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9i সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9h সব শেষ; tsc ০ error। পরবর্তী: **9i (SiteSettingsForm)** বা **Part 10 (Seed/content workflow)**।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9i সব শেষ; tsc ০ error। পরবর্তী: **Part 10 (Seed/content workflow)**।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
@@ -178,6 +178,28 @@ model Tutorial {
 
 **সব ধাপে:** `.bak` ব্যাকআপ নেওয়া হয়েছে; `npx tsc --noEmit` ০ error।
 
+### ✅ PART 9i — SiteSettingsForm dual-input (English hero) (সম্পূর্ণ)
+
+**⚠️ পার্থক্য:** এটা ইতিমধ্যে-সেট-আপ করা hero_en key ব্যবহার করেছে (Part 7.5b-তে যুক্ত হয়েছিল)। শুধু admin form + API + settings page-এ যোগ করা লাগল।
+
+**ইউজারের সিদ্ধান্ত (২০২৬-০৯-২৫):**
+- **নিয়ম:** সেভ করার আগে ইংরেজি বক্স ভরতেই হবে (কড়া required)।
+- **কিন্তু:** form খোলার সময়ে ইংরেজি বক্স আগে থেকেই `DEFAULT_HERO_EN` দিয়ে ভরা থাকবে — যাতে প্রতি বার টাইপ করতে না হয়।
+
+**committed (৪ ফাইল বদল + enbn.md):**
+- `lib/site-settings.ts` — `getSiteSettings()` return-এ `heroEn: HeroContent | null` যোগ (getHeroSettings('en') থেকে); আসল bn hero পুরনো আচরণেই।
+- `app/(admin)/admin/settings/page.tsx` (২৩ লাইন) — `initialHeroEn={heroEn}` prop পাঠানো।
+- `app/api/admin/settings/route.ts` — `heroSettingsSchema` দিয়ে `body.heroEn` validate; খালি/invalid হলে 400; সফল হলে `HERO_EN_SETTINGS_KEY` (='hero_en') upsert; response-এ `heroEn` যোগ।
+- `components/admin/SiteSettingsForm.tsx` (৫২১ → ~৬৪০ লাইন) — `initialHeroEn` prop; `heroEn` state (`initialHeroEn ?? DEFAULT_HERO_EN`); `updateHeroEn`, `updateStatEn` helper; বাংলা hero-র নিচে আলাদা "Hero Section (English) 🇬🇧" সেকশন — সব ইনপুটে `required`; POST body-তে `heroEn` যোগ।
+- `heroSettingsSchema` / `HERO_EN_SETTINGS_KEY` / `DEFAULT_HERO_EN` — সব আগে থেকেই ছিল, বদলাতে হয়নি।
+- Public site-এর কোনো কোড ছোঁয়া হয়নি। ফুটার/রিভিউ/FAQ অপরিবর্তিত।
+- `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
+**ফলাফল:**
+- Admin-এর Site Settings খুললে বাংলা hero-র নিচে ইংরেজি hero বক্স দেখা যাবে (ডিফল্ট লেখা ভরা, সব required)।
+- Save চাপলে বাংলা + ইংরেজি দুটোই DB-তে যাবে।
+- `/en` পেজে এখন (admin-এ সেভ করার পরে) ইংরেজি hero দেখাবে — "Content coming soon" আর দেখাবে না।
+
 ### 🎉 PART 9 — চূড়ান্ত সারসংক্ষেপ
 
 | ধাপ | ফাইল মোট | অবস্থা |
@@ -190,6 +212,7 @@ model Tutorial {
 | 9f | ReferenceForm + validators | ✅ |
 | 9g | ChallengeForm + 2 API | ✅ |
 | 9h | QuizForm + 2 API + edit page | ✅ |
+| 9i | SiteSettingsForm (English hero) + settings API + page + site-settings | ✅ |
 
 **Part 9-এর পরে bn=en অবস্থা:**
 - Tutorial title: required | description: optional
@@ -199,6 +222,9 @@ model Tutorial {
 - Reference title: required | description/syntax/example: optional
 - Challenge title: required | description: required
 - Quiz question: required | option text: required | explanation: optional
+- Site hero (English): required (ডিফল্ট ইংরেজি লেখা আগে থেকে ভরা)
+- Site hero (Bangla): required (আগের মতোই)
+- Footer / Reviews / FAQ: ইংরেজি এখনো যোগ হয়নি — আলাদা PART-এ হবে
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 
