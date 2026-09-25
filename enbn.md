@@ -82,10 +82,47 @@ model Tutorial {
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9j সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
-| 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
+| 10 | Seed / content workflow | 🟡 **চলমান** — 10a + 10c ✅ সম্পন্ন (২০২৬-০৯-২৫); tsc ০ error, npm run build সফল (৫৪ পেজ)। বাকি: 10d (ইংরেজি `.en.md` ফাইল — ইউজার পরে লিখবেন) + 10e (seeder চালানো + DB যাচাই) |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9j সব শেষ; tsc ০ error। পরবর্তী: **Part 10 (Seed/content workflow)**।
+**বর্তমান অবস্থান:** **PART 10a + 10c ✅ সম্পন্ন (২০২৬-০৯-২৫)** — নতুন seeder `.en.md` সাপোর্ট + safe prune সহ। tsc ০ error, build সফল। পরবর্তী: **Part 10d — `.en.md` ফাইল লেখা** (ইউজার পরে করবেন), তারপর **10e — seeder চালানো + DB যাচাই**।
+
+---
+
+### ✅ PART 10a + 10c — Bilingual seeder + safe prune (সম্পূর্ণ — ২০২৬-০৯-২৫)
+
+**সমস্যা যা ঠিক করা হলো:**
+- পুরনো `scripts/seed-course.ts` শুধু `chapter-NN.md` পড়ত এবং `*En` ঘরে বাংলা কপি করত (Part 9-এর নিয়ম ভাঙত)।
+- `.md`-তে নেই এমন lesson সবসময় auto-delete হতো (অ্যাডমিন-এ হাতে করা কাজ হারানোর ঝুঁকি)।
+
+**ইউজারের সিদ্ধান্ত (২০২৬-০৯-২৫):**
+- **Slug সবসময় ইংরেজিতে** — বাংলা `.md` থেকে slug mapping table-এ; ইংরেজি ফাইলে position-ভিত্তিক pairing।
+- `.en.md` না থাকলে `*En = null` (strict no-fallback)।
+- Prune **opt-in** — ডিফল্টে কিছু মুছবে না; `--prune` দিলে মুছবে।
+
+**যেই ফাইল বদলেছে:**
+- `scripts/seed-course.ts.bak` — ব্যাকআপ নেওয়া হয়েছে।
+- `scripts/seed-course.ts` — সম্পূর্ণ rewrite:
+  - `CourseConfig`-এ `titleBn` + `titleEn` + `descriptionBn` + `descriptionEn` (আলাদা)।
+  - নতুন `parseMarkdown(md, codeFence)` — Bn ও En দুই ফরম্যাট সাপোর্ট (লক্ষ্য / Goal; ৪. / 4. Code Example)।
+  - `seedChapter(course, filename, prune)` — `.md` + `.en.md` (থাকলে); lesson count mismatch হলে error।
+  - Position-ভিত্তিক pairing — En ফাইলের heading-এ slug mapping লাগে না, শুধু content আসে।
+  - `--prune` flag; ডিফল্টে অপ্রয়োজনীয় lesson DB-তে থাকবে (লগ: `kept — use --prune to remove`)।
+
+**কমান্ড:**
+```
+npm run seed:course                → সব course, কিছু মুছবে না
+npm run seed:course -- css         → শুধু css
+npm run seed:course -- html 01     → html chapter-01
+npm run seed:course -- --prune     → অপ্রয়োজনীয় lesson/chapter মুছবে
+```
+
+**যাচাই:** `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
+**⚠️ এখনো করা হয়নি:**
+- `.en.md` ফাইল লেখা (Part 10d) — ইউজার পরে নিজে করবেন।
+- seeder চালানো ও DB যাচাই (Part 10e) — কনটেন্ট লেখা শেষ হলে।
+- পুরনো DB-রেকর্ড যেসব `*En` = বাংলা-copy — নতুন seeder চালালে `null` হবে (ইউজার এই re-seed অনুমোদন করেছেন শুধু seeder চালানোর সময়)।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
