@@ -81,11 +81,36 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট | ⏸️ শুরু হয়নি |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e-1 ✅ |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 8 (SEO) ✅ সম্পন্ন (8b + 8c.2 + 8e + 8f)** — tsc ০ error, npm run build সফল (৫৪ পেজ)।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e-1 ✅ (API)**। পরবর্তী: **9e-2 (UI)**।
+
+### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
+
+**9d-1 — API routes (committed `cae28b9`):**
+- `app/api/admin/tutorials/[id]/chapters/route.ts` — POST-এ `titleEn/contentEn/codeExampleEn` গ্রহণ
+- `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` — PATCH-এ ৩টা `*En` if-block
+- .bak ব্যাকআপ নেওয়া হয়েছে; পুরনো `*Bn` অপরিবর্তিত
+
+**9d-2 — UI (committed `d1e4222`):**
+- `app/(admin)/admin/tutorials/[id]/chapters/page.tsx` — `chapterRows`-এ ৩টা `*En` DB থেকে আনা
+- `components/admin/ChaptersManager.tsx` — `ChapterRow` type + `ChapterCard` (draft/save/JSX) + `AddChapterForm` (state/submit/reset/JSX)-এ ৩টা ইনপুট
+- নতুন "English (optional)" box **বাংলার নিচে** — dashed border, same design
+- `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
+### 🔄 PART 9e — LessonsManager dual-input (চলছে)
+
+**9e-1 — API routes (committed `9ae852e`):**
+- `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` — POST-এ `titleEn/contentEn/codeExampleEn` গ্রহণ
+- `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/[lid]/route.ts` — PATCH-এ ৩টা `*En` if-block
+- D6a slug-sync (first lesson → chapter slug) অপরিবর্তিত; DELETE + PIN verify অপরিবর্তিত
+- `npx tsc --noEmit` ০ error ✅
+
+**9e-2 — UI (বাকি):**
+- `components/admin/LessonsManager.tsx` — `LessonRow` type + `LessonItem` (draft/save/JSX) + `AddLessonForm`-এ ৩টা ইনপুট
+- `app/(admin)/admin/tutorials/[id]/chapters/page.tsx` — `lessons.map()`-এ ৩টা `*En` DB থেকে আনা
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 
@@ -141,8 +166,8 @@ PART 9-এ admin dual-input শেষে tools localized হবে →
 | ✅ **9a** | Foundation: Validators-এ `*En` ফিল্ড | `lib/validators.ts` (~৩১০ লাইন) | ২০ মিনিট | 🟡 মাঝারি |
 | ✅ **9b** | TutorialForm — titleEn + descriptionEn | `components/admin/TutorialForm.tsx` (৫.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | ✅ **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
-| **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
-| **9e** | LessonsManager — titleEn + contentEn + codeExampleEn | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ১ API route | ৩০ মিনিট | 🟡 মাঝারি |
+| ✅ **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
+| 🔄 **9e** | LessonsManager — titleEn + contentEn + codeExampleEn (9e-1 ✅ API, 9e-2 UI বাকি) | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
 | **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | **9g** | ChallengeForm — titleEn + descriptionEn | `components/admin/ChallengeForm.tsx` (৫.৯ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
 | **9h** | QuizForm — questionEn + explanationEn + textEn | `components/admin/QuizForm.tsx` (৩.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
