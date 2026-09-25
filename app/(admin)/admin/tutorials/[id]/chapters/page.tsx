@@ -58,9 +58,12 @@ export default async function ChaptersPage({
     lessons: c.lessons.map((l) => ({
       id: l.id,
       title: l.titleBn,
+      titleEn: l.titleEn,
       slug: l.slug,
       content: l.contentBn,
+      contentEn: l.contentEn,
       codeExample: l.codeExampleBn,
+      codeExampleEn: l.codeExampleEn,
       sortOrder: l.sortOrder,
     })),
   }))
