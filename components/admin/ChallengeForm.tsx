@@ -19,7 +19,9 @@ export default function ChallengeForm({
   const [form, setForm] = useState({
     tutorialId: initial?.tutorialId || tutorials[0]?.id || '',
     titleBn: initial?.titleBn || '',
+    titleEn: initial?.titleEn || '',
     descriptionBn: initial?.descriptionBn || '',
+    descriptionEn: initial?.descriptionEn || '',
     starterCode: initial?.starterCode || '',
     solution: initial?.solution || '',
     difficulty: initial?.difficulty || 'Easy',
@@ -72,6 +74,22 @@ export default function ChallengeForm({
         <label className="admin-label">&gt; Description</label>
         <textarea className="admin-input" rows={3} value={form.descriptionBn} onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))} required />
       </div>
+
+      {/* PART 9g — ইংরেজি ভার্সন (optional) */}
+      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
+        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+          English (optional — /en সাইটে দেখাবে)
+        </p>
+        <div>
+          <label className="admin-label">&gt; Title (EN)</label>
+          <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Reverse a string" />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Description (EN)</label>
+          <textarea className="admin-input" rows={3} value={form.descriptionEn} onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))} />
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="admin-label">&gt; Starter Code</label>
