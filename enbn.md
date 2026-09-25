@@ -124,6 +124,10 @@ npm run seed:course -- --prune     → অপ্রয়োজনীয় less
 - seeder চালানো ও DB যাচাই (Part 10e) — কনটেন্ট লেখা শেষ হলে।
 - পুরনো DB-রেকর্ড যেসব `*En` = বাংলা-copy — নতুন seeder চালালে `null` হবে (ইউজার এই re-seed অনুমোদন করেছেন শুধু seeder চালানোর সময়)।
 
+### ✅ PART 10d — ইংরেজি `.en.md` ফাইল (সম্পূর্ণ — ২০২৬-০৯-২৫)
+
+৭টা নতুন ফাইল তৈরি — `content/html/chapter-01.en.md` + `chapter-02.en.md`; `content/css/chapter-01.en.md` থেকে `chapter-05.en.md` পর্যন্ত। বাংলা chapter-এর হুবহু ৮-section কাঠামো, শুধু ভাষা ইংরেজি। Slug সবসময় ইংরেজি (position-ভিত্তিক pairing)। ⚠️ এখনো করা হয়নি: Part 10e (seeder চালানো + DB যাচাই)।
+
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
 **9d-1 — API routes (committed `cae28b9`):**
