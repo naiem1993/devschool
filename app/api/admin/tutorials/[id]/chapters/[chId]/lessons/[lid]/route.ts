@@ -45,6 +45,11 @@ export async function PATCH(
     if (!t) return NextResponse.json({ error: 'title খালি রাখা যাবে না' }, { status: 400 })
     data.titleBn = t
   }
+  if (typeof body?.titleEn === 'string') {
+    const t = body.titleEn.trim()
+    if (!t) return NextResponse.json({ error: 'ইংরেজি title খালি রাখা যাবে না (জোড়া নিয়ম)' }, { status: 400 })
+    data.titleEn = t
+  }
   if (typeof body?.slug === 'string') {
     const s = normSlug(body.slug)
     if (!s) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
@@ -63,7 +68,9 @@ export async function PATCH(
     data.titleEn = body.titleEn ? String(body.titleEn).trim() : null
   }
   if ('contentEn' in (body ?? {})) {
-    data.contentEn = body.contentEn != null && String(body.contentEn).trim() !== '' ? String(body.contentEn) : null
+    const c = body.contentEn != null ? String(body.contentEn).trim() : ''
+    if (!c) return NextResponse.json({ error: 'ইংরেজি content খালি রাখা যাবে না (জোড়া নিয়ম)' }, { status: 400 })
+    data.contentEn = c
   }
   if ('codeExampleEn' in (body ?? {})) {
     data.codeExampleEn = body.codeExampleEn ? String(body.codeExampleEn).trim() : null

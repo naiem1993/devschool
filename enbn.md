@@ -81,11 +81,11 @@ model Tutorial {
 | 7 | হেডারে EN / বাং বাটন | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ); Server Action (Plan B) দিয়ে LanguageSwitcher |
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
-| 9 | Admin panel-এ দুই ভাষার ইনপুট | 🔄 চলছে — 9a, 9b, 9c, 9d, 9e, 9f, 9g ✅ |
+| 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9h সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
 | 10 | Seed / content workflow | ⏸️ শুরু হয়নি |
 | 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
 
-**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) 🔄 চলছে** — 9a + 9b + 9c + **9d ✅ সম্পূর্ণ** + **9e ✅ সম্পূর্ণ** + **9f ✅ সম্পূর্ণ** + **9g ✅ সম্পূর্ণ**। পরবর্তী: **9h (QuizForm)**।
+**বর্তমান অবস্থান:** **PART 9 (Admin dual-input) ✅ সম্পন্ন (২০২৬-০৯-২৫)** — 9a-9h সব শেষ; tsc ০ error। পরবর্তী: **9i (SiteSettingsForm)** বা **Part 10 (Seed/content workflow)**।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
@@ -135,6 +135,70 @@ model Tutorial {
 - `components/admin/ChallengeForm.tsx` (১২২ → ১৪০ লাইন) — `form` state-এ ২টা `*En` + নতুন "English (optional)" box (বাংলা Description-এর পরে, Starter Code-এর আগে); **Test Cases UI অপরিবর্তিত**
 - `app/(admin)/admin/challenges/[id]/edit/page.tsx` (৪০ → ৪২ লাইন) — `initial`-এ ২টা `*En`
 - `npx tsc --noEmit` ০ error ✅; `npm run build` সফল (৫৪ পেজ) ✅
+
+### 🔴 PART 9 — সংশোধন (২০২৬-০৯-২৫): bn=en জোড়া নিয়ম
+
+**ইউজারের নতুন সিদ্ধান্ত:** সব কনটেন্টে bn + en জোড়ায় থাকবে। যেখানে বাংলা required, ইংরেজিও required। যেখানে বাংলা optional, ইংরেজিও optional।
+
+**যা করা হয়েছে (ধাপে ধাপে, প্রতিটা ধাপে tsc পাস):**
+
+**9d-fix — ChaptersManager (required শুধু Title EN):**
+- `components/admin/ChaptersManager.tsx` — Edit + Add দুই form-এ `titleEn` required; box text "English (required)"
+- `app/api/admin/tutorials/[id]/chapters/route.ts` (POST) + `[chId]/route.ts` (PATCH) — `titleEn` empty হলে 400
+- (Content EN + Code EN optional — bn-এর মতো, তাই অপরিবর্তিত)
+
+**9e-fix — LessonsManager (required Title EN + Content EN):**
+- `components/admin/LessonsManager.tsx` — `LessonItem.save()` + `AddLessonForm.submit()`-এ `titleEn` + `contentEn` required চেক
+- `app/api/.../lessons/route.ts` (POST) — `titleEn` + `contentEn` empty হলে 400
+- `app/api/.../lessons/[lid]/route.ts` (PATCH) — `contentEn` empty হলে 400
+- (Code example EN optional)
+
+**9f-fix — ReferenceForm (required Title EN):**
+- `components/admin/ReferenceForm.tsx` — `titleEn` required attr; `onSubmit`-এ চেক; box text "English (required)"
+- `lib/validators.ts` → `createReferenceSchema.titleEn` থেকে `.optional()` সরানো
+- `updateReferenceSchema` অপরিবর্তিত (partial update — খালি পাঠালে min(2) reject করে)
+
+**9g-fix — ChallengeForm (required Title EN + Description EN):**
+- `components/admin/ChallengeForm.tsx` — `titleEn` + `descriptionEn` required attr; `onSubmit`-এ চেক
+- `app/api/admin/challenges/route.ts` (POST) — ৫টা ফিল্ড required চেক
+- `app/api/admin/challenges/[id]/route.ts` (PUT) — `testCase.deleteMany`-এর **আগে** required চেক (খালি হলে ডেটা মুছবে না)
+- Test Cases UI ছোঁয়া হয়নি ✅
+
+**9h — QuizForm (নতুন ইংরেজি ঘর + required):**
+- `components/admin/QuizForm.tsx` — `Option` type-এ `textEn`; form state-এ `questionEn`+`explanationEn`; English box (Question EN required, Explanation EN optional); প্রতি option-এ BN+EN দুটো ইনপুট
+- `app/api/admin/quiz/route.ts` (POST) — `questionEn` + per-option `textEn` required চেক
+- `app/api/admin/quiz/[id]/route.ts` (PUT) — একই চেক + DB সেভ
+- `app/(admin)/admin/quizzes/[id]/edit/page.tsx` — `initial`-এ `questionEn/explanationEn/textEn`
+
+**💡 পার্থক্য মনে রাখার জন্য:**
+- Manual validation (destructuring): 9d, 9e, 9g, 9h — API-তে হাতে চেক বসাতে হয়েছে
+- Zod schema: 9f (Reference) — শুধু validators.ts-এ `.optional()` সরালেই হয়
+
+**⚠️ পুরনো ডেটার সতর্কতা:** যেসব রেকর্ডে `*En` null — re-save করতে গেলে ইংরেজি না লিখলে সেভ হবে না। Site live-এর আগে হাতে ঠিক করতে হবে।
+
+**সব ধাপে:** `.bak` ব্যাকআপ নেওয়া হয়েছে; `npx tsc --noEmit` ০ error।
+
+### 🎉 PART 9 — চূড়ান্ত সারসংক্ষেপ
+
+| ধাপ | ফাইল মোট | অবস্থা |
+|-----|---------|-------|
+| 9a | validators.ts | ✅ |
+| 9b | TutorialForm + 2 API | ✅ |
+| 9c | GroupsManager + 2 API | ✅ |
+| 9d | ChaptersManager + 2 API | ✅ |
+| 9e | LessonsManager + 2 API | ✅ |
+| 9f | ReferenceForm + validators | ✅ |
+| 9g | ChallengeForm + 2 API | ✅ |
+| 9h | QuizForm + 2 API + edit page | ✅ |
+
+**Part 9-এর পরে bn=en অবস্থা:**
+- Tutorial title: required | description: optional
+- Group title: required
+- Chapter title: required | content/codeExample: optional
+- Lesson title: required | content: required | codeExample: optional
+- Reference title: required | description/syntax/example: optional
+- Challenge title: required | description: required
+- Quiz question: required | option text: required | explanation: optional
 
 ### ✅ PART 8 — SEO (hreflang, canonical, sitemap)
 
@@ -191,10 +255,10 @@ PART 9-এ admin dual-input শেষে tools localized হবে →
 | ✅ **9b** | TutorialForm — titleEn + descriptionEn | `components/admin/TutorialForm.tsx` (৫.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | ✅ **9c** | GroupsManager — titleEn | `components/admin/GroupsManager.tsx` (৮.৬ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
 | ✅ **9d** | ChaptersManager — titleEn + contentEn + codeExampleEn | `components/admin/ChaptersManager.tsx` (১৬.৭ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
-| 🔄 **9e** | LessonsManager — titleEn + contentEn + codeExampleEn (9e-1 ✅ API, 9e-2 UI বাকি) | `components/admin/LessonsManager.tsx` (১৪.৫ KB) + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
+| ✅ **9e** | LessonsManager — titleEn + contentEn (required), codeExampleEn (optional) | `components/admin/LessonsManager.tsx` + ২ API route | ৩০ মিনিট | 🟡 মাঝারি |
 | ✅ **9f** | ReferenceForm — titleEn + descriptionEn + syntaxEn + exampleEn | `components/admin/ReferenceForm.tsx` (৪.২ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
 | ✅ **9g** | ChallengeForm — titleEn + descriptionEn | `components/admin/ChallengeForm.tsx` (৫.৯ KB) + ২ API route | ১৫ মিনিট | 🟢 কম |
-| **9h** | QuizForm — questionEn + explanationEn + textEn | `components/admin/QuizForm.tsx` (৩.৮ KB) + ২ API route | ২০ মিনিট | 🟢 কম |
+| ✅ **9h** | QuizForm — questionEn + textEn (required), explanationEn (optional) | `components/admin/QuizForm.tsx` + ২ API route | ২০ মিনিট | 🟢 কম |
 | **9i** | SiteSettingsForm — শুধু hero_en | `components/admin/SiteSettingsForm.tsx` (১৯.৭ KB) + settings API | ৩০ মিনিট | 🔴 বেশি |
 | **9j** | Final verification — সব form হাতে test + tsc + build + enbn.md আপডেট | — | ২০ মিনিট | 🟢 কম |
 
@@ -231,10 +295,25 @@ PART 9-এ admin dual-input শেষে tools localized হবে →
     titleEn, descriptionEn — সব optional
 
 - Quiz schemas:
-    questionEn, explanationEn, textEn — সব optional
+    questionEn: required, textEn: required (প্রতি option),
+    explanationEn: optional
 ```
 
-**গুরুত্বপূর্ণ:** সব `*En` ফিল্ড **optional** — পুরনো `*Bn` ফিল্ড অপরিবর্তিত থাকবে। কোনো required ফিল্ড ভাঙা যাবে না।
+**🔴 নতুন নিয়ম (২০২৬-০৯-২৫): bn=en — জোড়া নিয়ম**
+
+ইংরেজি ফিল্ডগুলো বাংলার নিয়মেই চলবে:
+- **যেখানে bn required → en-ও required:**
+  Tutorial title, Chapter title, Lesson title+content,
+  Reference title, Challenge title+description,
+  Quiz question + option text
+- **যেখানে bn optional → en-ও optional:**
+  Tutorial description, Chapter content/codeExample,
+  Lesson codeExample, Reference description/syntax/example,
+  Quiz explanation
+
+পুরনো `*Bn` ফিল্ড কখনো ভাঙা যাবে না।
+
+**⚠️ সতর্কতা:** পুরনো ডেটা যেসব রেকর্ডে `*En` null — সেগুলো admin panel-এ re-save করলে ইংরেজি না দিলে সেভ হবে না। Site live-এর আগে হাতে ঠিক করতে হবে।
 
 ### 📋 প্রতিটা sub-part-এর জন্য AI-কে যা দিতে হবে
 

@@ -17,6 +17,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params
   try {
     const { titleBn, titleEn, descriptionBn, descriptionEn, starterCode, solution, difficulty, points, testCases } = await req.json()
+    if (!titleBn || !titleEn || !descriptionBn || !descriptionEn) {
+      return NextResponse.json({ error: 'titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
+    }
     await prisma.testCase.deleteMany({ where: { challengeId: id } })
     const c = await prisma.codeChallenge.update({
       where: { id },

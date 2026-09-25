@@ -176,6 +176,12 @@ function LessonItem({
     if (!draft.title.trim() || !draft.content.trim() || !draft.slug.trim()) {
       return onFlash('title, slug, content — সব দরকার')
     }
+    if (!draft.titleEn.trim()) {
+      return onFlash('ইংরেজি title দরকার (জোড়া নিয়ম)')
+    }
+    if (!draft.contentEn.trim()) {
+      return onFlash('ইংরেজি content দরকার (জোড়া নিয়ম)')
+    }
     setSaving(true)
     const base = `/api/admin/tutorials/${tutorialId}/chapters/${chapterId}/lessons/${lesson.id}`
     try {
@@ -292,7 +298,7 @@ function LessonItem({
           {/* PART 9e — ইংরেজি ভার্সন (optional) */}
           <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
             <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-              English (optional — /en সাইটে দেখাবে)
+              English (required — /en সাইটে দেখাবে)
             </p>
             <div>
               <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
@@ -301,6 +307,7 @@ function LessonItem({
               <input
                 value={draft.titleEn}
                 onChange={(e) => setDraft({ ...draft, titleEn: e.target.value })}
+                required
                 placeholder="e.g. HTML Paragraphs"
                 className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
               />
@@ -366,6 +373,12 @@ function AddLessonForm({
     e.preventDefault()
     if (!title.trim() || !slug.trim() || !content.trim()) {
       return onDone('title, slug, content — সব দরকার')
+    }
+    if (!titleEn.trim()) {
+      return onDone('ইংরেজি title দরকার (জোড়া নিয়ম)')
+    }
+    if (!contentEn.trim()) {
+      return onDone('ইংরেজি content দরকার (জোড়া নিয়ম)')
     }
     setSaving(true)
     const base = `/api/admin/tutorials/${tutorialId}/chapters/${chapterId}/lessons`
@@ -459,7 +472,7 @@ function AddLessonForm({
       {/* PART 9e — ইংরেজি ভার্সন (optional) */}
       <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
         <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (optional — /en সাইটে দেখাবে)
+          English (required — /en সাইটে দেখাবে)
         </p>
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
@@ -468,6 +481,7 @@ function AddLessonForm({
           <input
             value={titleEn}
             onChange={(e) => setTitleEn(e.target.value)}
+             required
             placeholder="e.g. HTML Paragraphs"
             className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
           />

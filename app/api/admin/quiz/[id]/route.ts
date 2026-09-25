@@ -16,17 +16,26 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { questionBn, explanationBn, orderIndex, options } = await req.json()
+    const { questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
+    if (!questionBn || !questionEn || !Array.isArray(options)) {
+      return NextResponse.json({ error: 'questionBn, questionEn, options — সব দরকার' }, { status: 400 })
+    }
+    if (!options.every((o: any) => o.textEn && String(o.textEn).trim())) {
+      return NextResponse.json({ error: 'প্রতিটি option-এর ইংরেজি text দরকার (জোড়া নিয়ম)' }, { status: 400 })
+    }
     await prisma.quizOption.deleteMany({ where: { questionId: id } })
     const q = await prisma.quizQuestion.update({
       where: { id },
       data: {
         questionBn,
+        questionEn: String(questionEn).trim(),
         explanationBn,
+        explanationEn: explanationEn ? String(explanationEn).trim() : null,
         orderIndex,
         options: {
           create: options.map((o: any, i: number) => ({
             textBn: o.textBn,
+            textEn: String(o.textEn).trim(),
             isCorrect: !!o.isCorrect,
             optionOrder: i,
           })),

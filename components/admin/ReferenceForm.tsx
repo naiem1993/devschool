@@ -36,6 +36,10 @@ export default function ReferenceForm({
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!form.titleEn.trim()) {
+      setError('ইংরেজি title দরকার (জোড়া নিয়ম)')
+      return
+    }
     setLoading(true)
     setError('')
     const payload = {
@@ -90,11 +94,11 @@ export default function ReferenceForm({
       {/* PART 9f — ইংরেজি ভার্সন (optional) */}
       <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
         <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (optional — /en সাইটে দেখাবে)
+          English (required — /en সাইটে দেখাবে)
         </p>
         <div>
           <label className="admin-label">&gt; Title (EN)</label>
-          <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Array map" />
+          <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Array map" required />
         </div>
         <div>
           <label className="admin-label">&gt; Description (EN)</label>

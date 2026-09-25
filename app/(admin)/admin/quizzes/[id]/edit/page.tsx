@@ -23,9 +23,11 @@ export default async function EditQuizPage({ params }: { params: { id: string } 
             id: q.id,
             tutorialId: q.tutorialId,
             questionBn: q.questionBn,
+            questionEn: q.questionEn || '',
             explanationBn: q.explanationBn || '',
+            explanationEn: q.explanationEn || '',
             orderIndex: q.orderIndex,
-            options: q.options.map((o) => ({ textBn: o.textBn, isCorrect: o.isCorrect })),
+            options: q.options.map((o) => ({ textBn: o.textBn, textEn: o.textEn || '', isCorrect: o.isCorrect })),
           }}
           tutorials={tutorials.map((t) => ({ id: t.id, title: t.titleBn }))}
           mode="edit"

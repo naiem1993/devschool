@@ -4,8 +4,8 @@ import prisma from '@/lib/prisma'
 export async function POST(req: NextRequest) {
   try {
     const { tutorialId, titleBn, titleEn, descriptionBn, descriptionEn, starterCode, solution, difficulty, points, testCases } = await req.json()
-    if (!tutorialId || !titleBn || !descriptionBn) {
-      return NextResponse.json({ error: 'tutorialId, titleBn, descriptionBn দরকার' }, { status: 400 })
+    if (!tutorialId || !titleBn || !titleEn || !descriptionBn || !descriptionEn) {
+      return NextResponse.json({ error: 'tutorialId, titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
     }
     const c = await prisma.codeChallenge.create({
       data: {

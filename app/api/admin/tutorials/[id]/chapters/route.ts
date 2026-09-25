@@ -59,6 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const codeExampleEn = body?.codeExampleEn ? String(body.codeExampleEn).trim() : null
 
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  if (!titleEn) return NextResponse.json({ error: 'ইংরেজি title দরকার (জোড়া নিয়ম)' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe হতে হবে (lowercase, hyphens)' }, { status: 400 })
 
   try {

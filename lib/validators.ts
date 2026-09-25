@@ -111,7 +111,7 @@ export const createQuizOptionSchema = z.object({
 export const createReferenceSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
   titleBn: z.string().min(2).max(255),
-  titleEn: z.string().min(2).max(255).optional(),
+  titleEn: z.string().min(2).max(255),
   slug: z.string().min(2).max(255),
   descriptionBn: z.string().optional(),
   descriptionEn: z.string().optional(),

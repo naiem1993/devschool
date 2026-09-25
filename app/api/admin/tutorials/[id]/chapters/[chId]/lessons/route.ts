@@ -64,8 +64,10 @@ export async function POST(
   const codeExampleEn = body?.codeExampleEn ? String(body.codeExampleEn).trim() : null
 
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
+  if (!titleEn) return NextResponse.json({ error: 'ইংরেজি title দরকার (জোড়া নিয়ম)' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
   if (!contentBn) return NextResponse.json({ error: 'content দরকার' }, { status: 400 })
+  if (!contentEn) return NextResponse.json({ error: 'ইংরেজি content দরকার (জোড়া নিয়ম)' }, { status: 400 })
 
   try {
     const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { id: true, tutorialId: true } })

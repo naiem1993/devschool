@@ -46,6 +46,11 @@ export async function PATCH(
     if (!t) return NextResponse.json({ error: 'title খালি রাখা যাবে না' }, { status: 400 })
     data.titleBn = t
   }
+  if (typeof body?.titleEn === 'string') {
+    const t = body.titleEn.trim()
+    if (!t) return NextResponse.json({ error: 'ইংরেজি title খালি রাখা যাবে না (জোড়া নিয়ম)' }, { status: 400 })
+    data.titleEn = t
+  }
   if (typeof body?.slug === 'string') {
     const s = normSlug(body.slug)
     if (!s) return NextResponse.json({ error: 'slug URL-safe নয়' }, { status: 400 })
