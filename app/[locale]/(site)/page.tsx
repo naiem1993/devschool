@@ -307,8 +307,8 @@ export default async function HomePage({
       {/* === জনপ্রিয় টিউটোরিয়াল === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold tracking-tight">🔥 জনপ্রিয় টিউটোরিয়াল</h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">আমাদের কমিউনিটিতে সবচেয়ে বেশি পঠিত টিউটোরিয়ালগুলো</p>
+          <h2 className="text-3xl font-extrabold tracking-tight">{dict.home.popularTitle}</h2>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">{dict.home.popularSubtitle}</p>
         </div>
         <LoadMoreTutorials initialTutorials={popularTutorials} />
       </section>
@@ -316,8 +316,8 @@ export default async function HomePage({
       {/* === নতুন টিউটোরিয়াল === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold tracking-tight">✨ নতুন টিউটোরিয়াল</h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">সবচেয়ে সাম্প্রতিক কন্টেন্ট দিয়ে আপডেট থাকুন</p>
+          <h2 className="text-3xl font-extrabold tracking-tight">{dict.home.latestTitle}</h2>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">{dict.home.latestSubtitle}</p>
         </div>
         <LoadMoreTutorials initialTutorials={latestTutorials} />
       </section>

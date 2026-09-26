@@ -187,6 +187,17 @@ const bn = {
     comingSoonMessage:
       'আমরা ইংরেজি ভার্সনের কাজ করছি — শীঘ্রই চালু হবে। ততক্ষণ বাংলায় পড়তে পারেন।',
     comingSoonCta: 'বাংলায় দেখুন',
+
+    // ── Home — জনপ্রিয় / নতুন টিউটোরিয়াল সেকশন (app/[locale]/(site)/page.tsx) ──
+    popularTitle: '🔥 জনপ্রিয় টিউটোরিয়াল',
+    popularSubtitle: 'আমাদের কমিউনিটিতে সবচেয়ে বেশি পঠিত টিউটোরিয়ালগুলো',
+    latestTitle: '✨ নতুন টিউটোরিয়াল',
+    latestSubtitle: 'সবচেয়ে সাম্প্রতিক কন্টেন্ট দিয়ে আপডেট থাকুন',
+
+    // ── Home — টিউটোরিয়াল কার্ড (components/LoadMoreTutorials.tsx) ──
+    genericCategory: 'জেনেরিক',
+    loading: 'লোড হচ্ছে...',
+    loadMoreTutorials: 'আরও টিউটোরিয়াল লোড করুন ↓',
   },
 
   // ── Challenges পেজ (app/[locale]/(site)/challenges/*) ──
@@ -343,6 +354,7 @@ const bn = {
     js: 'console.log("হ্যালো, DevSchool!");',
     typing1: 'npm create devschool@latest',
     typing2: 'শেখা শুরু হোক 🚀',
+    communityLabel: 'DevSchool কমিউনিটি',
   },
 
   // ── ভাষা সিলেক্টর (components/LanguageSwitcher.tsx) ──

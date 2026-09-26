@@ -246,7 +246,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
               <span className="w-8 h-8 rounded-full bg-sky-500/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👩‍💻</span>
               <span className="w-8 h-8 rounded-full bg-purple-500/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">🧑‍💻</span>
             </div>
-            <span className="text-slate-700 dark:text-slate-200 font-semibold">DevSchool কমিউনিটি</span>
+            <span className="text-slate-700 dark:text-slate-200 font-semibold">{dict.heroDemo.communityLabel}</span>
           </motion.div>
         </div>
 

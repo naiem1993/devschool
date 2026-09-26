@@ -182,6 +182,17 @@ const en: Dictionary = {
     comingSoonMessage:
       "We're working on the English version — launching soon. Meanwhile, you can read in Bengali.",
     comingSoonCta: 'View in Bengali',
+
+    // ── Home — Popular / Latest tutorial sections (app/[locale]/(site)/page.tsx) ──
+    popularTitle: '🔥 Popular Tutorials',
+    popularSubtitle: 'Most-read tutorials in our community',
+    latestTitle: '✨ Latest Tutorials',
+    latestSubtitle: 'Stay updated with the freshest content',
+
+    // ── Home — Tutorial cards (components/LoadMoreTutorials.tsx) ──
+    genericCategory: 'Generic',
+    loading: 'Loading...',
+    loadMoreTutorials: 'Load more tutorials ↓',
   },
 
   // ── Challenges page (app/[locale]/(site)/challenges/*) ──
@@ -338,6 +349,7 @@ const en: Dictionary = {
     js: 'console.log("Hello, DevSchool!");',
     typing1: 'npm create devschool@latest',
     typing2: 'Let the learning begin 🚀',
+    communityLabel: 'DevSchool Community',
   },
 
   // ── Language switcher ──
