@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 // ─────────────────────────────────────────────────────────────
 //  সীমা — বড় ইনপুটে ব্রাউজার যেন আটকে না যায়
@@ -130,9 +131,13 @@ function tokenize(json: string): Token[] {
 // ─────────────────────────────────────────────────────────────
 
 export default function JsonFormatter() {
+  const dict = useDict()
+  const t = dict.toolUi.json
+  const shared = dict.toolUi.common
+
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
-  const [status, setStatus] = useState<Status>({ kind: 'idle', text: 'অপেক্ষায়' })
+  const [status, setStatus] = useState<Status>({ kind: 'idle', text: '' })
   const [error, setError] = useState('')
   const [indent, setIndent] = useState<Indent>('2')
   const [sortOn, setSortOn] = useState(false)
@@ -146,70 +151,85 @@ export default function JsonFormatter() {
     }
   }, [])
 
+  // ── ডিফল্ট status (locale-সাপেক্ষে) ─────────
+  useEffect(() => {
+    setStatus((prev) => (prev.kind === 'idle' ? { kind: 'idle', text: t.statusIdle } : prev))
+  }, [t.statusIdle])
+
   const tooBig = input.length > MAX_INPUT_LIMIT
   const busy = !input.trim() || tooBig
 
   // ── মূল কাজ: parse → (sort) → stringify ──────────────────
-  const process = useCallback((raw: string, mode: Mode, opts: { indent: Indent; sort: boolean }) => {
-    setError('')
+  const process = useCallback(
+    (raw: string, mode: Mode, opts: { indent: Indent; sort: boolean }) => {
+      setError('')
 
-    const trimmed = raw.trim()
-    if (!trimmed) {
-      setOutput('')
-      setStatus({ kind: 'idle', text: 'অপেক্ষায়' })
-      return
-    }
-
-    if (raw.length > MAX_INPUT_LIMIT) {
-      setOutput('')
-      setStatus({ kind: 'bad', text: '✕ ইনপুট অনেক বড়' })
-      setError(
-        `ইনপুট ${formatCount(raw.length)} অক্ষর — সর্বোচ্চ ${formatCount(MAX_INPUT_LIMIT)} অনুমোদিত।`
-      )
-      return
-    }
-
-    try {
-      // JSON.parse শুধু ডেটা পড়ে — কোনো কোড চালায় না, তাই নিরাপদ
-      const parsed: unknown = JSON.parse(trimmed)
-      const target = opts.sort ? sortKeysDeep(parsed) : parsed
-      const step = opts.indent === 'tab' ? '\t' : Number(opts.indent)
-      const text = mode === 'minify' ? JSON.stringify(target) : JSON.stringify(target, null, step)
-
-      setOutput(text)
-      setStatus({
-        kind: 'ok',
-        text:
-          mode === 'minify'
-            ? '✓ মিনিফাই হয়েছে'
-            : mode === 'validate'
-              ? '✓ ভ্যালিড JSON'
-              : '✓ ফরম্যাট হয়েছে',
-      })
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
-      const at = /position (\d+)/.exec(message)
-
-      setOutput('')
-      setStatus({ kind: 'bad', text: '✕ ভুল JSON' })
-
-      if (at) {
-        const position = Number(at[1])
-        const upto = trimmed.slice(0, position)
-        const line = upto.split('\n').length
-        const column = position - upto.lastIndexOf('\n')
-        setError(`${message} — লাইন ${line}, কলাম ${column}`)
-      } else {
-        setError(message)
+      const trimmed = raw.trim()
+      if (!trimmed) {
+        setOutput('')
+        setStatus({ kind: 'idle', text: t.statusIdle })
+        return
       }
-    }
-  }, [])
+
+      if (raw.length > MAX_INPUT_LIMIT) {
+        setOutput('')
+        setStatus({ kind: 'bad', text: t.statusTooBig })
+        setError(
+          t.errTooBigTpl
+            .replace('{n}', formatCount(raw.length))
+            .replace('{max}', formatCount(MAX_INPUT_LIMIT))
+        )
+        return
+      }
+
+      try {
+        const parsed: unknown = JSON.parse(trimmed)
+        const target = opts.sort ? sortKeysDeep(parsed) : parsed
+        const step = opts.indent === 'tab' ? '\t' : Number(opts.indent)
+        const text =
+          mode === 'minify' ? JSON.stringify(target) : JSON.stringify(target, null, step)
+
+        setOutput(text)
+        setStatus({
+          kind: 'ok',
+          text:
+            mode === 'minify'
+              ? t.statusMinified
+              : mode === 'validate'
+                ? t.statusValid
+                : t.statusFormatted,
+        })
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err)
+        const at = /position (\d+)/.exec(message)
+
+        setOutput('')
+        setStatus({ kind: 'bad', text: t.statusBad })
+
+        if (at) {
+          const position = Number(at[1])
+          const upto = trimmed.slice(0, position)
+          const line = upto.split('\n').length
+          const column = position - upto.lastIndexOf('\n')
+          setError(
+            t.errPositionTpl
+              .replace('{msg}', message)
+              .replace('{line}', String(line))
+              .replace('{col}', String(column))
+          )
+        } else {
+          setError(message)
+        }
+      }
+    },
+    [t]
+  )
 
   // ── হ্যান্ডলার ────────────────────────────────────────────
   const handleChange = (value: string) => {
     setInput(value)
     if (value.length <= AUTO_FORMAT_LIMIT) process(value, 'format', { indent, sort: sortOn })
-    else setStatus({ kind: 'idle', text: 'বড় ইনপুট — Format চাপুন' })
+    else setStatus({ kind: 'idle', text: t.bigInputHint })
   }
 
   const handleIndent = (next: Indent) => {
@@ -233,7 +253,7 @@ export default function JsonFormatter() {
     setInput('')
     setOutput('')
     setError('')
-    setStatus({ kind: 'idle', text: 'অপেক্ষায়' })
+    setStatus({ kind: 'idle', text: t.statusIdle })
   }
 
   const handleCopy = async () => {
@@ -244,7 +264,7 @@ export default function JsonFormatter() {
       if (copyTimer.current !== null) window.clearTimeout(copyTimer.current)
       copyTimer.current = window.setTimeout(() => setCopied(false), 1500)
     } catch {
-      setError('ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।')
+      setError(t.errClipboard)
     }
   }
 
@@ -293,7 +313,7 @@ export default function JsonFormatter() {
           disabled={busy}
           className={BTN_PRIMARY}
         >
-          ✦ Format
+          {t.btnFormat}
         </button>
         <button
           type="button"
@@ -301,7 +321,7 @@ export default function JsonFormatter() {
           disabled={busy}
           className={BTN_GHOST}
         >
-          ⇥ Minify
+          {t.btnMinify}
         </button>
         <button
           type="button"
@@ -309,7 +329,7 @@ export default function JsonFormatter() {
           disabled={busy}
           className={BTN_GHOST}
         >
-          ✓ Validate
+          {t.btnValidate}
         </button>
         <button
           type="button"
@@ -317,11 +337,11 @@ export default function JsonFormatter() {
           aria-pressed={sortOn}
           className={sortOn ? BTN_PRIMARY : BTN_GHOST}
         >
-          ⇅ Sort keys
+          {t.btnSort}
         </button>
 
         <label htmlFor="json-indent" className="sr-only">
-          ইনডেন্ট
+          {t.indentLabel}
         </label>
         <select
           id="json-indent"
@@ -337,10 +357,10 @@ export default function JsonFormatter() {
         <span className="hidden flex-1 sm:block" />
 
         <button type="button" onClick={loadSample} className={BTN_GHOST}>
-          নমুনা
+          {shared.sample}
         </button>
         <button type="button" onClick={handleCopy} disabled={!output} className={BTN_GHOST}>
-          {copied ? '✓ কপি হয়েছে' : '⧉ Copy'}
+          {copied ? shared.copied : `⧉ ${shared.copy}`}
         </button>
         <button
           type="button"
@@ -348,7 +368,7 @@ export default function JsonFormatter() {
           disabled={!input && !output}
           className={BTN_GHOST}
         >
-          ✕ Clear
+          ✕ {shared.clear}
         </button>
       </div>
 
@@ -371,7 +391,7 @@ export default function JsonFormatter() {
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            aria-label="JSON ইনপুট"
+            aria-label={t.inputAria}
             placeholder={'{\n  "name": "DevSchool"\n}'}
             className="h-[420px] w-full resize-y bg-transparent p-4 font-mono text-[13px] leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
           />
@@ -394,7 +414,7 @@ export default function JsonFormatter() {
                     {token.text}
                   </span>
                 ))
-              : output || <span className="text-slate-400">ফলাফল এখানে দেখাবে...</span>}
+              : output || <span className="text-slate-400">{t.resultHere}</span>}
           </pre>
         </div>
       </div>
@@ -410,19 +430,19 @@ export default function JsonFormatter() {
             {status.text}
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            ইনপুট <b className="text-slate-800 dark:text-slate-200">{formatCount(input.length)}</b>
+            {t.labelInput} <b className="text-slate-800 dark:text-slate-200">{formatCount(input.length)}</b>
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            আউটপুট <b className="text-slate-800 dark:text-slate-200">{formatCount(output.length)}</b>
+            {t.labelOutput} <b className="text-slate-800 dark:text-slate-200">{formatCount(output.length)}</b>
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            লাইন <b className="text-slate-800 dark:text-slate-200">{lineCount}</b>
+            {t.labelLines} <b className="text-slate-800 dark:text-slate-200">{lineCount}</b>
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            কী <b className="text-slate-800 dark:text-slate-200">{keyCount}</b>
+            {t.labelKeys} <b className="text-slate-800 dark:text-slate-200">{keyCount}</b>
           </span>
           <span className="ml-auto hidden text-[11px] text-slate-400 sm:block">
-            Ctrl / ⌘ + Enter = Format
+            {t.ctrlHint}
           </span>
         </div>
 

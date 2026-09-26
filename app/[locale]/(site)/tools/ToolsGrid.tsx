@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
-  TOOL_CATEGORY_LABELS,
+  TOOL_CATEGORY_KEYS,
   type DevTool,
   type ToolCategory,
 } from '@/lib/tools'
@@ -23,14 +23,14 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
       const matchesCat = cat === 'all' || t.category === cat
       const matchesQuery =
         !q ||
-        [t.name, t.description, t.slug, ...t.tags].some((v) =>
+        [t.name, dict.toolPages[t.descKey], t.slug, ...t.tags].some((v) =>
           v.toLowerCase().includes(q)
         )
       return matchesCat && matchesQuery
     })
   }, [tools, query, cat])
 
-  const catKeys = Object.keys(TOOL_CATEGORY_LABELS) as ToolCategory[]
+  const catKeys = Object.keys(TOOL_CATEGORY_KEYS) as ToolCategory[]
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
                   : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10'
               }`}
             >
-              {TOOL_CATEGORY_LABELS[k]}
+              {dict.toolPages[TOOL_CATEGORY_KEYS[k]]}
             </button>
           ))}
         </div>
@@ -138,7 +138,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
                 </h3>
 
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 flex-1">
-                  {t.description}
+                  {dict.toolPages[t.descKey]}
                 </p>
 
                 {t.tags.length > 0 && (
@@ -156,7 +156,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/5 text-xs">
                   <span className="text-slate-500 dark:text-slate-400">
-                    {TOOL_CATEGORY_LABELS[t.category]}
+                    {dict.toolPages[TOOL_CATEGORY_KEYS[t.category]]}
                   </span>
                   <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                     {t.comingSoon ? dict.tools.comingSoonArrow : dict.tools.open}

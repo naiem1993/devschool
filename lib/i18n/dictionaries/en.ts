@@ -289,6 +289,108 @@ const en: Dictionary = {
     open: 'Open →',
   },
 
+  // ── Tools section sub-page & tool-card text (PART A1) ──
+  toolPages: {
+    breadcrumbTools: 'Tools',
+
+    catText: 'Text',
+    catCode: 'Code',
+    catConvert: 'Convert',
+    catDesign: 'Design',
+
+    jsonFormatterDesc: 'Clean up and format messy JSON so you can read it easily.',
+    base64Desc: 'Encode or decode any text to and from Base64.',
+    imageBase64Desc: 'Turn an image into Base64 / Data URI, or preview an image from Base64.',
+    colorPickerDesc: 'Convert colors between HEX, RGB and HSL, and build a palette.',
+    uuidDesc: 'Generate a random UUID v4 in one click.',
+    loremIpsumDesc: 'Generate placeholder demo text.',
+    imageToPdfDesc: 'Turn JPG / PNG / GIF / WEBP images into a single PDF in one click.',
+    urlEncoderDesc: 'Encode or decode text to make it URL-safe.',
+
+    pageBase64: {
+      title: 'Base64 Encode / Decode',
+      subtitle: 'Safely convert any text — including Bengali and emoji — to and from Base64. Everything runs in your browser; no data is sent to a server.',
+    },
+    pageColorPicker: {
+      title: 'Color Picker',
+      subtitle: 'Pick a color, convert it between HEX · RGB · HSL, build shades and harmony palettes, and check WCAG contrast — all in your browser.',
+    },
+    pageImageBase64: {
+      title: 'Image to Base64',
+      subtitle: 'Convert an image to Base64 or a Data URI — ready to paste into CSS/HTML. You can also paste Base64 to preview and download an image. Your image never leaves your browser.',
+    },
+    pageImageToPdf: {
+      title: 'Image to PDF',
+      subtitle: 'Turn JPG, PNG, GIF or WEBP images into a single PDF in one click — as an A4 page or at image size. Fully in your browser; no image is ever uploaded.',
+    },
+    pageJsonFormatter: {
+      title: 'JSON Formatter',
+      subtitle: 'Format messy JSON neatly, minify it, and pinpoint errors by line and column. Everything runs in your browser — no data is sent to a server.',
+    },
+    pageLoremIpsum: {
+      title: 'Lorem Ipsum',
+      subtitle: 'Generate placeholder text for testing a design or layout — by paragraphs, sentences or words, optionally wrapped in HTML tags. Everything runs in your browser.',
+    },
+  },
+
+  // ── Tools UI text (PART A4) ──
+  toolUi: {
+    common: {
+      copy: 'Copy',
+      copied: '✓ Copied',
+      clear: 'Clear',
+      sample: 'Sample',
+    },
+
+    base64: {
+      sampleText: 'DevSchool — learn, build, move forward 🚀',
+      modeAria: 'Mode',
+      encode: 'Encode',
+      decode: 'Decode',
+      inputAria: 'Input',
+      placeholderEncode: 'Type any text...',
+      placeholderDecode: 'Paste Base64 here...',
+      resultHere: 'Result will appear here...',
+      statusErr: '✕ Error',
+      statusOk: '✓ Converted',
+      statusIdle: 'Waiting',
+      labelInput: 'Input',
+      labelOutput: 'Output',
+      labelMode: 'Mode',
+      ctrlHint: 'Ctrl / ⌘ + Enter = Convert',
+      errTooBigTpl: 'Input is {n} characters — max {max} allowed.',
+      errBigInput: 'Large input — press the "Convert" button.',
+      errClipboard: "Couldn't copy to clipboard — browser denied permission.",
+      errBadLength: 'Invalid Base64 length (must be a multiple of 4)',
+      errBadChars: 'Not valid Base64 — contains invalid characters',
+    },
+
+    json: {
+      statusIdle: 'Waiting',
+      statusTooBig: '✕ Input too large',
+      statusMinified: '✓ Minified',
+      statusValid: '✓ Valid JSON',
+      statusFormatted: '✓ Formatted',
+      statusBad: '✕ Invalid JSON',
+      errTooBigTpl: 'Input is {n} characters — max {max} allowed.',
+      errPositionTpl: '{msg} — line {line}, column {col}',
+      bigInputHint: 'Large input — press Format',
+      btnFormat: '✦ Format',
+      btnMinify: '⇥ Minify',
+      btnValidate: '✓ Validate',
+      btnSort: '⇅ Sort keys',
+      indentLabel: 'Indent',
+      inputAria: 'JSON input',
+      labelInput: 'Input',
+      labelOutput: 'Output',
+      labelLines: 'Lines',
+      labelKeys: 'Keys',
+      ctrlHint: 'Ctrl / ⌘ + Enter = Format',
+      errClipboard: "Couldn't copy to clipboard — browser denied permission.",
+      resultHere: 'Result will appear here...',
+    },
+  },
+
   // ── References page (app/[locale]/(site)/references/*) ──
   references: {
     metaTitle: 'Programming References — Full Dictionary | DevSchool',

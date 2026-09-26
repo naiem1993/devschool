@@ -1,32 +1,58 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Base64Tool from '@/components/tools/Base64Tool'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
-export const metadata: Metadata = {
-  title: 'Base64 Encode / Decode — DevSchool',
-  description:
-    'যেকোনো টেক্সট (বাংলাসহ) Base64-এ encode বা decode করুন — সম্পূর্ণ ব্রাউজারে, কোনো ডেটা কোথাও পাঠানো হয় না।',
-  keywords: ['base64', 'encode', 'decode', 'converter', 'utf-8', 'DevSchool'],
-  alternates: { canonical: '/tools/base64' },
-  openGraph: {
-    title: 'Base64 Encode / Decode | DevSchool',
-    description: 'টেক্সট থেকে Base64 — ব্রাউজারেই, নিরাপদে।',
-    type: 'website',
-    url: '/tools/base64',
-    siteName: 'DevSchool',
-    locale: 'bn_BD',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Base64 Encode / Decode | DevSchool',
-    description: 'টেক্সট থেকে Base64 — ব্রাউজারেই, নিরাপদে।',
-  },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+  const t = dict.toolPages.pageBase64
+  return {
+    title: `${t.title} — DevSchool`,
+    description: t.subtitle,
+    keywords: ['base64', 'encode', 'decode', 'converter', 'utf-8', 'DevSchool'],
+    alternates: {
+      canonical: `/${locale}/tools/base64`,
+      languages: {
+        bn: '/bn/tools/base64',
+        en: '/en/tools/base64',
+        'x-default': '/bn/tools/base64',
+      },
+    },
+    openGraph: {
+      title: `${t.title} | DevSchool`,
+      description: t.subtitle,
+      type: 'website',
+      url: `/${locale}/tools/base64`,
+      siteName: 'DevSchool',
+      locale: isEn ? 'en_US' : 'bn_BD',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${t.title} | DevSchool`,
+      description: t.subtitle,
+    },
+  }
 }
 
-export default function Base64Page() {
+export default async function Base64Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const t = dict.toolPages.pageBase64
   return (
     <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
-      {/* ══════════ HERO — clean black + single green glow ══════════ */}
       <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
         <div
           aria-hidden
@@ -36,39 +62,34 @@ export default function Base64Page() {
               'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
           }}
         />
-
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <nav aria-label="Breadcrumb" className="mb-6">
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <li>
-                <Link href="/" className="hover:text-[#22C55E] transition">
-                  হোম
+                <Link href={`/${locale}`} className="hover:text-[#22C55E] transition">
+                  {dict.listing.breadcrumbHome}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li>
-                <Link href="/tools" className="hover:text-[#22C55E] transition">
-                  টুলস
+                <Link href={`/${locale}/tools`} className="hover:text-[#22C55E] transition">
+                  {dict.toolPages.breadcrumbTools}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li className="text-slate-800 dark:text-slate-200 font-medium">Base64</li>
             </ol>
           </nav>
-
           <div className="max-w-2xl">
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-              Base64 Encode / Decode
+              {t.title}
             </h1>
             <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              বাংলা, ইমোজি — যেকোনো টেক্সট নিরাপদে Base64-এ রূপান্তর করুন বা ফিরিয়ে আনুন।
-              সবকিছু আপনার ব্রাউজারেই চলে, কোনো ডেটা সার্ভারে যায় না।
+              {t.subtitle}
             </p>
           </div>
         </div>
       </section>
-
-      {/* ══════════ TOOL ══════════ */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         <Base64Tool />
       </div>

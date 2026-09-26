@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 // ─────────────────────────────────────────────────────────────
 //  সীমা — বড় ইনপুটে ব্রাউজার যেন আটকে না যায়
@@ -14,8 +15,6 @@ const MAX_INPUT_LIMIT = 1_000_000
 const CHUNK_SIZE = 0x8000
 
 type Mode = 'encode' | 'decode'
-
-const SAMPLE = 'DevSchool — শেখো, বানাও, এগিয়ে যাও 🚀'
 
 const BTN =
   'rounded-xl border px-3.5 py-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/40 disabled:cursor-not-allowed disabled:opacity-40'
@@ -65,10 +64,10 @@ function decodeBase64(input: string, urlSafe: boolean): string {
   const remainder = normalized.length % 4
   if (remainder === 2) normalized += '=='
   else if (remainder === 3) normalized += '='
-  else if (remainder === 1) throw new Error('Base64 দৈর্ঘ্য ভুল (৪-এর গুণিতক হতে হবে)')
+  else if (remainder === 1) throw new Error('__ERR_BAD_LENGTH__')
 
   if (!/^[A-Za-z0-9+/]*={0,2}$/.test(normalized)) {
-    throw new Error('এটি ভ্যালিড Base64 নয় — অননুমোদিত অক্ষর আছে')
+    throw new Error('__ERR_BAD_CHARS__')
   }
 
   const binary = atob(normalized)
@@ -84,6 +83,10 @@ function decodeBase64(input: string, urlSafe: boolean): string {
 // ─────────────────────────────────────────────────────────────
 
 export default function Base64Tool() {
+  const dict = useDict()
+  const t = dict.toolUi.base64
+  const shared = dict.toolUi.common
+
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [mode, setMode] = useState<Mode>('encode')
@@ -103,39 +106,51 @@ export default function Base64Tool() {
   const busy = !input || tooBig
 
   // ── মূল রূপান্তর ─────────────────────────────────────────
-  const convert = useCallback((raw: string, nextMode: Mode, nextUrlSafe: boolean) => {
-    setError('')
+  const convert = useCallback(
+    (raw: string, nextMode: Mode, nextUrlSafe: boolean) => {
+      setError('')
 
-    if (!raw) {
-      setOutput('')
-      return
-    }
+      if (!raw) {
+        setOutput('')
+        return
+      }
 
-    if (raw.length > MAX_INPUT_LIMIT) {
-      setOutput('')
-      setError(
-        `ইনপুট ${formatCount(raw.length)} অক্ষর — সর্বোচ্চ ${formatCount(MAX_INPUT_LIMIT)} অনুমোদিত।`
-      )
-      return
-    }
+      if (raw.length > MAX_INPUT_LIMIT) {
+        setOutput('')
+        setError(
+          t.errTooBigTpl
+            .replace('{n}', formatCount(raw.length))
+            .replace('{max}', formatCount(MAX_INPUT_LIMIT))
+        )
+        return
+      }
 
-    try {
-      setOutput(
-        nextMode === 'encode'
-          ? encodeBase64(raw, nextUrlSafe)
-          : decodeBase64(raw, nextUrlSafe)
-      )
-    } catch (err) {
-      setOutput('')
-      setError(err instanceof Error ? err.message : String(err))
-    }
-  }, [])
+      try {
+        setOutput(
+          nextMode === 'encode'
+            ? encodeBase64(raw, nextUrlSafe)
+            : decodeBase64(raw, nextUrlSafe)
+        )
+      } catch (err) {
+        setOutput('')
+        const msg = err instanceof Error ? err.message : String(err)
+        setError(
+          msg === '__ERR_BAD_LENGTH__'
+            ? t.errBadLength
+            : msg === '__ERR_BAD_CHARS__'
+              ? t.errBadChars
+              : msg
+        )
+      }
+    },
+    [t]
+  )
 
   // ── হ্যান্ডলার ────────────────────────────────────────────
   const handleInput = (value: string) => {
     setInput(value)
     if (value.length <= AUTO_CONVERT_LIMIT) convert(value, mode, urlSafe)
-    else setError('ইনপুট বড় — «রূপান্তর» বাটনে চাপুন।')
+    else setError(t.errBigInput)
   }
 
   const switchMode = (next: Mode) => {
@@ -159,8 +174,8 @@ export default function Base64Tool() {
 
   const loadSample = () => {
     setMode('encode')
-    setInput(SAMPLE)
-    convert(SAMPLE, 'encode', urlSafe)
+    setInput(t.sampleText)
+    convert(t.sampleText, 'encode', urlSafe)
   }
 
   const clearAll = () => {
@@ -177,7 +192,7 @@ export default function Base64Tool() {
       if (copyTimer.current !== null) window.clearTimeout(copyTimer.current)
       copyTimer.current = window.setTimeout(() => setCopied(false), 1500)
     } catch {
-      setError('ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।')
+      setError(t.errClipboard)
     }
   }
 
@@ -204,7 +219,7 @@ export default function Base64Tool() {
         {/* Mode toggle */}
         <div
           role="group"
-          aria-label="মোড"
+          aria-label={t.modeAria}
           className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5"
         >
           <button
@@ -217,7 +232,7 @@ export default function Base64Tool() {
                 : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]'
             }`}
           >
-            এনকোড
+            {t.encode}
           </button>
           <button
             type="button"
@@ -229,7 +244,7 @@ export default function Base64Tool() {
                 : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]'
             }`}
           >
-            ডিকোড
+            {t.decode}
           </button>
         </div>
 
@@ -249,13 +264,13 @@ export default function Base64Tool() {
         <span className="hidden flex-1 sm:block" />
 
         <button type="button" onClick={loadSample} className={BTN_GHOST}>
-          নমুনা
+          {shared.sample}
         </button>
         <button type="button" onClick={handleCopy} disabled={!output} className={BTN_GHOST}>
-          {copied ? '✓ কপি হয়েছে' : '⧉ Copy'}
+          {copied ? shared.copied : `⧉ ${shared.copy}`}
         </button>
         <button type="button" onClick={clearAll} disabled={!input && !output} className={BTN_GHOST}>
-          ✕ Clear
+          ✕ {shared.clear}
         </button>
       </div>
 
@@ -280,9 +295,9 @@ export default function Base64Tool() {
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            aria-label="ইনপুট"
+            aria-label={t.inputAria}
             placeholder={
-              mode === 'encode' ? 'যেকোনো লেখা লিখুন...' : 'Base64 এখানে পেস্ট করুন...'
+              mode === 'encode' ? t.placeholderEncode : t.placeholderDecode
             }
             className="h-[300px] w-full resize-y bg-transparent p-4 font-mono text-[13px] leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
           />
@@ -301,7 +316,7 @@ export default function Base64Tool() {
             </span>
           </div>
           <pre className="h-[300px] overflow-auto whitespace-pre-wrap break-all p-4 font-mono text-[13px] leading-relaxed text-slate-900 dark:text-slate-100">
-            {output || <span className="text-slate-400">ফলাফল এখানে দেখাবে...</span>}
+            {output || <span className="text-slate-400">{t.resultHere}</span>}
           </pre>
         </div>
       </div>
@@ -320,21 +335,21 @@ export default function Base64Tool() {
                   : 'border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400'
             }`}
           >
-            {error ? '✕ সমস্যা' : output ? '✓ রূপান্তর হয়েছে' : 'অপেক্ষায়'}
+            {error ? t.statusErr : output ? t.statusOk : t.statusIdle}
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            ইনপুট <b className="text-slate-800 dark:text-slate-200">{inBytes} B</b>
+            {t.labelInput} <b className="text-slate-800 dark:text-slate-200">{inBytes} B</b>
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            আউটপুট <b className="text-slate-800 dark:text-slate-200">{outBytes} B</b>
+            {t.labelOutput} <b className="text-slate-800 dark:text-slate-200">{outBytes} B</b>
           </span>
           {urlSafe && (
             <span className="text-slate-500 dark:text-slate-400">
-              মোড <b className="text-slate-800 dark:text-slate-200">URL-safe</b>
+              {t.labelMode} <b className="text-slate-800 dark:text-slate-200">URL-safe</b>
             </span>
           )}
           <span className="ml-auto hidden text-[11px] text-slate-400 sm:block">
-            Ctrl / ⌘ + Enter = রূপান্তর
+            {t.ctrlHint}
           </span>
         </div>
 

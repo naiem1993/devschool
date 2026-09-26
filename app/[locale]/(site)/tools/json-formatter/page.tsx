@@ -1,32 +1,58 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import JsonFormatter from '@/components/tools/JsonFormatter'
+import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
-export const metadata: Metadata = {
-  title: 'JSON Formatter — DevSchool',
-  description:
-    'এলোমেলো JSON পরিষ্কারভাবে ফরম্যাট, মিনিফাই ও ভ্যালিডেট করুন — সম্পূর্ণ ব্রাউজারে, কোনো ডেটা কোথাও পাঠানো হয় না।',
-  keywords: ['json formatter', 'json beautifier', 'json validator', 'minify json', 'DevSchool'],
-  alternates: { canonical: '/tools/json-formatter' },
-  openGraph: {
-    title: 'JSON Formatter | DevSchool',
-    description: 'JSON ফরম্যাট, মিনিফাই ও ভ্যালিডেট — ব্রাউজারেই।',
-    type: 'website',
-    url: '/tools/json-formatter',
-    siteName: 'DevSchool',
-    locale: 'bn_BD',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'JSON Formatter | DevSchool',
-    description: 'JSON ফরম্যাট, মিনিফাই ও ভ্যালিডেট — ব্রাউজারেই।',
-  },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const isEn = locale === 'en'
+  const t = dict.toolPages.pageJsonFormatter
+  return {
+    title: `${t.title} — DevSchool`,
+    description: t.subtitle,
+    keywords: ['json formatter', 'json beautifier', 'json validator', 'minify json', 'DevSchool'],
+    alternates: {
+      canonical: `/${locale}/tools/json-formatter`,
+      languages: {
+        bn: '/bn/tools/json-formatter',
+        en: '/en/tools/json-formatter',
+        'x-default': '/bn/tools/json-formatter',
+      },
+    },
+    openGraph: {
+      title: `${t.title} | DevSchool`,
+      description: t.subtitle,
+      type: 'website',
+      url: `/${locale}/tools/json-formatter`,
+      siteName: 'DevSchool',
+      locale: isEn ? 'en_US' : 'bn_BD',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${t.title} | DevSchool`,
+      description: t.subtitle,
+    },
+  }
 }
 
-export default function JsonFormatterPage() {
+export default async function JsonFormatterPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: rawLocale } = await params
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dict = getDictionarySync(locale)
+  const t = dict.toolPages.pageJsonFormatter
   return (
     <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
-      {/* ══════════ HERO — clean black + single green glow ══════════ */}
       <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
         <div
           aria-hidden
@@ -36,39 +62,34 @@ export default function JsonFormatterPage() {
               'radial-gradient(ellipse at center top, rgba(34,197,94,0.18), rgba(34,197,94,0.06) 45%, transparent 72%)',
           }}
         />
-
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <nav aria-label="Breadcrumb" className="mb-6">
             <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <li>
-                <Link href="/" className="hover:text-[#22C55E] transition">
-                  হোম
+                <Link href={`/${locale}`} className="hover:text-[#22C55E] transition">
+                  {dict.listing.breadcrumbHome}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li>
-                <Link href="/tools" className="hover:text-[#22C55E] transition">
-                  টুলস
+                <Link href={`/${locale}/tools`} className="hover:text-[#22C55E] transition">
+                  {dict.toolPages.breadcrumbTools}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li className="text-slate-800 dark:text-slate-200 font-medium">JSON Formatter</li>
             </ol>
           </nav>
-
           <div className="max-w-2xl">
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-              JSON Formatter
+              {t.title}
             </h1>
             <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              এলোমেলো JSON পরিষ্কারভাবে সাজান, মিনিফাই করুন, ভুল থাকলে লাইন-কলাম ধরে ধরিয়ে
-              দিন। সবকিছু আপনার ব্রাউজারেই চলে — কোনো ডেটা সার্ভারে যায় না।
+              {t.subtitle}
             </p>
           </div>
         </div>
       </section>
-
-      {/* ══════════ TOOL ══════════ */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         <JsonFormatter />
       </div>

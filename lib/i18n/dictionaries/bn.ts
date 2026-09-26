@@ -294,6 +294,111 @@ const bn = {
     open: 'খুলুন →',
   },
 
+  // ── Tools সেকশনের sub-page ও tool-card লেখা (PART A1) ──
+  toolPages: {
+    breadcrumbTools: 'টুলস',
+
+    // ৪টা category লেবেল (ToolsGrid-এ filter button)
+    catText: 'টেক্সট',
+    catCode: 'কোড',
+    catConvert: 'কনভার্ট',
+    catDesign: 'ডিজাইন',
+
+    // main /tools পেজে কার্ডের description (৮টা টুল)
+    jsonFormatterDesc: 'এলোমেলো JSON পরিষ্কারভাবে সাজিয়ে/ফরম্যাট করে দেখুন।',
+    base64Desc: 'যেকোনো টেক্সট Base64-এ encode বা decode করুন।',
+    imageBase64Desc: 'ছবি থেকে Base64 / Data URI বানান, আর Base64 থেকে ছবি দেখুন।',
+    colorPickerDesc: 'HEX, RGB, HSL মধ্যে রঙ কনভার্ট করুন ও palette বানান।',
+    uuidDesc: 'এক ক্লিকে random UUID v4 তৈরি করুন।',
+    loremIpsumDesc: 'ডেমো টেক্সট (placeholder paragraph) তৈরি করুন।',
+    imageToPdfDesc: 'JPG / PNG / GIF / WEBP ছবি থেকে এক ক্লিকে PDF বানান।',
+    urlEncoderDesc: 'URL-safe করতে টেক্সট encode বা decode করুন।',
+
+    // ৬টা sub-page-এর হিরো সেকশন
+    pageBase64: {
+      title: 'Base64 Encode / Decode',
+      subtitle: 'বাংলা, ইমোজি — যেকোনো টেক্সট নিরাপদে Base64-এ রূপান্তর করুন বা ফিরিয়ে আনুন। সবকিছু আপনার ব্রাউজারেই চলে, কোনো ডেটা সার্ভারে যায় না।',
+    },
+    pageColorPicker: {
+      title: 'Color Picker',
+      subtitle: 'রঙ বেছে নিন, HEX · RGB · HSL-এ রূপান্তর করুন, শেড ও হারমোনি palette বানান, আর WCAG কনট্রাস্ট যাচাই করুন — সবকিছু আপনার ব্রাউজারেই চলে।',
+    },
+    pageImageBase64: {
+      title: 'Image to Base64',
+      subtitle: 'ছবিকে Base64 বা Data URI-তে বদলান — CSS/HTML-এ সরাসরি বসানোর জন্য। উল্টোটাও করা যায়: Base64 পেস্ট করে ছবি দেখুন ও ডাউনলোড করুন। ছবি কখনো আপনার ব্রাউজার ছাড়ে না।',
+    },
+    pageImageToPdf: {
+      title: 'Image to PDF',
+      subtitle: 'JPG, PNG, GIF বা WEBP ছবি থেকে এক ক্লিকে PDF বানান — A4 বা ছবির মাপে। সম্পূর্ণ ব্রাউজারে, কোনো ছবি কোথাও আপলোড হয় না।',
+    },
+    pageJsonFormatter: {
+      title: 'JSON Formatter',
+      subtitle: 'এলোমেলো JSON পরিষ্কারভাবে সাজান, মিনিফাই করুন, ভুল থাকলে লাইন-কলাম ধরে ধরিয়ে দিন। সবকিছু আপনার ব্রাউজারেই চলে — কোনো ডেটা সার্ভারে যায় না।',
+    },
+    pageLoremIpsum: {
+      title: 'Lorem Ipsum',
+      subtitle: 'ডিজাইন বা লেআউট টেস্ট করার জন্য ডেমো টেক্সট তৈরি করুন — প্যারা, বাক্য বা শব্দ অনুযায়ী, ইচ্ছে হলে HTML ট্যাগ সহ। সবকিছু আপনার ব্রাউজারেই চলে।',
+    },
+  },
+
+  // ── Tools-এর ভেতরের UI লেখা (PART A4) ──
+  toolUi: {
+    common: {
+      copy: 'কপি',
+      copied: '✓ কপি হয়েছে',
+      clear: 'মুছুন',
+      sample: 'নমুনা',
+    },
+
+    base64: {
+      sampleText: 'DevSchool — শেখো, বানাও, এগিয়ে যাও 🚀',
+      modeAria: 'মোড',
+      encode: 'এনকোড',
+      decode: 'ডিকোড',
+      inputAria: 'ইনপুট',
+      placeholderEncode: 'যেকোনো লেখা লিখুন...',
+      placeholderDecode: 'Base64 এখানে পেস্ট করুন...',
+      resultHere: 'ফলাফল এখানে দেখাবে...',
+      statusErr: '✕ সমস্যা',
+      statusOk: '✓ রূপান্তর হয়েছে',
+      statusIdle: 'অপেক্ষায়',
+      labelInput: 'Input',
+      labelOutput: 'Output',
+      labelMode: 'মোড',
+      ctrlHint: 'Ctrl / ⌘ + Enter = রূপান্তর',
+      errTooBigTpl: 'ইনপুট {n} অক্ষর — সর্বোচ্চ {max} অনুমোদিত।',
+      errBigInput: 'ইনপুট বড় — «রূপান্তর» বাটনে চাপুন।',
+      errClipboard: 'ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।',
+      errBadLength: 'Base64 দৈর্ঘ্য ভুল (৪-এর গুণিতক হতে হবে)',
+      errBadChars: 'এটি ভ্যালিড Base64 নয় — অননুমোদিত অক্ষর আছে',
+    },
+
+    json: {
+      statusIdle: 'অপেক্ষায়',
+      statusTooBig: '✕ ইনপুট অনেক বড়',
+      statusMinified: '✓ মিনিফাই হয়েছে',
+      statusValid: '✓ ভ্যালিড JSON',
+      statusFormatted: '✓ ফরম্যাট হয়েছে',
+      statusBad: '✕ ভুল JSON',
+      errTooBigTpl: 'ইনপুট {n} অক্ষর — সর্বোচ্চ {max} অনুমোদিত।',
+      errPositionTpl: '{msg} — লাইন {line}, কলাম {col}',
+      bigInputHint: 'বড় ইনপুট — Format চাপুন',
+      btnFormat: '✦ Format',
+      btnMinify: '⇥ Minify',
+      btnValidate: '✓ Validate',
+      btnSort: '⇅ Sort keys',
+      indentLabel: 'ইনডেন্ট',
+      inputAria: 'JSON ইনপুট',
+      labelInput: 'Input',
+      labelOutput: 'Output',
+      labelLines: 'Lines',
+      labelKeys: 'Keys',
+      ctrlHint: 'Ctrl / ⌘ + Enter = Format',
+      errClipboard: 'ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।',
+      resultHere: 'ফলাফল এখানে দেখাবে...',
+    },
+  },
+
   // ── References পেজ (app/[locale]/(site)/references/*) ──
   references: {
     metaTitle: 'প্রোগ্রামিং রেফারেন্স — সম্পূর্ণ ডিকশনারি | DevSchool',

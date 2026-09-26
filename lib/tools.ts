@@ -7,10 +7,25 @@
 
 export type ToolCategory = 'text' | 'code' | 'convert' | 'design'
 
+// toolPages-এর description কী-নাম (dictionary-তে আছে — PART A1)
+export type ToolDescKey =
+  | 'jsonFormatterDesc'
+  | 'base64Desc'
+  | 'imageBase64Desc'
+  | 'colorPickerDesc'
+  | 'uuidDesc'
+  | 'loremIpsumDesc'
+  | 'imageToPdfDesc'
+  | 'urlEncoderDesc'
+
+// toolPages-এর category লেবেল কী-নাম
+export type ToolCatKey = 'catText' | 'catCode' | 'catConvert' | 'catDesign'
+
 export type DevTool = {
   slug: string
   name: string
-  description: string
+  /** dictionary-র toolPages ঘর থেকে locale-সাপেক্ষে আসবে */
+  descKey: ToolDescKey
   icon: string
   href: string
   category: ToolCategory
@@ -19,11 +34,12 @@ export type DevTool = {
   comingSoon?: boolean
 }
 
-export const TOOL_CATEGORY_LABELS: Record<ToolCategory, string> = {
-  text: 'টেক্সট',
-  code: 'কোড',
-  convert: 'কনভার্ট',
-  design: 'ডিজাইন',
+// category → dictionary কী-নাম ম্যাপিং (ToolsGrid locale দেখে সঠিক লেখা আনে)
+export const TOOL_CATEGORY_KEYS: Record<ToolCategory, ToolCatKey> = {
+  text: 'catText',
+  code: 'catCode',
+  convert: 'catConvert',
+  design: 'catDesign',
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -33,7 +49,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'json-formatter',
     name: 'JSON Formatter',
-    description: 'এলোমেলো JSON পরিষ্কারভাবে সাজিয়ে/ফরম্যাট করে দেখুন।',
+    descKey: 'jsonFormatterDesc',
     icon: '{ }',
     href: '/tools/json-formatter',
     category: 'code',
@@ -42,7 +58,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'base64',
     name: 'Base64 Encode / Decode',
-    description: 'যেকোনো টেক্সট Base64-এ encode বা decode করুন।',
+    descKey: 'base64Desc',
     icon: '⇄',
     href: '/tools/base64',
     category: 'convert',
@@ -51,7 +67,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'image-base64',
     name: 'Image to Base64',
-    description: 'ছবি থেকে Base64 / Data URI বানান, আর Base64 থেকে ছবি দেখুন।',
+    descKey: 'imageBase64Desc',
     icon: '🖼️',
     href: '/tools/image-base64',
     category: 'convert',
@@ -60,7 +76,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'color-picker',
     name: 'Color Picker',
-    description: 'HEX, RGB, HSL মধ্যে রঙ কনভার্ট করুন ও palette বানান।',
+    descKey: 'colorPickerDesc',
     icon: '🎨',
     href: '/tools/color-picker',
     category: 'design',
@@ -69,7 +85,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'uuid',
     name: 'UUID Generator',
-    description: 'এক ক্লিকে random UUID v4 তৈরি করুন।',
+    descKey: 'uuidDesc',
     icon: '🆔',
     href: '/tools/uuid',
     category: 'code',
@@ -79,7 +95,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'lorem-ipsum',
     name: 'Lorem Ipsum',
-    description: 'ডেমো টেক্সট (placeholder paragraph) তৈরি করুন।',
+    descKey: 'loremIpsumDesc',
     icon: '📝',
     href: '/tools/lorem-ipsum',
     category: 'text',
@@ -88,7 +104,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'image-to-pdf',
     name: 'Image to PDF',
-    description: 'JPG / PNG / GIF / WEBP ছবি থেকে এক ক্লিকে PDF বানান।',
+    descKey: 'imageToPdfDesc',
     icon: '📄',
     href: '/tools/image-to-pdf',
     category: 'convert',
@@ -97,7 +113,7 @@ export const DEV_TOOLS: DevTool[] = [
   {
     slug: 'url-encoder',
     name: 'URL Encode / Decode',
-    description: 'URL-safe করতে টেক্সট encode বা decode করুন।',
+    descKey: 'urlEncoderDesc',
     icon: '🔗',
     href: '/tools/url-encoder',
     category: 'convert',
