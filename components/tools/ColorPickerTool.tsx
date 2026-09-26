@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 // ─────────────────────────────────────────────────────────────
 //  হেল্পার — রঙের গণিত (কোনো লাইব্রেরি ছাড়া)
@@ -93,7 +94,7 @@ function contrastRatio(a: RGB, b: RGB): number {
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
 }
 
-/** WCAG অনুযায়ী রেটিং */
+/** WCAG অনুযায়ী রেটিং — AAA/AA/Fail টেকনিক্যাল টার্ম, ইংরেজিতেই থাকে */
 function wcagLabel(ratio: number): { text: string; ok: boolean } {
   if (ratio >= 7) return { text: 'AAA', ok: true }
   if (ratio >= 4.5) return { text: 'AA', ok: true }
@@ -107,7 +108,7 @@ const DEFAULT_HEX = '#22C55E'
 //  ছোট কম্পোনেন্ট
 // ─────────────────────────────────────────────────────────────
 
-function CopyChip({ value, label }: { value: string; label: string }) {
+function CopyChip({ value, label, copyAria }: { value: string; label: string; copyAria: string }) {
   const [done, setDone] = useState(false)
   const timer = useRef<number | null>(null)
 
@@ -132,7 +133,7 @@ function CopyChip({ value, label }: { value: string; label: string }) {
     <button
       type="button"
       onClick={copy}
-      aria-label={'কপি ' + label}
+      aria-label={copyAria.replace('{label}', label)}
       className="rounded-lg border border-slate-200 dark:border-white/10 px-2 py-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400 transition hover:border-[#22C55E] hover:text-[#22C55E]"
     >
       {done ? '✓' : '⧉'}
@@ -185,6 +186,9 @@ function Slider({
 // ─────────────────────────────────────────────────────────────
 
 export default function ColorPickerTool() {
+  const dict = useDict()
+  const t = dict.toolUi.color
+
   const [hex, setHex] = useState(DEFAULT_HEX)
   const [draft, setDraft] = useState(DEFAULT_HEX)
   const [draftBad, setDraftBad] = useState(false)
@@ -196,7 +200,6 @@ export default function ColorPickerTool() {
   const onBlack = useMemo(() => contrastRatio(rgb, { r: 0, g: 0, b: 0 }), [rgb])
   const textOnColor = onBlack >= onWhite ? '#000000' : '#FFFFFF'
 
-  // ── hex টেক্সট ইনপুট ──────────────────────────────────
   const commitDraft = (raw: string) => {
     setDraft(raw)
     const norm = normalizeHex(raw)
@@ -214,18 +217,15 @@ export default function ColorPickerTool() {
     setDraftBad(false)
   }
 
-  // ── RGB slider ─────────────────────────────────────────
   const setChannel = (key: 'r' | 'g' | 'b', value: number) => {
     applyHex(rgbToHex({ ...rgb, [key]: value }))
   }
 
-  // ── HSL slider ─────────────────────────────────────────
   const setHsl = (key: 'h' | 's' | 'l', value: number) => {
     const next = { ...hsl, [key]: value }
     applyHex(rgbToHex(hslToRgb(next.h, next.s, next.l)))
   }
 
-  // ── palette ────────────────────────────────────────────
   const shades = useMemo(() => {
     const list: string[] = []
     for (let l = 95; l >= 5; l -= 10) {
@@ -263,7 +263,7 @@ export default function ColorPickerTool() {
           type="color"
           value={hex}
           onChange={(e) => applyHex(e.target.value.toUpperCase())}
-          aria-label="রঙ বাছাই করুন"
+          aria-label={t.pickerAria}
           className="h-11 w-14 cursor-pointer rounded-xl border border-slate-200 bg-transparent p-0.5 dark:border-white/10"
         />
 
@@ -292,16 +292,16 @@ export default function ColorPickerTool() {
         </div>
 
         <button type="button" onClick={randomize} className={chipClass}>
-          🎲 র‍্যান্ডম
+          {t.randomBtn}
         </button>
         <button type="button" onClick={() => applyHex(DEFAULT_HEX)} className={chipClass}>
-          ↺ রিসেট
+          {t.resetBtn}
         </button>
 
         <span className="hidden flex-1 sm:block" />
 
         <span className="font-mono text-[11px] text-slate-400">
-          {draftBad ? '✕ ভুল HEX' : '✓ ভ্যালিড'}
+          {draftBad ? t.invalidBadge : t.validBadge}
         </span>
       </div>
 
@@ -336,7 +336,7 @@ export default function ColorPickerTool() {
         <div className="space-y-4">
           <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c]">
             <div className="border-b border-slate-200 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:border-white/5">
-              ফরম্যাট
+              {t.formatLabel}
             </div>
             <div className="divide-y divide-slate-200 dark:divide-white/5">
               {[{ k: 'HEX', v: hexOut }, { k: 'RGB', v: rgbOut }, { k: 'HSL', v: hslOut }].map((row) => (
@@ -345,7 +345,7 @@ export default function ColorPickerTool() {
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{row.k}</p>
                     <p className="truncate font-mono text-sm text-slate-900 dark:text-slate-100">{row.v}</p>
                   </div>
-                  <CopyChip value={row.v} label={row.k} />
+                  <CopyChip value={row.v} label={row.k} copyAria={t.copyAriaTpl} />
                 </div>
               ))}
             </div>
@@ -353,17 +353,17 @@ export default function ColorPickerTool() {
 
           {/* Contrast */}
           <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] p-4">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">কনট্রাস্ট (WCAG)</p>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">{t.contrastLabel}</p>
             <div className="grid grid-cols-2 gap-3">
-              {[{ name: 'সাদার উপর', ratio: onWhite }, { name: 'কালোর উপর', ratio: onBlack }].map((c) => {
+              {[{ id: 'white', name: t.contrastOnWhite, ratio: onWhite }, { id: 'black', name: t.contrastOnBlack, ratio: onBlack }].map((c) => {
                 const badge = wcagLabel(c.ratio)
                 return (
                   <div
-                    key={c.name}
+                    key={c.id}
                     className="rounded-2xl border border-slate-200 p-3 dark:border-white/10"
                     style={{
-                      backgroundColor: c.name === 'সাদার উপর' ? '#FFFFFF' : '#000000',
-                      color: c.name === 'সাদার উপর' ? hex : hex,
+                      backgroundColor: c.id === 'white' ? '#FFFFFF' : '#000000',
+                      color: hex,
                     }}
                   >
                     <p className="text-[10px] font-semibold opacity-70">{c.name}</p>
@@ -377,7 +377,7 @@ export default function ColorPickerTool() {
 
           {/* Palette */}
           <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] p-4">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">শেড (উজ্জ্বল → গাঢ়)</p>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">{t.shadesLabel}</p>
             <div className="flex overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10">
               {shades.map((s) => (
                 <button
@@ -385,19 +385,19 @@ export default function ColorPickerTool() {
                   type="button"
                   onClick={() => applyHex(s)}
                   title={s}
-                  aria-label={'নির্বাচন ' + s}
+                  aria-label={t.selectAriaTpl.replace('{v}', s)}
                   className="h-12 flex-1 transition hover:scale-y-110"
                   style={{ backgroundColor: s }}
                 />
               ))}
             </div>
 
-            <p className="mb-3 mt-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">হারমোনি</p>
+            <p className="mb-3 mt-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">{t.harmonyLabel}</p>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: 'কমপ্লিমেন্টারি', value: harmony.comp },
-                { label: 'অ্যানালগাস −30°', value: harmony.a1 },
-                { label: 'অ্যানালগাস +30°', value: harmony.a2 },
+                { label: t.harmonyComp, value: harmony.comp },
+                { label: t.harmonyA1, value: harmony.a1 },
+                { label: t.harmonyA2, value: harmony.a2 },
               ].map((h) => (
                 <button
                   key={h.label}
