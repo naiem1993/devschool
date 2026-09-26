@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 export type TutorialCard = {
   id: string
@@ -20,30 +21,43 @@ export type TutorialCard = {
 type SortKey = 'popular' | 'title' | 'latest'
 
 const DIFFICULTIES = [
-  { value: 'all', label: 'সব লেভেল' },
-  { value: 'beginner', label: 'বিগিনার' },
-  { value: 'intermediate', label: 'ইন্টারমিডিয়েট' },
-  { value: 'advanced', label: 'অ্যাডভান্সড' },
+  { value: 'all' },
+  { value: 'beginner' },
+  { value: 'intermediate' },
+  { value: 'advanced' },
 ]
 
-const SORTS: { value: SortKey; label: string }[] = [
-  { value: 'latest', label: 'সর্বশেষ' },
-  { value: 'popular', label: 'জনপ্রিয়' },
-  { value: 'title', label: 'নাম (A-Z)' },
+const SORTS: { value: SortKey }[] = [
+  { value: 'latest' },
+  { value: 'popular' },
+  { value: 'title' },
 ]
 
-const difficultyLabel = (d: string) => {
+const difficultyLabel = (d: string, dict: ReturnType<typeof useDict>) => {
   const k = (d || '').toLowerCase()
-  if (k === 'beginner') return { text: 'বিগিনার', cls: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20' }
-  if (k === 'intermediate') return { text: 'ইন্টারমিডিয়েট', cls: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' }
-  if (k === 'advanced') return { text: 'অ্যাডভান্সড', cls: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' }
+  if (k === 'beginner') return { text: dict.listing.filterLevelBeginner, cls: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20' }
+  if (k === 'intermediate') return { text: dict.listing.filterLevelIntermediate, cls: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' }
+  if (k === 'advanced') return { text: dict.listing.filterLevelAdvanced, cls: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' }
   return { text: d, cls: 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20' }
 }
 
 export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard[] }) {
+  const dict = useDict()
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all')
   const [sort, setSort] = useState<SortKey>('latest')
+
+  const levelLabel: Record<string, string> = {
+    all: dict.listing.filterLevelAll,
+    beginner: dict.listing.filterLevelBeginner,
+    intermediate: dict.listing.filterLevelIntermediate,
+    advanced: dict.listing.filterLevelAdvanced,
+  }
+  const sortLabelMap: Record<SortKey, string> = {
+    latest: dict.listing.filterSortLatest,
+    popular: dict.listing.filterSortPopular,
+    title: dict.listing.filterSortTitle,
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -100,8 +114,8 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="টিউটোরিয়াল খুঁজুন... (যেমন: HTML, JavaScript, Python)"
-            aria-label="টিউটোরিয়াল সার্চ"
+            placeholder={dict.listing.filterSearchPlaceholder}
+            aria-label={dict.listing.filterSearchAria}
             className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-sm bg-white dark:bg-[#050806] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition"
           />
         </div>
@@ -123,7 +137,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
                       : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:border-[#22C55E]/50 hover:text-[#22C55E]'
                   }`}
                 >
-                  {d.label}
+                  {levelLabel[d.value]}
                 </button>
               )
             })}
@@ -131,7 +145,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
 
           {/* Sort */}
           <div className="lg:ml-auto flex items-center gap-2">
-            <span className="text-xs text-slate-400 hidden sm:inline">সাজান:</span>
+            <span className="text-xs text-slate-400 hidden sm:inline">{dict.listing.filterSortLabel}</span>
             <div className="inline-flex rounded-full border border-slate-200 dark:border-white/10 p-0.5 bg-white dark:bg-[#050806]">
               {SORTS.map((s) => {
                 const active = sort === s.value
@@ -146,7 +160,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
                         : 'text-slate-500 dark:text-slate-400 hover:text-[#22C55E]'
                     }`}
                   >
-                    {s.label}
+                    {sortLabelMap[s.value]}
                   </button>
                 )
               })}
@@ -158,9 +172,9 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
       {/* ─── Result Count ─── */}
       <div className="flex items-center justify-between mb-5 text-sm">
         <p className="text-slate-500 dark:text-slate-400">
-          <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> টি টিউটোরিয়াল
+          <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> {dict.listing.filterCountSuffix}
           {activeFilters && (
-            <span className="ml-2 text-xs text-[#22C55E]">(ফিল্টার করা)</span>
+            <span className="ml-2 text-xs text-[#22C55E]">{dict.listing.filterApplied}</span>
           )}
         </p>
         {activeFilters && (
@@ -168,7 +182,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
             onClick={reset}
             className="text-xs text-slate-500 hover:text-[#22C55E] transition"
           >
-            সব ফিল্টার মুছুন ✕
+            {dict.listing.filterClear}
           </button>
         )}
       </div>
@@ -177,21 +191,21 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
       {filtered.length === 0 ? (
         <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
           <div className="text-5xl mb-4">📭</div>
-          <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
+          <h3 className="text-xl font-bold mb-2">{dict.listing.filterNoResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-            অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।
+            {dict.listing.filterNoResultsDesc}
           </p>
           <button
             onClick={reset}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition"
           >
-            সব টিউটোরিয়াল দেখুন
+            {dict.listing.filterShowAll}
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((t) => {
-            const diff = difficultyLabel(t.difficulty)
+            const diff = difficultyLabel(t.difficulty, dict)
             return (
               <Link
                 key={t.id}
@@ -218,23 +232,23 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
                   </p>
                 ) : (
                   <p className="text-sm text-slate-400 italic mb-4 flex-1">
-                    বিস্তারিত শীঘ্রই যুক্ত হবে
+                    {dict.listing.cardDescriptionSoon}
                   </p>
                 )}
 
                 <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-3">
                     <span className="inline-flex items-center gap-1">
-                      📖 {t.chapterCount} চ্যাপ্টার
+                      📖 {t.chapterCount} {dict.listing.cardChaptersSuffix}
                     </span>
                     {t.duration ? (
                       <span className="inline-flex items-center gap-1">
-                        ⏱ {t.duration} মিনিট
+                        ⏱ {t.duration} {dict.listing.cardMinutesSuffix}
                       </span>
                     ) : null}
                   </div>
                   <span className="inline-flex items-center gap-1 text-[#22C55E] font-semibold group-hover:gap-2 transition-all">
-                    শুরু করুন →
+                    {dict.listing.cardStart} →
                   </span>
                 </div>
               </Link>
