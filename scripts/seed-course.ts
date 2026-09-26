@@ -127,7 +127,7 @@ type RawChapter = {
 }
 
 function parseMarkdown(md: string, codeFence: string): RawChapter {
-  const lines = md.split('\n')
+  const lines = md.split(/\r?\n/)
 
   const titleLine = lines.find((l) => /^#\s+Chapter\s+\d+:/.test(l))
   if (!titleLine) throw new Error('No "# Chapter N: ..." heading found.')

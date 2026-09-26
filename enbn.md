@@ -126,7 +126,50 @@ npm run seed:course -- --prune     → অপ্রয়োজনীয় less
 
 ### ✅ PART 10d — ইংরেজি `.en.md` ফাইল (সম্পূর্ণ — ২০২৬-০৯-২৫)
 
-৭টা নতুন ফাইল তৈরি — `content/html/chapter-01.en.md` + `chapter-02.en.md`; `content/css/chapter-01.en.md` থেকে `chapter-05.en.md` পর্যন্ত। বাংলা chapter-এর হুবহু ৮-section কাঠামো, শুধু ভাষা ইংরেজি। Slug সবসময় ইংরেজি (position-ভিত্তিক pairing)। ⚠️ এখনো করা হয়নি: Part 10e (seeder চালানো + DB যাচাই)।
+৭টা নতুন ফাইল তৈরি — `content/html/chapter-01.en.md` + `chapter-02.en.md`; `content/css/chapter-01.en.md` থেকে `chapter-05.en.md` পর্যন্ত। বাংলা chapter-এর হুবহু ৮-section কাঠামো, শুধু ভাষা ইংরেজি। Slug সবসময় ইংরেজি (position-ভিত্তিক pairing)।
+
+### ✅ PART 10e — Seeder চালানো + DB যাচাই (সম্পূর্ণ — ২০২৬-০৯-২৬)
+
+**🐛 যেই bug ধরা পড়েছিল:**
+প্রথমবার `npm run seed:course` চালালে error এসেছিল —
+```
+[html] chapter-02.en.md: lesson count mismatch (bn=0, en=3)
+```
+অর্থাৎ বাংলা `.md` (CRLF লাইন-এন্ডিং) থেকে ০টা lesson পড়া যাচ্ছিল, অথচ ইংরেজি `.en.md` (LF) থেকে ৩টা পড়া যাচ্ছিল।
+
+**কারণ:** `scripts/seed-course.ts`-এ `md.split('\n')` ব্যবহার হয়েছিল। CRLF ফাইলে প্রতিটা লাইনের শেষে অদৃশ্য `\r` থেকে যেত — তাই regex `/^##\s+\d+\.\d+\s+(.+)$/` মিলত না।
+
+**ফিক্স (একটি লাইন):**
+```diff
+- const lines = md.split('\n')
++ const lines = md.split(/\r?\n/)
+```
+`\r?` — CR থাকলে খেয়ে ফেলে, না থাকলে কিছু করে না। দুই ধরনের লাইন-এন্ডিং-এ কাজ করে।
+
+**✅ ফিক্সের পর সফল seeder output:**
+| Course | Chapter | Lessons | English |
+|--------|---------|---------|---------|
+| html | chapter-01 | 3 | ✅ Bn+En |
+| html | chapter-02 | 3 | ✅ Bn+En |
+| css | chapter-01 | 3 | ✅ Bn+En |
+| css | chapter-02 | 2 | ✅ Bn+En |
+| css | chapter-03 | 2 | ✅ Bn+En |
+| css | chapter-04 | 2 | ✅ Bn+En |
+| css | chapter-05 | 2 | ✅ Bn+En |
+
+**মোট:** ৭টা chapter, **১৭টা lesson** — সবগুলোতে Bn + En দুটোই সঠিকভাবে ঢুকেছে।
+
+**যাচাই:** `npx tsc --noEmit` ০ error ✅; `npm run seed:course` নির্বিঘ্নে চলেছে ✅; কোনো lesson মুছেনি (`--prune` ছাড়া) ✅
+
+**⚠️ এখনো করা হয়নি:** ডেটাবেসে হাতে চোখে দেখা (Prisma Studio) — চাইলে আলাদা step।
+
+**🎉 PART 10 পুরোপুরি শেষ!** — Seed/content workflow (10a-10e) সম্পূর্ণ। পরবর্তী: Part 11 (চূড়ান্ত টেস্ট)।
+
+---
+
+### 📌 NEXT-STEPS.md — পরের কাজের গাইড
+
+`NEXT-STEPS.md` ফাইলটা প্রজেক্টের root-এ যোগ করা হয়েছে — যেকোনো নতুন AI বা ডেভ এই ফাইল পড়ে জানে পরের কাজ কী।
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
