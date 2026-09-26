@@ -84,8 +84,10 @@ model Tutorial {
 | 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9j সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
 | 10 | Seed / content workflow | ✅ **সম্পন্ন** — 10a–10e সব শেষ (২০২৬-০৯-২৬); seeder ১৭টি lesson Bn+En সহ DB-তে ঢুকেছে; commit `9360cb3` |
 | 11 | চূড়ান্ত টেস্ট | ✅ **সম্পন্ন** — ২০২৬-০৯-২৬; সব public রুট ২০০, ভাষা-সঠিক কনটেন্ট প্রমাণিত, SEO ঠিক, console clean |
+| 12 | Tools সেকশন locale-aware (A1–A4b) | ✅ **সম্পন্ন** — ২০২৬-০৯-২৬; toolPages/toolUi ঘর যোগ; ৬টা sub-page + ৪টা tool কম্পোনেন্ট locale-aware; tsc ০ error, build সফল (৯০ পেজ); commit `67a58e4` + `b5192d7` |
+| 12c | Tools locale-aware (A4c: ImageBase64 + ImageToPdf) | ⬜ **বাকি** — সবচেয়ে বড় ২টা কম্পোনেন্ট |
 
-**বর্তমান অবস্থান:** **PART 11 ✅ সম্পন্ন (২০২৬-০৯-২৬)** — পুরো সাইট হাতে ঘুরে যাচাই করা হয়েছে (browser automation)। মোট **০টি নতুন bug** পাওয়া গেছে। পরবর্তী (ঐচ্ছিক): **8d — tools/* sub-pages locale-aware** + `HomeExtras.tsx` hardcoded বাংলা। সব শেষ হলে deploy-এর জন্য প্রস্তুত।
+**বর্তমান অবস্থান:** **PART 12 ✅ A1–A4b সম্পন্ন (২০২৬-০৯-২৬)** — tools সেকশন প্রায় পুরো দুই ভাষায়। commit `67a58e4` (A1–A4a) + `b5192d7` (A4b)। বাকি: **A4c — `ImageBase64Tool.tsx` (৫৮১ লাইন) + `ImageToPdfTool.tsx` (৫৮৯ লাইন)** locale-aware করা। তারপর `HomeExtras.tsx` hardcoded বাংলা (যাচাই করে দেখা গেছে এটা আসলে dictionary ব্যবহার করে — পুরনো নোটটা ভুল ছিল)। সব শেষ হলে deploy-এর জন্য প্রস্তুত।
 
 ---
 
