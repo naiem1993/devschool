@@ -82,10 +82,10 @@ model Tutorial {
 | 7.5 | Console fix + locale-aware hero + /en ComingSoon | ✅ **সম্পন্ন** — tsc ০ error, npm run build সফল (৫৪ পেজ) |
 | 8 | SEO (hreflang, canonical, sitemap) | ✅ **সম্পন্ন** — 8b+8c.2+8e+8f সব commit হয়েছে |
 | 9 | Admin panel-এ দুই ভাষার ইনপুট (bn=en জোড়া নিয়ম) | ✅ **সম্পন্ন** — 9a-9j সব শেষ; tsc ০ error (২০২৬-০৯-২৫) |
-| 10 | Seed / content workflow | 🟡 **চলমান** — 10a + 10c ✅ সম্পন্ন (২০২৬-০৯-২৫); tsc ০ error, npm run build সফল (৫৪ পেজ)। বাকি: 10d (ইংরেজি `.en.md` ফাইল — ইউজার পরে লিখবেন) + 10e (seeder চালানো + DB যাচাই) |
-| 11 | চূড়ান্ত টেস্ট | ⏸️ শুরু হয়নি |
+| 10 | Seed / content workflow | ✅ **সম্পন্ন** — 10a–10e সব শেষ (২০২৬-০৯-২৬); seeder ১৭টি lesson Bn+En সহ DB-তে ঢুকেছে; commit `9360cb3` |
+| 11 | চূড়ান্ত টেস্ট | ✅ **সম্পন্ন** — ২০২৬-০৯-২৬; সব public রুট ২০০, ভাষা-সঠিক কনটেন্ট প্রমাণিত, SEO ঠিক, console clean |
 
-**বর্তমান অবস্থান:** **PART 10a + 10c ✅ সম্পন্ন (২০২৬-০৯-২৫)** — নতুন seeder `.en.md` সাপোর্ট + safe prune সহ। tsc ০ error, build সফল। পরবর্তী: **Part 10d — `.en.md` ফাইল লেখা** (ইউজার পরে করবেন), তারপর **10e — seeder চালানো + DB যাচাই**।
+**বর্তমান অবস্থান:** **PART 11 ✅ সম্পন্ন (২০২৬-০৯-২৬)** — পুরো সাইট হাতে ঘুরে যাচাই করা হয়েছে (browser automation)। মোট **০টি নতুন bug** পাওয়া গেছে। পরবর্তী (ঐচ্ছিক): **8d — tools/* sub-pages locale-aware** + `HomeExtras.tsx` hardcoded বাংলা। সব শেষ হলে deploy-এর জন্য প্রস্তুত।
 
 ---
 
@@ -170,6 +170,53 @@ npm run seed:course -- --prune     → অপ্রয়োজনীয় less
 ### 📌 NEXT-STEPS.md — পরের কাজের গাইড
 
 `NEXT-STEPS.md` ফাইলটা প্রজেক্টের root-এ যোগ করা হয়েছে — যেকোনো নতুন AI বা ডেভ এই ফাইল পড়ে জানে পরের কাজ কী।
+
+### ✅ PART 11 — চূড়ান্ত টেস্ট (সম্পূর্ণ — ২০২৬-০৯-২৬)
+
+**পদ্ধতি:** dev server চালু (PID 6276, Port 3000), browser automation + http_request দিয়ে পেজ-বাই-পেজ যাচাই।
+
+**১) Static check:**
+- `npx tsc --noEmit` → ০ error ✅
+- `npm run build` → সফল (৫৪ পেজ) ✅
+
+**২) Public সাইট — সব HTTP 200:**
+- `/bn` ও `/en` হোম ✅
+- `/bn/tutorials` ও `/en/tutorials` listing ✅
+- `/bn/tutorials/html` ও `/en/tutorials/html` ✅
+- `/bn/tutorials/html/introduction` ও `/en/...` — **টাইটেল ভাষা-সঠিক** (`HTML কী?` vs `What is HTML?`) ✅
+- lesson page (`/bn/tutorials/html/introduction/what-is-html`) ✅
+- `/bn/references`, `/en/challenges` ✅
+- `/bn/playground`, `/bn/search`, `/bn/progress`, `/bn/about` ✅
+- `/bn/tools`, `/bn/tools/base64` ✅ (⚠️ tools-এর টাইটেল এখনো ইংরেজি — 8d-তে ঠিক হবে)
+
+**৩) SEO যাচাই (HTML response থেকে):**
+- `<html lang="bn">` ✅
+- `<link rel="canonical" href=".../bn/tutorials/html">` ✅
+- `<link rel="alternate" hreflang="bn|en|x-default">` — তিনটাই আছে ✅
+- `<meta property="og:locale" content="bn_BD">` ✅
+- `/sitemap.xml` → 200 ✅; `/robots.txt` → 200 ✅
+
+**৪) Admin panel:**
+- `/admin/login` → 200, `<meta name="robots" content="noindex, nofollow">` ✅
+- `/admin/dashboard` (লগইন ছাড়া) → login form-এ রিডাইরেক্ট (proxy.ts কাজ করছে) ✅
+
+**৫) API:**
+- `/api/search?q=HTML` → 200, সঠিক JSON (HTML + CSS tutorial) ✅
+
+**৬) Console:**
+- ব্রাউজার console-এ কোনো error নেই ✅ (শুধু `[HMR] connected` আর dev log)
+
+**ফলাফল:** মোট **০টি নতুন bug** পাওয়া গেছে। সাইট production-এর জন্য প্রায় প্রস্তুত।
+
+**বাকি (ঐচ্ছিক, Part 11-এর বাইরে):**
+- 8d — `tools/*` sub-pages locale-aware করা
+- `robots.ts` থেকে `/bn/tools/` disallow সরানো (tools localized হলে)
+- `HomeExtras.tsx`-এর hardcoded বাংলা ইংরেজিতে
+- পুরনো DB record যেগুলোতে `*En` খালি — re-save দরকার
+
+**⚠️ dev server এখনো চালু আছে** (PID 6276, Port 3000) — ইউজার নিজে browser-এ দেখতে পারবেন।
+
+---
 
 ### ✅ PART 9d — ChaptersManager dual-input (সম্পূর্ণ)
 
