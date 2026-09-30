@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 // ─────────────────────────────────────────────────────────────
 //  সীমা ও অনুমোদিত ফরম্যাট
@@ -75,7 +76,7 @@ function bytesToBase64(bytes: Uint8Array): string {
 }
 
 /** Base64 → bytes (ভ্যালিডেশন + প্যাডিং ঠিক করে) */
-function base64ToBytes(input: string): Uint8Array {
+function base64ToBytes(input: string, msgs: { badLength: string; badChars: string }): Uint8Array {
   let normalized = input.replace(/\s+/g, '')
 
   // data URI হলে শুধু payload নাও
@@ -85,10 +86,10 @@ function base64ToBytes(input: string): Uint8Array {
   const remainder = normalized.length % 4
   if (remainder === 2) normalized += '=='
   else if (remainder === 3) normalized += '='
-  else if (remainder === 1) throw new Error('Base64 দৈর্ঘ্য ভুল (৪-এর গুণিতক হতে হবে)')
+  else if (remainder === 1) throw new Error(msgs.badLength)
 
   if (!/^[A-Za-z0-9+/]*={0,2}$/.test(normalized)) {
-    throw new Error('এটি ভ্যালিড Base64 নয় — অননুমোদিত অক্ষর আছে')
+    throw new Error(msgs.badChars)
   }
 
   const binary = atob(normalized)
@@ -109,6 +110,8 @@ const TOGGLE_BASE =
   'rounded-xl px-3.5 py-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/40'
 
 export default function ImageBase64Tool() {
+  const dict = useDict()
+  const t = dict.toolUi.imageBase64
   const [mode, setMode] = useState<Mode>('toBase64')
 
   // toBase64 state
@@ -143,12 +146,12 @@ export default function ImageBase64Tool() {
     setError('')
 
     if (picked.size === 0) {
-      setError('ফাইলটি খালি (0 byte)।')
+      setError(t.errEmptyFile)
       return
     }
     if (picked.size > MAX_FILE_BYTES) {
       setError(
-        `ফাইল অনেক বড় (${formatBytes(picked.size)})। সর্বোচ্চ ${formatBytes(MAX_FILE_BYTES)} অনুমোদিত।`
+        t.errTooBigTpl.replace('{size}', formatBytes(picked.size)).replace('{max}', formatBytes(MAX_FILE_BYTES))
       )
       return
     }
@@ -163,7 +166,7 @@ export default function ImageBase64Tool() {
       const sniffed = sniffImageType(bytes)
       if (!sniffed) {
         setError(
-          'এটি অনুমোদিত ছবি নয়। শুধু PNG, JPEG, GIF বা WEBP গ্রহণ করা হয় (SVG নিরাপত্তার কারণে বাদ)।'
+          t.errBadType
         )
         setFile(null)
         setFileMime(null)
@@ -179,7 +182,7 @@ export default function ImageBase64Tool() {
       setPreviewUrl(dataUri)
       setBase64(dataUri.split(',')[1] ?? '')
     } catch {
-      setError('ফাইল পড়া যায়নি।')
+      setError(t.errReadFail)
     } finally {
       setBusy(false)
     }
@@ -205,21 +208,21 @@ export default function ImageBase64Tool() {
     if (!trimmed) return
 
     if (raw.length > MAX_BASE64_CHARS) {
-      setError(`ইনপুট অনেক বড় (${formatBytes(raw.length)})।`)
+      setError(t.errInputTooBigTpl.replace('{size}', formatBytes(raw.length)))
       return
     }
 
     try {
-      const bytes = base64ToBytes(trimmed)
+      const bytes = base64ToBytes(trimmed, { badLength: t.errBadLength, badChars: t.errBadChars })
 
       // ইউজারের দেওয়া MIME নয় — bytes থেকে নিজে চেনা হয়
       const sniffed = sniffImageType(bytes)
       if (!sniffed) {
-        setError('এটি অনুমোদিত ছবির Base64 নয় (PNG / JPEG / GIF / WEBP হতে হবে)।')
+        setError(t.errNotImageBase64)
         return
       }
       if (bytes.length > MAX_FILE_BYTES) {
-        setError(`ছবিটি অনেক বড় (${formatBytes(bytes.length)})।`)
+        setError(t.errImageTooBigTpl.replace('{size}', formatBytes(bytes.length)))
         return
       }
 
@@ -241,7 +244,7 @@ export default function ImageBase64Tool() {
       copyTimer.current = window.setTimeout(() => setCopied(false), 1500)
       setError('')
     } catch {
-      setError('ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।')
+      setError(t.errClipboard)
     }
   }
 
@@ -260,14 +263,14 @@ export default function ImageBase64Tool() {
     <div className="space-y-4">
       {/* ─── Mode toggle ─── */}
       <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] p-3">
-        <div role="group" aria-label="মোড" className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5">
+        <div role="group" aria-label={t.modeAria} className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5">
           <button
             type="button"
             onClick={() => setMode('toBase64')}
             aria-pressed={mode === 'toBase64'}
             className={`${TOGGLE_BASE} ${mode === 'toBase64' ? 'bg-[#22C55E] text-black' : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]'}`}
           >
-            ছবি → Base64
+            {t.tabToBase64}
           </button>
           <button
             type="button"
@@ -275,12 +278,12 @@ export default function ImageBase64Tool() {
             aria-pressed={mode === 'toImage'}
             className={`${TOGGLE_BASE} ${mode === 'toImage' ? 'bg-[#22C55E] text-black' : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]'}`}
           >
-            Base64 → ছবি
+            {t.tabToImage}
           </button>
         </div>
 
         {mode === 'toBase64' && fileMime && (
-          <div role="group" aria-label="আউটপুট ফরম্যাট" className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5">
+          <div role="group" aria-label={t.outputAria} className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5">
             <button
               type="button"
               onClick={() => setOutputKind('datauri')}
@@ -309,7 +312,7 @@ export default function ImageBase64Tool() {
               aria-disabled={busy}
               className={`${BTN_PRIMARY} cursor-pointer ${busy ? 'pointer-events-none opacity-40' : ''}`}
             >
-              📁 ছবি বাছুন
+              {t.pickBtn}
             </label>
             <button
               type="button"
@@ -317,10 +320,10 @@ export default function ImageBase64Tool() {
               disabled={!outputText}
               className={BTN_GHOST}
             >
-              {copied ? '✓ কপি হয়েছে' : '⧉ Copy'}
+              {copied ? t.copiedDataUri : '⧉ Copy'}
             </button>
             <button type="button" onClick={clearImage} disabled={!file} className={BTN_GHOST}>
-              ✕ Clear
+              {t.clearBtn}
             </button>
           </>
         ) : (
@@ -331,7 +334,7 @@ export default function ImageBase64Tool() {
               disabled={!decodedUrl}
               className={BTN_GHOST}
             >
-              {copied ? '✓ কপি হয়েছে' : '⧉ Copy Data URI'}
+              {copied ? t.copiedDataUri : t.copyDataUri}
             </button>
             <button
               type="button"
@@ -345,7 +348,7 @@ export default function ImageBase64Tool() {
               disabled={!base64Input}
               className={BTN_GHOST}
             >
-              ✕ Clear
+              {t.clearBtn}
             </button>
           </>
         )}
@@ -408,7 +411,7 @@ export default function ImageBase64Tool() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={previewUrl}
-                    alt="নির্বাচিত ছবির প্রিভিউ"
+                    alt={t.previewAlt}
                     className="max-h-[220px] max-w-full rounded-2xl border border-slate-200 object-contain dark:border-white/10"
                   />
                   {file && (
@@ -420,13 +423,13 @@ export default function ImageBase64Tool() {
               ) : (
                 <>
                   <span className="text-5xl" aria-hidden>🖼️</span>
-                  <p className="text-sm font-semibold">এখানে ছবি টেনে ছাড়ুন</p>
+                  <p className="text-sm font-semibold">{t.dragTitle}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    অথবা এই বক্সে ক্লিক করে{' '}
-                    <span className="font-semibold text-[#22C55E]">ছবি বাছুন</span>
+                    {t.dragOrClick}{' '}
+                    <span className="font-semibold text-[#22C55E]">{t.pickLink}</span>
                   </p>
                   <p className="font-mono text-[10px] text-slate-400">
-                    PNG · JPEG · GIF · WEBP — সর্বোচ্চ {formatBytes(MAX_FILE_BYTES)}
+                    {t.formatsHintTpl.replace('{max}', formatBytes(MAX_FILE_BYTES))}
                   </p>
                 </>
               )}
@@ -446,7 +449,7 @@ export default function ImageBase64Tool() {
               </span>
             </div>
             <pre className="h-[340px] overflow-auto whitespace-pre-wrap break-all p-4 font-mono text-[12px] leading-relaxed text-slate-900 dark:text-slate-100">
-              {outputText || <span className="text-slate-400">Base64 এখানে দেখাবে...</span>}
+              {outputText || <span className="text-slate-400">{t.outPlaceholder}</span>}
             </pre>
           </div>
         </div>
@@ -472,8 +475,8 @@ export default function ImageBase64Tool() {
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
-              aria-label="Base64 ইনপুট"
-              placeholder="data:image/png;base64,... অথবা শুধু Base64 পেস্ট করুন"
+              aria-label={t.decodeInputAria}
+              placeholder={t.decodePlaceholder}
               className="h-[340px] w-full resize-y bg-transparent p-4 font-mono text-[12px] leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
             />
           </div>
@@ -496,7 +499,7 @@ export default function ImageBase64Tool() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={decodedUrl}
-                    alt="ডিকোড করা ছবির প্রিভিউ"
+                    alt={t.decodedAlt}
                     className="max-h-[220px] max-w-full rounded-2xl border border-slate-200 object-contain dark:border-white/10"
                   />
                   <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
@@ -507,14 +510,14 @@ export default function ImageBase64Tool() {
                     download={`decoded.${decodedMime === 'image/jpeg' ? 'jpg' : (decodedMime?.split('/')[1] ?? 'png')}`}
                     className="rounded-xl border border-[#22C55E] bg-[#22C55E]/10 px-4 py-2 text-xs font-semibold text-[#15803d] transition hover:bg-[#22C55E]/20 dark:text-[#22C55E]"
                   >
-                    ⬇ ডাউনলোড
+                    {t.downloadBtn}
                   </a>
                 </>
               ) : (
                 <>
                   <span className="text-5xl" aria-hidden>🖼️</span>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    Base64 পেস্ট করলে ছবি এখানে দেখাবে
+                    {t.decodedPlaceholder}
                   </p>
                 </>
               )}
@@ -542,7 +545,7 @@ export default function ImageBase64Tool() {
             }`}
           >
             {error
-              ? '✕ সমস্যা'
+              ? t.statusError
               : mode === 'toBase64'
                 ? fileMime
                   ? '✓ রূপান্তর হয়েছে'
@@ -567,7 +570,7 @@ export default function ImageBase64Tool() {
           )}
 
           <span className="ml-auto hidden text-[11px] text-slate-400 sm:block">
-            🔒 ফাইল আপনার ব্রাউজার ছাড়ে না
+            {t.privacyNote}
           </span>
         </div>
 
