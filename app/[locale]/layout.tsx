@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary, getDictionarySync } from "@/lib/i18n/dictionaries";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
+import ThemeSync from "@/components/ThemeSync";
 import "../globals.css";
 
 // ============================================================
@@ -92,6 +93,7 @@ export default async function LocaleRootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         <I18nProvider locale={locale} dict={dict}>
+          <ThemeSync />
           {children}
         </I18nProvider>
       </body>
