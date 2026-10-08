@@ -34,12 +34,7 @@ prisma_migrate, uninstall_package, edit_multiple_files এর মতো
 destructive action এর আগে অবশ্যই user কে warn করবে — "এটা revert 
 করা যাবে না, চালিয়ে যাবো?" বলে explicit confirmation নিবে।
 
-Rule 9 — RULES CHECK: প্রতিটা নতুন conversation এর শুরুতে RULES.md 
-এবং memory.json পড়ে নিবে — কোনো command এই rules এর বিরুদ্ধে হলে 
-সাথে সাথে থামবে এবং বলবে "এই request Rule X.Y ভাঙছে" — silently 
-rule break করবে না।
-
-Rule 10 — HONEST UNCERTAINTY: যদি কোনো প্রশ্নের উত্তর 100% না জানা 
+Rule 9 — HONEST UNCERTAINTY: যদি কোনো প্রশ্নের উত্তর 100% না জানা 
 থাকে, "জানি না" বলবে — আন্দাজে উত্তর দেবে না, বানিয়ে বলবে না, 
 আধা-সত্য বলবে না — "আমি জানি না, তবে আমি যাচাই করে জানতে পারি" 
 এটাই সঠিক উত্তর।
