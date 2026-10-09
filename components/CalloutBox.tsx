@@ -17,10 +17,10 @@ const CONFIG: Record<
   { label: string; icon: string; light: string; dark: string }
 > = {
   note: {
-    label: 'নোট',
+    label: 'Note',
     icon: '📌',
-    light: 'bg-amber-50 border-amber-400 text-amber-900',
-    dark: 'dark:bg-amber-950/40 dark:border-amber-700 dark:text-amber-200',
+    light: 'bg-[#ffffcc] border-[#4CAF50] text-gray-900 shadow-sm',
+    dark: 'dark:bg-[#ffffcc] dark:border-[#4CAF50] dark:text-gray-900 shadow-sm',
   },
   warn: {
     label: 'সতর্কতা',
@@ -44,6 +44,8 @@ const CONFIG: Record<
 
 export default function CalloutBox({ variant, children }: Props) {
   const cfg = CONFIG[variant]
+  const isHtml = typeof children === 'string' && /<[a-z][\s\S]*>/i.test(children)
+
   return (
     <div
       className={`my-4 rounded-lg border-l-4 px-4 py-3 ${cfg.light} ${cfg.dark}`}
@@ -52,9 +54,16 @@ export default function CalloutBox({ variant, children }: Props) {
         <span aria-hidden="true">{cfg.icon}</span>
         <span>{cfg.label}</span>
       </div>
-      <div className="whitespace-pre-line text-[14.5px] leading-relaxed">
-        {children}
-      </div>
+      {isHtml ? (
+        <div
+          className="text-[14.5px] leading-relaxed lesson-html"
+          dangerouslySetInnerHTML={{ __html: children as string }}
+        />
+      ) : (
+        <div className="whitespace-pre-line text-[14.5px] leading-relaxed">
+          {children}
+        </div>
+      )}
     </div>
   )
 }

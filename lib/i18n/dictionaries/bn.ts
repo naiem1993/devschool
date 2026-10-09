@@ -558,7 +558,8 @@ const bn = {
 
   // ── Hero demo code ও typing (components/HeroSection.tsx) ──
   heroDemo: {
-    html: '<h1>হ্যালো, DevSchool! 👋</h1>\\n<p>আমি কোডিং শিখছি।</p>',
+    html: `<h1>হ্যালো, DevSchool! 👋</h1>
+<p>আমি কোডিং শিখছি।</p>`,
     js: 'console.log("হ্যালো, DevSchool!");',
     typing1: 'npm create devschool@latest',
     typing2: 'শেখা শুরু হোক 🚀',

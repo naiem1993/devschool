@@ -94,13 +94,33 @@ function balanceHtmlChunks(tokens: Token[]): Token[] {
 }
 
 function tokenize(raw: string): Token[] {
+  const preprocessed = raw
+    .replace(/<blockquote>([\s\S]*?)<\/blockquote>/gi, (_, body) => {
+      return `[[note]]\n${body.trim()}\n[[/note]]`
+    })
+    .replace(
+      /<div[^>]*class\s*=\s*(["']?)([^"'>]*\b(note|warn|tip|important|w3-note|w3-warning|w3-info|w3-success|alert)\b[^"']*)\1[^>]*>([\s\S]*?)<\/div>/gi,
+      (match, q, cls, keyword, body) => {
+        let variant: 'note' | 'warn' | 'tip' | 'important' = 'note'
+        const lowerCls = cls.toLowerCase()
+        if (lowerCls.includes('warn') || lowerCls.includes('danger') || lowerCls.includes('error') || lowerCls.includes('warning')) {
+          variant = 'warn'
+        } else if (lowerCls.includes('tip') || lowerCls.includes('success')) {
+          variant = 'tip'
+        } else if (lowerCls.includes('important') || lowerCls.includes('info')) {
+          variant = 'important'
+        }
+        return `[[${variant}]]\n${body.trim()}\n[[/${variant}]]`
+      }
+    )
+
   const tokens: Token[] = []
   let cursor = 0
   let m: RegExpExecArray | null
   MARKER_RE.lastIndex = 0
 
-  while ((m = MARKER_RE.exec(raw)) !== null) {
-    const before = raw.slice(cursor, m.index)
+  while ((m = MARKER_RE.exec(preprocessed)) !== null) {
+    const before = preprocessed.slice(cursor, m.index)
     if (before.trim()) tokens.push({ kind: 'html', value: sanitize(before) })
 
     if (m[1]) {
@@ -130,7 +150,7 @@ function tokenize(raw: string): Token[] {
     cursor = m.index + m[0].length
   }
 
-  const tail = raw.slice(cursor)
+  const tail = preprocessed.slice(cursor)
   if (tail.trim()) tokens.push({ kind: 'html', value: sanitize(tail) })
   return balanceHtmlChunks(tokens)
 }

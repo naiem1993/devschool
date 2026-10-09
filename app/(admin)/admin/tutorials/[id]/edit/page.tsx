@@ -37,8 +37,11 @@ export default async function EditTutorialPage({
           initial={{
             id: tutorial.id,
             titleBn: tutorial.titleBn,
+            titleEn: tutorial.titleEn || '',
             slug: tutorial.slug,
             descriptionBn: tutorial.descriptionBn || '',
+            descriptionEn: tutorial.descriptionEn || '',
+            icon: tutorial.icon || '',
             difficulty: tutorial.difficulty,
             duration: tutorial.duration,
             isActive: tutorial.isActive,

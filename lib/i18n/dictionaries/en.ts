@@ -550,7 +550,8 @@ const en: Dictionary = {
 
   // ── Hero demo code ও typing ──
   heroDemo: {
-    html: '<h1>Hello, DevSchool! 👋</h1>\\n<p>I am learning to code.</p>',
+    html: `<h1>Hello, DevSchool! 👋</h1>
+<p>I am learning to code.</p>`,
     js: 'console.log("Hello, DevSchool!");',
     typing1: 'npm create devschool@latest',
     typing2: 'Let the learning begin 🚀',
