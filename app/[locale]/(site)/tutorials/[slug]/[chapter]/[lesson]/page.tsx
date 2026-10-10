@@ -216,7 +216,7 @@ export default async function LessonPage({ params }: PageProps) {
 
       {currentL.content && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={currentL.content} lessonPath={lessonPath} />
+          <LessonContent content={currentL.content} lessonPath={lessonPath} locale={loc} />
         </div>
       )}
 

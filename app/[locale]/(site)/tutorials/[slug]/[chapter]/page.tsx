@@ -187,7 +187,7 @@ export default async function ChapterPage({ params }: PageProps) {
 
       {displayContent && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={displayContent} slug={tutorial.slug} lessonPath={ch.slug} />
+          <LessonContent content={displayContent} slug={tutorial.slug} lessonPath={ch.slug} locale={loc} />
         </div>
       )}
 
