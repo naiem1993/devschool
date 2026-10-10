@@ -8,6 +8,7 @@ import TryIt from '@/components/TryIt'
 import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeChapter, localizeLesson } from '@/lib/i18n/localize'
+import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string }>
@@ -81,6 +82,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ChapterPage({ params }: PageProps) {
   const { locale, slug, chapter } = await params
   const loc = locale as Locale
+  const t = TRYIT_TEXT[loc === 'bn' ? 'bn' : 'en']
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -165,10 +167,11 @@ export default async function ChapterPage({ params }: PageProps) {
       tutorialTitle={tutorialTitle}
       nav={nav}
       active={{ chapterSlug: ch.slug, lessonSlug: null }}
+      locale={loc === 'bn' ? 'bn' : 'en'}
     >
       {/* Breadcrumb */}
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
-        <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
+        <Link href="/" className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
         <span>/</span>
         <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
           {tutorialTitle}
@@ -218,7 +221,7 @@ export default async function ChapterPage({ params }: PageProps) {
             href={`/tutorials/${tutorial.slug}`}
             className="px-5 py-2.5 rounded-lg border border-emerald-300 dark:border-emerald-800 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-[#22C55E]/10 hover:border-[#22C55E] transition-colors"
           >
-            ❮ Home
+            {t.home}
           </Link>
         )}
 
@@ -227,14 +230,14 @@ export default async function ChapterPage({ params }: PageProps) {
             href={`/tutorials/${tutorial.slug}/${nextChapter.slug}`}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
-            Next ❯
+            {t.next}
           </Link>
         ) : (
           <Link
             href={`/tutorials/${tutorial.slug}`}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
-            সম্পন্ন ✓
+            {t.complete}
           </Link>
         )}
       </div>

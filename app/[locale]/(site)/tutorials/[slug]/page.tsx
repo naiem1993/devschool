@@ -115,6 +115,7 @@ export default async function TutorialPage({ params }: PageProps) {
       tutorialTitle={localized.title}
       nav={nav}
       active={{ chapterSlug: null, lessonSlug: null }}
+      locale={locale === 'bn' ? 'bn' : 'en'}
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
         <Link href="/" className="hover:text-[#22C55E]">

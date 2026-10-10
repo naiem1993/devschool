@@ -95,12 +95,13 @@ export default async function TryItLessonPage({ params }: PageProps) {
   const code = currentL.codeExample || EMPTY_CODE
 
   return (
-    <TryItFullClient
-      code={code}
-      tutorialTitle={tutorialTitle}
-      chapterTitle={currentL.title}
-      slug={tutorial.slug}
-      lessonPath={`${ch.slug}/${current.slug}`}
-    />
-  )
+  <TryItFullClient
+    code={code}
+    tutorialTitle={tutorialTitle}
+    chapterTitle={currentL.title}
+    slug={tutorial.slug}
+    lessonPath={`${ch.slug}/${current.slug}`}
+    sessionKey={`tryit:${tutorial.slug}:${ch.slug}/${current.slug}`}
+  />
+)
 }

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 
 type Props = {
   code: string
@@ -10,6 +12,8 @@ type Props = {
   slug: string
   /** lesson path — e.g. "html/basic" or "html/basic/exercises" */
   lessonPath: string
+  /** 🟢 Optional: sessionStorage key — inline editor এর edits পড়ার জন্য */
+  sessionKey?: string
 }
 
 /**
@@ -17,6 +21,7 @@ type Props = {
  * — বাঁ দিকে বড় editor, ডানে বড় preview
  * — Ctrl/Cmd + Enter চাপলেই run
  * — theme-aware (সাইটের <html class="dark"> ট্র্যাক করে)
+ * — 🟢 sessionStorage থেকে inline editor এর শেষ কোড লোড করে
  */
 export default function TryItFullClient({
   code,
@@ -24,12 +29,33 @@ export default function TryItFullClient({
   chapterTitle,
   slug,
   lessonPath,
+  sessionKey,
 }: Props) {
+  const pathname = usePathname() || ''
+  const locale: 'bn' | 'en' = pathname.startsWith('/en') ? 'en' : 'bn'
+  const t = TRYIT_TEXT[locale]
+
   const [src, setSrc] = useState(code)
   const [isDark, setIsDark] = useState(true)
   const [copied, setCopied] = useState(false)
   const frameRef = useRef<HTMLIFrameElement | null>(null)
 
+  /* 🟢 sessionStorage থেকে inline editor এর কোড লোড করো (মাউন্টে একবার) */
+  useEffect(() => {
+  if (!sessionKey) return
+  try {
+    const saved = localStorage.getItem(sessionKey)
+    if (saved && saved.trim()) {
+      setSrc(saved)
+      localStorage.removeItem(sessionKey)
+    }
+    // Debug: সব tryit keys দেখাও
+    const allKeys = Object.keys(localStorage).filter(k => k.startsWith('tryit'))
+  } catch (err) {
+  }
+}, [sessionKey])
+
+  /* theme sync */
   useEffect(() => {
     const root = document.documentElement
     const sync = () => setIsDark(root.classList.contains('dark'))
@@ -101,7 +127,7 @@ export default function TryItFullClient({
             href={`/tutorials/${slug}/${lessonPath}`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition-colors"
           >
-            ← ফিরে যান
+            {t.back}
           </Link>
           <span className="text-slate-300 dark:text-slate-700">|</span>
           <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
@@ -125,14 +151,14 @@ export default function TryItFullClient({
                   onClick={copy}
                   className="text-[11px] font-bold px-2.5 py-1 rounded-md border border-emerald-200/70 dark:border-emerald-900/50 text-slate-600 dark:text-slate-300 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition-colors"
                 >
-                  {copied ? '✓ কপি হয়েছে' : 'কপি'}
+                  {copied ? t.copied : t.copy}
                 </button>
                 <button
                   type="button"
                   onClick={reset}
                   className="text-[11px] font-bold px-2.5 py-1 rounded-md border border-emerald-200/70 dark:border-emerald-900/50 text-slate-600 dark:text-slate-300 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition-colors"
                 >
-                  রিসেট
+                  {t.reset}
                 </button>
               </div>
             </div>
@@ -154,14 +180,14 @@ export default function TryItFullClient({
           <section className="flex flex-col rounded-xl overflow-hidden border border-emerald-200/70 dark:border-emerald-900/50 bg-white dark:bg-[#0a0f0c] shadow-sm">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-emerald-200/70 dark:border-emerald-900/50 bg-[#f6f8f7] dark:bg-[#080c0a]">
               <span className="text-[11px] font-extrabold tracking-widest uppercase text-slate-500 dark:text-slate-400">
-                Result
+                {t.result}
               </span>
               <button
                 type="button"
                 onClick={run}
                 className="bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] font-extrabold text-[12.5px] px-4 py-1.5 rounded-md transition-colors"
               >
-                Run »
+                {t.runArrow}
               </button>
             </div>
             <iframe
@@ -173,7 +199,7 @@ export default function TryItFullClient({
         </div>
 
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-          টিপ: Ctrl / Cmd + <kbd className="px-1.5 py-0.5 rounded border border-emerald-200/70 dark:border-emerald-900/50 text-[10px]">Enter</kbd> চাপলে সাথে সাথে run হবে।
+          {t.fullTip}
         </p>
       </main>
     </div>

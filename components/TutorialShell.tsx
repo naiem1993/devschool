@@ -8,12 +8,14 @@ export default function TutorialShell({
   nav,
   active,
   children,
+  locale = 'bn',
 }: {
   tutorialSlug: string
   tutorialTitle: string
   nav: TutorialNav
   active?: SidebarActive
   children: React.ReactNode
+  locale?: 'bn' | 'en'
 }) {
   const activeState: SidebarActive = active || { chapterSlug: null, lessonSlug: null }
 
@@ -45,6 +47,7 @@ export default function TutorialShell({
             <TutorialPromo
               chapterCount={nav.chapters.length}
               currentChapter={currentChapterOrder}
+              locale={locale}
             />
           </div>
         </div>

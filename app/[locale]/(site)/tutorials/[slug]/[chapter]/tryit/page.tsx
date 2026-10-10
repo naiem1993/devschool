@@ -113,6 +113,7 @@ export default async function TryItChapterPage({ params }: PageProps) {
       chapterTitle={displayTitle}
       slug={tutorial.slug}
       lessonPath={ch.slug}
+      sessionKey={`tryit:${tutorial.slug}:${ch.slug}`}
     />
   )
 }

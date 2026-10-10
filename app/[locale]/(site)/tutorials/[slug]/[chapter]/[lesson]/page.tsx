@@ -8,6 +8,7 @@ import TryIt from '@/components/TryIt'
 import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeLesson } from '@/lib/i18n/localize'
+import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string; lesson: string }>
@@ -95,6 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function LessonPage({ params }: PageProps) {
   const { locale, slug, chapter, lesson } = await params
   const loc = locale as Locale
+  const t = TRYIT_TEXT[loc === 'bn' ? 'bn' : 'en']
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -176,7 +178,7 @@ export default async function LessonPage({ params }: PageProps) {
     prevLabel = '❮ ' + firstLessonL.title
   } else {
     prevHref = `/tutorials/${slug}`
-    prevLabel = '❮ Home'
+    prevLabel = t.home
   }
 
   let nextHref: string | null = null
@@ -194,9 +196,10 @@ export default async function LessonPage({ params }: PageProps) {
       tutorialTitle={tutorialTitle}
       nav={nav}
       active={{ chapterSlug: chapter, lessonSlug: current.slug }}
+      locale={loc === 'bn' ? 'bn' : 'en'}
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
-        <Link href="/" className="hover:text-[#22C55E]">হোম</Link>
+        <Link href="/" className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
         <span>/</span>
         <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
           {tutorialTitle}
@@ -216,7 +219,7 @@ export default async function LessonPage({ params }: PageProps) {
 
       {currentL.content && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={currentL.content} lessonPath={lessonPath} locale={loc} />
+          <LessonContent content={currentL.content} lessonPath={lessonPath} locale={loc} slug={tutorial.slug} />
         </div>
       )}
 
@@ -231,7 +234,13 @@ export default async function LessonPage({ params }: PageProps) {
         </div>
       )}
 
-      {currentL.codeExample && <TryIt code={currentL.codeExample} lessonPath={lessonPath} />}
+      {currentL.codeExample && (
+        <TryIt 
+          code={currentL.codeExample} 
+          lessonPath={lessonPath} 
+          slug={tutorial.slug} 
+        />
+      )}
 
       <div className="flex justify-between items-center gap-3 mt-10 pt-6 border-t border-emerald-200/60 dark:border-emerald-900/40">
         <Link
@@ -246,14 +255,14 @@ export default async function LessonPage({ params }: PageProps) {
             href={nextHref}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
-            Next ❯
+            {t.next}
           </Link>
         ) : (
           <Link
             href={`/tutorials/${tutorial.slug}`}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
-            সম্পন্ন ✓
+            {t.complete}
           </Link>
         )}
       </div>
