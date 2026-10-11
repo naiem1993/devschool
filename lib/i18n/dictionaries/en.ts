@@ -597,6 +597,12 @@ const en: Dictionary = {
     previewTitle: 'Preview',
     cssPreview: 'CSS preview — your styles will appear here',
     noOutput: '(no output)',
+    // 🟢 New keys
+    reset: '↺ Reset',
+    clear: '🗑 Clear',
+    emptyOutput: '▶ Click Run or press Ctrl+Enter...',
+    tipsLabel: '💡 Tips:',
+    tipsBody: 'Your code is auto-saved to localStorage, so it stays even if you refresh the browser. TypeScript currently only does syntax highlighting — a Web Worker will be added in a future update for full type checking.',
   },
 
   // ── Progress UI (ProgressClient.tsx — client) ──

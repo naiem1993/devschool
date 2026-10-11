@@ -201,13 +201,13 @@ export default function PlaygroundClient() {
             onClick={() => { setCode(SAMPLES[lang]); setOutput('') }}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition"
           >
-            ↺ রিসেট
+            {t.playgroundUi.reset}
           </button>
           <button
             onClick={() => { setCode(''); setOutput('') }}
             className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/40 rounded-xl text-xs font-semibold transition"
           >
-            🗑 ক্লিয়ার
+            {t.playgroundUi.clear}
           </button>
         </div>
       </div>
@@ -234,13 +234,14 @@ export default function PlaygroundClient() {
           />
         ) : (
           <pre className="p-4 text-xs text-emerald-300 font-mono overflow-auto h-[520px] whitespace-pre-wrap">
-            {output || '▶ রান বাটনে ক্লিক করো অথবা Ctrl+Enter চাপো...'}
+            {output || t.playgroundUi.emptyOutput}
           </pre>
         )}
       </div>
 
       <div className="lg:col-span-2 p-4 rounded-2xl bg-[#22C55E]/5 border border-[#22C55E]/20 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-        <strong className="text-[#22C55E]">💡 টিপস:</strong> কোড <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">localStorage</code>-এ auto-save হয়, তাই ব্রাউজার রিফ্রেশ করলেও তোমার কোড থাকবে। TypeScript এখন শুধু syntax highlight করে — type checking এর জন্য পরবর্তী আপডেটে Web Worker যোগ করা হবে।
+        <strong className="text-[#22C55E]">{t.playgroundUi.tipsLabel}</strong>{' '}
+        {t.playgroundUi.tipsBody}
       </div>
     </div>
   )

@@ -605,6 +605,12 @@ const bn = {
     previewTitle: 'প্রিভিউ',
     cssPreview: 'CSS প্রিভিউ — এখানে তোমার স্টাইল দেখাবে',
     noOutput: '(কোনো আউটপুট নেই)',
+    // 🟢 নতুন keys
+    reset: '↺ রিসেট',
+    clear: '🗑 ক্লিয়ার',
+    emptyOutput: '▶ রান বাটনে ক্লিক করো অথবা Ctrl+Enter চাপো...',
+    tipsLabel: '💡 টিপস:',
+    tipsBody: 'কোড localStorage-এ auto-save হয়, তাই ব্রাউজার রিফ্রেশ করলেও তোমার কোড থাকবে। TypeScript এখন শুধু syntax highlight করে — type checking এর জন্য পরবর্তী আপডেটে Web Worker যোগ করা হবে।',
   },
 
   // ── Progress UI (ProgressClient.tsx — ক্লায়েন্ট) ──
