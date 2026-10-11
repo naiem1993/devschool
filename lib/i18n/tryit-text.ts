@@ -12,13 +12,17 @@ type TryItText = {
   fullTip: string
   openFull: string
   back: string
-  // 🟢 Page-level buttons (chapter/lesson page)
+  // Page-level buttons
   home: string
   homeCrumb: string
   next: string
   complete: string
-  // 🟢 TryItTip quick fix — used in TryIt.tsx and TryItFullClient.tsx
   tipShort: string
+  // Tutorial page strings
+  tutorialsCrumb: string
+  whatYouLearn: string
+  noChapters: string
+  lessonsCount: string
 }
 
 export const TRYIT_TEXT: Record<TryItLocale, TryItText> = {
@@ -39,6 +43,10 @@ export const TRYIT_TEXT: Record<TryItLocale, TryItText> = {
     next: 'পরবর্তী ❯',
     complete: 'সম্পন্ন ✓',
     tipShort: 'Ctrl / ⌘ + Enter চাপলেও run হয়',
+    tutorialsCrumb: 'টিউটোরিয়াল',
+    whatYouLearn: 'এই টিউটোরিয়ালে যা যা শিখবেন',
+    noChapters: 'এখনো কোনো চ্যাপ্টার যোগ করা হয়নি।',
+    lessonsCount: 'lesson',
   },
   en: {
     editorTitle: 'Try it Yourself — Editor',
@@ -57,5 +65,9 @@ export const TRYIT_TEXT: Record<TryItLocale, TryItText> = {
     next: 'Next ❯',
     complete: 'Complete ✓',
     tipShort: 'Press Ctrl / ⌘ + Enter to run',
+    tutorialsCrumb: 'Tutorials',
+    whatYouLearn: 'What You Will Learn',
+    noChapters: 'No chapters added yet.',
+    lessonsCount: 'lessons',
   },
 }

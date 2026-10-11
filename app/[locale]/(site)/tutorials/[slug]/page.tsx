@@ -6,6 +6,7 @@ import TutorialShell from '@/components/TutorialShell'
 import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { localizeTutorial } from '@/lib/i18n/localize'
+import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>
@@ -82,6 +83,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TutorialPage({ params }: PageProps) {
   const { locale, slug } = await params
+  const t = TRYIT_TEXT[locale === 'bn' ? 'bn' : 'en']
 
   const tutorial = await prisma.tutorial
     .findUnique({
@@ -119,11 +121,11 @@ export default async function TutorialPage({ params }: PageProps) {
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
         <Link href="/" className="hover:text-[#22C55E]">
-          হোম
+          {t.homeCrumb}
         </Link>
         <span>/</span>
         <Link href="/tutorials" className="hover:text-[#22C55E]">
-          টিউটোরিয়াল
+          {t.tutorialsCrumb}
         </Link>
       </nav>
 
@@ -135,10 +137,10 @@ export default async function TutorialPage({ params }: PageProps) {
         </p>
       )}
 
-      <h2 className="text-xl font-bold mb-4">এই টিউটোরিয়ালে যা যা শিখবেন</h2>
+      <h2 className="text-xl font-bold mb-4">{t.whatYouLearn}</h2>
 
       {sortedChapters.length === 0 ? (
-        <p className="text-slate-500 dark:text-slate-400">এখনো কোনো চ্যাপ্টার যোগ করা হয়নি।</p>
+        <p className="text-slate-500 dark:text-slate-400">{t.noChapters}</p>
       ) : (
         <ol className="space-y-2 mb-8">
           {sortedChapters.map((c, i) => (
@@ -153,7 +155,7 @@ export default async function TutorialPage({ params }: PageProps) {
                 <span className="flex-1 text-sm font-medium">{c.title}</span>
                 {c.lessons.length > 0 && (
                   <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                    {c.lessons.length} lesson
+                    {c.lessons.length} {t.lessonsCount}
                   </span>
                 )}
               </Link>
