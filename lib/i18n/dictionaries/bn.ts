@@ -753,6 +753,35 @@ const bn = {
     errLoadFailed: 'অগ্রগতি লোড করা যায়নি।',
   },
 
+  // ── Quiz Widget (components/QuizWidget.tsx) ──
+  quiz: {
+    sectionTitle: '📝 কুইজ — নিজেকে যাচাই করুন',
+    questionOfTpl: 'প্রশ্ন {n} / {total}',
+    submitBtn: 'উত্তর জমা দিন',
+    nextBtn: 'পরবর্তী প্রশ্ন →',
+    finishBtn: 'কুইজ শেষ করুন',
+    correctLabel: '✅ সঠিক!',
+    wrongLabel: '❌ ভুল',
+    correctAnswerWas: 'সঠিক উত্তর:',
+    explanationLabel: '💡 ব্যাখ্যা:',
+    scoreTitle: '🎉 কুইজ সম্পন্ন!',
+    scoreTpl: 'আপনি পেয়েছেন {correct} / {total}',
+    scorePctTpl: 'স্কোর: {pct}%',
+    bestScoreTpl: 'সেরা স্কোর: {pct}%',
+    reviewBtn: 'উত্তর পর্যালোচনা',
+    tryAgainBtn: '↻ আবার চেষ্টা করুন',
+    reviewTitle: '📋 উত্তর পর্যালোচনা',
+    backBtn: '← কুইজে ফিরুন',
+    loadingTpl: 'কুইজ লোড হচ্ছে...',
+    errLoadFailed: 'কুইজ লোড করা যায়নি।',
+    errSubmitFailed: 'উত্তর যাচাই করা যায়নি — আবার চেষ্টা করুন।',
+    noQuiz: 'এই অংশে কোনো কুইজ নেই।',
+    yourAnswer: 'আপনার উত্তর:',
+    startBtn: 'শুরু করুন ▶',
+    startHintTpl: '{count}টি প্রশ্ন',
+    collapseBtn: 'লুকান ▲',
+  },
+
   // ── About পেজ (app/[locale]/about/page.tsx) ──
   about: {
     metaTitle: 'সম্পর্কে | DevSchool',

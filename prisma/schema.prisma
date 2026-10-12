@@ -92,6 +92,7 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   lessons Lesson[]
+  quizzes QuizQuestion[]
 
   @@unique([tutorialId, slug])
   @@index([tutorialId, sortOrder])
@@ -119,6 +120,8 @@ model Lesson {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  quizzes QuizQuestion[]
+
   @@unique([chapterId, slug])
   @@index([chapterId, sortOrder])
 }
@@ -130,10 +133,20 @@ model QuizQuestion {
   id          String   @id @default(cuid())
   tutorialId  String
   tutorial    Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+
+  /// ✅ Lesson-level linking (nested chapter-এর জন্য)
+  lessonId    String?
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  /// ✅ Chapter-level linking (single-page chapter-এর জন্য)
+  chapterId   String?
+  chapter     Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
   questionBn    String  @map("question")
   questionEn    String?
   explanationBn String? @map("explanation")
   explanationEn String?
+  /// Content-এ কততম [[quiz]] marker-এর জন্য (1-based)
   orderIndex  Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -142,6 +155,8 @@ model QuizQuestion {
   attempts QuizAttempt[]
 
   @@index([tutorialId])
+  @@index([lessonId, orderIndex])
+  @@index([chapterId, orderIndex])
 }
 
 model QuizOption {

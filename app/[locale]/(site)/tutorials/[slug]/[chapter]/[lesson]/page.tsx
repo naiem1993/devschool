@@ -10,6 +10,7 @@ import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeLesson } from '@/lib/i18n/localize'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 import { localeHref } from '@/lib/i18n/link'
+import { getLessonQuiz } from '@/lib/quiz-data'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string; lesson: string }>
@@ -191,6 +192,9 @@ export default async function LessonPage({ params }: PageProps) {
 
   const lessonPath = `${chapter}/${current.slug}`
 
+  // server-side quiz fetch (localized, correct answer ছাড়া)
+  const quizGroups = await getLessonQuiz(current.id, loc)
+
   return (
     <TutorialShell
       tutorialSlug={tutorial.slug}
@@ -220,7 +224,13 @@ export default async function LessonPage({ params }: PageProps) {
 
       {currentL.content && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={currentL.content} lessonPath={lessonPath} locale={loc} slug={tutorial.slug} />
+          <LessonContent
+            content={currentL.content}
+            lessonPath={lessonPath}
+            locale={loc}
+            slug={tutorial.slug}
+            quizGroups={quizGroups}
+          />
         </div>
       )}
 

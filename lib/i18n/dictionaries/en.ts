@@ -745,6 +745,35 @@ const en: Dictionary = {
     errLoadFailed: 'Could not load your progress.',
   },
 
+  // ── Quiz Widget (components/QuizWidget.tsx) ──
+  quiz: {
+    sectionTitle: '📝 Quiz — Test Your Knowledge',
+    questionOfTpl: 'Question {n} of {total}',
+    submitBtn: 'Submit Answer',
+    nextBtn: 'Next Question →',
+    finishBtn: 'Finish Quiz',
+    correctLabel: '✅ Correct!',
+    wrongLabel: '❌ Incorrect',
+    correctAnswerWas: 'Correct answer:',
+    explanationLabel: '💡 Explanation:',
+    scoreTitle: '🎉 Quiz Complete!',
+    scoreTpl: 'You scored {correct} of {total}',
+    scorePctTpl: 'Score: {pct}%',
+    bestScoreTpl: 'Best score: {pct}%',
+    reviewBtn: 'Review Answers',
+    tryAgainBtn: '↻ Try Again',
+    reviewTitle: '📋 Answer Review',
+    backBtn: '← Back to Quiz',
+    loadingTpl: 'Loading quiz...',
+    errLoadFailed: 'Could not load quiz.',
+    errSubmitFailed: 'Could not verify answer — please try again.',
+    noQuiz: 'No quiz in this section.',
+    yourAnswer: 'Your answer:',
+    startBtn: 'Start ▶',
+    startHintTpl: '{count} question(s)',
+    collapseBtn: 'Hide ▲',
+  },
+
   // ── About page (app/[locale]/about/page.tsx) ──
   about: {
     metaTitle: 'About | DevSchool',

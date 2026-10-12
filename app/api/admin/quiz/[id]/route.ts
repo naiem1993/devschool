@@ -16,7 +16,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
+    const { tutorialId, lessonId, chapterId, questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
     if (!questionBn || !questionEn || !Array.isArray(options)) {
       return NextResponse.json({ error: 'questionBn, questionEn, options — সব দরকার' }, { status: 400 })
     }
@@ -27,6 +27,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const q = await prisma.quizQuestion.update({
       where: { id },
       data: {
+        ...(tutorialId ? { tutorialId } : {}),
+        ...(lessonId !== undefined ? { lessonId: lessonId || null } : {}),
+        ...(chapterId !== undefined ? { chapterId: chapterId || null } : {}),
         questionBn,
         questionEn: String(questionEn).trim(),
         explanationBn,

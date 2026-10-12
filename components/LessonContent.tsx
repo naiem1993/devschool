@@ -1,15 +1,18 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
 import TryIt from './TryIt'
 import CalloutBox from './CalloutBox'
 import LessonLink from './LessonLink'
+import QuizWidget from './QuizWidget'
+import type { QuizGroupData } from '@/lib/quiz-data'
 
 type Props = {
   content: string
   slug?: string
   lessonPath?: string
   locale: 'bn' | 'en'
+  /** lesson-এর quiz groups (localized) — server থেকে আসে, orderIndex অনুযায়ী sorted */
+  quizGroups?: QuizGroupData[]
 }
 
 type Token =
@@ -17,9 +20,10 @@ type Token =
   | { kind: 'tryit'; code: string }
   | { kind: 'callout'; variant: 'note' | 'warn' | 'tip' | 'important'; body: string }
   | { kind: 'link'; href: string; label: string; color: 'green' | 'blue' | 'gray' }
+  | { kind: 'quiz' }
 
 const MARKER_RE =
-  /\[\[\s*(tryit|note|warn|tip|important)\s*\]\]\s*([\s\S]*?)\s*\[\[\s*\/\s*\1\s*\]\]|\[\[\s*link\s*:\s*([^|\]]+?)\s*\|\s*([^|\]]+?)\s*(?:\|\s*(\w+)\s*)?\]\]/gi
+  /\[\[\s*(tryit|note|warn|tip|important)\s*\]\]\s*([\s\S]*?)\s*\[\[\s*\/\s*\1\s*\]\]|\[\[\s*link\s*:\s*([^|\]]+?)\s*\|\s*([^|\]]+?)\s*(?:\|\s*(\w+)\s*)?\]\]|\[\[\s*quiz\s*\]\]/gi
 
 function tokenize(raw: string): Token[] {
   const tokens: Token[] = []
@@ -31,7 +35,10 @@ function tokenize(raw: string): Token[] {
     const before = raw.slice(cursor, m.index)
     if (before.trim()) tokens.push({ kind: 'md', value: before })
 
-    if (m[1]) {
+    // [[quiz]] marker
+    if (/^\[\[\s*quiz\s*\]\]$/i.test(m[0])) {
+      tokens.push({ kind: 'quiz' })
+    } else if (m[1]) {
       const name = m[1].toLowerCase()
       const body = (m[2] || '').trim()
       if (name === 'tryit') {
@@ -63,15 +70,22 @@ function tokenize(raw: string): Token[] {
   return tokens
 }
 
-export default function LessonContent({ content, slug, lessonPath, locale }: Props) {
+export default function LessonContent({
+  content,
+  slug,
+  lessonPath,
+  locale,
+  quizGroups,
+}: Props) {
   const tokens = tokenize(content)
   if (tokens.length === 0) return null
 
-  // 🟢 Markdown কোড ব্লক গুলোকে TryIt কম্পোনেন্টে রূপান্তর করার custom renderer
+  const groups = quizGroups ?? []
+  let quizMarkerIndex = -1
+
+  // Markdown code block → TryIt renderer
   const markdownComponents = {
-    // Fenced code block (```html ... ```) ধরার জন্য
     pre: ({ children }: { children?: React.ReactNode }) => {
-      // children হলো <code> element। তার ভেতর থেকে class এবং content বের করি
       const child = Array.isArray(children) ? children[0] : children
       if (!child || typeof child !== 'object' || !('props' in child)) {
         return <pre>{children}</pre>
@@ -81,7 +95,6 @@ export default function LessonContent({ content, slug, lessonPath, locale }: Pro
       const langMatch = /language-(\w+)/.exec(className)
       const lang = langMatch ? langMatch[1] : ''
 
-      // কোড extract করি
       const codeContent =
         typeof props.children === 'string'
           ? props.children
@@ -91,14 +104,10 @@ export default function LessonContent({ content, slug, lessonPath, locale }: Pro
 
       const trimmedCode = codeContent.replace(/\n$/, '')
 
-      // HTML / CSS / JS কোড হলে TryIt বানাই
       if (['html', 'css', 'javascript', 'js'].includes(lang.toLowerCase())) {
-        return (
-          <TryIt code={trimmedCode} slug={slug} lessonPath={lessonPath} />
-        )
+        return <TryIt code={trimmedCode} slug={slug} lessonPath={lessonPath} />
       }
 
-      // অন্য ভাষা হলে সাধারণ কোড ব্লক হিসেবে দেখাই
       return (
         <pre className="rounded-lg bg-[#050806] text-[#4ADE80] p-4 overflow-x-auto text-sm font-mono border border-emerald-900/30">
           <code>{trimmedCode}</code>
@@ -118,7 +127,6 @@ export default function LessonContent({ content, slug, lessonPath, locale }: Pro
             >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
                 components={markdownComponents}
               >
                 {t.value}
@@ -132,14 +140,24 @@ export default function LessonContent({ content, slug, lessonPath, locale }: Pro
         if (t.kind === 'callout') {
           return (
             <CalloutBox key={i} variant={t.variant} locale={locale}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                {t.body}
-              </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{t.body}</ReactMarkdown>
             </CalloutBox>
           )
         }
         if (t.kind === 'link') {
           return <LessonLink key={i} href={t.href} label={t.label} color={t.color} />
+        }
+        if (t.kind === 'quiz') {
+          quizMarkerIndex += 1
+          const group = groups[quizMarkerIndex]
+          if (!group || group.questions.length === 0) return null
+          return (
+            <QuizWidget
+              key={`quiz-${group.orderIndex}-${i}`}
+              lessonId={`${group.orderIndex}`}
+              questions={group.questions}
+            />
+          )
         }
         return null
       })}

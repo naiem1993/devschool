@@ -4,9 +4,9 @@ import prisma from '@/lib/prisma'
 // নতুন কুইজ প্রশ্ন (অপশনসহ)
 export async function POST(req: NextRequest) {
   try {
-    const { tutorialId, questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
-    if (!tutorialId || !questionBn || !questionEn || !Array.isArray(options) || options.length < 2) {
-      return NextResponse.json({ error: 'tutorialId, questionBn, questionEn, এবং অন্তত ২টি option দরকার' }, { status: 400 })
+    const { tutorialId, lessonId, chapterId, questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
+    if (!tutorialId || (!lessonId && !chapterId) || !questionBn || !questionEn || !Array.isArray(options) || options.length < 2) {
+      return NextResponse.json({ error: 'tutorialId, (lessonId বা chapterId), questionBn, questionEn, এবং অন্তত ২টি option দরকার' }, { status: 400 })
     }
     if (!options.every((o: any) => o.textEn && String(o.textEn).trim())) {
       return NextResponse.json({ error: 'প্রতিটি option-এর ইংরেজি text দরকার (জোড়া নিয়ম)' }, { status: 400 })
@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
     const q = await prisma.quizQuestion.create({
       data: {
         tutorialId,
+        lessonId: lessonId || null,
+        chapterId: chapterId || null,
         questionBn,
         questionEn: String(questionEn).trim(),
         explanationBn: explanationBn || null,

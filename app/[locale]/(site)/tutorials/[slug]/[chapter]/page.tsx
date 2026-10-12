@@ -10,6 +10,7 @@ import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeChapter, localizeLesson } from '@/lib/i18n/localize'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
 import { localeHref } from '@/lib/i18n/link'
+import { getLessonQuiz, getChapterQuiz } from '@/lib/quiz-data'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string }>
@@ -162,6 +163,15 @@ export default async function ChapterPage({ params }: PageProps) {
       ? sortedChapters[currentIdx + 1]
       : null
 
+  // Quiz:
+  //  • single-page chapter → chapter-level quiz
+  //  • nested chapter → first lesson-এর quiz (first lesson = এই URL)
+  const quizGroups = isSinglePage
+    ? await getChapterQuiz(ch.id, loc)
+    : firstLesson
+      ? await getLessonQuiz(firstLesson.id, loc)
+      : []
+
   return (
     <TutorialShell
       tutorialSlug={tutorial.slug}
@@ -191,7 +201,13 @@ export default async function ChapterPage({ params }: PageProps) {
 
       {displayContent && (
         <div className="space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-          <LessonContent content={displayContent} slug={tutorial.slug} lessonPath={ch.slug} locale={loc} />
+          <LessonContent
+            content={displayContent}
+            slug={tutorial.slug}
+            lessonPath={ch.slug}
+            locale={loc}
+            quizGroups={quizGroups}
+          />
         </div>
       )}
 
