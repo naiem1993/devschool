@@ -349,9 +349,9 @@ export default function JsonFormatter() {
           onChange={(event) => handleIndent(event.target.value as Indent)}
           className={SELECT}
         >
-          <option value="2">2 space</option>
-          <option value="4">4 space</option>
-          <option value="tab">Tab</option>
+          <option value="2">{t.indentTwoSpace}</option>
+          <option value="4">{t.indentFourSpace}</option>
+          <option value="tab">{t.indentTab}</option>
         </select>
 
         <span className="hidden flex-1 sm:block" />

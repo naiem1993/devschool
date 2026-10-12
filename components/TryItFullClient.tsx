@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
+import { localeHref } from '@/lib/i18n/link'
 
 type Props = {
   code: string
@@ -124,7 +125,7 @@ export default function TryItFullClient({
       <header className="sticky top-0 z-10 border-b border-emerald-200/60 dark:border-emerald-900/40 bg-white/85 dark:bg-[#080c0a]/85 backdrop-blur">
         <div className="max-w-[1500px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 flex-wrap">
           <Link
-            href={`/tutorials/${slug}/${lessonPath}`}
+            href={localeHref(locale, `/tutorials/${slug}/${lessonPath}`)}
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition-colors"
           >
             {t.back}

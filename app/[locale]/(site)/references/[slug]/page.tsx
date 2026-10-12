@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma'
 import CopyButton from './CopyButton'
 import { pickText, localizeReference } from '@/lib/i18n/localize'
 import type { Locale } from '@/lib/i18n/config'
+import { localeHref } from '@/lib/i18n/link'
+import { getDictionarySync } from '@/lib/i18n/dictionaries'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>
@@ -89,6 +91,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ReferenceDetailPage({ params }: PageProps) {
   const { locale, slug } = await params
+  const dict = getDictionarySync(locale as Locale)
 
   const reference = await prisma.reference
     .findUnique({
@@ -165,16 +168,16 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
               <li aria-hidden>/</li>
               <li>
                 <Link
-                  href="/references"
+                  href={localeHref(locale as Locale, "/references")}
                   className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
-                  রেফারেন্স
+                  {dict.nav.references}
                 </Link>
               </li>
               <li aria-hidden>/</li>
               <li>
                 <Link
-                  href={`/tutorials/${reference.tutorial.slug}`}
+                  href={localeHref(locale as Locale, `/tutorials/${reference.tutorial.slug}`)}
                   className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
                 >
                   {tutorialTitle}
@@ -193,7 +196,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
           <header className="mb-8">
             <div className="flex items-center gap-3 mb-4 flex-wrap">
               <Link
-                href={`/tutorials/${reference.tutorial.slug}`}
+                href={localeHref(locale as Locale, `/tutorials/${reference.tutorial.slug}`)}
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition"
               >
                 📂 {tutorialTitle}
@@ -295,7 +298,7 @@ export default async function ReferenceDetailPage({ params }: PageProps) {
                 {related.map((r) => (
                   <Link
                     key={r.id}
-                    href={`/references/${r.slug}`}
+                    href={localeHref(locale as Locale, `/references/${r.slug}`)}
                     className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 hover:shadow-md transition"
                   >
                     <div className="flex items-center justify-between mb-2 gap-2">

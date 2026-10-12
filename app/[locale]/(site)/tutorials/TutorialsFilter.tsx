@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 export type TutorialCard = {
   id: string
@@ -43,6 +44,7 @@ const difficultyLabel = (d: string, dict: ReturnType<typeof useDict>) => {
 
 export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard[] }) {
   const dict = useDict()
+  const locale = useLocale()
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all')
   const [sort, setSort] = useState<SortKey>('latest')
@@ -209,7 +211,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
             return (
               <Link
                 key={t.id}
-                href={`/tutorials/${t.slug}`}
+                href={localeHref(locale, `/tutorials/${t.slug}`)}
                 className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-3 gap-2">

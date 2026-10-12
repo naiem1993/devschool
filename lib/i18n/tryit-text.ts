@@ -46,7 +46,7 @@ export const TRYIT_TEXT: Record<TryItLocale, TryItText> = {
     tutorialsCrumb: 'টিউটোরিয়াল',
     whatYouLearn: 'এই টিউটোরিয়ালে যা যা শিখবেন',
     noChapters: 'এখনো কোনো চ্যাপ্টার যোগ করা হয়নি।',
-    lessonsCount: 'lesson',
+    lessonsCount: 'লেসন',
   },
   en: {
     editorTitle: 'Try it Yourself — Editor',

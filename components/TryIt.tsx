@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
+import { localeHref } from '@/lib/i18n/link'
 
 type Props = {
   code: string
@@ -117,7 +118,7 @@ export default function TryIt({
 
   const fullEditorHref =
     slug && lessonPath
-      ? `/tutorials/${slug}/${lessonPath}/tryit`
+      ? localeHref(locale, `/tutorials/${slug}/${lessonPath}/tryit`)
       : null
 
   return (

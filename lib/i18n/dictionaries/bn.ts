@@ -31,12 +31,14 @@ const bn = {
     close: 'বন্ধ করুন',
     yes: 'হ্যাঁ',
     no: 'না',
+    toggleMenu: 'মেনু টগল করুন',
+    logoAria: 'DevSchool লোগো',
   },
 
   // ── টিউটোরিয়াল পেজ (LessonSidebar, LessonContent, TryIt) ──
   tutorial: {
     example: 'উদাহরণ',
-    tryIt: 'Try It',
+    tryIt: 'নিজে চেষ্টা করুন',
     onThisPage: 'এই পেজে',
     chapters: 'চ্যাপ্টারসমূহ',
     lessons: 'লেসনসমূহ',
@@ -52,7 +54,7 @@ const bn = {
     // ── TryIt editor (components/TryIt.tsx) ──
     run: 'রান করুন',
     editor: 'এডিটর',
-    editorTitle: 'Try it Yourself — Editor',
+    editorTitle: 'নিজে চেষ্টা করুন — এডিটর',
     close: 'বন্ধ করুন',
   },
 
@@ -103,7 +105,7 @@ const bn = {
     // ── app/not-found.tsx — পূর্ণ 404 পেজ (client-side locale) ──
     metaTitle: '৪০৪ — পেজটি পাওয়া যায়নি | DevSchool',
     metaDescription: 'আপনি যে পেজটি খুঁজছেন সেটি নেই বা সরিয়ে ফেলা হয়েছে।',
-    statusPill: 'Page Not Found',
+    statusPill: 'পেজ পাওয়া যায়নি',
     bigTitle: 'পেজটি খুঁজে পাওয়া যায়নি',
     bigMessage:
       'আপনি যে লিংকটি খুলেছেন তা ভুল, মুছে ফেলা হয়েছে, অথবা কখনোই ছিল না। নিচের অপশন থেকে শেখা চালিয়ে যান।',
@@ -124,13 +126,14 @@ const bn = {
     retry: 'আবার চেষ্টা করুন',
 
     // ── (site)/error.tsx — site-level error boundary ──
-    statusPill: 'Something went wrong',
+    statusPill: 'কিছু একটা ভুল হয়েছে',
     bigTitle: 'কিছু একটা ভুল হয়েছে',
     bigMessage:
       'পেজটি লোড করার সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন — সমস্যা থেকে গেলে হোমপেজে ফিরে যান।',
     tryAgain: 'আবার চেষ্টা করুন 🔄',
     homePage: '🏠 হোমপেজ',
     footerText: 'DevSchool · বিনামূল্যে প্রোগ্রামিং শিখুন',
+    errorIdLabel: 'এরর আইডি:',
   },
 
   // ── Root layout SEO (app/[locale]/layout.tsx) ──
@@ -251,10 +254,60 @@ const bn = {
     allOption: 'সব',
     filterClear: 'ফিল্টার মুছুন ✕',
     noResultsDiffDesc: 'অন্য কীওয়ার্ড বা difficulty দিয়ে চেষ্টা করুন।',
+    difficultyLabels: {
+      Easy: 'সহজ',
+      Medium: 'মাঝারি',
+      Hard: 'কঠিন',
+    },
     solve: 'সমাধান →',
     pts: 'pts',
     errLoadTitle: 'কিছু একটা ভুল হয়েছে',
     errLoadMsg: 'চ্যালেঞ্জ লোড করার সময় একটি ত্রুটি ঘটেছে।',
+  },
+
+  // ── Challenge Workspace (app/[locale]/(site)/challenges/[id]/ChallengeWorkspace.tsx) ──
+  challengeWorkspace: {
+    editorLoading: 'এডিটর লোড হচ্ছে...',
+    editorFilename: 'solution.js',
+    btnRunning: '⌛ চলছে...',
+    btnRunTests: '▶ রান টেস্ট',
+    btnRunCustom: '⚡ রান',
+    btnReset: '↺ রিসেট',
+    btnShowSolution: '💡 সলিউশন দেখো',
+    btnHideSolution: '🙈 সলিউশন লুকাও',
+    tabTests: '🧪 টেস্ট কেস',
+    tabOutput: '📤 আউটপুট',
+    successBanner: '🎉 সব টেস্ট পাস! অসাধারণ কাজ।',
+    noTestCases: 'এই চ্যালেঞ্জে কোনো টেস্ট কেস নেই।',
+    hiddenTestLabelTpl: '🔒 লুকানো টেস্ট #{n}',
+    hiddenTestDetail: 'এই টেস্টের বিস্তারিত গোপন রাখা হয়েছে।',
+    hiddenCountNoteTpl: '🔒 {n} টি লুকানো টেস্ট কেস আছে — সেগুলো এখনই যাচাই হচ্ছে, শুধু ফলাফল (পাস/ফেল) দেখা যাবে।',
+    statusPassed: '✓ পাস',
+    statusFailed: '✗ ফেইল',
+    solutionRevealTitle: 'solution.js — শুধু শেষ উপায়ে দেখো!',
+    outputPlaceholder: '▶ রান বাটনে ক্লিক করো',
+    tipsLabel: '💡 টিপস:',
+    tipsBefore: 'তোমার কোডে অবশ্যই',
+    tipsMiddle: 'ফাংশন থাকতে হবে — যা',
+    tipsAfter: 'নিয়ে output রিটার্ন করবে।',
+    relatedTutorialTpl: '📚 সম্পর্কিত টিউটোরিয়াল: {title} →',
+    errTimeoutTpl: 'সময়সীমা শেষ ({n}s cap)',
+    testLabelTpl: 'টেস্ট #{n}',
+    inputLabel: 'ইনপুট:',
+    expectedLabel: 'প্রত্যাশিত:',
+    outputLabel: 'আউটপুট:',
+    emptyOutput: '(খালি)',
+    errPrefix: '[ত্রুটি]',
+  },
+
+  // ── Challenge Detail Page (app/[locale]/(site)/challenges/[id]/page.tsx) ──
+  challengeDetail: {
+    breadcrumbHome: 'হোম',
+    breadcrumbChallenges: 'চ্যালেঞ্জ',
+    metaNotFoundTitle: 'চ্যালেঞ্জ পাওয়া যায়নি | DevSchool',
+    metaTitleTpl: '{title} — কোড চ্যালেঞ্জ | DevSchool',
+    metaDescTpl: '{title} — {difficulty} লেভেলের কোডিং চ্যালেঞ্জ।',
+    starterCodeFallback: '// তোমার কোড এখানে লেখো\n',
   },
 
   // ── Search পেজ (app/[locale]/(site)/search/*) ──
@@ -392,6 +445,8 @@ const bn = {
       errClipboard: 'ক্লিপবোর্ডে কপি করা যায়নি — ব্রাউজার অনুমতি দেয়নি।',
       errBadLength: 'Base64 দৈর্ঘ্য ভুল (৪-এর গুণিতক হতে হবে)',
       errBadChars: 'এটি ভ্যালিড Base64 নয় — অননুমোদিত অক্ষর আছে',
+      urlSafeLabel: 'URL-safe',
+      swapLabel: '⇅ অদলবদল',
     },
 
     json: {
@@ -409,6 +464,9 @@ const bn = {
       btnValidate: '✓ Validate',
       btnSort: '⇅ Sort keys',
       indentLabel: 'ইনডেন্ট',
+      indentTwoSpace: '২ স্পেস',
+      indentFourSpace: '৪ স্পেস',
+      indentTab: 'ট্যাব',
       inputAria: 'JSON ইনপুট',
       labelInput: 'Input',
       labelOutput: 'Output',
@@ -459,6 +517,12 @@ const bn = {
       harmonyA1: 'অ্যানালগাস −30°',
       harmonyA2: 'অ্যানালগাস +30°',
       selectAriaTpl: 'নির্বাচন {v}',
+      red: 'লাল',
+      green: 'সবুজ',
+      blue: 'নীল',
+      hue: 'হিউ',
+      saturation: 'স্যাচুরেশন',
+      lightness: 'লাইটনেস',
     },
 
     imageBase64: {
@@ -500,6 +564,41 @@ const bn = {
       errBadLength: 'Base64 দৈর্ঘ্য ভুল (৪-এর গুণিতক হতে হবে)',
       errBadChars: 'এটি ভ্যালিড Base64 নয় — অননুমোদিত অক্ষর আছে',
     },
+
+    imageToPdf: {
+      pickBtn: '📁 ছবি বাছুন',
+      pageModeAria: 'পেজের ধরন',
+      modeA4: 'A4 পেজ',
+      modeImage: 'ছবির মাপ',
+      buildBtn: '📄 PDF বানান',
+      buildingTpl: '⏳ {n}%',
+      clearBtn: '✕ মুছুন',
+      dropTitle: 'এখানে ছবি টেনে ছাড়ুন',
+      dropOrClick: 'অথবা এই বক্সে ক্লিক করে',
+      pickLink: 'ছবি বাছুন',
+      formatsHintTpl: 'PNG · JPEG · GIF · WEBP — প্রতিটি সর্বোচ্চ {max}, মোট {total}',
+      filesHintTpl: 'সর্বোচ্চ {max} টি ছবি · ক্রম অনুযায়ী PDF পেজ হবে',
+      addMoreBtn: '+ আরও ছবি যোগ করুন',
+      moveUpAria: 'উপরে নাও',
+      moveDownAria: 'নিচে নাও',
+      removeAria: 'মুছে ফেলো',
+      statusError: '✕ সমস্যা',
+      statusReady: 'প্রস্তুত',
+      statusWaiting: 'অপেক্ষায়',
+      labelImages: 'ছবি',
+      labelTotal: 'মোট',
+      privacyNote: '🔒 ছবি আপনার ব্রাউজার ছাড়ে না · EXIF মেটাডেটা বাদ দেওয়া হয়',
+      errMaxFilesTpl: 'সর্বোচ্চ {max} টি ছবি যোগ করা যাবে।',
+      errOnlyFirstTpl: 'শুধু প্রথম {n} টি ছবি যোগ করা হলো (সর্বোচ্চ {max})।',
+      errFileTooBigTpl: '«{name}» অনেক বড় ({size})। সর্বোচ্চ {max}।',
+      errTotalSizeTpl: 'মোট সাইজের সীমা ({max}) ছাড়িয়ে যাবে — বাকি ছবি বাদ দেওয়া হলো।',
+      errBadTypeTpl: '«{name}» অনুমোদিত ছবি নয়। শুধু PNG, JPEG, GIF বা WEBP (SVG নিরাপত্তার কারণে বাদ)।',
+      errReadFail: 'ছবিটি পড়া গেল না (ক্ষতিগ্রস্ত বা অসমর্থিত)।',
+      errNoDimension: 'ছবির মাপ পাওয়া যায়নি।',
+      errNoCanvas: 'Canvas সমর্থিত নয় — অন্য ব্রাউজারে চেষ্টা করুন।',
+      errNoPage: 'কোনো পেজ তৈরি হয়নি।',
+      statusDownloadedTpl: '✓ PDF ডাউনলোড হয়েছে ({n} পেজ)',
+    },
   },
 
   // ── References পেজ (app/[locale]/(site)/references/*) ──
@@ -519,6 +618,7 @@ const bn = {
     errNoConn: 'ডেটাবেজে সংযোগ করা যাচ্ছে না।',
     errNoTable: 'ডেটাবেজ টেবিল পাওয়া যাচ্ছে না।',
     errGeneric: 'রেফারেন্স লোড করতে সমস্যা হয়েছে।',
+    viewLink: 'দেখুন →',
     emptyTitle: 'এখনো কোনো রেফারেন্স নেই',
     emptyDesc: 'শীঘ্রই নতুন রেফারেন্স যুক্ত করা হবে।',
     searchPlaceholder: 'রেফারেন্স খুঁজুন... (যেমন: map, forEach, fetch)',
@@ -535,6 +635,9 @@ const bn = {
     noResultsTitle: 'কিছু পাওয়া যায়নি',
     noResultsDesc: 'অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন অথবা ফিল্টার রিসেট করুন।',
     detailsSoon: 'বিস্তারিত শীঘ্রই যুক্ত হবে',
+    copyAria: 'কপি করুন',
+    copyBtn: 'কপি',
+    copiedBtn: '✓ কপি হয়েছে',
     errorTitle: 'রেফারেন্স লোড করতে সমস্যা হয়েছে',
     errorMessage: 'রেফারেন্স লোড করার সময় একটি ত্রুটি ঘটেছে।',
   },
@@ -564,6 +667,7 @@ const bn = {
     typing1: 'npm create devschool@latest',
     typing2: 'শেখা শুরু হোক 🚀',
     communityLabel: 'DevSchool কমিউনিটি',
+    liveLabel: 'লাইভ',
   },
 
   // ── ভাষা সিলেক্টর (components/LanguageSwitcher.tsx) ──
@@ -588,10 +692,22 @@ const bn = {
     tabReferences: 'রেফারেন্স',
     resultCount: 'টি ফলাফল',
     noResults: 'এর জন্য কোনো ফলাফল নেই। অন্য কীওয়ার্ড চেষ্টা করুন।',
+    noResultsTitle: 'কিছু পাওয়া যায়নি',
     tryHint: 'কমপক্ষে ২টি অক্ষর লিখুন',
     searching: 'খোঁজা হচ্ছে...',
-    errorTitle: 'খোঁজা যাচ্ছে না',
-    errorDesc: 'একটু পরে আবার চেষ্টা করুন।',
+    errorTitle: 'সার্চে সমস্যা হয়েছে',
+    errorDesc: 'আবার চেষ্টা করুন বা পেজ রিফ্রেশ করুন।',
+    errorPageDesc: 'দুঃখিত, সার্চ ফলাফল লোড করা যায়নি। আবার চেষ্টা করুন।',
+    errorRetryBtn: 'আবার চেষ্টা করুন',
+    errorHomeBtn: 'হোমপেজ',
+    filterLevelAria: 'লেভেল ফিল্টার',
+    allLevels: 'সব লেভেল',
+    filterLanguageAria: 'ভাষা ফিল্টার',
+    allLanguages: 'সব ভাষা',
+    clearAllFilters: 'সব ফিল্টার মুছুন ✕',
+    tutorialsSection: 'টিউটোরিয়াল',
+    referencesSection: 'রেফারেন্স',
+    fallbackMode: '(fallback mode)',
   },
 
   // ── Playground UI (PlaygroundClient.tsx — ক্লায়েন্ট) ──
@@ -633,6 +749,8 @@ const bn = {
     passed: '✓ পাস',
     failed: '✗ ফেইল',
     refresh: '↻ রিফ্রেশ',
+    errDeviceId: 'ডিভাইস শনাক্ত করা যাচ্ছে না।',
+    errLoadFailed: 'অগ্রগতি লোড করা যায়নি।',
   },
 
   // ── About পেজ (app/[locale]/about/page.tsx) ──
@@ -680,6 +798,7 @@ const bn = {
       'এই চ্যালেঞ্জটি লোড করার সময় একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন।',
 
     chapterNotFoundTitle: 'এই চ্যাপ্টারটি নেই',
+    chapterNotFoundPill: 'চ্যাপ্টার পাওয়া যায়নি',
     chapterNotFoundMsg:
       'আপনি যে চ্যাপ্টারটি খুঁজছেন তা নেই, নম্বরটি ভুল, অথবা এখনো প্রকাশ করা হয়নি।',
     chapterErrorTitle: 'চ্যাপ্টার লোড করতে সমস্যা',
@@ -691,6 +810,11 @@ const bn = {
     viewAllChallenges: 'সব চ্যালেঞ্জ দেখুন',
     goHome: 'হোমপেজে ফিরে যান',
     retry: 'আবার চেষ্টা করুন 🔄',
+    tutorialErrorPill: 'টিউটোরিয়াল ত্রুটি',
+    referenceErrorPill: 'রেফারেন্স ত্রুটি',
+    challengeErrorPill: 'চ্যালেঞ্জ ত্রুটি',
+    chapterErrorPill: 'চ্যাপ্টার ত্রুটি',
+    errorIdLabel: 'এরর আইডি:',
   },
 
   // ── HomeExtras (components/HomeExtras.tsx) — Part 9k ──
@@ -752,6 +876,51 @@ const bn = {
     submitBtn: 'রিভিউ জমা দিন',
     submittingBtn: 'পাঠানো হচ্ছে...',
     footerNote: 'জমা দেওয়ার পর অ্যাডমিন অনুমোদন করলে রিভিউটি দেখানো হবে।',
+  },
+
+  // ── ErrorBoundary (components/ErrorBoundary.tsx) — class component ──
+  errorBoundary: {
+    title: 'কিছু একটা ভুল হয়েছে',
+    defaultMessage: 'আমরা সমস্যা সমাধানে কাজ করছি।',
+    refreshBtn: 'রিফ্রেশ করুন',
+  },
+
+  // ── HomeSearch (components/HomeSearch.tsx) ──
+  homeSearch: {
+    placeholder: 'কী শিখতে চান? (যেমন: JavaScript, Python, React...)',
+    clearBtn: 'ক্লিয়ার',
+    searching: 'খুঁজছি...',
+    tutorialsLabel: 'টিউটোরিয়াল',
+    referencesLabel: 'রেফারেন্স',
+    emptyMsg: 'কিছু পাওয়া যায়নি 😕 — অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন',
+  },
+
+  // ── ThemeToggle (components/ThemeToggle.tsx) ──
+  themeToggle: {
+    toLight: 'লাইট মোডে যান',
+    toDark: 'ডার্ক মোডে যান',
+    srLabel: 'থিম',
+  },
+
+  // ── LanguageSwitcher (components/LanguageSwitcher.tsx) ──
+  languageSwitcher: {
+    switchToBn: 'ভাষা বাংলায় বদলান',
+    switchToEn: 'ইংরেজিতে বদলান',
+  },
+
+  // ── SponsorRail (components/SponsorRail.tsx) ──
+  sponsorRail: {
+    sponsoredBy: 'স্পন্সর করেছে',
+  },
+
+  // ── GlobalError (app/global-error.tsx) — root-level crash fallback ──
+  globalError: {
+    criticalLabel: 'গুরুতর ত্রুটি',
+    title: 'সাইটে একটি সমস্যা হয়েছে',
+    message: 'অপ্রত্যাশিত একটি ত্রুটি ঘটেছে। নিচের বাটনে ক্লিক করে আবার চেষ্টা করুন। সমস্যা থেকে গেলে কিছুক্ষণ পর ফিরে আসুন।',
+    retryBtn: 'আবার চেষ্টা করুন 🔄',
+    homeBtn: 'হোমপেজে ফিরে যান',
+    errorIdLabel: 'এরর আইডি:',
   },
 };
 

@@ -9,6 +9,7 @@ import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeChapter, localizeLesson } from '@/lib/i18n/localize'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
+import { localeHref } from '@/lib/i18n/link'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string }>
@@ -171,9 +172,9 @@ export default async function ChapterPage({ params }: PageProps) {
     >
       {/* Breadcrumb */}
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
-        <Link href="/" className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
+        <Link href={localeHref(loc as Locale, "/")} className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
         <span>/</span>
-        <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
+        <Link href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}`)} className="hover:text-[#22C55E]">
           {tutorialTitle}
         </Link>
         <span>/</span>
@@ -211,14 +212,14 @@ export default async function ChapterPage({ params }: PageProps) {
       <div className="flex justify-between items-center gap-3 mt-10 pt-6 border-t border-emerald-200/60 dark:border-emerald-900/40">
         {prevChapter ? (
           <Link
-            href={`/tutorials/${tutorial.slug}/${prevChapter.slug}`}
+            href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}/${prevChapter.slug}`)}
             className="px-5 py-2.5 rounded-lg border border-emerald-300 dark:border-emerald-800 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-[#22C55E]/10 hover:border-[#22C55E] transition-colors"
           >
             ❮ {prevChapter.title}
           </Link>
         ) : (
           <Link
-            href={`/tutorials/${tutorial.slug}`}
+            href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}`)}
             className="px-5 py-2.5 rounded-lg border border-emerald-300 dark:border-emerald-800 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-[#22C55E]/10 hover:border-[#22C55E] transition-colors"
           >
             {t.home}
@@ -227,14 +228,14 @@ export default async function ChapterPage({ params }: PageProps) {
 
         {nextChapter ? (
           <Link
-            href={`/tutorials/${tutorial.slug}/${nextChapter.slug}`}
+            href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}/${nextChapter.slug}`)}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
             {t.next}
           </Link>
         ) : (
           <Link
-            href={`/tutorials/${tutorial.slug}`}
+            href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}`)}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
             {t.complete}

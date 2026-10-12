@@ -68,7 +68,7 @@ export default function ChallengeError({
 
           {error?.digest && (
             <p className="mt-6 font-mono text-[10px] text-slate-400 dark:text-slate-600">
-              Error ID: {error.digest}
+              {t.errorIdLabel} {error.digest}
             </p>
           )}
         </div>

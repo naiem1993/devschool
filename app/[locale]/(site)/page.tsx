@@ -11,6 +11,7 @@ import { getHeroSettings, getReviewsSettings, getFaqSettings } from '@/lib/site-
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config';
 import { getDictionarySync } from '@/lib/i18n/dictionaries';
 import { pickText } from '@/lib/i18n/localize';
+import { localeHref } from '@/lib/i18n/link';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
@@ -263,7 +264,7 @@ export default async function HomePage({
               {dict.home.frontendDesc}
             </p>
             <Link
-              href="/tutorials"
+              href={localeHref(locale, "/tutorials")}
               className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition"
             >
               {dict.home.startTrack}
@@ -279,7 +280,7 @@ export default async function HomePage({
               {dict.home.backendDesc}
             </p>
             <Link
-              href="/tutorials"
+              href={localeHref(locale, "/tutorials")}
               className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition"
             >
               {dict.home.startTrack}
@@ -295,7 +296,7 @@ export default async function HomePage({
               {dict.home.fullstackDesc}
             </p>
             <Link
-              href="/tutorials"
+              href={localeHref(locale, "/tutorials")}
               className="inline-flex items-center gap-1 text-sm font-semibold text-[#15803d] dark:text-[#4ADE80] mt-6 group-hover:translate-x-1 transition"
             >
               {dict.home.startTrack}

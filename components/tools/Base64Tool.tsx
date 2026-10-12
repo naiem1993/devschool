@@ -254,11 +254,11 @@ export default function Base64Tool() {
           aria-pressed={urlSafe}
           className={urlSafe ? BTN_PRIMARY : BTN_GHOST}
         >
-          URL-safe
+          {t.urlSafeLabel}
         </button>
 
         <button type="button" onClick={swap} disabled={!output && !input} className={BTN_GHOST}>
-          ⇅ Swap
+          {t.swapLabel}
         </button>
 
         <span className="hidden flex-1 sm:block" />

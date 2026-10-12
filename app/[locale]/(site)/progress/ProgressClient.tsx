@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getDeviceId } from '@/lib/device'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 type Progress = {
   quiz: { total: number; correct: number; accuracy: number }
@@ -35,7 +36,11 @@ export default function ProgressClient() {
       if (!res.ok) throw new Error('load failed')
       setData(await res.json())
     } catch (e: any) {
-      setError(e?.message || 'progress load failed')
+      setError(
+        e?.message === 'device id unavailable'
+          ? t.progressUi.errDeviceId
+          : t.progressUi.errLoadFailed
+      )
     } finally {
       setLoading(false)
     }
@@ -84,10 +89,10 @@ export default function ProgressClient() {
           {t.progressUi.emptyDesc}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/challenges" className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">
+          <Link href={localeHref(locale, "/challenges")} className="px-6 py-2.5 bg-[#22C55E] hover:bg-[#1faf53] text-black rounded-xl text-sm font-semibold transition">
             {t.progressUi.viewChallenges}
           </Link>
-          <Link href="/tutorials" className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
+          <Link href={localeHref(locale, "/tutorials")} className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-semibold transition">
             {t.progressUi.viewTutorials}
           </Link>
         </div>

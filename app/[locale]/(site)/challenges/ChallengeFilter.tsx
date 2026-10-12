@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 export type ChallengeCard = {
   id: string
@@ -18,6 +19,7 @@ type DiffFilter = 'all' | 'Easy' | 'Medium' | 'Hard'
 
 export default function ChallengeFilter({ challenges }: { challenges: ChallengeCard[] }) {
   const dict = useDict()
+  const locale = useLocale()
   const [query, setQuery] = useState('')
   const [difficulty, setDifficulty] = useState<DiffFilter>('all')
 
@@ -65,7 +67,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
                   : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60'
               }`}
             >
-              {d === 'all' ? dict.challenges.allOption : d}
+              {d === 'all' ? dict.challenges.allOption : dict.challenges.difficultyLabels[d] ?? d}
             </button>
           ))}
         </div>
@@ -94,7 +96,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
           {filtered.map((c) => (
             <Link
               key={c.id}
-              href={`/challenges/${c.id}`}
+              href={localeHref(locale, `/challenges/${c.id}`)}
               className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 transition-all duration-200 flex flex-col"
             >
               <div className="flex items-center justify-between mb-3 gap-2">

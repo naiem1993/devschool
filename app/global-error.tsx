@@ -4,9 +4,15 @@
 //  DevSchool — Global Error (root-level crash fallback)
 //  ⚠️ global-error REPLACES the root layout → must render
 //     its own <html> and <body>. Styles inline রাখা safest.
+//
+//  ⚠️ I18nProvider এখানে নেই (root layout-ই replace হয়) —
+//     তাই useDict() কাজ করবে না। URL-এর /bn বা /en দেখে
+//     সরাসরি dictionary import করা হয় (NotFoundContent.tsx-এর মতো)।
 // ─────────────────────────────────────────────────────────────
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import bn from '@/lib/i18n/dictionaries/bn'
+import en from '@/lib/i18n/dictionaries/en'
 
 export default function GlobalError({
   error,
@@ -15,12 +21,19 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  // URL থেকে locale detect — SSR-safe নয়, তাই state + effect
+  const [isEn, setIsEn] = useState(false)
+
   useEffect(() => {
     console.error('[global-error]', error)
+    setIsEn(/^\/en(\/|$)/.test(window.location.pathname))
   }, [error])
 
+  const t = (isEn ? en : bn).globalError
+  const locale = isEn ? 'en' : 'bn'
+
   return (
-    <html lang="bn" className="dark">
+    <html lang={locale} className="dark">
       <body
         style={{
           margin: 0,
@@ -82,11 +95,11 @@ export default function GlobalError({
                 marginBottom: '0.75rem',
               }}
             >
-              Critical Error
+              {t.criticalLabel}
             </div>
 
             <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 0.75rem', lineHeight: 1.3 }}>
-              সাইটে একটি সমস্যা হয়েছে
+              {t.title}
             </h1>
 
             <p
@@ -97,8 +110,8 @@ export default function GlobalError({
                 margin: '0 0 1.75rem',
               }}
             >
-              অপ্রত্যাশিত একটি ত্রুটি ঘটেছে। নিচের বাটনে ক্লিক করে আবার চেষ্টা করুন।
-              সমস্যা থেকে গেলে কিছুক্ষণ পর ফিরে আসুন।
+              {t.message}
+              
             </p>
 
             <div
@@ -123,7 +136,7 @@ export default function GlobalError({
                   cursor: 'pointer',
                 }}
               >
-                আবার চেষ্টা করুন 🔄
+                {t.retryBtn}
               </button>
               <a
                 href="/"
@@ -141,7 +154,7 @@ export default function GlobalError({
                   textDecoration: 'none',
                 }}
               >
-                হোমপেজে ফিরে যান
+                {t.homeBtn}
               </a>
             </div>
 
@@ -154,7 +167,7 @@ export default function GlobalError({
                   color: '#475569',
                 }}
               >
-                Error ID: {error.digest}
+                {t.errorIdLabel} {error.digest}
               </p>
             )}
           </div>

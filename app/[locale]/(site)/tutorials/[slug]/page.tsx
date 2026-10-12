@@ -7,6 +7,7 @@ import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { localizeTutorial } from '@/lib/i18n/localize'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
+import { localeHref } from '@/lib/i18n/link'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>
@@ -108,7 +109,7 @@ export default async function TutorialPage({ params }: PageProps) {
   const nav = await getTutorialNav(tutorial.id, locale as Locale)
   const sortedChapters = [...nav.chapters].sort((a, b) => a.sortOrder - b.sortOrder)
   const firstChapterUrl = sortedChapters[0]
-    ? `/tutorials/${tutorial.slug}/${sortedChapters[0].slug}`
+    ? localeHref(locale as Locale, `/tutorials/${tutorial.slug}/${sortedChapters[0].slug}`)
     : null
 
   return (
@@ -120,11 +121,11 @@ export default async function TutorialPage({ params }: PageProps) {
       locale={locale === 'bn' ? 'bn' : 'en'}
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
-        <Link href="/" className="hover:text-[#22C55E]">
+        <Link href={localeHref(locale as Locale, "/")} className="hover:text-[#22C55E]">
           {t.homeCrumb}
         </Link>
         <span>/</span>
-        <Link href="/tutorials" className="hover:text-[#22C55E]">
+        <Link href={localeHref(locale as Locale, "/tutorials")} className="hover:text-[#22C55E]">
           {t.tutorialsCrumb}
         </Link>
       </nav>
@@ -146,7 +147,7 @@ export default async function TutorialPage({ params }: PageProps) {
           {sortedChapters.map((c, i) => (
             <li key={c.id}>
               <Link
-                href={`/tutorials/${tutorial.slug}/${c.slug}`}
+                href={localeHref(locale as Locale, `/tutorials/${tutorial.slug}/${c.slug}`)}
                 className="flex items-center gap-3 p-3 rounded-lg border border-emerald-200/60 dark:border-emerald-900/40 bg-white dark:bg-[#0a0f0c] hover:border-[#22C55E] hover:bg-[#22C55E]/5 transition-all"
               >
                 <span className="w-7 h-7 rounded-full bg-[#22C55E]/15 text-[#15803d] dark:text-[#4ADE80] flex items-center justify-center text-xs font-bold shrink-0">
@@ -166,18 +167,18 @@ export default async function TutorialPage({ params }: PageProps) {
 
       <div className="flex justify-between items-center gap-3 mt-10 pt-6 border-t border-emerald-200/60 dark:border-emerald-900/40">
         <span className="px-5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 text-sm cursor-not-allowed">
-          ❮ Home
+          {t.home}
         </span>
         {firstChapterUrl ? (
           <Link
             href={firstChapterUrl}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
-            Next ❯
+            {t.next}
           </Link>
         ) : (
           <span className="px-5 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 text-sm cursor-not-allowed">
-            Next ❯
+            {t.next}
           </span>
         )}
       </div>

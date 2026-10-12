@@ -8,6 +8,8 @@ import {
   TIMEOUT_CHALLENGE_MS,
   TIMEOUT_CHALLENGE_TOTAL_MS,
 } from '@/lib/sandbox-runner'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 type MonacoEditorInstance = {
   addCommand: (keybinding: number, handler: () => void) => void
@@ -29,13 +31,20 @@ type MonacoProps = {
   options?: Record<string, unknown>
 }
 
+// Monaco-এর loading component dynamic() কল করার সময়ই নির্ধারিত হয়,
+// তাই hook ব্যবহার করা যায় না — এই ছোট wrapper দিয়ে dictionary থেকে লেখা আনি।
+function ChallengeEditorLoading() {
+  const t = useDict().challengeWorkspace
+  return (
+    <div className="h-[420px] flex items-center justify-center bg-slate-950 text-slate-500 text-sm font-mono rounded-2xl">
+      {t.editorLoading}
+    </div>
+  )
+}
+
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
-  loading: () => (
-    <div className="h-[420px] flex items-center justify-center bg-slate-950 text-slate-500 text-sm font-mono rounded-2xl">
-      এডিটর লোড হচ্ছে...
-    </div>
-  ),
+  loading: () => <ChallengeEditorLoading />,
 }) as React.ComponentType<MonacoProps>
 
 type TestCase = { id: string; input: string; expectedOutput: string; isHidden: boolean }
@@ -60,6 +69,8 @@ export default function ChallengeWorkspace({
   tutorialSlug: string
   tutorialTitle: string
 }) {
+  const t = useDict().challengeWorkspace
+  const locale = useLocale()
   const [code, setCode] = useState(starterCode)
   const [results, setResults] = useState<TestResult[] | null>(null)
   const [running, setRunning] = useState(false)
@@ -74,36 +85,36 @@ export default function ChallengeWorkspace({
     const start = Date.now()
 
     // সব test case (visible + hidden) এখন sandbox-এ চলে।
-    for (const t of testCases) {
+    for (const tc of testCases) {
       // ৩০ সেকেন্ড total cap — সামগ্রিকভাবে যেন ব্রাউজার আটকে না যায়।
       if (Date.now() - start > TIMEOUT_CHALLENGE_TOTAL_MS) {
         list.push({
-          id: t.id,
+          id: tc.id,
           passed: false,
           output: '',
-          expected: t.expectedOutput,
-          error: 'সময়সীমা শেষ (30s cap)',
+          expected: tc.expectedOutput,
+          error: t.errTimeoutTpl.replace('{n}', String(TIMEOUT_CHALLENGE_TOTAL_MS / 1000)),
         })
         continue
       }
 
       try {
-        const r = await runInSandbox(code, t.input, 'challenge', TIMEOUT_CHALLENGE_MS)
-        const passed = !r.error && r.output.trim() === t.expectedOutput.trim()
+        const r = await runInSandbox(code, tc.input, 'challenge', TIMEOUT_CHALLENGE_MS)
+        const passed = !r.error && r.output.trim() === tc.expectedOutput.trim()
         list.push({
-          id: t.id,
+          id: tc.id,
           passed,
           output: r.output,
-          expected: t.expectedOutput,
+          expected: tc.expectedOutput,
           error: r.error,
         })
       } catch (err: any) {
         // Defensive: ভবিষ্যতে sandbox throw করলে যেন loop না ভাঙে।
         list.push({
-          id: t.id,
+          id: tc.id,
           passed: false,
           output: '',
-          expected: t.expectedOutput,
+          expected: tc.expectedOutput,
           error: err?.message || String(err),
         })
       }
@@ -111,7 +122,7 @@ export default function ChallengeWorkspace({
 
     setResults(list)
     setRunning(false)
-  }, [code, testCases])
+  }, [code, testCases, t])
 
   const runCustom = useCallback(async () => {
     setActiveTab('output')
@@ -163,7 +174,7 @@ export default function ChallengeWorkspace({
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
           </div>
-          <span className="text-[10px] font-mono text-slate-400">solution.js</span>
+          <span className="text-[10px] font-mono text-slate-400">{t.editorFilename}</span>
           <span className="w-10" />
         </div>
         <div className="h-[420px]">
@@ -199,26 +210,26 @@ export default function ChallengeWorkspace({
             disabled={running}
             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition disabled:opacity-50"
           >
-            {running ? '⌛ চলছে...' : '▶ রান টেস্ট'}
+            {running ? t.btnRunning : t.btnRunTests}
           </button>
           <button
             onClick={runCustom}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition"
           >
-            ⚡ রান
+            {t.btnRunCustom}
           </button>
           <button
             onClick={() => { setCode(starterCode); setResults(null) }}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition"
           >
-            ↺ রিসেট
+            {t.btnReset}
           </button>
           {solution && (
             <button
               onClick={() => setShowSolution((s) => !s)}
               className="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-600/40 rounded-xl text-xs font-semibold transition"
             >
-              {showSolution ? '🙈 সলিউশন লুকাও' : '💡 সলিউশন দেখো'}
+              {showSolution ? t.btnHideSolution : t.btnShowSolution}
             </button>
           )}
         </div>
@@ -236,7 +247,7 @@ export default function ChallengeWorkspace({
                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
             }`}
           >
-            🧪 টেস্ট কেস {results && `(${passedCount}/${totalCount})`}
+            {t.tabTests} {results && `(${passedCount}/${totalCount})`}
           </button>
           <button
             onClick={() => setActiveTab('output')}
@@ -246,14 +257,14 @@ export default function ChallengeWorkspace({
                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
             }`}
           >
-            📤 আউটপুট
+            {t.tabOutput}
           </button>
         </div>
 
         {/* Success banner */}
         {allPassed && activeTab === 'tests' && (
           <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-sm font-semibold flex items-center gap-2">
-            🎉 সব টেস্ট পাস! অসাধারণ কাজ।
+            {t.successBanner}
           </div>
         )}
 
@@ -262,23 +273,23 @@ export default function ChallengeWorkspace({
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 max-h-[520px] overflow-y-auto">
             {totalCount === 0 ? (
               <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-6">
-                এই চ্যালেঞ্জে কোনো টেস্ট কেস নেই।
+                {t.noTestCases}
               </p>
             ) : results === null ? (
               <div className="space-y-3">
-                {testCases.map((t, i) => (
-                  t.isHidden ? (
-                    <div key={t.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950">
+                {testCases.map((tc, i) => (
+                  tc.isHidden ? (
+                    <div key={tc.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950">
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
-                        🔒 লুকানো টেস্ট #{i + 1}
+                        {t.hiddenTestLabelTpl.replace('{n}', String(i + 1))}
                       </div>
                     </div>
                   ) : (
-                    <div key={t.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950">
-                      <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-1">Test #{i + 1}</div>
+                    <div key={tc.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950">
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-1">{t.testLabelTpl.replace('{n}', String(i + 1))}</div>
                       <div className="text-xs space-y-1 font-mono">
-                        <div><span className="text-slate-500">input:</span> <span className="text-slate-800 dark:text-slate-200">{t.input}</span></div>
-                        <div><span className="text-slate-500">expected:</span> <span className="text-emerald-600 dark:text-emerald-400">{t.expectedOutput}</span></div>
+                        <div><span className="text-slate-500">{t.inputLabel}</span> <span className="text-slate-800 dark:text-slate-200">{tc.input}</span></div>
+                        <div><span className="text-slate-500">{t.expectedLabel}</span> <span className="text-emerald-600 dark:text-emerald-400">{tc.expectedOutput}</span></div>
                       </div>
                     </div>
                   )
@@ -297,20 +308,20 @@ export default function ChallengeWorkspace({
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-bold">
-                        {r.isHidden ? `🔒 লুকানো টেস্ট #${i + 1}` : `Test #${i + 1}`}
+                        {r.isHidden ? t.hiddenTestLabelTpl.replace('{n}', String(i + 1)) : t.testLabelTpl.replace('{n}', String(i + 1))}
                       </span>
                       <span className={`text-xs font-bold ${r.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {r.passed ? '✓ পাস' : '✗ ফেইল'}
+                        {r.passed ? t.statusPassed : t.statusFailed}
                       </span>
                     </div>
                     {r.isHidden ? (
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
-                        এই টেস্টের বিস্তারিত গোপন রাখা হয়েছে।
+                        {t.hiddenTestDetail}
                       </p>
                     ) : (
                       <div className="text-[11px] font-mono space-y-1">
-                        <div><span className="text-slate-500">output:</span> <span className="text-slate-800 dark:text-slate-200">{r.error ? `[error] ${r.error}` : r.output || '(empty)'}</span></div>
-                        {!r.passed && !r.error && (<div><span className="text-slate-500">expected:</span> <span className="text-emerald-600 dark:text-emerald-400">{r.expected}</span></div>)}
+                        <div><span className="text-slate-500">{t.outputLabel}</span> <span className="text-slate-800 dark:text-slate-200">{r.error ? `${t.errPrefix} ${r.error}` : r.output || t.emptyOutput}</span></div>
+                        {!r.passed && !r.error && (<div><span className="text-slate-500">{t.expectedLabel}</span> <span className="text-emerald-600 dark:text-emerald-400">{r.expected}</span></div>)}
                       </div>
                     )}
                   </div>
@@ -319,7 +330,7 @@ export default function ChallengeWorkspace({
             )}
             {hiddenCount > 0 && (
               <p className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 text-center">
-                🔒 {hiddenCount} টি লুকানো টেস্ট কেস আছে — সেগুলো এখনই যাচাই হচ্ছে, শুধু ফলাফল (পাস/ফেল) দেখা যাবে।
+                {t.hiddenCountNoteTpl.replace('{n}', String(hiddenCount))}
               </p>
             )}
           </div>
@@ -330,7 +341,7 @@ export default function ChallengeWorkspace({
           <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden">
             <div className="px-4 py-2 border-b border-slate-800 text-[10px] font-mono text-slate-500">output.txt</div>
             <pre className="p-4 text-xs text-emerald-300 font-mono overflow-x-auto max-h-[400px] whitespace-pre-wrap">
-              {customOutput || '▶ রান বাটনে ক্লিক করো'}
+              {customOutput || t.outputPlaceholder}
             </pre>
           </div>
         )}
@@ -338,18 +349,20 @@ export default function ChallengeWorkspace({
         {/* Solution reveal */}
         {showSolution && solution && (
           <div className="bg-slate-950 border border-amber-500/40 rounded-2xl overflow-hidden">
-            <div className="px-4 py-2 border-b border-amber-500/30 bg-amber-500/10 text-[10px] font-mono text-amber-400 font-bold">solution.js — শুধু শেষ উপায়ে দেখো!</div>
+            <div className="px-4 py-2 border-b border-amber-500/30 bg-amber-500/10 text-[10px] font-mono text-amber-400 font-bold">{t.solutionRevealTitle}</div>
             <pre className="p-4 text-xs text-amber-200 font-mono overflow-x-auto max-h-[300px]"><code>{solution}</code></pre>
           </div>
         )}
 
         {/* Help hint */}
         <div className="p-4 rounded-2xl bg-[#22C55E]/5 border border-[#22C55E]/20 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-          <strong className="text-[#15803d] dark:text-[#4ADE80]">💡 টিপস:</strong> তোমার কোডে অবশ্যই <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">function solve(input) {'{ ... }'}</code> ফাংশন থাকতে হবে — যা <code className="font-mono">input</code> নিয়ে output রিটার্ন করবে।
+          <strong className="text-[#15803d] dark:text-[#4ADE80]">{t.tipsLabel}</strong> {t.tipsBefore}{' '}
+          <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">function solve(input) {'{ ... }'}</code>{' '}
+          {t.tipsMiddle} <code className="font-mono">input</code> {t.tipsAfter}
         </div>
 
-        <Link href={`/tutorials/${tutorialSlug}`} className="inline-flex items-center gap-2 text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline font-semibold">
-          📚 সম্পর্কিত টিউটোরিয়াল: {tutorialTitle} →
+        <Link href={localeHref(locale, `/tutorials/${tutorialSlug}`)} className="inline-flex items-center gap-2 text-sm text-[#15803d] dark:text-[#4ADE80] hover:underline font-semibold">
+          {t.relatedTutorialTpl.replace('{title}', tutorialTitle)}
         </Link>
       </div>
     </div>

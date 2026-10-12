@@ -6,6 +6,25 @@ import { rateLimit } from '@/lib/auth'
 
 const COOLDOWN_DAYS = 30
 
+/** Locale-aware error messages — Accept-Language header থেকে detect করে */
+const ERRORS = {
+  bn: {
+    tooMany: 'অনেকবার চেষ্টা করেছেন — একটু পরে আবার দিন।',
+    cooldownTpl: (days: number) => `এই ডিভাইস থেকে ${days} দিন পর আবার রিভিউ দিতে পারবেন।`,
+    generic: 'রিভিউ সাবমিট করা যায়নি — আবার চেষ্টা করুন।',
+  },
+  en: {
+    tooMany: 'Too many attempts — please try again later.',
+    cooldownTpl: (days: number) => `You can submit another review from this device in ${days} day(s).`,
+    generic: 'Could not submit review — please try again.',
+  },
+} as const
+
+function getErrorLang(req: NextRequest): 'bn' | 'en' {
+  const accept = (req.headers.get('accept-language') || '').toLowerCase()
+  return accept.startsWith('en') ? 'en' : 'bn'
+}
+
 /** Public GET — শুধু approved review, newest first (homepage-এর জন্য)। */
 export async function GET() {
   const reviews = await prisma.review.findMany({
@@ -19,12 +38,15 @@ export async function GET() {
 
 /** Public POST — ইউজার feedback submit করে (status = pending, admin approve করবে)। */
 export async function POST(req: NextRequest) {
+  const lang = getErrorLang(req)
+  const E = ERRORS[lang]
+
   // 1) Simple burst rate-limit per IP (cooldown আলাদা, DB-তে)
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
   const rl = rateLimit(`review:${ip}`, 3, 60 * 60 * 1000) // ঘণ্টায় ৩বার
   if (!rl.ok) {
     return NextResponse.json(
-      { error: 'অনেকবার চেষ্টা করেছেন — একটু পরে আবার দিন।' },
+      { error: E.tooMany },
       { status: 429 }
     )
   }
@@ -46,7 +68,7 @@ export async function POST(req: NextRequest) {
       if (nextAllowed > new Date()) {
         const daysLeft = Math.ceil((nextAllowed.getTime() - Date.now()) / (24 * 60 * 60 * 1000))
         return NextResponse.json(
-          { error: `এই ডিভাইস থেকে ${daysLeft} দিন পর আবার রিভিউ দিতে পারবেন।`, daysLeft },
+          { error: E.cooldownTpl(daysLeft), daysLeft },
           { status: 429 }
         )
       }
@@ -76,6 +98,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, pending: true, id: review.id }, { status: 201 })
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+    console.error('[api/reviews POST] error:', e)
+    return NextResponse.json({ error: E.generic }, { status: 500 })
   }
 }

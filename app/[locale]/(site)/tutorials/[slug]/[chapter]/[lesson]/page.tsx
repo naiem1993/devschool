@@ -9,6 +9,7 @@ import { getTutorialNav } from '@/lib/tutorial-data'
 import type { Locale } from '@/lib/i18n/config'
 import { pickText, localizeLesson } from '@/lib/i18n/localize'
 import { TRYIT_TEXT } from '@/lib/i18n/tryit-text'
+import { localeHref } from '@/lib/i18n/link'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string; chapter: string; lesson: string }>
@@ -171,21 +172,21 @@ export default async function LessonPage({ params }: PageProps) {
   let prevHref: string
   let prevLabel: string
   if (prevLesson && prevLessonL?.title) {
-    prevHref = `/tutorials/${slug}/${chapter}/${prevLesson.slug}`
+    prevHref = localeHref(loc as Locale, `/tutorials/${slug}/${chapter}/${prevLesson.slug}`)
     prevLabel = '❮ ' + prevLessonL.title
   } else if (firstLessonL?.title) {
-    prevHref = `/tutorials/${slug}/${chapter}`
+    prevHref = localeHref(loc as Locale, `/tutorials/${slug}/${chapter}`)
     prevLabel = '❮ ' + firstLessonL.title
   } else {
-    prevHref = `/tutorials/${slug}`
+    prevHref = localeHref(loc as Locale, `/tutorials/${slug}`)
     prevLabel = t.home
   }
 
   let nextHref: string | null = null
   if (nextLesson) {
-    nextHref = `/tutorials/${slug}/${chapter}/${nextLesson.slug}`
+    nextHref = localeHref(loc as Locale, `/tutorials/${slug}/${chapter}/${nextLesson.slug}`)
   } else if (chIdx >= 0 && chIdx < sortedChapters.length - 1) {
-    nextHref = `/tutorials/${slug}/${sortedChapters[chIdx + 1].slug}`
+    nextHref = localeHref(loc as Locale, `/tutorials/${slug}/${sortedChapters[chIdx + 1].slug}`)
   }
 
   const lessonPath = `${chapter}/${current.slug}`
@@ -199,14 +200,14 @@ export default async function LessonPage({ params }: PageProps) {
       locale={loc === 'bn' ? 'bn' : 'en'}
     >
       <nav className="mb-6 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 flex-wrap">
-        <Link href="/" className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
+        <Link href={localeHref(loc as Locale, "/")} className="hover:text-[#22C55E]">{t.homeCrumb}</Link>
         <span>/</span>
-        <Link href={`/tutorials/${tutorial.slug}`} className="hover:text-[#22C55E]">
+        <Link href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}`)} className="hover:text-[#22C55E]">
           {tutorialTitle}
         </Link>
         <span>/</span>
         <Link
-          href={`/tutorials/${tutorial.slug}/${chapter}`}
+          href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}/${chapter}`)}
           className="hover:text-[#22C55E]"
         >
           {chapterTitle}
@@ -259,7 +260,7 @@ export default async function LessonPage({ params }: PageProps) {
           </Link>
         ) : (
           <Link
-            href={`/tutorials/${tutorial.slug}`}
+            href={localeHref(loc as Locale, `/tutorials/${tutorial.slug}`)}
             className="px-5 py-2.5 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-bold hover:bg-[#4ADE80] transition-colors"
           >
             {t.complete}

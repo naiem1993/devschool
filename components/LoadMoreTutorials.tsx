@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 interface Tutorial {
   id: string
@@ -17,6 +18,7 @@ interface Tutorial {
 
 export default function LoadMoreTutorials({ initialTutorials }: { initialTutorials: Tutorial[] }) {
   const dict = useDict()
+  const locale = useLocale()
   const [tutorials, setTutorials] = useState(initialTutorials)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -44,7 +46,7 @@ export default function LoadMoreTutorials({ initialTutorials }: { initialTutoria
         {tutorials.map((tutorial) => (
           <Link
             key={tutorial.id}
-            href={`/tutorials/${tutorial.slug}`}
+            href={localeHref(locale, `/tutorials/${tutorial.slug}`)}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-xl transition group"
           >
             <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-[#22C55E] dark:group-hover:text-[#4ADE80]">

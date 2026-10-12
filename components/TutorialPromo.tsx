@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { SIDEBAR_TEXT } from '@/lib/i18n/sidebar-text'
+import { localeHref } from '@/lib/i18n/link'
 
 export default function TutorialPromo({
   chapterCount,
@@ -28,7 +29,7 @@ export default function TutorialPromo({
             {t.proDesc}
           </p>
           <Link
-            href="/about"
+            href={localeHref(locale, "/about")}
             className="block w-full py-2 rounded-lg bg-[#22C55E] text-[#050806] text-sm font-semibold hover:bg-[#4ADE80] transition-colors"
           >
             {t.proBtn}

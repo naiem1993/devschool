@@ -56,7 +56,7 @@ export default function LanguageSwitcher() {
         <button
           type="submit"
           disabled={isBn}
-          aria-label="ভাষা বাংলায় বদলান"
+          aria-label={dict.languageSwitcher.switchToBn}
           aria-current={isBn ? 'true' : undefined}
           className={`${btnBase} ${isBn ? btnActive : btnIdle} ${
             isBn ? 'cursor-default' : ''
@@ -81,7 +81,7 @@ export default function LanguageSwitcher() {
         <button
           type="submit"
           disabled={isEn}
-          aria-label="Switch to English"
+          aria-label={dict.languageSwitcher.switchToEn}
           aria-current={isEn ? 'true' : undefined}
           className={`${btnBase} ${isEn ? btnActive : btnIdle} ${
             isEn ? 'cursor-default' : ''

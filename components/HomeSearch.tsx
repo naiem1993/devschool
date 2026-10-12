@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { debounce } from 'lodash'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
 type TutorialHit = {
   id: string
@@ -37,12 +38,16 @@ type SearchResult = {
  * The `tutorials` prop is kept for backwards-compat / SSR fallback,
  * but the actual search is performed server-side with FTS ranking.
  */
-export default function HomeSearch(
-  { placeholder = 'কী শিখতে চান? (যেমন: JavaScript, Python, React...)' }: {
-    tutorials?: unknown[]
-    placeholder?: string
-  } = {}
-) {
+export default function HomeSearch({
+  placeholder,
+}: {
+  tutorials?: unknown[]
+  placeholder?: string
+} = {}) {
+  const dict = useDict()
+  const locale = useLocale()
+  const t = dict.homeSearch
+  const finalPlaceholder = placeholder || t.placeholder
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<SearchResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -84,7 +89,7 @@ export default function HomeSearch(
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder}
+          placeholder={finalPlaceholder}
           className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
         {query && (
@@ -92,7 +97,7 @@ export default function HomeSearch(
             onClick={() => setQuery('')}
             className="absolute right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 transition"
           >
-            ক্লিয়ার
+            {t.clearBtn}
           </button>
         )}
       </div>
@@ -104,7 +109,7 @@ export default function HomeSearch(
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            <span>খুঁজছি...</span>
+            <span>{t.searching}</span>
           </div>
         </div>
       )}
@@ -116,19 +121,19 @@ export default function HomeSearch(
               {result.tutorials.length > 0 && (
                 <div>
                   <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                    📚 টিউটোরিয়াল
+                    📚 {t.tutorialsLabel}
                   </div>
                   <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {result.tutorials.map((t) => (
                       <Link
                         key={t.id}
-                        href={`/tutorials/${t.slug}`}
+                        href={`/${locale}/tutorials/${t.slug}`}
                         onClick={() => setQuery('')}
                         className="block p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition"
                       >
                         <div className="text-sm font-bold text-slate-900 dark:text-white">{t.title}</div>
                         <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                          <span className="text-blue-600 dark:text-blue-400">{t.categoryName || 'টিউটোরিয়াল'}</span>
+                          <span className="text-blue-600 dark:text-blue-400">{t.categoryName || dict.home.genericCategory}</span>
                           <span>•</span>
                           <span>{t.difficulty}</span>
                         </div>
@@ -146,13 +151,13 @@ export default function HomeSearch(
               {result.references.length > 0 && (
                 <div className="mt-2">
                   <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                    📖 রেফারেন্স
+                    📖 {t.referencesLabel}
                   </div>
                   <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {result.references.map((r) => (
                       <Link
                         key={r.id}
-                        href={`/references/${r.slug}`}
+                        href={`/${locale}/references/${r.slug}`}
                         onClick={() => setQuery('')}
                         className="block p-3 rounded-xl hover:bg-[#22C55E]/10 dark:hover:bg-slate-800 transition"
                       >
@@ -179,7 +184,7 @@ export default function HomeSearch(
             </div>
           ) : (
             <div className="p-6 text-center text-sm text-slate-500 dark:text-slate-400">
-              কিছু পাওয়া যায়নি 😕 — অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন
+              {t.emptyMsg}
             </div>
           )}
         </div>

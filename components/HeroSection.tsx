@@ -5,7 +5,8 @@ import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
 import { type HeroContent } from '@/lib/hero-content'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 const transition: Transition = { duration: 0.6, ease: 'easeOut' }
 const fadeUp = {
@@ -55,6 +56,7 @@ function buildDoc(html: string, css: string, js: string) {
 
 export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps) {
   const dict = useDict()
+  const locale = useLocale()
   const statValues = [
     `${stats.languageCount}+`,
     `${stats.tutorialCount}+`,
@@ -227,13 +229,13 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
 
           <motion.div variants={fadeUp} className="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
             <Link
-              href={hero.cta1Href}
+              href={localeHref(locale, hero.cta1Href)}
               className="px-6 py-3.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#04140a] rounded-2xl font-bold shadow-lg shadow-[#22C55E]/30 hover:scale-[1.04] transition-all duration-200"
             >
               {hero.cta1Label}
             </Link>
             <Link
-              href={hero.cta2Href}
+              href={localeHref(locale, hero.cta2Href)}
               className="px-6 py-3.5 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-2xl font-bold border border-slate-200 dark:border-slate-700 hover:scale-[1.04] transition-all duration-200"
             >
               {hero.cta2Label}
@@ -287,7 +289,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
                 ))}
               </div>
               <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-[#5c6b7a]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" /> লাইভ
+                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" /> {dict.heroDemo.liveLabel}
               </span>
             </div>
 

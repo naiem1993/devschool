@@ -548,11 +548,11 @@ export default function ImageBase64Tool() {
               ? t.statusError
               : mode === 'toBase64'
                 ? fileMime
-                  ? '✓ রূপান্তর হয়েছে'
-                  : 'অপেক্ষায়'
+                  ? t.statusConverted
+                  : t.statusWaiting
                 : decodedUrl
-                  ? '✓ ছবি পাওয়া গেছে'
-                  : 'অপেক্ষায়'}
+                  ? t.statusImageFound
+                  : t.statusWaiting}
           </span>
 
           {mode === 'toBase64' && file && (

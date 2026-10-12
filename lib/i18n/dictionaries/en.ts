@@ -32,6 +32,8 @@ const en: Dictionary = {
     close: 'Close',
     yes: 'Yes',
     no: 'No',
+    toggleMenu: 'Toggle menu',
+    logoAria: 'DevSchool logo',
   },
 
   // ── Tutorial page ──
@@ -126,6 +128,7 @@ const en: Dictionary = {
     tryAgain: 'Try again 🔄',
     homePage: '🏠 Homepage',
     footerText: 'DevSchool · Learn programming for free',
+    errorIdLabel: 'Error ID:',
   },
 
   // ── Root layout SEO (app/[locale]/layout.tsx) ──
@@ -246,10 +249,60 @@ const en: Dictionary = {
     allOption: 'All',
     filterClear: 'Clear filters ✕',
     noResultsDiffDesc: 'Try another keyword or difficulty.',
+    difficultyLabels: {
+      Easy: 'Easy',
+      Medium: 'Medium',
+      Hard: 'Hard',
+    },
     solve: 'Solve →',
     pts: 'pts',
     errLoadTitle: 'Something went wrong',
     errLoadMsg: 'An error occurred while loading challenges.',
+  },
+
+  // ── Challenge Workspace (app/[locale]/(site)/challenges/[id]/ChallengeWorkspace.tsx) ──
+  challengeWorkspace: {
+    editorLoading: 'Loading editor...',
+    editorFilename: 'solution.js',
+    btnRunning: '⌛ Running...',
+    btnRunTests: '▶ Run tests',
+    btnRunCustom: '⚡ Run',
+    btnReset: '↺ Reset',
+    btnShowSolution: '💡 Show solution',
+    btnHideSolution: '🙈 Hide solution',
+    tabTests: '🧪 Test cases',
+    tabOutput: '📤 Output',
+    successBanner: '🎉 All tests passed! Excellent work.',
+    noTestCases: 'This challenge has no test cases.',
+    hiddenTestLabelTpl: '🔒 Hidden test #{n}',
+    hiddenTestDetail: 'Details of this test are kept private.',
+    hiddenCountNoteTpl: '🔒 {n} hidden test cases are being verified — only the result (pass/fail) is shown.',
+    statusPassed: '✓ Pass',
+    statusFailed: '✗ Fail',
+    solutionRevealTitle: 'solution.js — view only as a last resort!',
+    outputPlaceholder: '▶ Click the Run button',
+    tipsLabel: '💡 Tips:',
+    tipsBefore: 'Your code must contain a',
+    tipsMiddle: 'function — that takes',
+    tipsAfter: 'and returns an output.',
+    relatedTutorialTpl: '📚 Related tutorial: {title} →',
+    errTimeoutTpl: 'Time limit exceeded ({n}s cap)',
+    testLabelTpl: 'Test #{n}',
+    inputLabel: 'input:',
+    expectedLabel: 'expected:',
+    outputLabel: 'output:',
+    emptyOutput: '(empty)',
+    errPrefix: '[error]',
+  },
+
+  // ── Challenge Detail Page (app/[locale]/(site)/challenges/[id]/page.tsx) ──
+  challengeDetail: {
+    breadcrumbHome: 'Home',
+    breadcrumbChallenges: 'Challenges',
+    metaNotFoundTitle: 'Challenge not found | DevSchool',
+    metaTitleTpl: '{title} — Code Challenge | DevSchool',
+    metaDescTpl: '{title} — a {difficulty} level coding challenge.',
+    starterCodeFallback: '// Write your code here\n',
   },
 
   // ── Search page (app/[locale]/(site)/search/*) ──
@@ -384,6 +437,8 @@ const en: Dictionary = {
       errClipboard: "Couldn't copy to clipboard — browser denied permission.",
       errBadLength: 'Invalid Base64 length (must be a multiple of 4)',
       errBadChars: 'Not valid Base64 — contains invalid characters',
+      urlSafeLabel: 'URL-safe',
+      swapLabel: '⇅ Swap',
     },
 
     json: {
@@ -401,6 +456,9 @@ const en: Dictionary = {
       btnValidate: '✓ Validate',
       btnSort: '⇅ Sort keys',
       indentLabel: 'Indent',
+      indentTwoSpace: '2 spaces',
+      indentFourSpace: '4 spaces',
+      indentTab: 'Tab',
       inputAria: 'JSON input',
       labelInput: 'Input',
       labelOutput: 'Output',
@@ -451,6 +509,12 @@ const en: Dictionary = {
       harmonyA1: 'Analogous −30°',
       harmonyA2: 'Analogous +30°',
       selectAriaTpl: 'Select {v}',
+      red: 'Red',
+      green: 'Green',
+      blue: 'Blue',
+      hue: 'Hue',
+      saturation: 'Saturation',
+      lightness: 'Lightness',
     },
 
     imageBase64: {
@@ -492,6 +556,41 @@ const en: Dictionary = {
       errBadLength: 'Invalid Base64 length (must be a multiple of 4)',
       errBadChars: 'Not valid Base64 — contains invalid characters',
     },
+
+    imageToPdf: {
+      pickBtn: '📁 Choose images',
+      pageModeAria: 'Page mode',
+      modeA4: 'A4 page',
+      modeImage: 'Image size',
+      buildBtn: '📄 Build PDF',
+      buildingTpl: '⏳ {n}%',
+      clearBtn: '✕ Clear',
+      dropTitle: 'Drag & drop images here',
+      dropOrClick: 'Or click this box to',
+      pickLink: 'choose images',
+      formatsHintTpl: 'PNG · JPEG · GIF · WEBP — max {max} each, {total} total',
+      filesHintTpl: 'Up to {max} images · ordered top-to-bottom in the PDF',
+      addMoreBtn: '+ Add more images',
+      moveUpAria: 'Move up',
+      moveDownAria: 'Move down',
+      removeAria: 'Remove',
+      statusError: '✕ Error',
+      statusReady: 'Ready',
+      statusWaiting: 'Waiting',
+      labelImages: 'Images',
+      labelTotal: 'Total',
+      privacyNote: '🔒 Images never leave your browser · EXIF metadata is stripped',
+      errMaxFilesTpl: 'You can add up to {max} images.',
+      errOnlyFirstTpl: 'Only the first {n} images were added (max {max}).',
+      errFileTooBigTpl: '"{name}" is too large ({size}). Max {max}.',
+      errTotalSizeTpl: 'Total size limit ({max}) would be exceeded — remaining images were skipped.',
+      errBadTypeTpl: '"{name}" is not an allowed image. Only PNG, JPEG, GIF or WEBP (SVG excluded for security).',
+      errReadFail: 'Could not read the image (corrupted or unsupported).',
+      errNoDimension: 'Could not determine image dimensions.',
+      errNoCanvas: 'Canvas is not supported — please try another browser.',
+      errNoPage: 'No pages were created.',
+      statusDownloadedTpl: '✓ PDF downloaded ({n} pages)',
+    },
   },
 
   // ── References page (app/[locale]/(site)/references/*) ──
@@ -511,6 +610,7 @@ const en: Dictionary = {
     errNoConn: 'Cannot connect to the database.',
     errNoTable: 'Database table not found.',
     errGeneric: 'Could not load references.',
+    viewLink: 'View →',
     emptyTitle: 'No references yet',
     emptyDesc: 'New references will be added soon.',
     searchPlaceholder: 'Search references... (e.g. map, forEach, fetch)',
@@ -527,6 +627,9 @@ const en: Dictionary = {
     noResultsTitle: 'Nothing found',
     noResultsDesc: 'Try another keyword or reset the filters.',
     detailsSoon: 'Details coming soon',
+    copyAria: 'Copy',
+    copyBtn: 'Copy',
+    copiedBtn: '✓ copied',
     errorTitle: 'Could not load references',
     errorMessage: 'An error occurred while loading references.',
   },
@@ -556,6 +659,7 @@ const en: Dictionary = {
     typing1: 'npm create devschool@latest',
     typing2: 'Let the learning begin 🚀',
     communityLabel: 'DevSchool Community',
+    liveLabel: 'LIVE',
   },
 
   // ── Language switcher ──
@@ -580,10 +684,22 @@ const en: Dictionary = {
     tabReferences: 'References',
     resultCount: 'results',
     noResults: 'No results found. Try another keyword.',
+    noResultsTitle: 'Nothing found',
     tryHint: 'Type at least 2 characters',
     searching: 'Searching...',
     errorTitle: 'Search is not working',
-    errorDesc: 'Please try again in a moment.',
+    errorDesc: 'Please try again or refresh the page.',
+    errorPageDesc: 'Sorry, the search results could not be loaded. Please try again.',
+    errorRetryBtn: 'Try again',
+    errorHomeBtn: 'Homepage',
+    filterLevelAria: 'Level filter',
+    allLevels: 'All levels',
+    filterLanguageAria: 'Language filter',
+    allLanguages: 'All languages',
+    clearAllFilters: 'Clear all filters ✕',
+    tutorialsSection: 'Tutorials',
+    referencesSection: 'References',
+    fallbackMode: '(fallback mode)',
   },
 
   // ── Playground UI (PlaygroundClient.tsx — client) ──
@@ -625,6 +741,8 @@ const en: Dictionary = {
     passed: '✓ Passed',
     failed: '✗ Failed',
     refresh: '↻ Refresh',
+    errDeviceId: 'Could not identify this device.',
+    errLoadFailed: 'Could not load your progress.',
   },
 
   // ── About page (app/[locale]/about/page.tsx) ──
@@ -672,6 +790,7 @@ const en: Dictionary = {
       'An error occurred while loading this challenge. Please try again.',
 
     chapterNotFoundTitle: 'This chapter does not exist',
+    chapterNotFoundPill: 'Chapter Not Found',
     chapterNotFoundMsg:
       'The chapter you are looking for does not exist, the number is wrong, or it is not published yet.',
     chapterErrorTitle: 'Could not load chapter',
@@ -683,6 +802,11 @@ const en: Dictionary = {
     viewAllChallenges: 'View all challenges',
     goHome: 'Back to homepage',
     retry: 'Try again 🔄',
+    tutorialErrorPill: 'Tutorial Error',
+    referenceErrorPill: 'Reference Error',
+    challengeErrorPill: 'Challenge Error',
+    chapterErrorPill: 'Chapter Error',
+    errorIdLabel: 'Error ID:',
   },
 
   // ── HomeExtras (components/HomeExtras.tsx) — Part 9k ──
@@ -744,6 +868,51 @@ const en: Dictionary = {
     submitBtn: 'Submit review',
     submittingBtn: 'Sending...',
     footerNote: 'After submission, the review appears once an admin approves it.',
+  },
+
+  // ── ErrorBoundary (components/ErrorBoundary.tsx) — class component ──
+  errorBoundary: {
+    title: 'Something went wrong',
+    defaultMessage: 'We are working on fixing the problem.',
+    refreshBtn: 'Refresh',
+  },
+
+  // ── HomeSearch (components/HomeSearch.tsx) ──
+  homeSearch: {
+    placeholder: 'What do you want to learn? (e.g. JavaScript, Python, React...)',
+    clearBtn: 'Clear',
+    searching: 'Searching...',
+    tutorialsLabel: 'Tutorials',
+    referencesLabel: 'References',
+    emptyMsg: 'Nothing found 😕 — try another keyword',
+  },
+
+  // ── ThemeToggle (components/ThemeToggle.tsx) ──
+  themeToggle: {
+    toLight: 'Switch to light mode',
+    toDark: 'Switch to dark mode',
+    srLabel: 'Theme',
+  },
+
+  // ── LanguageSwitcher (components/LanguageSwitcher.tsx) ──
+  languageSwitcher: {
+    switchToBn: 'Switch to Bengali',
+    switchToEn: 'Switch to English',
+  },
+
+  // ── SponsorRail (components/SponsorRail.tsx) ──
+  sponsorRail: {
+    sponsoredBy: 'Sponsored by',
+  },
+
+  // ── GlobalError (app/global-error.tsx) — root-level crash fallback ──
+  globalError: {
+    criticalLabel: 'Critical Error',
+    title: 'Something went wrong on the site',
+    message: 'An unexpected error occurred. Click the button below to try again. If the problem persists, come back in a moment.',
+    retryBtn: 'Try again 🔄',
+    homeBtn: 'Back to homepage',
+    errorIdLabel: 'Error ID:',
   },
 };
 

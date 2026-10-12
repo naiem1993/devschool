@@ -35,7 +35,7 @@ export default function Header() {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 100 100"
         className="w-9 h-9 rounded-xl group-hover:scale-105 transition-transform duration-200"
-        aria-label="DevSchool logo"
+        aria-label={dict.common.logoAria}
       >
         <defs>
           <linearGradient id="dsLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -120,7 +120,7 @@ export default function Header() {
     <button
       type="button"
       onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      aria-label="Toggle Menu"
+      aria-label={dict.common.toggleMenu}
       aria-expanded={mobileMenuOpen}
       className="md:hidden p-2 -ml-1 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-[#4ADE80] transition-colors shrink-0"
     >

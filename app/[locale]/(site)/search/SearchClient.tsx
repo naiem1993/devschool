@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
 type TutorialHit = {
   id: string
@@ -49,6 +49,7 @@ const POPULAR = [
 
 export default function SearchClient({ languages }: { languages: string[] }) {
   const t = useDict()
+  const locale = useLocale()
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -243,10 +244,10 @@ export default function SearchClient({ languages }: { languages: string[] }) {
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
-                aria-label="লেভেল ফিল্টার"
+                aria-label={t.searchUi.filterLevelAria}
                 className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
               >
-                <option value="">সব লেভেল</option>
+                <option value="">{t.searchUi.allLevels}</option>
                 {DIFFICULTIES.map((d) => (
                   <option key={d} value={d}>
                     {d}
@@ -259,10 +260,10 @@ export default function SearchClient({ languages }: { languages: string[] }) {
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                aria-label="ভাষা ফিল্টার"
+                aria-label={t.searchUi.filterLanguageAria}
                 className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition cursor-pointer"
               >
-                <option value="">সব ভাষা</option>
+                <option value="">{t.searchUi.allLanguages}</option>
                 {languages.map((l) => (
                   <option key={l} value={l}>
                     {l}
@@ -277,7 +278,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
               onClick={resetFilters}
               className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition"
             >
-              সব ফিল্টার মুছুন ✕
+              {t.searchUi.clearAllFilters}
             </button>
           )}
         </div>
@@ -303,10 +304,10 @@ export default function SearchClient({ languages }: { languages: string[] }) {
         <div className="mt-10 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-3xl p-8 text-center">
           <div className="text-5xl mb-3">⚠️</div>
           <h3 className="text-lg font-bold text-red-700 dark:text-red-400 mb-1">
-            সার্চে সমস্যা হয়েছে
+            {t.searchUi.errorTitle}
           </h3>
           <p className="text-sm text-red-600/80 dark:text-red-400/70">
-            আবার চেষ্টা করুন বা পেজ রিফ্রেশ করুন।
+            {t.searchUi.errorDesc}
           </p>
         </div>
       )}
@@ -321,7 +322,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
             {t.searchUi.resultCount}
             {result.fallback && (
               <span className="ml-2 text-[10px] text-amber-600 dark:text-amber-400">
-                (fallback mode)
+                {t.searchUi.fallbackMode}
               </span>
             )}
           </p>
@@ -333,7 +334,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
       {!isLoading && !error && result && hasQuery && !hasHits && (
         <div className="mt-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-bold mb-2">কিছু পাওয়া যায়নি</h3>
+          <h3 className="text-xl font-bold mb-2">{t.searchUi.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
             <span className="font-mono text-[#15803d] dark:text-[#4ADE80]">
               “{result.query}”
@@ -361,7 +362,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           {showTutorials && result.tutorials.length > 0 && (
             <section>
               <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-                <span>📚</span> টিউটোরিয়াল
+                <span>📚</span> {t.searchUi.tutorialsSection}
                 <span className="text-slate-300 dark:text-slate-700">
                   ({result.tutorials.length})
                 </span>
@@ -370,7 +371,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
                 {result.tutorials.map((t) => (
                   <Link
                     key={t.id}
-                    href={`/tutorials/${t.slug}`}
+                    href={`/${locale}/tutorials/${t.slug}`}
                     className="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 transition-all duration-200"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -396,7 +397,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           {showReferences && result.references.length > 0 && (
             <section>
               <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-                <span>📖</span> রেফারেন্স
+                <span>📖</span> {t.searchUi.referencesSection}
                 <span className="text-slate-300 dark:text-slate-700">
                   ({result.references.length})
                 </span>
@@ -405,7 +406,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
                 {result.references.map((r) => (
                   <Link
                     key={r.id}
-                    href={`/references/${r.slug}`}
+                    href={`/${locale}/references/${r.slug}`}
                     className="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:shadow-lg hover:-translate-y-0.5 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all duration-200"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2">

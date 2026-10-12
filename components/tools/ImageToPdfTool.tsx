@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 // ─────────────────────────────────────────────────────────────
 //  সীমা
@@ -98,12 +99,18 @@ function sanitizeBaseName(name: string): string {
   return cleaned || 'converted'
 }
 
+type PdfMessages = {
+  errReadFail: string
+  errNoDimension: string
+  errNoCanvas: string
+}
+
 /** object URL থেকে ছবি লোড — onerror হ্যান্ডেল করা, নইলে প্রমিস আটকে থাকত */
-function loadImage(src: string): Promise<HTMLImageElement> {
+function loadImage(src: string, msgs: Pick<PdfMessages, 'errReadFail'>): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.onload = () => resolve(img)
-    img.onerror = () => reject(new Error('ছবিটি পড়া গেল না (ক্ষতিগ্রস্ত বা অসমর্থিত)'))
+    img.onerror = () => reject(new Error(msgs.errReadFail))
     img.src = src
   })
 }
@@ -113,10 +120,13 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  * এতে EXIF মেটাডেটা ও ছবির ভেতরে লুকানো যেকোনো পেলোড মুছে যায় —
  * PDF-এ শুধু বিশুদ্ধ পিক্সেল যায়। বড় মাপ হলে এখানেই ছোট করা হয়।
  */
-function rasterize(img: HTMLImageElement): HTMLCanvasElement {
+function rasterize(
+  img: HTMLImageElement,
+  msgs: Pick<PdfMessages, 'errNoDimension' | 'errNoCanvas'>
+): HTMLCanvasElement {
   let w = img.naturalWidth || img.width
   let h = img.naturalHeight || img.height
-  if (!w || !h) throw new Error('ছবির মাপ পাওয়া যায়নি')
+  if (!w || !h) throw new Error(msgs.errNoDimension)
 
   if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
     const scale = MAX_DIMENSION / Math.max(w, h)
@@ -128,7 +138,7 @@ function rasterize(img: HTMLImageElement): HTMLCanvasElement {
   canvas.width = w
   canvas.height = h
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Canvas সমর্থিত নয় — অন্য ব্রাউজারে চেষ্টা করুন')
+  if (!ctx) throw new Error(msgs.errNoCanvas)
 
   // স্বচ্ছ (transparent) অংশ সাদা করে দাও, নইলে JPEG-এ কালো হয়ে যায়
   ctx.fillStyle = '#FFFFFF'
@@ -155,6 +165,8 @@ const TOGGLE_BASE =
 // ─────────────────────────────────────────────────────────────
 
 export default function ImageToPdfTool() {
+  const dict = useDict()
+  const t = dict.toolUi.imageToPdf
   const [items, setItems] = useState<Item[]>([])
   const [mode, setMode] = useState<PageMode>('a4')
   const [busy, setBusy] = useState(false)
@@ -193,13 +205,15 @@ export default function ImageToPdfTool() {
 
     const room = MAX_FILES - items.length
     if (room <= 0) {
-      setError('সর্বোচ্চ ' + MAX_FILES + ' টি ছবি যোগ করা যাবে।')
+      setError(t.errMaxFilesTpl.replace('{max}', String(MAX_FILES)))
       return
     }
 
     const batch = picked.slice(0, room)
     if (picked.length > room) {
-      setError('শুধু প্রথম ' + room + ' টি ছবি যোগ করা হলো (সর্বোচ্চ ' + MAX_FILES + ')।')
+      setError(
+        t.errOnlyFirstTpl.replace('{n}', String(room)).replace('{max}', String(MAX_FILES))
+      )
     }
 
     const accepted: Item[] = []
@@ -209,11 +223,16 @@ export default function ImageToPdfTool() {
       if (file.size === 0) continue
 
       if (file.size > MAX_FILE_BYTES) {
-        setError('"' + file.name + '" অনেক বড় (' + formatBytes(file.size) + ')। সর্বোচ্চ ' + formatBytes(MAX_FILE_BYTES) + '।')
+        setError(
+          t.errFileTooBigTpl
+            .replace('{name}', file.name)
+            .replace('{size}', formatBytes(file.size))
+            .replace('{max}', formatBytes(MAX_FILE_BYTES))
+        )
         continue
       }
       if (runningTotal + file.size > MAX_TOTAL_BYTES) {
-        setError('মোট সাইজের সীমা (' + formatBytes(MAX_TOTAL_BYTES) + ') ছাড়িয়ে যাবে — বাকি ছবি বাদ দেওয়া হলো।')
+        setError(t.errTotalSizeTpl.replace('{max}', formatBytes(MAX_TOTAL_BYTES)))
         break
       }
 
@@ -224,12 +243,12 @@ export default function ImageToPdfTool() {
         // ⚠️ file.type-এর উপর ভরসা না করে আসল magic bytes যাচাই
         const sniffed = sniffImageType(bytes)
         if (!sniffed) {
-          setError('"' + file.name + '" অনুমোদিত ছবি নয়। শুধু PNG, JPEG, GIF বা WEBP (SVG নিরাপত্তার কারণে বাদ)।')
+          setError(t.errBadTypeTpl.replace('{name}', file.name))
           continue
         }
 
         const url = URL.createObjectURL(file)
-        const img = await loadImage(url)
+        const img = await loadImage(url, t)
 
         urlsRef.current.add(url)
         accepted.push({
@@ -251,7 +270,7 @@ export default function ImageToPdfTool() {
       setItems((prev) => prev.concat(accepted))
     }
     if (inputRef.current) inputRef.current.value = ''
-  }, [items])
+  }, [items, t])
 
   // ── সরানো / মুছে ফেলা ────────────────────────────────────
   const removeItem = (id: string) => {
@@ -314,8 +333,8 @@ export default function ImageToPdfTool() {
 
       for (let i = 0; i < items.length; i++) {
         const it = items[i]
-        const img = await loadImage(it.previewUrl)
-        const canvas = rasterize(img) // 🔒 EXIF/পেলোড মুছে ফেলা হলো
+        const img = await loadImage(it.previewUrl, t)
+        const canvas = rasterize(img, t) // 🔒 EXIF/পেলোড মুছে ফেলা হলো
 
         let pageW: number
         let pageH: number
@@ -358,18 +377,18 @@ export default function ImageToPdfTool() {
         setProgress(Math.round(((i + 1) / items.length) * 100))
       }
 
-      if (!pdf) throw new Error('কোনো পেজ তৈরি হয়নি')
+      if (!pdf) throw new Error(t.errNoPage)
 
       const base = items.length === 1 ? sanitizeBaseName(items[0].name) : 'images'
       pdf.save(base + '.pdf')
-      setDone('✓ PDF ডাউনলোড হয়েছে (' + items.length + ' পেজ)')
+      setDone(t.statusDownloadedTpl.replace('{n}', String(items.length)))
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
       setBusy(false)
       setProgress(0)
     }
-  }, [items, mode, busy])
+  }, [items, mode, busy, t])
 
   const atLimit = items.length >= MAX_FILES
 
@@ -384,12 +403,12 @@ export default function ImageToPdfTool() {
             BTN_PRIMARY + ' cursor-pointer ' + (busy || atLimit ? 'pointer-events-none opacity-40' : '')
           }
         >
-          📁 ছবি বাছুন
+          {t.pickBtn}
         </label>
 
         <div
           role="group"
-          aria-label="পেজের ধরন"
+          aria-label={t.pageModeAria}
           className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 p-0.5"
         >
           <button
@@ -400,7 +419,7 @@ export default function ImageToPdfTool() {
               TOGGLE_BASE + ' ' + (mode === 'a4' ? 'bg-[#22C55E] text-black' : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]')
             }
           >
-            A4 পেজ
+            {t.modeA4}
           </button>
           <button
             type="button"
@@ -410,7 +429,7 @@ export default function ImageToPdfTool() {
               TOGGLE_BASE + ' ' + (mode === 'image' ? 'bg-[#22C55E] text-black' : 'text-slate-600 dark:text-slate-300 hover:text-[#22C55E]')
             }
           >
-            ছবির মাপ
+            {t.modeImage}
           </button>
         </div>
 
@@ -422,10 +441,10 @@ export default function ImageToPdfTool() {
           disabled={items.length === 0 || busy}
           className={BTN_PRIMARY}
         >
-          {busy ? '⏳ ' + progress + '%' : '📄 PDF বানান'}
+          {busy ? t.buildingTpl.replace('{n}', String(progress)) : t.buildBtn}
         </button>
         <button type="button" onClick={clearAll} disabled={items.length === 0 || busy} className={BTN_GHOST}>
-          ✕ Clear
+          {t.clearBtn}
         </button>
 
         <input
@@ -467,14 +486,19 @@ export default function ImageToPdfTool() {
           <span className="text-5xl" aria-hidden>
             🖼️➜📄
           </span>
-          <p className="text-sm font-semibold">এখানে ছবি টেনে ছাড়ুন</p>
+          <p className="text-sm font-semibold">{t.dropTitle}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            অথবা এই বক্সে ক্লিক করে <span className="font-semibold text-[#22C55E]">ছবি বাছুন</span>
+            {t.dropOrClick}{' '}
+            <span className="font-semibold text-[#22C55E]">{t.pickLink}</span>
           </p>
           <p className="font-mono text-[10px] text-slate-400">
-            PNG · JPEG · GIF · WEBP — প্রতিটি সর্বোচ্চ {formatBytes(MAX_FILE_BYTES)}, মোট {formatBytes(MAX_TOTAL_BYTES)}
+            {t.formatsHintTpl
+              .replace('{max}', formatBytes(MAX_FILE_BYTES))
+              .replace('{total}', formatBytes(MAX_TOTAL_BYTES))}
           </p>
-          <p className="font-mono text-[10px] text-slate-400">সর্বোচ্চ {MAX_FILES} টি ছবি · ক্রম অনুযায়ী PDF পেজ হবে</p>
+          <p className="font-mono text-[10px] text-slate-400">
+            {t.filesHintTpl.replace('{max}', String(MAX_FILES))}
+          </p>
         </label>
       ) : (
         <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c]">
@@ -510,7 +534,7 @@ export default function ImageToPdfTool() {
                     type="button"
                     onClick={() => moveItem(i, -1)}
                     disabled={i === 0 || busy}
-                    aria-label="উপরে নাও"
+                    aria-label={t.moveUpAria}
                     className="rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-500 transition hover:border-[#22C55E] hover:text-[#22C55E] disabled:opacity-30 dark:border-white/10 dark:text-slate-400"
                   >
                     ↑
@@ -519,7 +543,7 @@ export default function ImageToPdfTool() {
                     type="button"
                     onClick={() => moveItem(i, 1)}
                     disabled={i === items.length - 1 || busy}
-                    aria-label="নিচে নাও"
+                    aria-label={t.moveDownAria}
                     className="rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-500 transition hover:border-[#22C55E] hover:text-[#22C55E] disabled:opacity-30 dark:border-white/10 dark:text-slate-400"
                   >
                     ↓
@@ -528,7 +552,7 @@ export default function ImageToPdfTool() {
                     type="button"
                     onClick={() => removeItem(it.id)}
                     disabled={busy}
-                    aria-label="মুছে ফেলো"
+                    aria-label={t.removeAria}
                     className="rounded-lg border border-red-200 px-2 py-1 text-xs text-red-500 transition hover:border-red-500 hover:bg-red-500/10 disabled:opacity-30 dark:border-red-500/30"
                   >
                     ✕
@@ -543,7 +567,7 @@ export default function ImageToPdfTool() {
               htmlFor={FILE_INPUT_ID}
               className="block cursor-pointer border-t border-dashed border-slate-200 px-4 py-3 text-center text-xs font-semibold text-slate-500 transition hover:text-[#22C55E] dark:border-white/10 dark:text-slate-400"
             >
-              + আরও ছবি যোগ করুন
+              {t.addMoreBtn}
             </label>
           )}
         </div>
@@ -564,18 +588,18 @@ export default function ImageToPdfTool() {
                   : 'border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400')
             }
           >
-            {error ? '✕ সমস্যা' : done ? done : items.length ? 'প্রস্তুত' : 'অপেক্ষায়'}
+            {error ? t.statusError : done ? done : items.length ? t.statusReady : t.statusWaiting}
           </span>
 
           <span className="text-slate-500 dark:text-slate-400">
-            ছবি <b className="text-slate-800 dark:text-slate-200">{items.length}</b>
+            {t.labelImages} <b className="text-slate-800 dark:text-slate-200">{items.length}</b>
           </span>
           <span className="text-slate-500 dark:text-slate-400">
-            মোট <b className="text-slate-800 dark:text-slate-200">{formatBytes(totalBytes)}</b>
+            {t.labelTotal} <b className="text-slate-800 dark:text-slate-200">{formatBytes(totalBytes)}</b>
           </span>
 
           <span className="ml-auto hidden text-[11px] text-slate-400 sm:block">
-            🔒 ছবি আপনার ব্রাউজার ছাড়ে না · EXIF মেটাডেটা বাদ দেওয়া হয়
+            {t.privacyNote}
           </span>
         </div>
 

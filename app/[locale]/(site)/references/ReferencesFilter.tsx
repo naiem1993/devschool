@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useDict } from '@/lib/i18n/I18nProvider'
+import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
+import { localeHref } from '@/lib/i18n/link'
 
 export type ReferenceCard = {
   id: string
@@ -28,6 +29,7 @@ export default function ReferencesFilter({
   languages: string[]
 }) {
   const dict = useDict()
+  const locale = useLocale()
   const [query, setQuery] = useState('')
   const [languageFilter, setLanguageFilter] = useState<string>('all')
   const [sort, setSort] = useState<SortKey>('title')
@@ -151,7 +153,7 @@ export default function ReferencesFilter({
           {filtered.map((r) => (
             <Link
               key={r.id}
-              href={`/references/${r.slug}`}
+              href={localeHref(locale, `/references/${r.slug}`)}
               className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
             >
               <div className="flex items-start justify-between mb-3 gap-2">
@@ -196,7 +198,7 @@ export default function ReferencesFilter({
 
               <div className="flex items-center justify-end pt-3 border-t border-slate-200 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
                 <span className="text-[#22C55E] font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  দেখুন →
+                  {dict.references.viewLink}
                 </span>
               </div>
             </Link>

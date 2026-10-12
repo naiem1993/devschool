@@ -42,7 +42,7 @@ export default function ReferencesError({
           </Link>
         </div>
         {error.digest && (
-          <p className="mt-6 text-[10px] font-mono text-slate-400">Error ID: {error.digest}</p>
+          <p className="mt-6 text-[10px] font-mono text-slate-400">{dict.error.errorIdLabel} {error.digest}</p>
         )}
       </div>
     </div>

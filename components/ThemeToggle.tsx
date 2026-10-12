@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 const STORAGE_KEY = 'theme'
 
 export default function ThemeToggle() {
+  const t = useDict().themeToggle
   // Server renders <html class="dark">, so default to dark to match SSR.
   const [isDark, setIsDark] = useState(true)
 
@@ -34,9 +36,9 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
+      aria-label={isDark ? t.toLight : t.toDark}
       aria-pressed={isDark}
-      title={isDark ? 'লাইট মোডে যান' : 'ডার্ক মোডে যান'}
+      title={isDark ? t.toLight : t.toDark}
       className="group inline-flex h-10 w-10 items-center justify-center rounded-xl bg-transparent border-0 transition-all duration-300 active:scale-90 hover:scale-110"
     >
       <span
@@ -45,7 +47,7 @@ export default function ThemeToggle() {
       >
         {isDark ? '🌙' : '☀️'}
       </span>
-      <span className="sr-only">Theme</span>
+      <span className="sr-only">{t.srLabel}</span>
     </button>
   )
 }

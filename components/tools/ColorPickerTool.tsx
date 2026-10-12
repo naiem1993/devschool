@@ -319,16 +319,16 @@ export default function ColorPickerTool() {
 
           <div className="space-y-4 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">RGB</p>
-            <Slider id="rgb-r" label="Red" value={rgb.r} min={0} max={255} suffix="" onChange={(v) => setChannel('r', v)} />
-            <Slider id="rgb-g" label="Green" value={rgb.g} min={0} max={255} suffix="" onChange={(v) => setChannel('g', v)} />
-            <Slider id="rgb-b" label="Blue" value={rgb.b} min={0} max={255} suffix="" onChange={(v) => setChannel('b', v)} />
+            <Slider id="rgb-r" label={t.red} value={rgb.r} min={0} max={255} suffix="" onChange={(v) => setChannel('r', v)} />
+            <Slider id="rgb-g" label={t.green} value={rgb.g} min={0} max={255} suffix="" onChange={(v) => setChannel('g', v)} />
+            <Slider id="rgb-b" label={t.blue} value={rgb.b} min={0} max={255} suffix="" onChange={(v) => setChannel('b', v)} />
           </div>
 
           <div className="space-y-4 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">HSL</p>
-            <Slider id="hsl-h" label="Hue" value={hsl.h} min={0} max={360} suffix="°" onChange={(v) => setHsl('h', v)} />
-            <Slider id="hsl-s" label="Saturation" value={hsl.s} min={0} max={100} suffix="%" onChange={(v) => setHsl('s', v)} />
-            <Slider id="hsl-l" label="Lightness" value={hsl.l} min={0} max={100} suffix="%" onChange={(v) => setHsl('l', v)} />
+            <Slider id="hsl-h" label={t.hue} value={hsl.h} min={0} max={360} suffix="°" onChange={(v) => setHsl('h', v)} />
+            <Slider id="hsl-s" label={t.saturation} value={hsl.s} min={0} max={100} suffix="%" onChange={(v) => setHsl('s', v)} />
+            <Slider id="hsl-l" label={t.lightness} value={hsl.l} min={0} max={100} suffix="%" onChange={(v) => setHsl('l', v)} />
           </div>
         </div>
 

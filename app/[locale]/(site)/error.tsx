@@ -77,7 +77,7 @@ export default function SiteError({
           {/* error id */}
           {error?.digest && (
             <p className="mt-6 font-mono text-[10px] text-slate-400 dark:text-slate-600">
-              Error ID: {error.digest}
+              {dict.error.errorIdLabel} {error.digest}
             </p>
           )}
         </div>

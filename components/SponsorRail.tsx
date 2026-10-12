@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useDict } from '@/lib/i18n/I18nProvider'
 
 /**
  * SponsorRail — public sponsor display।
@@ -25,6 +26,7 @@ const tierStyle: Record<string, string> = {
 }
 
 export default function SponsorRail({ sponsors }: { sponsors: PublicSponsor[] }) {
+  const t = useDict().sponsorRail
   const railRef = useRef<HTMLDivElement>(null)
   const tracked = useRef(false)
 
@@ -57,7 +59,7 @@ export default function SponsorRail({ sponsors }: { sponsors: PublicSponsor[] })
     <div ref={railRef} className="border-t border-slate-200 dark:border-slate-800 py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 text-center">
-          Sponsored by
+          {t.sponsoredBy}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           {sponsors.map((s) => {

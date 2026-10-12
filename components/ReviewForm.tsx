@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { getDeviceHeaders } from '@/lib/device'
+import { useLocale } from '@/lib/i18n/I18nProvider'
 
 export default function ReviewForm({
   dict,
@@ -25,6 +26,7 @@ export default function ReviewForm({
     footerNote: string
   }
 }) {
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [role, setRole] = useState('')
@@ -42,7 +44,7 @@ export default function ReviewForm({
     try {
       const res = await fetch('/api/reviews', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getDeviceHeaders() },
+        headers: { 'Content-Type': 'application/json', 'Accept-Language': locale, ...getDeviceHeaders() },
         body: JSON.stringify({ name, role: role || null, stars, text, website }),
       })
       const data = await res.json().catch(() => ({}))
