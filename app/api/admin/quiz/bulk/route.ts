@@ -42,13 +42,13 @@ export async function POST(req: NextRequest) {
       if (!Array.isArray(q.options) || q.options.length < 2) {
         return NextResponse.json({ error: `কুইজ ${n}: অন্তত ২টি অপশন দরকার` }, { status: 400 })
       }
-      if (!q.options.every((o) => o.textBn && String(o.textBn).trim())) {
+      if (!q.options.every((o: any) => o.textBn && String(o.textBn).trim())) {
         return NextResponse.json({ error: `কুইজ ${n}: প্রতিটি অপশনে বাংলা text দরকার` }, { status: 400 })
       }
-      if (!q.options.every((o) => o.textEn && String(o.textEn).trim())) {
+      if (!q.options.every((o: any) => o.textEn && String(o.textEn).trim())) {
         return NextResponse.json({ error: `কুইজ ${n}: প্রতিটি অপশনে ইংরেজি text দরকার` }, { status: 400 })
       }
-      if (!q.options.some((o) => o.isCorrect)) {
+      if (!q.options.some((o: any) => o.isCorrect)) {
         return NextResponse.json({ error: `কুইজ ${n}: সঠিক উত্তর চিহ্নিত করা হয়নি` }, { status: 400 })
       }
     }
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
             explanationEn: q.explanationEn ? String(q.explanationEn).trim() : null,
             orderIndex: baseOrder + i,
             options: {
-              create: q.options.map((o, idx) => ({
+              create: q.options.map((o: any, idx: number) => ({
                 textBn: String(o.textBn).trim(),
                 textEn: String(o.textEn).trim(),
                 isCorrect: !!o.isCorrect,

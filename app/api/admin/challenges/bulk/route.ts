@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       if (!Array.isArray(c.testCases) || c.testCases.length === 0) {
         return NextResponse.json({ error: `চ্যালেঞ্জ ${n}: অন্তত ১টি test case দরকার` }, { status: 400 })
       }
-      if (!c.testCases.every((t) => t.input !== undefined && t.expectedOutput !== undefined)) {
+      if (!c.testCases.every((t: any) => t.input !== undefined && t.expectedOutput !== undefined)) {
         return NextResponse.json({ error: `চ্যালেঞ্জ ${n}: প্রতিটি test case-এ input ও expectedOutput দরকার` }, { status: 400 })
       }
     }
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
             difficulty: c.difficulty || 'Easy',
             points: Number(c.points) || 0,
             testCases: {
-              create: c.testCases.map((t, idx) => ({
+              create: c.testCases.map((t: any, idx: number) => ({
                 input: String(t.input),
                 expectedOutput: String(t.expectedOutput),
                 isHidden: !!t.isHidden,

@@ -16,7 +16,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, difficulty, points, testCases } = await req.json()
+    const { titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, language, difficulty, points, testCases } = await req.json()
     if (!titleBn || !titleEn || !descriptionBn || !descriptionEn) {
       return NextResponse.json({ error: 'titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
     }
