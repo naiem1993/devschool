@@ -32,6 +32,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         starterCodeEn: starterCodeEn || null,
         solutionBn: solutionBn || null,
         solutionEn: solutionEn || null,
+        language: language || 'js',
         difficulty, points,
         testCases: Array.isArray(testCases)
           ? { create: testCases.map((tc: any, i: number) => ({ input: tc.input, expectedOutput: tc.expectedOutput, isHidden: !!tc.isHidden, testCaseOrder: i })) }

@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
         starterCodeEn: starterCodeEn || null,
         solutionBn: solutionBn || null,
         solutionEn: solutionEn || null,
+        language: language || 'js',
         difficulty: difficulty || 'Easy',
         points: points || 0,
         testCases: Array.isArray(testCases)

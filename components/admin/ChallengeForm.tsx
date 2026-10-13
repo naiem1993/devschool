@@ -28,6 +28,7 @@ export default function ChallengeForm({
     solutionEn: initial?.solutionEn || '',
     difficulty: initial?.difficulty || 'Easy',
     points: initial?.points ?? 10,
+    language: initial?.language || 'js',
   })
   const [testCases, setTestCases] = useState<TC[]>(
     initial?.testCases?.length
@@ -69,6 +70,29 @@ export default function ChallengeForm({
           <label className="admin-label">&gt; Difficulty</label>
           <select className="admin-input" value={form.difficulty} onChange={(e) => setForm((f) => ({ ...f, difficulty: e.target.value }))}>
             <option>Easy</option><option>Medium</option><option>Hard</option>
+          </select>
+        </div>
+        <div>
+          <label className="admin-label">&gt; Language</label>
+          <select className="admin-input" value={form.language} onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}>
+            <optgroup label="🌐 Browser">
+              <option value="js">JavaScript</option>
+              <option value="ts">TypeScript</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+            </optgroup>
+            <optgroup label="☁️ Remote API">
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+              <option value="c">C</option>
+              <option value="go">Go</option>
+              <option value="rust">Rust</option>
+              <option value="php">PHP</option>
+              <option value="csharp">C#</option>
+              <option value="kotlin">Kotlin</option>
+              <option value="swift">Swift</option>
+            </optgroup>
           </select>
         </div>
       </div>

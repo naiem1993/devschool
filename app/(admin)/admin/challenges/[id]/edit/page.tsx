@@ -30,6 +30,7 @@ export default async function EditChallengePage({ params }: { params: { id: stri
             starterCodeEn: c.starterCodeEn || '',
             solutionBn: c.solutionBn || '',
             solutionEn: c.solutionEn || '',
+            language: (c as any).language || 'js',
             difficulty: c.difficulty,
             points: c.points,
             testCases: c.testCases.map((t) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden })),

@@ -34,6 +34,7 @@ export async function GET(
         descriptionEn: true,
         starterCodeBn: true,
         starterCodeEn: true,
+        language: true,
         difficulty: true,
         createdAt: true,
         // ─── Exclude solution from client-side response ──────────────────────

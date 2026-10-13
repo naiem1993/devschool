@@ -11,6 +11,7 @@ export type ParsedTestCase = {
 }
 
 export type ParsedChallenge = {
+  language: string
   titleBn: string
   titleEn: string
   descriptionBn: string
@@ -72,6 +73,7 @@ export function parseChallenges(text: string): ParseResult {
     const blockNo = idx + 1
     const lines = block.split(/\r?\n/)
 
+    let language = 'js'
     let titleBn = ''
     let titleEn = ''
     let descBn = ''
@@ -106,7 +108,11 @@ export function parseChallenges(text: string): ParseResult {
 
       if (!trimmed) continue
 
-      if (/^TITLE\s*:/i.test(trimmed)) {
+      if (/^LANGUAGE\s*:/i.test(trimmed)) {
+        const val = trimmed.replace(/^LANGUAGE\s*:\s*/i, '').trim().toLowerCase()
+        const allowed = ['js','ts','html','css','python','java','cpp','c','go','rust','php','csharp','kotlin','swift']
+        language = allowed.includes(val) ? val : 'js'
+      } else if (/^TITLE\s*:/i.test(trimmed)) {
         const body = trimmed.replace(/^TITLE\s*:\s*/i, '')
         const [bn, en] = splitPair(body)
         titleBn = bn
@@ -190,6 +196,7 @@ export function parseChallenges(text: string): ParseResult {
     }
 
     challenges.push({
+      language,
       titleBn,
       titleEn,
       descriptionBn: descBn,

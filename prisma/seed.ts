@@ -224,6 +224,7 @@ async function main() {
       starterCodeEn: 'function sum(a, b) {\n  // Write your code here\n}',
       solutionBn: 'function sum(a, b) {\n  return a + b\n}',
       solutionEn: 'function sum(a, b) {\n  return a + b\n}',
+      language: 'js',
       difficulty: 'Easy',
       points: 10,
       testCases: {

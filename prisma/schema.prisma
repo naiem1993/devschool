@@ -188,6 +188,8 @@ model CodeChallenge {
   starterCodeEn String? @map("starter_code_en")
   solutionBn    String? @map("solution_bn")
   solutionEn    String? @map("solution_en")
+  /// ভাষা: js | ts | html | css | python | java | cpp | c | go | rust | php | csharp | kotlin | swift
+  language    String   @default("js")
   difficulty  String   @default("Easy")
   points      Int      @default(0)
   createdAt   DateTime @default(now())

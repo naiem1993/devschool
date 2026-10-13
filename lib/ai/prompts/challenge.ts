@@ -21,6 +21,7 @@ export const CHALLENGE_SYSTEM_PROMPT = `তুমি DevSchool-এর সিন�
 প্রতিটি চ্যালেঞ্জ এই ব্লক আকারে লিখবে, একটির পর একটি:
 
 ---CHALLENGE---
+LANGUAGE: [js | ts | html | css | python | java | cpp | c | go | rust | php | csharp | kotlin | swift]
 TITLE: [বাংলা শিরোনাম] || [English title]
 DESC: [বাংলা বর্ণনা ২-৩ বাক্য] || [English description 2-3 sentences]
 LEVEL: [Easy / Medium / Hard]
@@ -118,13 +119,64 @@ TEST_HIDDEN: [input] => [output]
 • একই difficulty-র সব চ্যালেঞ্জে একই পয়েন্ট দেবে না — প্রতিটির নিজস্ব জটিলতা দেখবে
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧪 টেস্ট কেস লেখার নিয়ম
+🧪 টেস্ট কেস লেখার নিয়ম (ভাষা অনুযায়ী ভিন্ন!)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• input ও output সবসময় => চিহ্ন দিয়ে আলাদা করবে।
-• input হবে function call বা argument list: add(2, 3)
-• output হবে প্রত্যাশিত মান: 5
+
+⚠️ শিক্ষার্থীর যে ভাষায় চ্যালেঞ্জ, সেই ভাষার টেস্ট ফরম্যাট ব্যবহার করবে।
+
+━━━ JavaScript / TypeScript এর জন্য ━━━
+Format:  TEST: [function call] => [expected return value]
+• ইউজার solve() ফাংশন লিখবে
+• Example:
+  TEST: add(2, 3) => 5
+  TEST: add(10, 20) => 30
+  TEST_HIDDEN: add(-5, 5) => 0
+
+━━━ Python / Java / C++ / C / Go / Rust / PHP / C# / Kotlin / Swift ━━━
+Format:  TEST: [stdin input] => [expected stdout]
+• ইউজার পূর্ণ প্রোগ্রাম লিখবে যা stdin থেকে পড়ে stdout-এ লেখে
+• Example (Python):
+  TEST: 2 3 => 5
+  TEST: 10 20 => 30
+  TEST_HIDDEN: -5 5 => 0
+• Example (Java):
+  TEST: 2 3 => 5
+  TEST: hello => olleh
+• INPUT ফাঁকা রাখা যাবে (যদি stdin-এর দরকার না হয়):
+  TEST:  => Hello World
+
+━━━ HTML ━━━
+Format:  TEST: [CSS selector] | [assertion] => [বর্ণনা]
+Assertion প্রকার:
+• text = expected text         → element-এর textContent
+• exists                       → element আছে কি না
+• count = N                    → কতটি element আছে
+• html = <tag>text</tag>       → innerHTML
+• attr-href = url              → attribute value
+  (attr- এর পরে যেকোনো attribute: attr-src, attr-alt, attr-class ইত্যাদি)
+
+Example:
+  TEST: h1 | text = DevSchool Learning Platform => h1 tag এর text
+  TEST: h1 | exists => h1 tag আছে
+  TEST: a | attr-href = https://google.com => link এর href
+  TEST: img | attr-alt = Logo => img এর alt
+  TEST: ul li | count = 3 => ৩টি li আছে
+  TEST_HIDDEN: p | text = Welcome => p tag এর text
+
+━━━ CSS ━━━
+Format:  TEST: [CSS selector] | [style-property = value] => [বর্ণনা]
+• style- prefix দিয়ে CSS property বোঝাবে
+• Example:
+  TEST: .box | style-display = flex => display flex
+  TEST: h1 | style-color = rgb(34, 197, 94) => সবুজ color
+  TEST: p | style-font-size = 16px => font size 16px
+  TEST_HIDDEN: .container | style-align-items = center => center align
+
+━━━ সব ভাষার জন্য সাধারণ নিয়ম ━━━
 • প্রতিটি চ্যালেঞ্জে কমপক্ষে ২টি TEST + ১টি TEST_HIDDEN।
-• TEST_HIDDEN এমন কেস হবে যা edge case চেক করে (০, negative, বড় সংখ্যা, খালি array ইত্যাদি)।
+• TEST_HIDDEN হবে edge case (০, negative, খালি input, সীমা)।
+• HTML/CSS-এ SOLUTION-এ সম্পূর্ণ সঠিক markup ও style থাকবে।
+• Python/Java/C++-এ SOLUTION হবে পূর্ণ প্রোগ্রাম (ইনপুট পড়া + আউটপুট লেখা)।
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎨 কোড লেখার নিয়ম
@@ -156,6 +208,7 @@ TEST_HIDDEN: [input] => [output]
 📌 উদাহরণ (এভাবে লিখবে)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ---CHALLENGE---
+LANGUAGE: js
 TITLE: দুই সংখ্যার যোগফল || Sum of Two Numbers
 DESC: এমন একটি function লিখুন যা দুইটি সংখ্যা গ্রহণ করে তাদের যোগফল return করে। || Write a function that accepts two numbers and returns their sum.
 LEVEL: Easy
@@ -184,6 +237,7 @@ TEST: add(2, 3) => 5
 TEST: add(10, 20) => 30
 TEST_HIDDEN: add(-5, 5) => 0
 ---CHALLENGE---
+LANGUAGE: js
 TITLE: জোড়-বিজোড় নির্ণয় || Even or Odd
 DESC: একটি function লিখুন যা একটি সংখ্যা গ্রহণ করে "even" return করে যদি সংখ্যাটি জোড় হয়, নাহলে "odd" return করে। || Write a function that returns "even" if the number is even, otherwise "odd".
 LEVEL: Easy
@@ -221,9 +275,44 @@ TEST_HIDDEN: checkEvenOdd(0) => even
 // ────────────────────────────────────────────────
 // User Prompt Template
 // ────────────────────────────────────────────────
+const LANGUAGE_LABEL_MAP: Record<string, string> = {
+  js: 'JavaScript',
+  ts: 'TypeScript',
+  html: 'HTML',
+  css: 'CSS',
+  python: 'Python',
+  java: 'Java',
+  cpp: 'C++',
+  c: 'C',
+  go: 'Go',
+  rust: 'Rust',
+  php: 'PHP',
+  csharp: 'C#',
+  kotlin: 'Kotlin',
+  swift: 'Swift',
+}
+
+const LANGUAGE_TEST_HINT: Record<string, string> = {
+  js: 'JavaScript টেস্ট ফরম্যাট: TEST: func(args) => returnValue',
+  ts: 'TypeScript টেস্ট ফরম্যাট: TEST: func(args) => returnValue',
+  html: 'HTML টেস্ট ফরম্যাট: TEST: selector | assertion (যেমন "h1 | text = Hello", "img | attr-alt = Logo")',
+  css: 'CSS টেস্ট ফরম্যাট: TEST: selector | style-property = value (যেমন ".box | style-display = flex")',
+  python: 'Python টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  java: 'Java টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  cpp: 'C++ টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  c: 'C টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  go: 'Go টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  rust: 'Rust টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  php: 'PHP টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  csharp: 'C# টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  kotlin: 'Kotlin টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+  swift: 'Swift টেস্ট ফরম্যাট: TEST: stdin => expected stdout',
+}
+
 export function buildChallengeUserPrompt({
   topic,
   tutorialTitle,
+  language = 'js',
   scope,
   count,
   difficulty,
@@ -233,6 +322,7 @@ export function buildChallengeUserPrompt({
 }: {
   topic: string
   tutorialTitle: string
+  language?: string
   scope: string
   count: number
   difficulty: string
@@ -240,19 +330,26 @@ export function buildChallengeUserPrompt({
   hiddenTests: number
   extraInstructions?: string
 }): string {
+  const langLabel = LANGUAGE_LABEL_MAP[language] || language
+  const testHint = LANGUAGE_TEST_HINT[language] || ''
+
   return `নিচের নির্দেশনা অনুযায়ী ${count}টি কোডিং চ্যালেঞ্জ তৈরি করুন।
 
 ━━━ নির্দেশনা ━━━
 • টপিক: ${topic}
-• টিউটোরিয়াল/ভাষা: ${tutorialTitle}
+• টিউটোরিয়াল: ${tutorialTitle}
+• প্রোগ্রামিং ভাষা: ${langLabel}
 • Scope: ${scope}
 • Difficulty: ${difficulty}
 • Count: ${count}টি চ্যালেঞ্জ
 • প্রতিটিতে Visible Tests: ${visibleTests}টি
 • প্রতিটিতে Hidden Tests: ${hiddenTests}টি
+${testHint ? `• ${testHint}` : ''}
 ${extraInstructions ? `• অতিরিক্ত নির্দেশনা: ${extraInstructions}` : ''}
 
-মনে রাখবেন:
+⚠️ গুরুত্বপূর্ণ:
+- সব কোড অবশ্যই ${langLabel} ভাষায় হবে।
+- টেস্ট ফরম্যাট উপরে বলা নিয়ম অনুযায়ী ${langLabel}-এর জন্য সঠিক হতে হবে।
 - ঠিক ${count}টি চ্যালেঞ্জ দিতে হবে, কম নয় বেশি নয়।
 - প্রতিটি চ্যালেঞ্জ ---CHALLENGE--- দিয়ে শুরু ও শেষ করতে হবে।
 - শুধু ব্লকগুলো লিখুন, এর বাইরে কোনো কথা নয়।`

@@ -12,7 +12,6 @@ type PageProps = { params: Promise<{ locale: string; id: string }> }
 export async function generateStaticParams() {
   try {
     const items = await prisma.codeChallenge.findMany({ select: { id: true }, take: 300 })
-    // দুই ভাষার জন্যই একই id pre-render হবে
     return items.flatMap((c) => [
       { locale: 'bn', id: c.id },
       { locale: 'en', id: c.id },
@@ -41,7 +40,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     })
     if (!c) return { title: t.metaNotFoundTitle, robots: { index: false } }
 
-    // locale-সঠিক title — না থাকলে general fallback (পেজ নিজেই notFound() দেবে)
     const loc = localizeChallenge(locale, c)
     if (!loc.title) return { title: 'DevSchool' }
 
@@ -97,12 +95,9 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 
   if (!challenge) notFound()
 
-  // locale-সঠিক লেখা — title না থাকলে 404
   const loc = localizeChallenge(locale, challenge)
   if (!loc.title) notFound()
 
-  // tutorial-এর locale-সঠিক title (breadcrumb/category pill-এ)
-  // slug fallback ঠিক আছে — slug ভাষা-নিরপেক্ষ (যেমন "html")
   const tutorialTitle =
     pickText(locale, challenge.tutorial.titleBn, challenge.tutorial.titleEn) ||
     challenge.tutorial.slug
@@ -119,32 +114,65 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100">
-        <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
-          <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-              <li><Link href={`/${locale}`} className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">{t.breadcrumbHome}</Link></li>
-              <li aria-hidden>/</li>
-              <li><Link href={`/${locale}/challenges`} className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">{t.breadcrumbChallenges}</Link></li>
-              <li aria-hidden>/</li>
-              <li className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[240px]">{loc.title}</li>
-            </ol>
-          </nav>
+      <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
+
+        {/* ── Compact breadcrumb bar (full width) ── */}
+        <div className="border-b border-emerald-200/70 dark:border-emerald-900/50 bg-white dark:bg-[#050806]">
+          <div className="px-3 sm:px-4 lg:px-6 py-2 flex items-center justify-between gap-3 flex-wrap">
+            <nav aria-label="Breadcrumb" className="flex-1 min-w-0">
+              <ol className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                <li>
+                  <Link href={`/${locale}`} className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
+                    {t.breadcrumbHome}
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li>
+                  <Link href={`/${locale}/challenges`} className="hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
+                    {t.breadcrumbChallenges}
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[200px]">
+                  {loc.title}
+                </li>
+              </ol>
+            </nav>
+
+            {/* Info pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link
+                href={`/${locale}/tutorials/${challenge.tutorial.slug}`}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-[11px] font-semibold hover:bg-[#22C55E]/20 transition"
+              >
+                📂 {tutorialTitle}
+              </Link>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold uppercase tracking-wider">
+                {challenge.difficulty}
+              </span>
+              <span className="text-[11px] font-bold text-[#15803d] dark:text-[#4ADE80]">
+                ⭐ {challenge.points} {dict.challenges.pts}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <header className="mb-6">
-            <div className="flex items-center gap-3 mb-3 flex-wrap">
-              <Link href={`/${locale}/tutorials/${challenge.tutorial.slug}`} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] text-xs font-semibold hover:bg-[#22C55E]/20 dark:hover:bg-[#22C55E]/20 transition">📂 {tutorialTitle}</Link>
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold uppercase tracking-wider">{challenge.difficulty}</span>
-              <span className="text-xs font-bold text-[#15803d] dark:text-[#4ADE80]">⭐ {challenge.points} {dict.challenges.pts}</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">{loc.title}</h1>
+        {/* ── Title + description (compact, full width) ── */}
+        <div className="border-b border-emerald-200/70 dark:border-emerald-900/50 bg-white dark:bg-[#050806]">
+          <div className="px-3 sm:px-4 lg:px-6 py-3">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight">
+              {loc.title}
+            </h1>
             {loc.description && (
-              <p className="mt-3 text-base text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">{loc.description}</p>
+              <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">
+                {loc.description}
+              </p>
             )}
-          </header>
+          </div>
+        </div>
 
+        {/* ── Full-width workspace ── */}
+        <div className="px-2 sm:px-3 py-3">
           <ChallengeWorkspace
             challengeId={challenge.id}
             starterCode={
@@ -160,8 +188,10 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
             }))}
             tutorialSlug={challenge.tutorial.slug}
             tutorialTitle={tutorialTitle}
+            language={(challenge as any).language || 'js'}
           />
         </div>
+
       </div>
     </>
   )

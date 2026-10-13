@@ -16,9 +16,10 @@ export default function AIChallengeGenerator({ tutorials, onGenerated }: Props) 
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  // ৭টি বাধ্যতামূলক ফিল্ড
+  // ৭টি বাধ্যতামূলক ফিল্ড + Language
   const [topic, setTopic] = useState('')
   const [tutorialTitle, setTutorialTitle] = useState(tutorials[0]?.title || '')
+  const [language, setLanguage] = useState('js')
   const [scope, setScope] = useState('Intermediate')
   const [count, setCount] = useState(3)
   const [difficulty, setDifficulty] = useState('Mixed')
@@ -55,6 +56,7 @@ export default function AIChallengeGenerator({ tutorials, onGenerated }: Props) 
         body: JSON.stringify({
           topic: topic.trim(),
           tutorialTitle: tutorialTitle.trim(),
+          language,
           scope,
           count,
           difficulty,
@@ -127,7 +129,7 @@ export default function AIChallengeGenerator({ tutorials, onGenerated }: Props) 
           </Field>
 
           {/* ── ২. Tutorial ── */}
-          <Field label="২. Tutorial / ভাষা" required hint="কোন ভাষায় কোড হবে">
+          <Field label="২. Tutorial" required hint="কোন টিউটোরিয়ালের সাথে যুক্ত হবে">
             <select
               value={tutorialTitle}
               onChange={(e) => setTutorialTitle(e.target.value)}
@@ -138,6 +140,34 @@ export default function AIChallengeGenerator({ tutorials, onGenerated }: Props) 
                   {t.title}
                 </option>
               ))}
+            </select>
+          </Field>
+
+          {/* ── ২ক. Language ── */}
+          <Field label="২ক. প্রোগ্রামিং ভাষা" required hint="কোন ভাষায় কোড হবে">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="admin-input"
+            >
+              <optgroup label="🌐 ব্রাউজারে চলে">
+                <option value="js">JavaScript</option>
+                <option value="ts">TypeScript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+              </optgroup>
+              <optgroup label="☁️ Remote API (Piston)">
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="c">C</option>
+                <option value="go">Go</option>
+                <option value="rust">Rust</option>
+                <option value="php">PHP</option>
+                <option value="csharp">C#</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="swift">Swift</option>
+              </optgroup>
             </select>
           </Field>
 

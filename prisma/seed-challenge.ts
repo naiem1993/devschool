@@ -237,6 +237,7 @@ async function main() {
         starterCodeEn: c.starterCodeEn,
         solutionBn: c.solutionBn,
         solutionEn: c.solutionEn,
+        language: 'js',
         difficulty: c.difficulty,
         points: c.points,
         testCases: {

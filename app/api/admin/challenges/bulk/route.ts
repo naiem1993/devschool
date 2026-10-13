@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
             titleEn: String(c.titleEn).trim(),
             descriptionBn: String(c.descriptionBn).trim(),
             descriptionEn: String(c.descriptionEn).trim(),
+            language: c.language ? String(c.language) : 'js',
             starterCodeBn: c.starterCodeBn ? String(c.starterCodeBn) : null,
             starterCodeEn: c.starterCodeEn ? String(c.starterCodeEn) : null,
             solutionBn: c.solutionBn ? String(c.solutionBn) : null,

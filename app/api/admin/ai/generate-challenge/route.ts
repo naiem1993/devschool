@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     const {
       topic,
       tutorialTitle,
+      language = 'js',
       scope = 'Intermediate',
       count = 3,
       difficulty = 'Mixed',
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
     const userPrompt = buildChallengeUserPrompt({
       topic: String(topic).trim(),
       tutorialTitle: String(tutorialTitle).trim(),
+      language: String(language).trim(),
       scope: String(scope).trim(),
       count: numCount,
       difficulty: String(difficulty).trim(),

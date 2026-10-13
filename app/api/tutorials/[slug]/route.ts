@@ -90,6 +90,7 @@ export async function GET(
             descriptionEn: true,
             starterCodeBn: true,
             starterCodeEn: true,
+            language: true,
             testCases: {
               select: {
                 id: true,
