@@ -19,6 +19,7 @@ export default async function QuizzesPage() {
         action={
           <div className="flex gap-2">
             <Link href="/admin/quizzes/new" className="admin-btn">+ new</Link>
+            <Link href="/admin/quizzes/bulk" className="admin-btn">📥 bulk</Link>
             <LogoutButton />
           </div>
         }
@@ -41,7 +42,7 @@ export default async function QuizzesPage() {
                 <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it._count.options}</td>
                 <td className="px-4 py-2 text-right">
-                  <Link href={`/admin/quizzes/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
+                  <Link href={`/admin/quizzes/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
                 </td>
               </tr>
             ))}

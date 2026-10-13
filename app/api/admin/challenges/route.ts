@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { tutorialId, titleBn, titleEn, descriptionBn, descriptionEn, starterCode, solution, difficulty, points, testCases } = await req.json()
+    const { tutorialId, titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, difficulty, points, testCases } = await req.json()
     if (!tutorialId || !titleBn || !titleEn || !descriptionBn || !descriptionEn) {
       return NextResponse.json({ error: 'tutorialId, titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
     }
@@ -14,8 +14,10 @@ export async function POST(req: NextRequest) {
         titleEn: titleEn ? String(titleEn).trim() : null,
         descriptionBn,
         descriptionEn: descriptionEn ? String(descriptionEn).trim() : null,
-        starterCode,
-        solution,
+        starterCodeBn: starterCodeBn || null,
+        starterCodeEn: starterCodeEn || null,
+        solutionBn: solutionBn || null,
+        solutionEn: solutionEn || null,
         difficulty: difficulty || 'Easy',
         points: points || 0,
         testCases: Array.isArray(testCases)

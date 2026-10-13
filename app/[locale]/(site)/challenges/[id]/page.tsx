@@ -147,8 +147,11 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 
           <ChallengeWorkspace
             challengeId={challenge.id}
-            starterCode={challenge.starterCode || t.starterCodeFallback}
-            solution={challenge.solution}
+            starterCode={
+              pickText(locale, challenge.starterCodeBn, challenge.starterCodeEn) ||
+              t.starterCodeFallback
+            }
+            solution={pickText(locale, challenge.solutionBn, challenge.solutionEn)}
             testCases={challenge.testCases.map((tc) => ({
               id: tc.id,
               input: tc.input,

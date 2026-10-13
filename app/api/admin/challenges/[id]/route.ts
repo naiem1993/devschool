@@ -16,7 +16,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { titleBn, titleEn, descriptionBn, descriptionEn, starterCode, solution, difficulty, points, testCases } = await req.json()
+    const { titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, difficulty, points, testCases } = await req.json()
     if (!titleBn || !titleEn || !descriptionBn || !descriptionEn) {
       return NextResponse.json({ error: 'titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
     }
@@ -28,7 +28,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         titleEn: titleEn ? String(titleEn).trim() : null,
         descriptionBn,
         descriptionEn: descriptionEn ? String(descriptionEn).trim() : null,
-        starterCode, solution, difficulty, points,
+        starterCodeBn: starterCodeBn || null,
+        starterCodeEn: starterCodeEn || null,
+        solutionBn: solutionBn || null,
+        solutionEn: solutionEn || null,
+        difficulty, points,
         testCases: Array.isArray(testCases)
           ? { create: testCases.map((tc: any, i: number) => ({ input: tc.input, expectedOutput: tc.expectedOutput, isHidden: !!tc.isHidden, testCaseOrder: i })) }
           : undefined,

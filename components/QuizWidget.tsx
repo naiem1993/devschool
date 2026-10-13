@@ -64,6 +64,8 @@ export default function QuizWidget({ lessonId, questions }: Props) {
   const [error, setError] = useState('')
   // Collapsed by default — user চাইলে খুলবে
   const [started, setStarted] = useState(false)
+  // Quiz section collapse/expand (after start)
+  const [collapsed, setCollapsed] = useState(false)
 
   // প্রতিটা প্রশ্নের জন্য option order।
   // ⚠️ SSR-safe: প্রথম render-এ natural order রাখি (Math.random() নয়),
@@ -211,6 +213,37 @@ export default function QuizWidget({ lessonId, questions }: Props) {
     )
   }
 
+  // ── Collapsed view (after start) ──────────────────────────
+  if (collapsed) {
+    return (
+      <section
+        aria-label={t.sectionTitle}
+        className="my-8 rounded-3xl border border-emerald-200/70 dark:border-emerald-900/40 bg-gradient-to-br from-white to-[#f2fbf4] dark:from-[#0a0f0c] dark:to-[#050806] shadow-sm overflow-hidden"
+      >
+        <div className="px-5 sm:px-7 py-5 flex items-center justify-between gap-4 flex-wrap">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[#15803d] dark:text-[#4ADE80] mb-1">
+              {t.sectionTitle}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              {phase === 'complete'
+                ? t.scoreTitle
+                : t.questionOfTpl.replace('{n}', String(current + 1)).replace('{total}', String(total))}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCollapsed(false)}
+            className="px-5 py-2.5 rounded-xl bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] font-bold text-sm transition whitespace-nowrap"
+            aria-label="Expand quiz"
+          >
+            ▼
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   const progressPct = phase === 'complete'
     ? 100
     : Math.round(((current + (phase === 'feedback' ? 1 : 0)) / total) * 100)
@@ -231,11 +264,22 @@ export default function QuizWidget({ lessonId, questions }: Props) {
         <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[#15803d] dark:text-[#4ADE80]">
           {t.sectionTitle}
         </h2>
-        {phase !== 'complete' && (
-          <span className="text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400">
-            {t.questionOfTpl.replace('{n}', String(current + 1)).replace('{total}', String(total))}
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {phase !== 'complete' && (
+            <span className="text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400">
+              {t.questionOfTpl.replace('{n}', String(current + 1)).replace('{total}', String(total))}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setCollapsed(true)}
+            className="flex-shrink-0 w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-[#22C55E] hover:text-[#22C55E] dark:hover:border-[#4ADE80] dark:hover:text-[#4ADE80] flex items-center justify-center text-xs font-bold transition"
+            aria-label="Collapse quiz"
+            title="Collapse"
+          >
+            ▲
+          </button>
+        </div>
       </div>
 
       {/* Progress bar */}

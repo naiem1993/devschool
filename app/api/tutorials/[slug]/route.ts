@@ -85,8 +85,11 @@ export async function GET(
           select: {
             id: true,
             titleBn: true,
+            titleEn: true,
             descriptionBn: true,
-            starterCode: true,
+            descriptionEn: true,
+            starterCodeBn: true,
+            starterCodeEn: true,
             testCases: {
               select: {
                 id: true,

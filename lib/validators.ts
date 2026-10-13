@@ -145,8 +145,10 @@ export const createChallengeSchema = z.object({
   titleEn: z.string().min(2).max(255).optional(),
   descriptionBn: z.string().optional(),
   descriptionEn: z.string().optional(),
-  starterCode: z.string().optional(),
-  solution: z.string().optional(),
+  starterCodeBn: z.string().optional(),
+  starterCodeEn: z.string().optional(),
+  solutionBn: z.string().optional(),
+  solutionEn: z.string().optional(),
   difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Easy'),
 })
 

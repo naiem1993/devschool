@@ -15,8 +15,10 @@ type DemoChallenge = {
   titleEn: string
   descriptionBn: string
   descriptionEn: string
-  starterCode: string
-  solution: string
+  starterCodeBn: string
+  starterCodeEn: string
+  solutionBn: string
+  solutionEn: string
   difficulty: 'Easy' | 'Medium' | 'Hard'
   points: number
   testCases: { input: string; expectedOutput: string; isHidden: boolean }[]
@@ -33,18 +35,28 @@ const CHALLENGES: DemoChallenge[] = [
       'একটা ফাংশন `solve(input)` লেখো যেটা `"a b"` ফরম্যাটের একটা string নেয় (যেমন `"2 3"`) এবং দুইটা সংখ্যার যোগফল string আকারে return করে (যেমন `"5"`)।',
     descriptionEn:
       'Write a function `solve(input)` that takes a string in the form `"a b"` (e.g. `"2 3"`) and returns the sum of the two numbers as a string (e.g. `"5"`).',
-    starterCode: `function solve(input) {
+    starterCodeBn: `function solve(input) {
   // input: একটা string, ফরম্যাট "a b" — যেমন "2 3"
   // কাজ: দুইটা সংখ্যা যোগ করে STRING আকারে return করো, যেমন "5"
-  //
-  // Input: a string like "a b" (e.g. "2 3")
-  // Task : return the sum as a string (e.g. "5")
 
-  // তোমার কোড এখানে লেখো / Write your code here:
+  // তোমার কোড এখানে লেখো:
   return ''
 }
 `,
-    solution: `function solve(input) {
+    starterCodeEn: `function solve(input) {
+  // input: a string like "a b" (e.g. "2 3")
+  // Task : return the sum as a string (e.g. "5")
+
+  // Write your code here:
+  return ''
+}
+`,
+    solutionBn: `function solve(input) {
+  const [a, b] = input.split(' ').map(Number)
+  return String(a + b)
+}
+`,
+    solutionEn: `function solve(input) {
   const [a, b] = input.split(' ').map(Number)
   return String(a + b)
 }
@@ -69,18 +81,27 @@ const CHALLENGES: DemoChallenge[] = [
       '`solve(input)` লেখো যেটা একটা string নেয় এবং উল্টো করে return করে। যেমন `"hello"` → `"olleh"`। খালি string দিলে খালি string-ই return করবে।',
     descriptionEn:
       'Write `solve(input)` that takes a string and returns it reversed. e.g. `"hello"` → `"olleh"`. Empty string returns empty string.',
-    starterCode: `function solve(input) {
+    starterCodeBn: `function solve(input) {
   // input: একটা string (যেমন "hello")
   // কাজ: উল্টো string return করো (যেমন "olleh")
-  //
-  // Input: a string (e.g. "hello")
-  // Task : return the reversed string (e.g. "olleh")
 
-  // তোমার কোড এখানে লেখো / Write your code here:
+  // তোমার কোড এখানে লেখো:
   return ''
 }
 `,
-    solution: `function solve(input) {
+    starterCodeEn: `function solve(input) {
+  // input: a string (e.g. "hello")
+  // Task : return the reversed string (e.g. "olleh")
+
+  // Write your code here:
+  return ''
+}
+`,
+    solutionBn: `function solve(input) {
+  return input.split('').reverse().join('')
+}
+`,
+    solutionEn: `function solve(input) {
   return input.split('').reverse().join('')
 }
 `,
@@ -104,22 +125,43 @@ const CHALLENGES: DemoChallenge[] = [
       'একটা সংখ্যা `n` নাও (string আকারে)। ১ থেকে `n` পর্যন্ত প্রতিটা সংখ্যার জন্য:\n• ৩ ও ৫ উভয় দিয়ে বিভাজ্য → `"FizzBuzz"`\n• শুধু ৩ দিয়ে বিভাজ্য → `"Fizz"`\n• শুধু ৫ দিয়ে বিভাজ্য → `"Buzz"`\n• নইলে → সংখ্যাটি\n\nসবগুলো কমা (`,`) দিয়ে জোড়া লাগিয়ে return করো। উদাহরণ `n=5` → `"1,2,Fizz,4,Buzz"`।',
     descriptionEn:
       'Take a number `n` (as string). For each number from 1 to `n`:\n• Divisible by both 3 and 5 → `"FizzBuzz"`\n• Divisible by 3 only → `"Fizz"`\n• Divisible by 5 only → `"Buzz"`\n• Otherwise → the number\n\nJoin all with commas (`,`). Example `n=5` → `"1,2,Fizz,4,Buzz"`.',
-    starterCode: `function solve(input) {
+    starterCodeBn: `function solve(input) {
   // input: একটা সংখ্যা string আকারে, যেমন "5"
   // কাজ: ১ থেকে n পর্যন্ত FizzBuzz array বানাও, comma দিয়ে জোড়া লাগাও
-  //
-  // Input: a number as string, e.g. "5"
+
+  const n = Number(input)
+  const result = []
+
+  // তোমার কোড এখানে লেখো:
+
+  return result.join(',')
+}
+`,
+    starterCodeEn: `function solve(input) {
+  // input: a number as string, e.g. "5"
   // Task : build FizzBuzz from 1 to n, join with commas
 
   const n = Number(input)
   const result = []
 
-  // তোমার কোড এখানে লেখো / Write your code here:
+  // Write your code here:
 
   return result.join(',')
 }
 `,
-    solution: `function solve(input) {
+    solutionBn: `function solve(input) {
+  const n = Number(input)
+  const result = []
+  for (let i = 1; i <= n; i++) {
+    if (i % 15 === 0) result.push('FizzBuzz')
+    else if (i % 3 === 0) result.push('Fizz')
+    else if (i % 5 === 0) result.push('Buzz')
+    else result.push(String(i))
+  }
+  return result.join(',')
+}
+`,
+    solutionEn: `function solve(input) {
   const n = Number(input)
   const result = []
   for (let i = 1; i <= n; i++) {
@@ -191,8 +233,10 @@ async function main() {
         titleEn: c.titleEn,
         descriptionBn: c.descriptionBn,
         descriptionEn: c.descriptionEn,
-        starterCode: c.starterCode,
-        solution: c.solution,
+        starterCodeBn: c.starterCodeBn,
+        starterCodeEn: c.starterCodeEn,
+        solutionBn: c.solutionBn,
+        solutionEn: c.solutionEn,
         difficulty: c.difficulty,
         points: c.points,
         testCases: {

@@ -22,8 +22,10 @@ export default function ChallengeForm({
     titleEn: initial?.titleEn || '',
     descriptionBn: initial?.descriptionBn || '',
     descriptionEn: initial?.descriptionEn || '',
-    starterCode: initial?.starterCode || '',
-    solution: initial?.solution || '',
+    starterCodeBn: initial?.starterCodeBn || '',
+    starterCodeEn: initial?.starterCodeEn || '',
+    solutionBn: initial?.solutionBn || '',
+    solutionEn: initial?.solutionEn || '',
     difficulty: initial?.difficulty || 'Easy',
     points: initial?.points ?? 10,
   })
@@ -94,14 +96,31 @@ export default function ChallengeForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
+        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+          Starter Code (শিক্ষার্থী শুরুতেই যা দেখবে)
+        </p>
         <div>
-          <label className="admin-label">&gt; Starter Code</label>
-          <textarea className="admin-input" rows={5} value={form.starterCode || ''} onChange={(e) => setForm((f) => ({ ...f, starterCode: e.target.value }))} />
+          <label className="admin-label">&gt; Starter Code (BN)</label>
+          <textarea className="admin-input font-mono text-xs" rows={5} value={form.starterCodeBn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeBn: e.target.value }))} />
         </div>
         <div>
-          <label className="admin-label">&gt; Solution</label>
-          <textarea className="admin-input" rows={5} value={form.solution || ''} onChange={(e) => setForm((f) => ({ ...f, solution: e.target.value }))} />
+          <label className="admin-label">&gt; Starter Code (EN)</label>
+          <textarea className="admin-input font-mono text-xs" rows={5} value={form.starterCodeEn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeEn: e.target.value }))} />
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
+        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+          Solution (সম্পূর্ণ সমাধান — Reveal করলে দেখাবে)
+        </p>
+        <div>
+          <label className="admin-label">&gt; Solution (BN)</label>
+          <textarea className="admin-input font-mono text-xs" rows={5} value={form.solutionBn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionBn: e.target.value }))} />
+        </div>
+        <div>
+          <label className="admin-label">&gt; Solution (EN)</label>
+          <textarea className="admin-input font-mono text-xs" rows={5} value={form.solutionEn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionEn: e.target.value }))} />
         </div>
       </div>
       <div>

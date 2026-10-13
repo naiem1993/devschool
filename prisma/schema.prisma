@@ -184,8 +184,10 @@ model CodeChallenge {
   titleEn       String?
   descriptionBn String  @map("description")
   descriptionEn String?
-  starterCode   String?
-  solution    String?
+  starterCodeBn String? @map("starter_code_bn")
+  starterCodeEn String? @map("starter_code_en")
+  solutionBn    String? @map("solution_bn")
+  solutionEn    String? @map("solution_en")
   difficulty  String   @default("Easy")
   points      Int      @default(0)
   createdAt   DateTime @default(now())

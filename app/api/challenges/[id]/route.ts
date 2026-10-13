@@ -29,8 +29,11 @@ export async function GET(
         id: true,
         tutorialId: true,
         titleBn: true,
+        titleEn: true,
         descriptionBn: true,
-        starterCode: true,
+        descriptionEn: true,
+        starterCodeBn: true,
+        starterCodeEn: true,
         difficulty: true,
         createdAt: true,
         // ─── Exclude solution from client-side response ──────────────────────
@@ -98,7 +101,14 @@ export async function POST(
     // ─── Fetch challenge with hidden test cases ──────────────────────────────
     const challenge = await prisma.codeChallenge.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        tutorialId: true,
+        starterCodeBn: true,
+        starterCodeEn: true,
+        solutionBn: true,
+        solutionEn: true,
+        difficulty: true,
         testCases: {
           orderBy: { id: 'asc' },
         },

@@ -20,6 +20,7 @@ export default async function ChallengesPage() {
         action={
           <div className="flex gap-2">
             <Link href="/admin/challenges/new" className="admin-btn">+ new</Link>
+            <Link href="/admin/challenges/bulk" className="admin-btn">📥 bulk</Link>
             <LogoutButton />
           </div>
         }

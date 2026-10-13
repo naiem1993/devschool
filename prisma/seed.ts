@@ -220,7 +220,10 @@ async function main() {
       titleEn: 'Sum of Two Numbers',
       descriptionBn: '',
       descriptionEn: 'Write a function that takes two numbers and returns their sum.',
-      starterCode: 'function sum(a, b) {\n  // your code here\n}',
+      starterCodeBn: 'function sum(a, b) {\n  // এখানে আপনার কোড লিখুন\n}',
+      starterCodeEn: 'function sum(a, b) {\n  // Write your code here\n}',
+      solutionBn: 'function sum(a, b) {\n  return a + b\n}',
+      solutionEn: 'function sum(a, b) {\n  return a + b\n}',
       difficulty: 'Easy',
       points: 10,
       testCases: {
