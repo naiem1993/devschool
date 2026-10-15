@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import AIQuizGenerator from './AIQuizGenerator'
 
 type Tutorial = { id: string; title: string }
 type Lesson = { id: string; title: string; tutorialId: string }
@@ -276,6 +277,15 @@ export default function BulkQuizImport({
           </p>
         </div>
       </div>
+
+      {/* ── AI Generator ── */}
+      <AIQuizGenerator
+        tutorialTitle={tutorials.find((t) => t.id === tutorialId)?.title || ''}
+        onGenerated={(raw) => {
+          const sep = text.trim() ? '\n' : ''
+          setText((prev) => prev + sep + raw)
+        }}
+      />
 
       {/* ── Paste area ── */}
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-3">

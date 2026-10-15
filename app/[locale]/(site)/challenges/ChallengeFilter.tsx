@@ -10,6 +10,7 @@ export type ChallengeCard = {
   title: string
   description: string
   difficulty: string
+  language: string
   points: number
   tutorialTitle: string
   testCaseCount: number
@@ -17,11 +18,38 @@ export type ChallengeCard = {
 
 type DiffFilter = 'all' | 'Easy' | 'Medium' | 'Hard'
 
+// ভাষা কোড → দেখানোর নাম (schema.prisma-এর language মন্তব্য অনুযায়ী)
+const LANG_LABELS: Record<string, string> = {
+  js: 'JavaScript',
+  ts: 'TypeScript',
+  html: 'HTML',
+  css: 'CSS',
+  python: 'Python',
+  java: 'Java',
+  cpp: 'C++',
+  c: 'C',
+  go: 'Go',
+  rust: 'Rust',
+  php: 'PHP',
+  csharp: 'C#',
+  kotlin: 'Kotlin',
+  swift: 'Swift',
+}
+
+const langLabel = (l: string) => LANG_LABELS[l] ?? l.toUpperCase()
+
 export default function ChallengeFilter({ challenges }: { challenges: ChallengeCard[] }) {
   const dict = useDict()
   const locale = useLocale()
   const [query, setQuery] = useState('')
   const [difficulty, setDifficulty] = useState<DiffFilter>('all')
+  const [language, setLanguage] = useState<string>('all')
+
+  // ডেটাতে যেসব language আসলে আছে সেগুলোই দেখাই (hardcode নয়)
+  const languages = useMemo(() => {
+    const set = new Set(challenges.map((c) => c.language))
+    return Array.from(set).sort()
+  }, [challenges])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -31,15 +59,29 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
           c.description.toLowerCase().includes(q)
         : true
       const matchesD = difficulty === 'all' || c.difficulty === difficulty
-      return matchesQ && matchesD
+      const matchesL = language === 'all' || c.language === language
+      return matchesQ && matchesD && matchesL
     })
-  }, [challenges, query, difficulty])
+  }, [challenges, query, difficulty, language])
 
   const diffStyle = (d: string) => {
     if (d === 'Easy') return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
     if (d === 'Medium') return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
     if (d === 'Hard') return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
     return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20'
+  }
+
+  const btnClass = (active: boolean) =>
+    `px-4 py-2 rounded-xl text-xs font-semibold transition border ${
+      active
+        ? 'bg-[#22C55E] text-[#050806] border-[#22C55E] shadow-md'
+        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60'
+    }`
+
+  const resetAll = () => {
+    setQuery('')
+    setDifficulty('all')
+    setLanguage('all')
   }
 
   return (
@@ -56,20 +98,37 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition"
           />
         </div>
-        <div className="flex flex-wrap gap-2">
-          {(['all', 'Easy', 'Medium', 'Hard'] as const).map((d) => (
-            <button
-              key={d}
-              onClick={() => setDifficulty(d)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition border ${
-                difficulty === d
-                  ? 'bg-[#22C55E] text-[#050806] border-[#22C55E] shadow-md'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60'
-              }`}
-            >
-              {d === 'all' ? dict.challenges.allOption : dict.challenges.difficultyLabels[d] ?? d}
-            </button>
-          ))}
+
+        {/* ফিল্টার রো — বড় স্ক্রিনে পাশাপাশি, ছোট স্ক্রিনে উপর-নিচ */}
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-8">
+          {/* ভাষা ফিল্টার — শুধু ডেটাতে যেসব language আছে সেগুলোর বাটন */}
+          {languages.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1 min-w-[68px]">
+                {dict.challenges.filterLangLabel}
+              </span>
+              <button onClick={() => setLanguage('all')} className={btnClass(language === 'all')}>
+                {dict.challenges.allOption}
+              </button>
+              {languages.map((l) => (
+                <button key={l} onClick={() => setLanguage(l)} className={btnClass(language === l)}>
+                  {langLabel(l)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Difficulty ফিল্টার — বড় স্ক্রিনে ডান দিকে */}
+          <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1 min-w-[68px]">
+              {dict.challenges.filterDiffLabel}
+            </span>
+            {(['all', 'Easy', 'Medium', 'Hard'] as const).map((d) => (
+              <button key={d} onClick={() => setDifficulty(d)} className={btnClass(difficulty === d)}>
+                {d === 'all' ? dict.challenges.allOption : dict.challenges.difficultyLabels[d] ?? d}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -77,8 +136,8 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
         <p className="text-slate-500 dark:text-slate-400">
           {dict.challenges.countTpl.replace('{count}', String(filtered.length))}
         </p>
-        {(query || difficulty !== 'all') && (
-          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
+        {(query || difficulty !== 'all' || language !== 'all') && (
+          <button onClick={resetAll} className="text-xs text-slate-500 hover:text-[#22C55E] dark:hover:text-[#4ADE80] transition">
             {dict.challenges.filterClear}
           </button>
         )}
@@ -89,7 +148,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
           <div className="text-6xl mb-4">🎯</div>
           <h3 className="text-xl font-bold mb-2">{dict.challenges.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{dict.challenges.noResultsDiffDesc}</p>
-          <button onClick={() => { setQuery(''); setDifficulty('all') }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">{dict.challenges.viewAll}</button>
+          <button onClick={resetAll} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#050806] rounded-xl text-sm font-semibold transition">{dict.challenges.viewAll}</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

@@ -3,9 +3,10 @@ import { notFound } from 'next/navigation'
 import ReferenceForm from '@/components/admin/ReferenceForm'
 import Link from 'next/link'
 
-export default async function EditReferencePage({ params }: { params: { id: string } }) {
+export default async function EditReferencePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [r, tutorials] = await Promise.all([
-    prisma.reference.findUnique({ where: { id: params.id } }),
+    prisma.reference.findUnique({ where: { id } }),
     prisma.tutorial.findMany({ orderBy: { titleBn: 'asc' } }),
   ])
   if (!r) return notFound()

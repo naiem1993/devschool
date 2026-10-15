@@ -42,8 +42,8 @@ export default function TutorialShell({
             {children}
           </main>
 
-          {/* ── RIGHT: Promo ── */}
-          <div className="px-4 lg:px-6 py-6">
+          {/* ── RIGHT: Promo — ডেস্কটপে sticky (w3schools-এর মতো) ── */}
+          <div className="px-4 lg:px-6 py-6 lg:sticky lg:top-[105px] lg:self-start lg:max-h-[calc(100vh-105px)] lg:overflow-y-auto sidebar-scroll">
             <TutorialPromo
               chapterCount={nav.chapters.length}
               currentChapter={currentChapterOrder}

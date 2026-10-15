@@ -20,6 +20,7 @@ export default async function ReferencesPage() {
         action={
           <div className="flex gap-2">
             <Link href="/admin/references/new" className="admin-btn">+ new</Link>
+            <Link href="/admin/references/bulk" className="admin-btn">📦 bulk</Link>
             <LogoutButton />
           </div>
         }
@@ -42,7 +43,7 @@ export default async function ReferencesPage() {
                 <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it.language || '—'}</td>
                 <td className="px-4 py-2 text-right space-x-3">
-                  <Link href={`/admin/references/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
+                  <Link href={`/admin/references/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
                   <DeleteButton endpoint={`/api/admin/references/${it.id}`} />
                 </td>
               </tr>

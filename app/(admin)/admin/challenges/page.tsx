@@ -45,7 +45,7 @@ export default async function ChallengesPage() {
                 <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
                 <td className="px-4 py-2 text-cyan-400">{it.points}</td>
                 <td className="px-4 py-2 text-right space-x-3">
-                  <Link href={`/admin/challenges/${it.id}`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
+                  <Link href={`/admin/challenges/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
                   <DeleteButton endpoint={`/api/admin/challenges/${it.id}`} />
                 </td>
               </tr>

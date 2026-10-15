@@ -87,6 +87,8 @@ export default function LessonSidebar({
           'w-[270px] lg:w-[250px] flex-shrink-0',
           // Mobile: top-0 + bottom-0 = full-height drawer; Desktop: sticky, header+tabs-এর নিচে
           'fixed lg:sticky top-0 lg:top-[105px] bottom-0 lg:bottom-auto left-0 z-[60] lg:z-auto',
+          // self-start জরুরি: flexbox-এর align-stretch বন্ধ করে, নাহলে sticky কাজ করে না
+          'lg:self-start',
           // Mobile: full viewport height; Desktop: viewport-এ cap + scroll
           'overflow-y-auto sidebar-scroll lg:max-h-[calc(100vh-105px)]',
           // Mobile: content header-এর নিচে নামানোর জন্য pt-16 (header z-100, drawer z-60)

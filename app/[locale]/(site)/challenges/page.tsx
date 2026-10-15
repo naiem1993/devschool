@@ -75,6 +75,7 @@ export default async function ChallengesListingPage({
         description:
           pickText(locale as Locale, c.descriptionBn, c.descriptionEn) ?? '',
         difficulty: c.difficulty,
+        language: c.language,
         points: c.points,
         tutorialTitle:
           pickText(locale as Locale, c.tutorial.titleBn, c.tutorial.titleEn) ||

@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation'
 import ChallengeForm from '@/components/admin/ChallengeForm'
 import Link from 'next/link'
 
-export default async function EditChallengePage({ params }: { params: { id: string } }) {
+export default async function EditChallengePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [c, tutorials] = await Promise.all([
     prisma.codeChallenge.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { testCases: { orderBy: { testCaseOrder: 'asc' } } },
     }),
     prisma.tutorial.findMany({ where: { isActive: true }, orderBy: { titleBn: 'asc' } }),

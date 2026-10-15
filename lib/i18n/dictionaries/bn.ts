@@ -253,6 +253,8 @@ const bn = {
     searchAria: 'চ্যালেঞ্জ সার্চ',
     allOption: 'সব',
     filterClear: 'ফিল্টার মুছুন ✕',
+    filterLangLabel: 'ভাষা:',
+    filterDiffLabel: 'কঠিনতা:',
     noResultsDiffDesc: 'অন্য কীওয়ার্ড বা difficulty দিয়ে চেষ্টা করুন।',
     difficultyLabels: {
       Easy: 'সহজ',

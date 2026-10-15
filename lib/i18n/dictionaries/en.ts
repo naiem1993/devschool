@@ -248,6 +248,8 @@ const en: Dictionary = {
     searchAria: 'Search challenges',
     allOption: 'All',
     filterClear: 'Clear filters ✕',
+    filterLangLabel: 'Language:',
+    filterDiffLabel: 'Difficulty:',
     noResultsDiffDesc: 'Try another keyword or difficulty.',
     difficultyLabels: {
       Easy: 'Easy',
