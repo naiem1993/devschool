@@ -95,7 +95,7 @@ export default async function ChallengesListingPage({
   if (dbError) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center bg-white dark:bg-[#050806] p-4">
-        <div className="text-center max-w-md bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-8">
+        <div className="text-center max-w-md ds-card p-8">
           <div className="text-5xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{dict.listing.dbConnectError}</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{errorMessage}</p>
@@ -119,7 +119,7 @@ export default async function ChallengesListingPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
         {/* ══════════ HERO — clean black + single green glow ══════════ */}
-        <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
+        <section className="relative overflow-hidden ds-section-head">
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
@@ -152,7 +152,7 @@ export default async function ChallengesListingPage({
         </section>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           {challenges.length === 0 ? (
-            <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+            <div className="ds-card p-12 text-center">
               <div className="text-5xl mb-4">⚔️</div>
               <h2 className="text-xl font-bold mb-2">{dict.challenges.emptyTitle}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">{dict.challenges.emptyDesc}</p>
@@ -171,7 +171,7 @@ export default async function ChallengesListingPage({
 // ─────────────────────────────────────────────────────────────
 function StatCard({ value, label }: { value: number; label: string }) {
   return (
-    <div className="flex items-baseline gap-2 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-[#0a0f0c] px-4 py-2.5">
+    <div className="flex items-baseline gap-2 ds-card ds-card-sm px-4 py-2.5">
       <span className="text-xl font-bold tabular-nums text-[#22C55E]">{value.toLocaleString()}</span>
       <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
     </div>

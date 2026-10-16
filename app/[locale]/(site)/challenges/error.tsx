@@ -10,7 +10,7 @@ export default function ChallengesError({ error, reset }: { error: Error & { dig
   useEffect(() => { console.error('[challenges] Error:', error) }, [error])
   return (
     <div className="min-h-[70vh] flex items-center justify-center bg-slate-50 dark:bg-[#0b0f19] px-4">
-      <div className="text-center max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+      <div className="text-center max-w-md ds-card p-8 shadow-xl">
         <div className="text-6xl mb-4">⚠️</div>
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">{dict.challenges.errLoadTitle}</h2>
         <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">{dict.challenges.errLoadMsg}</p>

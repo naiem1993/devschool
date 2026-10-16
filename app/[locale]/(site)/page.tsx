@@ -221,7 +221,7 @@ export default async function HomePage({
   const faqSettings = await getFaqSettings(locale)
 
   return (
-    <div className="min-h-screen bg-[#F2FBF4] dark:bg-[#050806] text-slate-900 dark:text-slate-100 font-sans">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
       {/* === হিরো সেকশন === */}
       {hero ? (
         <HeroSection
@@ -249,57 +249,57 @@ export default async function HomePage({
       {/* === লার্নিং ট্র্যাক / রোডম্যাপ সেকশন === */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold tracking-tight">{dict.home.trackTitle}</h2>
+          <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{dict.home.trackTitle}</h2>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
             {dict.home.trackSubtitle}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition group">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+          <div className="ds-card ds-card-hover p-6 group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
               🌐
             </div>
-            <h3 className="text-xl font-bold">{dict.home.frontendTitle}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{dict.home.frontendTitle}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
               {dict.home.frontendDesc}
             </p>
             <Link
               href={localeHref(locale, "/tutorials")}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition-transform"
             >
-              {dict.home.startTrack}
+              {dict.home.startTrack} →
             </Link>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition group">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+          <div className="ds-card ds-card-hover p-6 group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
               ⚙️
             </div>
-            <h3 className="text-xl font-bold">{dict.home.backendTitle}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{dict.home.backendTitle}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
               {dict.home.backendDesc}
             </p>
             <Link
               href={localeHref(locale, "/tutorials")}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition-transform"
             >
-              {dict.home.startTrack}
+              {dict.home.startTrack} →
             </Link>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition group">
-            <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/10 text-[#15803d] dark:text-[#4ADE80] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+          <div className="ds-card ds-card-hover p-6 group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
               🧠
             </div>
-            <h3 className="text-xl font-bold">{dict.home.fullstackTitle}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{dict.home.fullstackTitle}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
               {dict.home.fullstackDesc}
             </p>
             <Link
               href={localeHref(locale, "/tutorials")}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[#15803d] dark:text-[#4ADE80] mt-6 group-hover:translate-x-1 transition"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition-transform"
             >
-              {dict.home.startTrack}
+              {dict.home.startTrack} →
             </Link>
           </div>
         </div>

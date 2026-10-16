@@ -73,7 +73,7 @@ export default function Header() {
       </svg>
       <div className="flex flex-col">
         <span className="text-sm sm:text-base font-extrabold tracking-tight leading-tight">
-          <span className="text-dev-green">Dev</span>
+          <span className="text-[#15803D] dark:text-[#22C55E]">Dev</span>
           <span className="text-slate-900 dark:text-white">School</span>
         </span>
         <span className="text-[8px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-mono -mt-0.5">
@@ -94,8 +94,8 @@ export default function Header() {
             href={link.href}
             className={`px-3 lg:px-4 py-2 rounded-full text-sm font-medium transition-all ${
               isActive
-                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-semibold'
-                : 'text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10'
+                ? 'bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] font-semibold'
+                : 'text-slate-600 dark:text-slate-300 hover:text-[#15803D] dark:hover:text-[#4ADE80] hover:bg-[#22C55E]/10'
             }`}
           >
             {link.name}
@@ -122,7 +122,7 @@ export default function Header() {
       onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       aria-label={dict.common.toggleMenu}
       aria-expanded={mobileMenuOpen}
-      className="md:hidden p-2 -ml-1 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-[#4ADE80] transition-colors shrink-0"
+      className="md:hidden p-2 -ml-1 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-[#22C55E]/10 hover:text-[#15803D] dark:hover:text-[#4ADE80] transition-colors shrink-0"
     >
       <BurgerIcon open={mobileMenuOpen} />
     </button>
@@ -140,8 +140,8 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(false)}
             className={`block px-4 py-2.5 rounded-xl text-base font-medium transition ${
               isActive
-                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-semibold'
-                : 'text-slate-700 dark:text-slate-200 hover:bg-emerald-500/10'
+                ? 'bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] font-semibold'
+                : 'text-slate-700 dark:text-slate-200 hover:bg-[#22C55E]/10'
             }`}
           >
             {link.name}
@@ -159,7 +159,7 @@ export default function Header() {
     return (
       <header className="fixed top-0 left-0 right-0 z-[100] w-full pt-4 pb-2 pointer-events-none">
         <div className="relative mx-auto w-[92%] sm:w-[80%] pointer-events-auto">
-          <div className="rounded-full border border-emerald-500/25 dark:border-emerald-500/25 bg-emerald-500/[0.06] dark:bg-emerald-500/[0.08] backdrop-blur-xl shadow-[0_8px_32px_-12px_rgba(34,197,94,0.25)]">
+          <div className="rounded-full border border-[#22C55E]/25 dark:border-[#22C55E]/25 bg-[#22C55E]/[0.06] dark:bg-[#22C55E]/[0.08] backdrop-blur-xl shadow-[0_8px_32px_-12px_rgba(34,197,94,0.25)]">
             <div className="flex items-center justify-between h-14 px-2 sm:px-4 lg:px-5 gap-2">
               {/* Left: mobile burger + logo */}
               <div className="flex items-center gap-2 shrink-0 min-w-0">
@@ -177,7 +177,7 @@ export default function Header() {
           </div>
 
           {mobileMenuOpen && (
-            <div className="md:hidden mt-2 rounded-2xl border border-emerald-200/70 dark:border-emerald-900/50 bg-[#F2FBF4]/95 dark:bg-[#050806]/95 backdrop-blur-xl shadow-lg p-2 space-y-1">
+            <div className="md:hidden mt-2 rounded-2xl border border-[#22C55E]/20 dark:border-[#22C55E]/20 bg-[#F2FBF4]/95 dark:bg-[#050806]/95 backdrop-blur-xl shadow-lg p-2 space-y-1">
               {MobileMenuLinks}
             </div>
           )}
@@ -191,7 +191,7 @@ export default function Header() {
      Mobile: ☰ bame, logo tar por, nav center, 🌙 dane
      ========================================================= */
   return (
-    <header className="sticky top-0 z-[100] w-full border-b border-emerald-200/70 dark:border-emerald-900/40 bg-[#F2FBF4]/90 dark:bg-[#050806]/90 backdrop-blur-xl shadow-sm">
+    <header className="sticky top-0 z-[100] w-full border-b border-[#22C55E]/20 dark:border-[#22C55E]/20 bg-[#F2FBF4]/90 dark:bg-[#050806]/90 backdrop-blur-xl shadow-sm">
       <div className="w-full px-3 sm:px-5 lg:px-6">
         <div className="flex items-center justify-between h-16 gap-3">
           {/* Left: mobile burger + logo */}
@@ -212,7 +212,7 @@ export default function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-emerald-200/70 dark:border-emerald-900/40 bg-[#F2FBF4]/95 dark:bg-[#050806]/95 backdrop-blur-xl px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden border-t border-[#22C55E]/20 dark:border-[#22C55E]/20 bg-[#F2FBF4]/95 dark:bg-[#050806]/95 backdrop-blur-xl px-4 pt-2 pb-4 space-y-1">
           {MobileMenuLinks}
         </div>
       )}

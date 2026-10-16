@@ -98,7 +98,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
   return (
     <>
       {/* ─── Toolbar ─── */}
-      <div className="rounded-3xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-[#0a0f0c] p-4 sm:p-5 mb-6">
+      <div className="ds-card p-4 sm:p-5 mb-6">
         {/* Search */}
         <div className="relative">
           <svg
@@ -191,7 +191,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
 
       {/* ─── Grid ─── */}
       {filtered.length === 0 ? (
-        <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+        <div className="ds-card p-12 text-center">
           <div className="text-5xl mb-4">📭</div>
           <h3 className="text-xl font-bold mb-2">{dict.listing.filterNoResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
@@ -212,7 +212,7 @@ export default function TutorialsFilter({ tutorials }: { tutorials: TutorialCard
               <Link
                 key={t.id}
                 href={localeHref(locale, `/tutorials/${t.slug}`)}
-                className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+                className="group ds-card ds-card-sm ds-card-hover p-5 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="flex items-start gap-3 min-w-0 flex-1">

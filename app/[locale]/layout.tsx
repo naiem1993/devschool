@@ -80,11 +80,45 @@ export default async function LocaleRootLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      style={{ backgroundColor: '#050806', colorScheme: 'dark' }}
       suppressHydrationWarning
     >
-      <head />
-      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
+      <head>
+        {/* Critical inline CSS — CSS file লোড হওয়ার আগেই background ঠিক করে দেয় */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html:
+              'html,body{background:#050806;color-scheme:dark}' +
+              'html:not(.dark),html:not(.dark) body{background:#f2fbf4;color-scheme:light}',
+          }}
+        />
+        <meta name="color-scheme" content="dark light" />
+        <meta name="theme-color" content="#050806" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const t = localStorage.getItem('theme');
+                const isDark = t !== 'light';
+                const root = document.documentElement;
+                if (isDark) {
+                  root.classList.add('dark');
+                } else {
+                  root.classList.remove('dark');
+                }
+                // CSS আসার আগেই background সেট করে দিই → browser-এর ডিফল্ট নীল/সাদা flash বন্ধ
+                root.style.backgroundColor = isDark ? '#050806' : '#f2fbf4';
+                root.style.colorScheme = isDark ? 'dark' : 'light';
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body
+        className="min-h-full flex flex-col bg-background text-foreground"
+        style={{ backgroundColor: '#050806' }}
+      >
         <I18nProvider locale={locale} dict={dict}>
           <ThemeSync />
           {children}

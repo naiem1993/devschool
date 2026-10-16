@@ -53,7 +53,7 @@ export default async function Base64Page({
   const t = dict.toolPages.pageBase64
   return (
     <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
-      <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
+      <section className="relative overflow-hidden ds-section-head">
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"

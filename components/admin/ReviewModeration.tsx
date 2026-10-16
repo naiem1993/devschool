@@ -61,7 +61,7 @@ export default function ReviewModeration({ reviews }: { reviews: Review[] }) {
       </div>
 
       {shown.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 text-center text-slate-500">
+        <div className="ds-card p-10 text-center text-slate-500">
           কোনো রিভিউ নেই।
         </div>
       ) : (

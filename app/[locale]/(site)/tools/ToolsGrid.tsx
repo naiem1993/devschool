@@ -9,9 +9,6 @@ import {
 } from '@/lib/tools'
 import { useDict } from '@/lib/i18n/I18nProvider'
 
-const inputBase =
-  'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
-
 export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
   const dict = useDict()
   const [query, setQuery] = useState('')
@@ -46,7 +43,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={dict.tools.searchPlaceholder}
             aria-label={dict.tools.searchAria}
-            className={`w-full pl-11 pr-4 py-3 rounded-2xl text-sm ${inputBase}`}
+            className="ds-input w-full pl-11 pr-4 py-3 text-sm"
           />
         </div>
 
@@ -97,7 +94,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
 
       {/* ─── Grid ─── */}
       {filtered.length === 0 ? (
-        <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+        <div className="ds-card p-12 text-center">
           <div className="text-5xl mb-4">🔎</div>
           <h3 className="text-xl font-bold mb-2">{dict.tools.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
@@ -166,7 +163,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
             )
 
             const cardCls =
-              'group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col'
+              'group ds-card ds-card-sm ds-card-hover p-5 flex flex-col'
 
             // comingSoon হলে লিংক নিষ্ক্রিয় (তবু hover effect থাকবে)
             return t.comingSoon ? (

@@ -69,7 +69,7 @@ export default function ReviewForm({
       <div className="text-center mt-2">
         <button
           onClick={() => setOpen(true)}
-          className="px-6 py-3 rounded-2xl bg-[#22C55E] text-[#050806] font-semibold hover:bg-[#4ADE80] transition"
+          className="px-6 py-3 rounded-2xl bg-[#22C55E] text-[#04140a] font-semibold hover:bg-[#4ADE80] transition"
         >
           {dict.openButton}
         </button>
@@ -78,7 +78,7 @@ export default function ReviewForm({
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8">
+    <div className="max-w-xl mx-auto mt-10 ds-card p-6 sm:p-8">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-xl font-bold">{dict.formTitle}</h3>
         <button onClick={() => setOpen(false)} className="text-xs text-slate-400 hover:text-slate-600">
@@ -164,7 +164,7 @@ export default function ReviewForm({
         <button
           type="submit"
           disabled={busy}
-          className="w-full py-3 rounded-xl bg-[#22C55E] text-[#050806] font-semibold hover:bg-[#4ADE80] transition disabled:opacity-50"
+          className="w-full py-3 rounded-xl bg-[#22C55E] text-[#04140a] font-semibold hover:bg-[#4ADE80] transition disabled:opacity-50"
         >
           {busy ? dict.submittingBtn : dict.submitBtn}
         </button>

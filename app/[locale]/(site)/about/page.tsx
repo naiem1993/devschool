@@ -58,7 +58,7 @@ export default async function AboutPage({
 
       <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
         {/* ══════════ HERO — green glow (Home-এর মতো) ══════════ */}
-        <section className="relative overflow-hidden bg-[#f6f8f7] dark:bg-[#050806] border-b border-slate-200 dark:border-white/5">
+        <section className="relative overflow-hidden ds-section-head">
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[420px] w-[820px] max-w-full"
@@ -95,7 +95,7 @@ export default async function AboutPage({
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 space-y-12">
           {/* ══════════ Mission + Vision ══════════ */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+            <div className="ds-card p-6">
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4">
                 🎯
               </div>
@@ -104,7 +104,7 @@ export default async function AboutPage({
                 {dict.about.missionDesc}
               </p>
             </div>
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+            <div className="ds-card p-6">
               <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl mb-4">
                 🚀
               </div>
@@ -121,21 +121,21 @@ export default async function AboutPage({
               {dict.about.valuesTitle}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center">
+              <div className="ds-card p-6 text-center">
                 <div className="text-3xl mb-3">💚</div>
                 <h3 className="text-lg font-bold">{dict.about.valuesFree}</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
                   {dict.about.valuesFreeDesc}
                 </p>
               </div>
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center">
+              <div className="ds-card p-6 text-center">
                 <div className="text-3xl mb-3">✋</div>
                 <h3 className="text-lg font-bold">{dict.about.valuesPractical}</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
                   {dict.about.valuesPracticalDesc}
                 </p>
               </div>
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center">
+              <div className="ds-card p-6 text-center">
                 <div className="text-3xl mb-3">🇧🇩</div>
                 <h3 className="text-lg font-bold">{dict.about.valuesBengali}</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">

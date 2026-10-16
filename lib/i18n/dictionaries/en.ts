@@ -624,7 +624,7 @@ const en: Dictionary = {
     searchAria: 'Search references',
     countTpl: '{count} references',
     viewAll: 'View all references',
-    filterLanguage: 'Language filter',
+    filterLanguage: 'Language:',
     allLanguages: 'All languages',
     sortAria: 'Sort by',
     sortTitle: 'Name (A-Z)',

@@ -182,7 +182,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           placeholder={t.searchUi.placeholder}
           aria-label={t.searchUi.ariaLabel}
           autoFocus
-          className="w-full pl-14 pr-24 py-4 sm:py-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-base sm:text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg focus:outline-none focus:border-[#22C55E] focus:ring-4 focus:ring-[#22C55E]/10 transition"
+          className="ds-input w-full pl-14 pr-24 py-4 sm:py-5 text-base sm:text-lg shadow-lg"
         />
         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-500 dark:text-slate-400">
@@ -332,7 +332,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
 
       {/* ─── Empty ─── */}
       {!isLoading && !error && result && hasQuery && !hasHits && (
-        <div className="mt-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+        <div className="mt-10 ds-card p-12 text-center">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-xl font-bold mb-2">{t.searchUi.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">

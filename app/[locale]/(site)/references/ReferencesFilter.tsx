@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 import { localeHref } from '@/lib/i18n/link'
+import LanguageSelect from '../challenges/LanguageSelect'
 
 export type ReferenceCard = {
   id: string
@@ -16,10 +17,7 @@ export type ReferenceCard = {
   language: string | null
 }
 
-type SortKey = 'title' | 'language'
-
-const inputBase =
-  'bg-white dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 transition'
+const inputBase = 'ds-input'
 
 export default function ReferencesFilter({
   references,
@@ -32,12 +30,11 @@ export default function ReferencesFilter({
   const locale = useLocale()
   const [query, setQuery] = useState('')
   const [languageFilter, setLanguageFilter] = useState<string>('all')
-  const [sort, setSort] = useState<SortKey>('title')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
 
-    let result = references.filter((r) => {
+    return references.filter((r) => {
       const matchesQuery = q
         ? r.title.toLowerCase().includes(q) ||
           r.slug.toLowerCase().includes(q) ||
@@ -52,16 +49,7 @@ export default function ReferencesFilter({
 
       return matchesQuery && matchesLanguage
     })
-
-    result = [...result].sort((a, b) => {
-      if (sort === 'title') return a.title.localeCompare(b.title)
-      if (sort === 'language')
-        return (a.language || '').localeCompare(b.language || '')
-      return 0
-    })
-
-    return result
-  }, [references, query, languageFilter, sort])
+  }, [references, query, languageFilter])
 
   const activeFilters = query || languageFilter !== 'all'
 
@@ -88,30 +76,15 @@ export default function ReferencesFilter({
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <select
+        <div className="flex flex-wrap items-center gap-2">
+          <LanguageSelect
+            label={dict.references.filterLanguage}
+            allLabel={dict.references.allLanguages}
+            placeholder={dict.references.filterLanguage}
             value={languageFilter}
-            onChange={(e) => setLanguageFilter(e.target.value)}
-            aria-label={dict.references.filterLanguage}
-            className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
-          >
-            <option value="all">{dict.references.allLanguages}</option>
-            {languages.map((l) => (
-              <option key={l} value={l}>
-                {l}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortKey)}
-            aria-label={dict.references.sortAria}
-            className={`px-4 py-3 rounded-2xl text-sm font-medium cursor-pointer ${inputBase}`}
-          >
-            <option value="title">{dict.references.sortTitle}</option>
-            <option value="language">{dict.references.sortLanguage}</option>
-          </select>
+            options={languages.map((l) => ({ value: l, label: l }))}
+            onChange={setLanguageFilter}
+          />
         </div>
       </div>
 
@@ -135,7 +108,7 @@ export default function ReferencesFilter({
 
       {/* ─── Grid ─── */}
       {filtered.length === 0 ? (
-        <div className="bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-3xl p-12 text-center">
+        <div className="ds-card p-12 text-center">
           <div className="text-5xl mb-4">📭</div>
           <h3 className="text-xl font-bold mb-2">{dict.references.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
@@ -154,7 +127,7 @@ export default function ReferencesFilter({
             <Link
               key={r.id}
               href={localeHref(locale, `/references/${r.slug}`)}
-              className="group bg-slate-50 dark:bg-[#0a0f0c] border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-[#22C55E]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+              className="group ds-card ds-card-sm ds-card-hover p-5 flex flex-col"
             >
               <div className="flex items-start justify-between mb-3 gap-2">
                 <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-[#22C55E] transition line-clamp-1">

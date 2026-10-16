@@ -150,7 +150,7 @@ export default function HomeExtras({
 
         <div className="grid md:grid-cols-3 gap-4">
           {/* Featured */}
-          <div className="md:col-span-2 gradient-border bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 flex flex-col justify-between reveal">
+          <div className="md:col-span-2 gradient-border ds-card p-8 flex flex-col justify-between reveal">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] grid place-items-center mb-4">
                 <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6M16 6l6 6-6 6" /></svg>
@@ -160,13 +160,13 @@ export default function HomeExtras({
                 {t.bento1Desc}
               </p>
             </div>
-            <div className="mt-6 rounded-xl bg-[#0b0f0d] border border-white/10 p-4 font-mono text-sm text-[#4ADE80]">
-              console.log(&quot;Hello!&quot;); <span className="text-slate-500">→ Hello!</span>
+            <div className="mt-6 rounded-xl bg-white dark:bg-[#0b0f0d] border border-slate-200 dark:border-white/10 p-4 font-mono text-sm text-[#15803D] dark:text-[#4ADE80]">
+              console.log(&quot;Hello!&quot;); <span className="text-slate-400 dark:text-slate-500">→ Hello!</span>
             </div>
           </div>
 
           {/* Small 1 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 reveal">
+          <div className="ds-card p-8 reveal">
             <div className="w-12 h-12 rounded-2xl bg-amber-400/15 text-amber-600 dark:text-amber-300 grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20" /></svg>
             </div>
@@ -175,8 +175,8 @@ export default function HomeExtras({
           </div>
 
           {/* Small 2 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 reveal">
-            <div className="w-12 h-12 rounded-2xl bg-sky-400/15 text-sky-600 dark:text-sky-300 grid place-items-center mb-4">
+          <div className="ds-card p-8 reveal">
+            <div className="w-12 h-12 rounded-2xl bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2 4 7l8 5 8-5-8-5ZM4 17l8 5 8-5M4 12l8 5 8-5" /></svg>
             </div>
             <h3 className="text-xl font-bold">{t.bento3Title}</h3>
@@ -184,7 +184,7 @@ export default function HomeExtras({
           </div>
 
           {/* Small 3 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 reveal">
+          <div className="ds-card p-8 reveal">
             <div className="w-12 h-12 rounded-2xl bg-purple-400/15 text-purple-600 dark:text-purple-300 grid place-items-center mb-4">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
             </div>
@@ -296,7 +296,7 @@ export default function HomeExtras({
                     onClick={scrollNext}
                     disabled={atEnd}
                     aria-label={t.reviewsNextAria}
-                    className="w-10 h-10 rounded-full border-2 border-[#22C55E]/50 bg-white dark:bg-slate-800 grid place-items-center text-xl font-bold text-[#22C55E] hover:bg-[#22C55E] hover:text-[#050806] hover:border-[#22C55E] disabled:opacity-25 disabled:cursor-not-allowed transition-all shadow-sm"
+                    className="w-10 h-10 rounded-full border-2 border-[#22C55E]/50 bg-white dark:bg-slate-800 grid place-items-center text-xl font-bold text-[#22C55E] hover:bg-[#22C55E] hover:text-[#04140a] hover:border-[#22C55E] disabled:opacity-25 disabled:cursor-not-allowed transition-all shadow-sm"
                   >
                     ›
                   </button>

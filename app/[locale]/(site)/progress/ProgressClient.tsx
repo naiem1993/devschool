@@ -62,7 +62,7 @@ export default function ProgressClient() {
 
   if (error) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center">
+      <div className="ds-card p-8 text-center">
         <div className="text-5xl mb-4">⚠️</div>
         <h3 className="text-lg font-bold mb-2">{t.progressUi.loadError}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{error}</p>
@@ -82,7 +82,7 @@ export default function ProgressClient() {
 
   if (noActivity) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+      <div className="ds-card p-12 text-center">
         <div className="text-6xl mb-4">🌱</div>
         <h3 className="text-xl font-bold mb-2">{t.progressUi.emptyTitle}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
@@ -217,7 +217,7 @@ function StatCard({
     amber: 'text-amber-600 dark:text-amber-400',
   } as const
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5">
+    <div className="ds-card p-5">
       <div className="text-3xl mb-2">{icon}</div>
       <div className={`text-3xl font-extrabold ${colorMap[color]}`}>{value}</div>
       <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">

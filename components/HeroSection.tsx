@@ -1,6 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+
+// SSR-safe layout effect — থিম sync paint-এর আগে চালাতে চাই
+const useIsoLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
@@ -19,7 +23,6 @@ const staggerContainer = {
 }
 
 interface HeroSectionProps {
-  /** locale-সঠিক hero — parent সবসময় পাঠাবে (bn বা en), কখনো ডিফল্ট নয় */
   hero: HeroContent
   tutorials: any[]
   stats: {
@@ -34,21 +37,40 @@ type FileKey = 'html' | 'css' | 'js'
 
 const INITIAL_CODE: Record<FileKey, string> = {
   html: '<h1>হ্যালো, DevSchool! 👋</h1>\n<p>আমি কোডিং শিখছি।</p>',
-  css: 'body { background:#0b0f0d; color:#e6edf3; font-family:Hind Siliguri,system-ui,sans-serif; padding:14px; margin:0 }\nh1 { color:#4ADE80; font-size:26px; margin:0 0 8px }\np { color:#94a3b8; margin:0 }',
+  css: 'body { font-family:Hind Siliguri,system-ui,sans-serif; padding:14px; margin:0 }\nh1 { color:#22C55E; font-size:26px; margin:0 0 8px }\np { color:#64748b; margin:0 }',
   js: 'console.log("Hello, DevSchool!");',
 }
 
-/** Live preview iframe — নিরাপদে HTML doc build করে, output always dark */
-function buildDoc(html: string, css: string, js: string) {
+/** Live preview iframe — light/dark অনুযায়ী background ও text color */
+function buildDoc(html: string, css: string, js: string, dark: boolean) {
   const closing = '</scr' + 'ipt>'
   const opening = '<scr' + 'ipt>'
+  const bg = dark ? '#0b0f0d' : '#ffffff'
+  const fg = dark ? '#e6edf3' : '#0f172a'
+  // থিম message listener — parent থেকে postMessage এলে iframe reload ছাড়াই রঙ বদলায়
+  const themeBridge =
+    opening +
+    `(function(){
+      function apply(d){
+        var r = document.documentElement.style;
+        r.setProperty('--ds-bg', d ? '#0b0f0d' : '#ffffff');
+        r.setProperty('--ds-fg', d ? '#e6edf3' : '#0f172a');
+      }
+      window.addEventListener('message', function(e){
+        if (!e.data || e.data.type !== 'ds-theme') return;
+        apply(!!e.data.dark);
+      });
+    })();` +
+    closing
   return (
     '<!doctype html><html><head><meta charset="utf-8">' +
-    '<style>html,body{background:#0b0f0d;color:#e6edf3}' +
+    '<style>' +
     'body{font-family:Hind Siliguri,system-ui,-apple-system,sans-serif;padding:14px;margin:0}' +
     css +
+    'html,body{background:var(--ds-bg,' + bg + ') !important;color:var(--ds-fg,' + fg + ') !important}' +
     '</style></head><body>' +
     html +
+    themeBridge +
     opening + js + closing +
     '</body></html>'
   )
@@ -65,7 +87,6 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
   ]
 
   const [activeTab, setActiveTab] = useState<FileKey>('html')
-  // ডেমো কোড dictionary থেকে — ভাষা বদলালে html/js বদলাবে (css সব ভাষায় একই)
   const [code, setCode] = useState<Record<FileKey, string>>({
     ...INITIAL_CODE,
     html: dict.heroDemo.html,
@@ -74,11 +95,14 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
   const [docSrc, setDocSrc] = useState('')
   const [typedText, setTypedText] = useState('')
   const [prefersReduced, setPrefersReduced] = useState(false)
+  const [isDark, setIsDark] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const iframeRef = useRef<HTMLIFrameElement | null>(null)
 
   // 1) Live preview — টাইপ করলে সাথে সাথে আপডেট
   useEffect(() => {
-    setDocSrc(buildDoc(code.html, code.css, code.js))
+    setDocSrc(buildDoc(code.html, code.css, code.js, isDark))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code])
 
   // 2) motion preference
@@ -89,6 +113,50 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
     mq.addEventListener('change', h)
     return () => mq.removeEventListener('change', h)
   }, [])
+
+  // 2.5) dark mode track — html.dark ক্লাস পরিবর্তন হলে সাথে সাথে sync
+  useEffect(() => {
+    const update = () => setIsDark(document.documentElement.classList.contains('dark'))
+    update()
+    const obs = new MutationObserver(update)
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => obs.disconnect()
+  }, [])
+
+  // 2.6) থিম sync — দুই চ্যানেল:
+  //  ১) state বদলালে (ThemeSync/locale পরিবর্তন) → effect থেকে postMessage
+  //  ২) ThemeToggle-এর synchronous custom event → সাথে সাথেই postMessage
+  useIsoLayoutEffect(() => {
+    const f = iframeRef.current
+    if (!f) return
+    const send = (dark: boolean) => {
+      // ১) direct DOM — true synchronous, queue নেই
+      try {
+        const d = f.contentDocument
+        if (d && d.documentElement) {
+          const s = d.documentElement.style
+          s.setProperty('--ds-bg', dark ? '#0b0f0d' : '#ffffff')
+          s.setProperty('--ds-fg', dark ? '#e6edf3' : '#0f172a')
+        }
+      } catch {}
+      // ২) postMessage — fallback (sandbox-এ same-origin block হলে)
+      try {
+        f.contentWindow?.postMessage({ type: 'ds-theme', dark }, '*')
+      } catch {}
+    }
+    send(isDark)
+    const onLoad = () => send(isDark)
+    const onToggle = (e: Event) => {
+      const d = (e as CustomEvent<{ dark: boolean }>).detail?.dark
+      if (typeof d === 'boolean') send(d)
+    }
+    f.addEventListener('load', onLoad)
+    window.addEventListener('ds-theme-toggle', onToggle)
+    return () => {
+      f.removeEventListener('load', onLoad)
+      window.removeEventListener('ds-theme-toggle', onToggle)
+    }
+  }, [isDark, docSrc])
 
   // 3) typing terminal — শুধু motion allowed হলে
   useEffect(() => {
@@ -109,7 +177,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
     return () => clearTimeout(timer)
   }, [prefersReduced])
 
-  // 4) particle canvas — hero-র মধ্যে সীমাবদ্ধ, mobile-friendly
+  // 4) particle canvas
   useEffect(() => {
     if (prefersReduced) return
     const c = canvasRef.current
@@ -117,8 +185,8 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
     const x = c.getContext('2d')
     if (!x) return
 
-    const isDark = () => document.documentElement.classList.contains('dark')
-    const dotRGB = () => (isDark() ? '34,197,94' : '22,163,74')
+    const isDarkNow = () => document.documentElement.classList.contains('dark')
+    const dotRGB = () => (isDarkNow() ? '34,197,94' : '22,163,74')
     let w = 0, h = 0
     let ps: { x: number; y: number; vx: number; vy: number; r: number }[] = []
     const COUNT = window.innerWidth < 768 ? 14 : 36
@@ -179,23 +247,18 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
       variants={staggerContainer}
       className="relative overflow-hidden bg-gradient-to-b from-[#F2FBF4] via-[#F2FBF4] to-[#E8F7ED] dark:from-[#050806] dark:via-[#050806] dark:to-[#050806] text-slate-900 dark:text-white pt-28 pb-20 lg:pt-32 lg:pb-28 border-b border-emerald-200/70 dark:border-slate-800"
     >
-      {/* aurora orbs */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
-        {/* top-center glow — pill nav-এর ঠিক পেছনে, যাতে nav-এ blend করে */}
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[820px] max-w-[110vw] h-[260px] rounded-full bg-[#22C55E]/10 dark:bg-[#22C55E]/18 blur-[100px]" />
         <span className="aurora-orb aurora-orb-1" />
         <span className="aurora-orb aurora-orb-2" />
         <span className="aurora-orb aurora-orb-3" />
       </div>
 
-      {/* particle canvas */}
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 w-full h-full opacity-50 pointer-events-none" />
 
-      {/* radial glow */}
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#22C55E]/25 dark:from-[#22C55E]/20 via-transparent to-transparent pointer-events-none" />
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#22C55E]/18 dark:from-[#22C55E]/25 via-transparent to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
-        {/* ---------- LEFT: copy ---------- */}
         <div className="text-center lg:text-left">
           <motion.div
             variants={fadeUp}
@@ -245,7 +308,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
           <motion.div variants={fadeUp} className="mt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400">
             <div className="flex -space-x-2">
               <span className="w-8 h-8 rounded-full bg-[#22C55E]/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👨‍💻</span>
-              <span className="w-8 h-8 rounded-full bg-sky-500/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👩‍💻</span>
+              <span className="w-8 h-8 rounded-full bg-[#22C55E]/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👩‍💻</span>
               <span className="w-8 h-8 rounded-full bg-purple-500/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">🧑‍💻</span>
             </div>
             <span className="text-slate-700 dark:text-slate-200 font-semibold">{dict.heroDemo.communityLabel}</span>
@@ -255,21 +318,21 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
         {/* ---------- RIGHT: live editor ---------- */}
         <motion.div variants={fadeUp} className="relative w-full">
           {/* terminal strip */}
-          <div className="rounded-2xl overflow-hidden mb-4 bg-[#0b0f0d] border border-white/10">
-            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[.02]">
+          <div className="rounded-2xl overflow-hidden mb-4 bg-white dark:bg-[#0b0f0d] border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
+            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[.02]">
               <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
-              <span className="ml-2 text-[11px] font-mono text-[#5c6b7a]">devschool — bash</span>
+              <span className="ml-2 text-[11px] font-mono text-slate-500 dark:text-[#5c6b7a]">devschool — bash</span>
             </div>
-            <div className="px-4 py-3 font-mono text-[12.5px] text-[#4ADE80]">
-              <span className="text-[#22C55E]">➜</span>{' '}
+            <div className="px-4 py-3 font-mono text-[12.5px] text-[#16A34A] dark:text-[#4ADE80]">
+              <span className="text-[#15803D] dark:text-[#22C55E]">➜</span>{' '}
               <span className="caret">{typedText}</span>
             </div>
           </div>
 
           {/* live editor panel */}
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-[#22C55E]/10 bg-[#0b0f0d] border border-white/10">
+          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-[#22C55E]/10 bg-white dark:bg-[#0b0f0d] border border-slate-200 dark:border-white/10">
             <div className="flex items-center justify-between px-3 pt-3 pb-2 gap-2 flex-wrap">
               <div className="flex items-center gap-1.5">
                 {(['html', 'css', 'js'] as FileKey[]).map((f) => (
@@ -280,15 +343,15 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
                     className={
                       'font-semibold text-[11px] font-mono px-2.5 py-1.5 rounded-lg border transition ' +
                       (activeTab === f
-                        ? 'bg-[#22C55E]/15 text-[#4ADE80] border-[#22C55E]/40'
-                        : 'border-white/10 text-[#5c6b7a] hover:text-[#8b98a5]')
+                        ? 'bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] border-[#22C55E]/40'
+                        : 'border-slate-200 dark:border-white/10 text-slate-500 dark:text-[#5c6b7a] hover:text-slate-700 dark:hover:text-[#8b98a5]')
                     }
                   >
                     {f === 'html' ? 'index.html' : f === 'css' ? 'style.css' : 'app.js'}
                   </button>
                 ))}
               </div>
-              <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-[#5c6b7a]">
+              <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-slate-500 dark:text-[#5c6b7a]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" /> {dict.heroDemo.liveLabel}
               </span>
             </div>
@@ -298,33 +361,33 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
                 value={code[activeTab]}
                 onChange={(e) => setCode({ ...code, [activeTab]: e.target.value })}
                 spellCheck={false}
-                className="w-full h-[150px] resize-none outline-none bg-transparent border-0 text-[#c9d5e1] font-mono text-[12.5px] leading-relaxed"
+                className="w-full h-[150px] resize-none outline-none bg-transparent border-0 text-slate-800 dark:text-[#c9d5e1] font-mono text-[12.5px] leading-relaxed"
               />
             </div>
 
             <div className="px-4 pb-4">
-              <div className="flex items-center justify-between mb-1.5 text-[10px] font-mono text-[#5c6b7a]">
+              <div className="flex items-center justify-between mb-1.5 text-[10px] font-mono text-slate-500 dark:text-[#5c6b7a]">
                 <span className="flex items-center gap-1.5">
-                  <span className="text-[#22C55E]">▸</span> OUTPUT
+                  <span className="text-[#15803D] dark:text-[#22C55E]">▸</span> OUTPUT
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-white/20" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-white/20" />
                   <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]/70" />
                 </span>
               </div>
               <iframe
+                ref={iframeRef}
                 title="Live preview"
-                sandbox="allow-scripts"
+                sandbox="allow-scripts allow-same-origin"
                 srcDoc={docSrc}
-                className="w-full h-[140px] rounded-xl bg-[#0b0f0d] border border-white/5"
+                className="w-full h-[140px] rounded-xl bg-white dark:bg-[#0b0f0d] border border-slate-200 dark:border-white/5"
               />
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* ---------- STATS ---------- */}
       <motion.div
         variants={fadeUp}
         className="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
@@ -339,9 +402,6 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
           </div>
         ))}
       </motion.div>
-
-      {/* ---------- SEARCH (below hero, above stats? we keep under CTA area) ---------- */}
-
     </motion.section>
   )
 }

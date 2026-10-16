@@ -632,7 +632,7 @@ const bn = {
     searchAria: 'রেফারেন্স সার্চ',
     countTpl: '{count} টি রেফারেন্স',
     viewAll: 'সব রেফারেন্স দেখুন',
-    filterLanguage: 'ভাষা ফিল্টার',
+    filterLanguage: 'ভাষা:',
     allLanguages: 'সব ভাষা',
     sortAria: 'সাজানোর ধরন',
     sortTitle: 'নাম (A-Z)',

@@ -20,7 +20,7 @@ export default function SearchError({
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center bg-slate-50 dark:bg-[#0b0f19] p-4">
-      <div className="text-center max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+      <div className="text-center max-w-md ds-card p-8 shadow-xl">
         <div className="text-6xl mb-4">⚠️</div>
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
           {t.errorTitle}

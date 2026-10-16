@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 import { localeHref } from '@/lib/i18n/link'
+import LanguageSelect from './LanguageSelect'
 
 export type ChallengeCard = {
   id: string
@@ -101,21 +102,16 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
 
         {/* ফিল্টার রো — বড় স্ক্রিনে পাশাপাশি, ছোট স্ক্রিনে উপর-নিচ */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-8">
-          {/* ভাষা ফিল্টার — শুধু ডেটাতে যেসব language আছে সেগুলোর বাটন */}
+          {/* ভাষা ফিল্টার — searchable dropdown (language অনেক হলে জায়গা বাঁচে) */}
           {languages.length > 1 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1 min-w-[68px]">
-                {dict.challenges.filterLangLabel}
-              </span>
-              <button onClick={() => setLanguage('all')} className={btnClass(language === 'all')}>
-                {dict.challenges.allOption}
-              </button>
-              {languages.map((l) => (
-                <button key={l} onClick={() => setLanguage(l)} className={btnClass(language === l)}>
-                  {langLabel(l)}
-                </button>
-              ))}
-            </div>
+            <LanguageSelect
+              label={dict.challenges.filterLangLabel}
+              allLabel={dict.challenges.allOption}
+              placeholder={dict.challenges.searchPlaceholder}
+              value={language}
+              options={languages.map((l) => ({ value: l, label: langLabel(l) }))}
+              onChange={setLanguage}
+            />
           )}
 
           {/* Difficulty ফিল্টার — বড় স্ক্রিনে ডান দিকে */}
@@ -144,7 +140,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center">
+        <div className="ds-card p-12 text-center">
           <div className="text-6xl mb-4">🎯</div>
           <h3 className="text-xl font-bold mb-2">{dict.challenges.noResultsTitle}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{dict.challenges.noResultsDiffDesc}</p>
@@ -156,7 +152,7 @@ export default function ChallengeFilter({ challenges }: { challenges: ChallengeC
             <Link
               key={c.id}
               href={localeHref(locale, `/challenges/${c.id}`)}
-              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-[#22C55E]/60 dark:hover:border-[#22C55E]/60 transition-all duration-200 flex flex-col"
+              className="group ds-card ds-card-hover p-6 flex flex-col"
             >
               <div className="flex items-center justify-between mb-3 gap-2">
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full border text-[10px] font-semibold uppercase tracking-wider ${diffStyle(c.difficulty)}`}>{c.difficulty}</span>

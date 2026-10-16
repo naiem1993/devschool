@@ -7,14 +7,16 @@
 /* DevSchool brand background — neon green (#22C55E) mixed with black / white */
 :root {
   --background: #f2fbf4;   /* light  = neon green + white  */
-  --foreground: #0f172a;
+  --foreground: #0f1d16;   /* সবুজাভ-কালো — slate-এর নীল টোন বাদ */
   --card: #ffffff;         /* light card surface = pure white */
+  color-scheme: light;     /* ব্রাউজারের নিজস্ব UI (scrollbar, canvas) light-এ sync */
 }
 
 .dark {
   --background: #050806;   /* dark   = neon green + black  */
   --foreground: #e6f4ea;
   --card: #0a120d;         /* dark card surface = neon green + black tint (brand match) */
+  color-scheme: dark;      /* থিম বদলের সাথে সাথে scrollbar/forms-ও dark হয় */
 }
 
 @theme inline {
@@ -23,6 +25,30 @@
   --color-card: var(--card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/* ============================================
+   DevSchool brand-neutral palette
+   Tailwind-এর slate রঙ নীল-ধূসর — ব্র্যান্ড সবুজের সাথে বেমানান।
+   সব slate-* ক্লাসকে সবুজাভ-ধূসরে remap → পুরো সাইট ১০০% coherent
+   (একটা rule → ৫০+ জায়গায় apply, কোনো কম্পোনেন্ট ফাইল ছুঁতে হয়নি)
+   ============================================ */
+@theme {
+  --color-slate-50:  #f5f9f6;   /* সবচেয়ে হালকা */
+  --color-slate-100: #e9f1ec;
+  --color-slate-200: #d6e2da;   /* border-light */
+  --color-slate-300: #b6c5bb;   /* muted-border */
+  --color-slate-400: #8aab9b;   /* muted text */
+  --color-slate-500: #5d7e6e;   /* secondary text */
+  --color-slate-600: #445f52;   /* body text */
+  --color-slate-700: #344b40;   /* strong text */
+  --color-slate-800: #1c2a24;   /* dark border */
+  --color-slate-900: #0d1813;   /* dark card */
+  --color-slate-950: #080e0a;   /* deep dark */
+}
+
+html {
+  background: var(--background);
 }
 
 body {
@@ -39,6 +65,76 @@ body {
    ============================================ */
 .dark .dark\:bg-slate-900 {
   background-color: var(--card);
+}
+
+/* ============================================
+   Legacy hardcoded surface remap
+   পুরনো কিছু পেজে dark surface হার্ডকোড ছিল (#0a0f0c)।
+   সেটাও এখন brand card token-এ আনি → পুরো সাইটে একই রঙ,
+   যেকোনো ফাইলে `dark:bg-[#0a0f0c]` লিখলেও সঠিক রঙ পাবে।
+   (এক rule → ২৭+ জায়গায় apply, কোনো file touch ছাড়াই)
+   ============================================ */
+.dark [class*="dark:bg-[#0a0f0c]"] {
+  background-color: var(--card);
+}
+
+/* ============================================
+   DevSchool Card System (site-wide consistency)
+   Standard: Challenges premium style
+   ──────────────────────────────────────────
+   ব্যবহার: className="ds-card ds-card-hover p-6"
+   ভবিষ্যতে রঙ/radius বদলাতে শুধু এখানে ছুঁলেই হবে
+   ============================================ */
+.ds-card {
+  background: var(--card);
+  border: 1px solid var(--color-slate-200);
+  border-radius: 1.5rem;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.dark .ds-card {
+  border-color: var(--color-slate-800);
+}
+
+/* Interactive — premium lift + shadow (Challenges style) */
+.ds-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 197, 94, 0.6);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.10);
+}
+.dark .ds-card-hover:hover {
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,.45), 0 8px 10px -6px rgba(0,0,0,.35);
+}
+
+/* Small radius variant — rounded-2xl (compact list cards) */
+.ds-card-sm { border-radius: 1rem; }
+
+/* Input / search surface — একই টোকেন, সব পেজে এক রকম */
+.ds-input {
+  background: var(--card);
+  border: 1px solid var(--color-slate-200);
+  border-radius: 1rem;
+  color: var(--color-slate-900);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.dark .ds-input {
+  border-color: var(--color-slate-800);
+  color: var(--color-slate-100);
+}
+.ds-input::placeholder { color: var(--color-slate-400); }
+.ds-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.20);
+}
+
+/* Section hero header — repeated on every page */
+.ds-section-head {
+  background: #f6f8f7;
+  border-bottom: 1px solid var(--color-slate-200);
+}
+.dark .ds-section-head {
+  background: #050806;
+  border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================================
@@ -86,8 +182,8 @@ body {
   animation: auroraDrift 24s ease-in-out infinite;
 }
 .aurora-orb-1 { width: 560px; height: 560px; background: #22C55E; top: -160px; left: -90px; opacity: .12; }
-.aurora-orb-2 { width: 480px; height: 480px; background: #0ea5e9; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
-.aurora-orb-3 { width: 440px; height: 440px; background: #a855f7; bottom: -160px; left: 32%; opacity: .06; animation-delay: -14s; }
+.aurora-orb-2 { width: 480px; height: 480px; background: #22C55E; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
+.aurora-orb-3 { width: 440px; height: 440px; background: #22C55E; bottom: -160px; left: 32%; opacity: .06; animation-delay: -14s; }
 .dark .aurora-orb-1 { opacity: .30; }
 .dark .aurora-orb-2 { opacity: .26; }
 .dark .aurora-orb-3 { opacity: .16; }
@@ -110,7 +206,7 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(120deg, #22C55E, #0ea5e9, #a855f7, #22C55E);
+  background: linear-gradient(120deg, #22C55E, #86EFAC, #16A34A, #22C55E);
   background-size: 300% 300%;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -149,6 +245,19 @@ body {
 .ds-logo-symbol {
   stroke-dasharray: 26;
   animation: dsLogoDrawErase 5s ease-in-out infinite;
+}
+
+/* ============================================
+   Theme transition suppression
+   থিম টগলের সাথে সাথে সব transition/animation বন্ধ →
+   রঙ পরিবর্তনের সময় flash/shimmer নেই
+   ============================================ */
+html.theme-changing,
+html.theme-changing *,
+html.theme-changing *::before,
+html.theme-changing *::after {
+  transition: none !important;
+  animation-duration: 0.001ms !important;
 }
 
 /* --- reduced motion — সব animation বন্ধ --- */
@@ -255,7 +364,7 @@ body {
   line-height: 1;
   border-radius: 0.5rem;
   background: #22c55e;
-  color: #04120a;
+  color: #04140a;
   border: 1px solid #22c55e;
   cursor: pointer;
   text-decoration: none;

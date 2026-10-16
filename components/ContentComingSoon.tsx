@@ -44,7 +44,7 @@ export default function ContentComingSoon() {
         {/* CTA — back to Bengali version */}
         <Link
           href={localeHref('bn', path)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#22C55E] text-[#050806] text-sm font-bold transition hover:bg-[#4ADE80] hover:shadow-[0_0_24px_rgba(34,197,94,0.35)]"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#22C55E] text-[#04140a] text-sm font-bold transition hover:bg-[#4ADE80] hover:shadow-[0_0_24px_rgba(34,197,94,0.35)]"
         >
           {dict.home.comingSoonCta} →
         </Link>

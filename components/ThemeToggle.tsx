@@ -21,6 +21,8 @@ export default function ThemeToggle() {
     const next = !isDark
     const root = document.documentElement
 
+    // থিম বদলের সময় সব transition/animation সাময়িক বন্ধ → flash নেই
+    root.classList.add('theme-changing')
     root.classList.toggle('dark', next)
 
     try {
@@ -29,7 +31,15 @@ export default function ThemeToggle() {
       // localStorage may be unavailable (private mode / disabled) — ignore.
     }
 
+    // synchronous event — HeroSection-এর iframe সাথে সাথেই রঙ বদলাবে
+    window.dispatchEvent(new CustomEvent('ds-theme-toggle', { detail: { dark: next } }))
+
     setIsDark(next)
+
+    // পরের frame-এ ক্লাস সরাই — ততক্ষণে রঙ বদলে গেছে, transition আবার চালু
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => root.classList.remove('theme-changing'))
+    })
   }
 
   return (
