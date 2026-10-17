@@ -1,45 +1,36 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useDict } from '@/lib/i18n/I18nProvider'
+import { useTheme } from '@/components/ThemeProvider'
 
-const STORAGE_KEY = 'theme'
-
+/**
+ * Theme toggle button.
+ *
+ * All persisted state + DOM class updates live in ThemeProvider.
+ * This component just flips the theme and notifies any custom listeners
+ * (HeroSection's iframe listens to `ds-theme-toggle` for live preview).
+ *
+ * The `mounted` flag from the provider prevents a hydration mismatch:
+ * on the server we don't know the saved theme, so we render the SSR
+ * default (dark) until the client has read localStorage.
+ */
 export default function ThemeToggle() {
   const t = useDict().themeToggle
-  // Server renders <html class="dark">, so default to dark to match SSR.
-  const [isDark, setIsDark] = useState(true)
+  const { theme, setTheme, mounted } = useTheme()
 
-  // Sync with whatever the inline script in layout.tsx already applied,
-  // so a returning visitor with saved 'light' sees the correct icon + color.
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    setIsDark(saved ? saved === 'dark' : true)
-  }, [])
+  // SSR-এ unknown → dark ধরে নিই (public layout default-ও dark)
+  const isDark = mounted ? theme === 'dark' : true
 
   const toggle = () => {
-    const next = !isDark
-    const root = document.documentElement
+    const next = isDark ? 'light' : 'dark'
 
-    // থিম বদলের সময় সব transition/animation সাময়িক বন্ধ → flash নেই
-    root.classList.add('theme-changing')
-    root.classList.toggle('dark', next)
-
-    try {
-      localStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light')
-    } catch {
-      // localStorage may be unavailable (private mode / disabled) — ignore.
-    }
+    // provider handles .dark class + localStorage + theme-changing
+    setTheme(next)
 
     // synchronous event — HeroSection-এর iframe সাথে সাথেই রঙ বদলাবে
-    window.dispatchEvent(new CustomEvent('ds-theme-toggle', { detail: { dark: next } }))
-
-    setIsDark(next)
-
-    // পরের frame-এ ক্লাস সরাই — ততক্ষণে রঙ বদলে গেছে, transition আবার চালু
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => root.classList.remove('theme-changing'))
-    })
+    window.dispatchEvent(
+      new CustomEvent('ds-theme-toggle', { detail: { dark: next === 'dark' } })
+    )
   }
 
   return (

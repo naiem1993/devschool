@@ -1,28 +1,35 @@
 'use client'
 
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import { useLocale } from '@/lib/i18n/I18nProvider'
 
-// Server-এ useLayoutEffect চালানো যায় না, তাই client-এ layout effect, server-এ useEffect।
-const useIsoLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
-
 /**
- * ভাষা বদলালে (/bn → /en) root layout client-এ আবার render হয়, আর
- * <html>-এ server-এর hardcoded `dark` class ফিরে আসে — কিন্তু layout-এর
- * inline theme script তখন আর চলে না। তাই এখানে localStorage-এর 'theme'
- * দেখে আবার সঠিক class বসাই। যুক্তি layout-এর inline script-এর সাথে হুবহু এক:
- * 'light' হলে dark নেই, বাকি সব ক্ষেত্রে dark।
+ * OPTIONAL defensive theme re-sync on locale change.
+ *
+ * Normally not needed because:
+ *   - The pre-hydration script (see <ThemeInit>) already applied the theme.
+ *   - Client navigation between /bn and /en keeps the <html> element —
+ *     and therefore the `.dark` class — untouched.
+ *
+ * But if you ever see the `.dark` class getting out of sync after a
+ * locale switch, drop `<ThemeSync />` anywhere inside <I18nProvider>:
+ *
+ *     <ThemeProvider>
+ *       <I18nProvider locale={locale} dict={dict}>
+ *         <ThemeSync />
+ *         {children}
+ *       </I18nProvider>
+ *     </ThemeProvider>
  */
 export default function ThemeSync() {
   const locale = useLocale()
 
-  useIsoLayoutEffect(() => {
+  useEffect(() => {
     try {
-      const t = localStorage.getItem('theme')
-      document.documentElement.classList.toggle('dark', t !== 'light')
+      const saved = localStorage.getItem('theme')
+      document.documentElement.classList.toggle('dark', saved !== 'light')
     } catch {
-      // localStorage না থাকলে (private mode ইত্যাদি) কিছু করার নেই — ignore।
+      // localStorage unavailable (private mode) — nothing to do
     }
   }, [locale])
 

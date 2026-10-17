@@ -2,14 +2,21 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site-url";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
-import { getDictionary, getDictionarySync } from "@/lib/i18n/dictionaries";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
-import ThemeSync from "@/components/ThemeSync";
+import ThemeProvider from "@/components/ThemeProvider";
+import ThemeInit from "@/components/ThemeInit";
 import "../globals.css";
 
 // ============================================================
 //  PUBLIC SITE ROOT LAYOUT (locale-aware)
 //  `lang` আসে URL-এর [locale] থেকে (/bn/... → bn, /en/... → en)
+//
+//  Theming:
+//   - Pre-hydration script runs via <ThemeInit> (server-only, no
+//     React 19 script warning) → applies .dark class + background
+//     before first paint, so no FOUC.
+//   - <ThemeProvider> keeps React state in sync with that script.
 // ============================================================
 
 const geistSans = Geist({
@@ -21,6 +28,20 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+// Reads the persisted theme and applies it to <html> before first paint.
+// 'light' → no .dark, everything else (incl. missing) → .dark.
+const THEME_SCRIPT = `
+try {
+  var t = localStorage.getItem('theme');
+  var isDark = t !== 'light';
+  var root = document.documentElement;
+  if (isDark) root.classList.add('dark');
+  else root.classList.remove('dark');
+  root.style.backgroundColor = isDark ? '#050806' : '#f2fbf4';
+  root.style.colorScheme = isDark ? 'dark' : 'light';
+} catch (e) {}
+`;
 
 // URL-এর ভাষা অনুযায়ী SEO title/description — bn পেজে বাংলা, en পেজে ইংরেজি
 const META_BY_LOCALE: Record<Locale, { title: string; description: string }> = {
@@ -81,7 +102,6 @@ export default async function LocaleRootLayout({
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      style={{ backgroundColor: '#050806', colorScheme: 'dark' }}
       suppressHydrationWarning
     >
       <head>
@@ -95,34 +115,15 @@ export default async function LocaleRootLayout({
         />
         <meta name="color-scheme" content="dark light" />
         <meta name="theme-color" content="#050806" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const t = localStorage.getItem('theme');
-                const isDark = t !== 'light';
-                const root = document.documentElement;
-                if (isDark) {
-                  root.classList.add('dark');
-                } else {
-                  root.classList.remove('dark');
-                }
-                // CSS আসার আগেই background সেট করে দিই → browser-এর ডিফল্ট নীল/সাদা flash বন্ধ
-                root.style.backgroundColor = isDark ? '#050806' : '#f2fbf4';
-                root.style.colorScheme = isDark ? 'dark' : 'light';
-              } catch (e) {}
-            `,
-          }}
-        />
+        {/* Theme restore script — server-rendered only, no React warning */}
+        <ThemeInit id="theme-init" html={THEME_SCRIPT} />
       </head>
-      <body
-        className="min-h-full flex flex-col bg-background text-foreground"
-        style={{ backgroundColor: '#050806' }}
-      >
-        <I18nProvider locale={locale} dict={dict}>
-          <ThemeSync />
-          {children}
-        </I18nProvider>
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <ThemeProvider>
+          <I18nProvider locale={locale} dict={dict}>
+            {children}
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
