@@ -3,13 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { serverError } from '@/lib/api-error'
-
-/** Quiz option shape as it arrives from the client (no id yet). */
-type QuizOptionInput = {
-  textBn: unknown
-  textEn: unknown
-  isCorrect?: unknown
-}
+import { updateQuizQuestionSchema, validateBody } from '@/lib/validators'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -24,27 +18,32 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { tutorialId, lessonId, chapterId, questionBn, questionEn, explanationBn, explanationEn, orderIndex, options } = await req.json()
+    const body = await req.json()
+    const { questionBn, questionEn, options } = body
     if (!questionBn || !questionEn || !Array.isArray(options)) {
       return NextResponse.json({ error: 'questionBn, questionEn, options — সব দরকার' }, { status: 400 })
     }
-    if (!options.every((o: QuizOptionInput) => o.textEn && String(o.textEn).trim())) {
+    if (!options.every((o: { textEn?: unknown }) => o.textEn && String(o.textEn).trim())) {
       return NextResponse.json({ error: 'প্রতিটি option-এর ইংরেজি text দরকার (জোড়া নিয়ম)' }, { status: 400 })
+    }
+    const { data, error } = validateBody(updateQuizQuestionSchema, body)
+    if (error || !data) {
+      return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
     }
     await prisma.quizOption.deleteMany({ where: { questionId: id } })
     const q = await prisma.quizQuestion.update({
       where: { id },
       data: {
-        ...(tutorialId ? { tutorialId } : {}),
-        ...(lessonId !== undefined ? { lessonId: lessonId || null } : {}),
-        ...(chapterId !== undefined ? { chapterId: chapterId || null } : {}),
-        questionBn,
-        questionEn: String(questionEn).trim(),
-        explanationBn,
-        explanationEn: explanationEn ? String(explanationEn).trim() : null,
-        orderIndex,
+        ...(data.tutorialId ? { tutorialId: data.tutorialId } : {}),
+        ...(data.lessonId !== undefined ? { lessonId: data.lessonId || null } : {}),
+        ...(data.chapterId !== undefined ? { chapterId: data.chapterId || null } : {}),
+        questionBn: data.questionBn,
+        questionEn: String(data.questionEn).trim(),
+        explanationBn: data.explanationBn,
+        explanationEn: data.explanationEn ? String(data.explanationEn).trim() : null,
+        orderIndex: data.orderIndex,
         options: {
-          create: options.map((o: QuizOptionInput, i: number) => ({
+          create: data.options.map((o, i) => ({
             textBn: String(o.textBn),
             textEn: String(o.textEn).trim(),
             isCorrect: !!o.isCorrect,

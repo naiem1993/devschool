@@ -90,13 +90,34 @@ export const updateLessonSchema = z.object({
 
 // ─── Quiz Question Validators ──────────────────────────────────────────────────
 
+const quizOptionInputSchema = z.object({
+  textBn: z.string(),
+  textEn: z.string().min(1),
+  isCorrect: z.boolean().optional(),
+})
+
 export const createQuizQuestionSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
-  questionBn: z.string().min(5).max(500),
-  questionEn: z.string().min(5).max(500).optional(),
+  lessonId: z.string().nullable().optional(),
+  chapterId: z.string().nullable().optional(),
+  questionBn: z.string().min(1),
+  questionEn: z.string().min(1),
   explanationBn: z.string().optional(),
   explanationEn: z.string().optional(),
-  orderIndex: z.number().int().nonnegative().default(0),
+  orderIndex: z.coerce.number().int().nonnegative().optional(),
+  options: z.array(quizOptionInputSchema).min(2).optional(),
+})
+
+export const updateQuizQuestionSchema = z.object({
+  tutorialId: z.string().optional(),
+  lessonId: z.string().nullable().optional(),
+  chapterId: z.string().nullable().optional(),
+  questionBn: z.string().min(1),
+  questionEn: z.string().min(1),
+  explanationBn: z.string().optional(),
+  explanationEn: z.string().optional(),
+  orderIndex: z.coerce.number().int().nonnegative().optional(),
+  options: z.array(quizOptionInputSchema),
 })
 
 export const createQuizOptionSchema = z.object({
