@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateText } from '@/lib/ai/gemini'
+import { getErrorMessage, serverError } from '@/lib/api-error'
 import { REFERENCE_SYSTEM_PROMPT, buildReferenceUserPrompt } from '@/lib/ai/prompts/reference'
 import { parseReferences, looksLikeValidReferenceFormat } from '@/lib/ai/validators-reference'
 
@@ -133,11 +134,7 @@ export async function POST(req: NextRequest) {
       raw: rawOutput,
       attempts,
     })
-  } catch (e: any) {
-    console.error('AI reference generate error:', e)
-    return NextResponse.json(
-      { error: e?.message || 'সার্ভার সমস্যা' },
-      { status: 500 }
-    )
+  } catch (e: unknown) {
+    return serverError(e, 'ai-generate-reference')
   }
 }

@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 📋 Planning — Not Started
+> **Status:** 🚀 Phase 1 In Progress — 5/24 files done
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time:** 2-3 hours (spread over multiple sessions)
@@ -184,25 +184,30 @@ Update this table as you go. Each file = 1 row.
 | 3 | `app/api/admin/ai/generate-reference/route.ts` | ⬜ Pending | |
 | 4 | `app/api/admin/challenges/route.ts` | ⬜ Pending | |
 | 5 | `app/api/admin/challenges/[id]/route.ts` | ⬜ Pending | |
-| 6 | `app/api/admin/challenges/bulk/route.ts` | ⬜ Pending | |
-| 7 | `app/api/admin/quiz/route.ts` | ⬜ Pending | |
-| 8 | `app/api/admin/quiz/[id]/route.ts` | ⬜ Pending | |
-| 9 | `app/api/admin/references/route.ts` | ⬜ Pending | |
-| 10 | `app/api/admin/references/[id]/route.ts` | ⬜ Pending | |
-| 11 | `app/api/admin/references/bulk/route.ts` | ⬜ Pending | |
-| 12 | `app/api/admin/reviews/[id]/route.ts` | ⬜ Pending | |
-| 13 | `app/api/admin/settings/route.ts` | ⬜ Pending | |
-| 14 | `app/api/admin/sponsors/route.ts` | ⬜ Pending | |
-| 15 | `app/api/admin/sponsors/[id]/route.ts` | ⬜ Pending | |
-| 16 | `app/api/admin/sponsors/upload/route.ts` | ⬜ Pending | |
-| 17 | `app/api/admin/tutorials/route.ts` | ⬜ Pending | |
-| 18 | `app/api/admin/tutorials/[id]/route.ts` | ⬜ Pending | |
-| 19 | `app/api/admin/tutorials/[id]/chapters/route.ts` | ⬜ Pending | |
-| 20 | `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` | ⬜ Pending | |
+| 6 | `app/api/admin/challenges/bulk/route.ts` | ⏭️ Skipped | No `catch (e: any)` (only Phase 2 callback types) |
+| 7 | `app/api/admin/quiz/route.ts` | ✅ Done | 1 catch |
+| 8 | `app/api/admin/quiz/[id]/route.ts` | ✅ Done | 2 catch (PUT + DELETE) |
+| 9 | `app/api/admin/references/route.ts` | ✅ Done | 1 catch |
+| 10 | `app/api/admin/references/[id]/route.ts` | ✅ Done | 2 catch (PUT + DELETE) |
+| 11 | `app/api/admin/references/bulk/route.ts` | ⏭️ Skipped | No `catch (e: any)` (only Phase 2 callback types) |
+| 12 | `app/api/admin/reviews/[id]/route.ts` | ✅ Done | 2 catch (PATCH + DELETE) |
+| 13 | `app/api/admin/settings/route.ts` | ✅ Done | 1 catch |
+| 14 | `app/api/admin/sponsors/route.ts` | ✅ Done | 1 catch |
+| 15 | `app/api/admin/sponsors/[id]/route.ts` | ✅ Done | 2 catch (PUT + DELETE) |
+| 16 | `app/api/admin/sponsors/upload/route.ts` | ✅ Done | 1 catch |
+| 17 | `app/api/admin/tutorials/route.ts` | ✅ Done | 1 catch |
+| 18 | `app/api/admin/tutorials/[id]/route.ts` | ✅ Done | 2 catch (PUT + DELETE) |
+| 19 | `app/api/admin/tutorials/[id]/chapters/route.ts` | ✅ Done | 3 catch (GET+POST+PATCH) |
+| 20 | `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` | ✅ Done | 2 catch (PATCH + DELETE) |
 | 21 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` | ⬜ Pending | |
 | 22 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/[lid]/route.ts` | ⬜ Pending | |
 | 23 | `app/api/admin/tutorials/[id]/groups/route.ts` | ⬜ Pending | |
 | 24 | `app/api/admin/tutorials/[id]/groups/[gid]/route.ts` | ⬜ Pending | |
+| 25 | `app/api/reviews/route.ts` (public) | ⬜ Pending | |
+| 26 | `lib/challenge-runner.ts` | ⬜ Pending | 2 catches |
+| 27 | `lib/html-css-sandbox.ts` | ⬜ Pending | 2 catches |
+| 28 | `lib/judge0-api.ts` | ⬜ Pending | 1 catch |
+| 29 | `lib/piston-api.ts` | ⬜ Pending | 1 catch |
 
 **Status legend:** ⬜ Pending | 🔄 In Progress | ✅ Done | ❌ Failed (needs review) | ⏭️ Skipped (justify in Notes)
 
@@ -511,6 +516,41 @@ Append entries here as work completes. This is the history that survives chat se
 
 ### 2026-10-17 — Planning
 - ✅ Created this plan document
-- ⏳ Awaiting approval to start Phase 0
+- ✅ Git baseline confirmed (working tree clean)
+
+### 2026-10-17 — Phase 0 Complete ✅
+- ✅ Created `lib/api-error.ts` with `getErrorMessage()` and `serverError()` helpers
+- ✅ `npx tsc --noEmit` passes with 0 errors
+
+### 2026-10-17 — Phase 1 Batch 1 Complete ✅ (5 files)
+- ✅ ai/generate-challenge, ai/generate-quiz, ai/generate-reference (3 each: gemini + outer)
+- ✅ challenges/route.ts (1)
+- ✅ challenges/[id]/route.ts (2: PUT + DELETE)
+- ⚠️ NOTE: `files.edit_multiple_files` sometimes returns false-positive "success" — always verify with search after
+
+### 2026-10-17 — Phase 1 Batch 2 Complete ✅ (4 files + 1 skip)
+- ✅ quiz/route.ts (1), quiz/[id]/route.ts (2), references/route.ts (1), references/[id]/route.ts (2)
+- ⏭️ challenges/bulk skip (no `catch (e: any)`)
+- ⚠️ Partial-apply issue: call 166 partially failed (import only), later fixed
+
+### 2026-10-17 — Phase 1 Batch 3 Complete ✅ (5 files)
+- ✅ reviews/[id].ts (2), settings (1), sponsors/route (1), sponsors/upload (1), sponsors/[id].ts (2)
+- ✅ All 5 files clean
+
+### 2026-10-17 — Phase 1 Batch 4 Complete ✅ (4 files)
+- ✅ tutorials/route (1), tutorials/[id]/route (2), chapters/route (3), [chId]/route (2)
+- ✅ All 4 files clean
+
+### 2026-10-17 — tsc Verify — Found 6 Missing Imports ⚠️ → Fixed ✅
+- ❌ Discovered 6 files had `serverError(...)` calls but no import (from Batch 1 call 160)
+- ✅ Fixed all 6: ai/generate-challenge, ai/generate-quiz, ai/generate-reference, challenges/[id], challenges/route, references/route
+- ✅ `npx tsc --noEmit` passes with 0 errors after fix
+- 🎓 **Lesson learned:** `files.edit_multiple_files` can silently drop the import edit — ALWAYS verify with `search_code` after any batch edit
+
+### 2026-10-17 — Next Steps
+- ⏳ Phase 1 Batch 5: lessons routes (5 catches)
+- ⏳ Phase 1 Batch 6: groups routes (5 catches)
+- ⏳ Phase 1 Batch 7: public reviews + lib files (6 catches)
+- ⏳ Then full `tsc --noEmit` + manual smoke test → Phase 1 complete
 
 _(Add new entries below as you complete each phase. Include date, phase, and any notable issues.)_

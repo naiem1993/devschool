@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateText } from '@/lib/ai/gemini'
+import { getErrorMessage, serverError } from '@/lib/api-error'
 import { QUIZ_SYSTEM_PROMPT, buildQuizUserPrompt } from '@/lib/ai/prompts/quiz'
 import { parseQuizzes, looksLikeValidQuizFormat } from '@/lib/ai/validators-quiz'
 
@@ -138,11 +139,7 @@ export async function POST(req: NextRequest) {
       raw: rawOutput,
       attempts,
     })
-  } catch (e: any) {
-    console.error('AI quiz generate error:', e)
-    return NextResponse.json(
-      { error: e?.message || 'সার্ভার সমস্যা' },
-      { status: 500 }
-    )
+  } catch (e: unknown) {
+    return serverError(e, 'ai-generate-quiz')
   }
 }

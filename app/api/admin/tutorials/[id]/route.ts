@@ -4,6 +4,7 @@ import { updateTutorialSchema, validateBody } from '@/lib/validators'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { revalidateTutorialPaths, revalidateTutorialListPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   // Defense-in-depth: proxy.ts ছাড়াও নিজে admin check করি
@@ -53,8 +54,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     })
     await revalidateTutorialPaths(id)
     return NextResponse.json(tutorial)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'tutorials-update')
   }
 }
 
@@ -74,7 +75,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     await prisma.tutorial.delete({ where: { id } })
     revalidateTutorialListPaths()
     return NextResponse.json({ success: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'tutorials-delete')
   }
 }

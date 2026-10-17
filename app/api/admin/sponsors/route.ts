@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { createSponsorSchema, validateBody } from '@/lib/validators'
 import { requireAdmin } from '@/lib/auth'
+import { serverError } from '@/lib/api-error'
 
 export async function POST(req: NextRequest) {
   const denied = await requireAdmin(req)
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
       },
     })
     return NextResponse.json(sponsor, { status: 201 })
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Create failed' }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'sponsors-create')
   }
 }

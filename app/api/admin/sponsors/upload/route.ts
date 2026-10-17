@@ -7,6 +7,7 @@ import {
   hashBuffer,
   imageUrlFor,
 } from '@/lib/sponsor-image'
+import { serverError } from '@/lib/api-error'
 
 export const runtime = 'nodejs'
 
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
       { imageId: img.id, url: imageUrlFor(img.id), reused: false },
       { status: 201 }
     )
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Upload failed' }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'sponsors-upload')
   }
 }

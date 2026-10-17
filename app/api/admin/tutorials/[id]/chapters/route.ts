@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 /**
  * Chapter collection API (nested structure v3)
@@ -34,8 +35,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       },
     })
     return NextResponse.json(chapters)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'chapters-list')
   }
 }
 
@@ -97,8 +98,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     })
     await revalidateTutorialPaths(id)
     return NextResponse.json(created, { status: 201 })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'chapters-create')
   }
 }
 
@@ -142,7 +143,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       include: { group: { select: { id: true, titleBn: true } }, _count: { select: { lessons: true } } },
     })
     return NextResponse.json(fresh)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'chapters-reorder')
   }
 }

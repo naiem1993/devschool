@@ -7,6 +7,7 @@ import { HERO_SETTINGS_KEY, HERO_EN_SETTINGS_KEY } from '@/lib/hero-content'
 import { FOOTER_SETTINGS_KEY, FOOTER_EN_SETTINGS_KEY } from '@/lib/footer-content'
 import { REVIEWS_SETTINGS_KEY } from '@/lib/reviews-content'
 import { FAQ_SETTINGS_KEY } from '@/lib/faq-content'
+import { serverError } from '@/lib/api-error'
 
 export async function GET() {
   const settings = await getSiteSettings()
@@ -114,7 +115,7 @@ export async function PUT(req: NextRequest) {
       reviews: reviewsRes.data,
       faq: faqRes.data,
     })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'settings-update')
   }
 }

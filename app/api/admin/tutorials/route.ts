@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { createTutorialSchema, validateBody } from '@/lib/validators'
 import { revalidateTutorialListPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 export async function GET() {
   const tutorials = await prisma.tutorial.findMany({
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
     })
     revalidateTutorialListPaths()
     return NextResponse.json(tutorial, { status: 201 })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'tutorials-create')
   }
 }

@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { reviewModerationSchema, validateBody } from '@/lib/validators'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
+import { serverError } from '@/lib/api-error'
 
 /** Approve / unapprove — homepage-এ সাথে সাথে reflect করাতে revalidate। */
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -20,8 +21,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     revalidatePath('/')
     revalidatePath('/admin/reviews')
     return NextResponse.json(review)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'reviews-update')
   }
 }
 
@@ -43,7 +44,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     revalidatePath('/')
     revalidatePath('/admin/reviews')
     return NextResponse.json({ success: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'reviews-delete')
   }
 }

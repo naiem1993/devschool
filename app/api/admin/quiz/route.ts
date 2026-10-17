@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { serverError } from '@/lib/api-error'
 
 // নতুন কুইজ প্রশ্ন (অপশনসহ)
 export async function POST(req: NextRequest) {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
       include: { options: true },
     })
     return NextResponse.json(q, { status: 201 })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'quiz-create')
   }
 }

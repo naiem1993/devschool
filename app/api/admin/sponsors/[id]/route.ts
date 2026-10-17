@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { updateSponsorSchema, validateBody } from '@/lib/validators'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
+import { serverError } from '@/lib/api-error'
 
 export const runtime = 'nodejs'
 
@@ -37,8 +38,8 @@ export async function PUT(
       },
     })
     return NextResponse.json(updated)
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Update failed' }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'sponsors-update')
   }
 }
 
@@ -76,7 +77,7 @@ export async function DELETE(
       }
     }
     return NextResponse.json({ ok: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Delete failed' }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'sponsors-delete')
   }
 }
