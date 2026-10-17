@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + 2 (Quiz) + 3 (Chapters) + 4 (Lessons) done, 1 batch remains: Groups (2026-10-17)
+> **Status:** ✅ Phase 3 Complete (all 5 batches) — 2026-10-17. Next: Phase 4 final verify + cleanup.
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -448,6 +448,8 @@ Before touching any route, **read** it and ask:
 | 9 | `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` | — | ⏭️ Skipped (justified) | Batch 3 — `in body` semantics (absent vs null) cannot survive Zod; route already type-safe, no `: any` |
 | 10 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` | ✅ `createLessonSchema` (rewritten) + `reorderLessonsSchema` (new) | ✅ Done | Batch 4 — 5 Bangla checks before Zod; reorder shape-only, business logic kept |
 | 11 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/[lid]/route.ts` | — | ⏭️ Skipped (justified) | Batch 4 — `in body` semantics; route already type-safe, no `: any` |
+| 12 | `app/api/admin/tutorials/[id]/groups/route.ts` | ✅ `createGroupSchema` (rewritten) + `reorderGroupsSchema` (new) | ✅ Done | Batch 5 — POST Zod after title check; reorder shape-only, business logic kept |
+| 13 | `app/api/admin/tutorials/[id]/groups/[gid]/route.ts` | ✅ `updateGroupSchema` (rewritten) | ✅ Done | Batch 5 — light Zod; `undefined`-skip semantics preserved via `data.titleEn !== undefined` |
 
 ### ⚠️ Phase 3 Warnings
 
@@ -781,3 +783,18 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 - ⏭️ `lessons/[lid]/route.ts` PATCH — **deliberately skipped**: `in body` semantics (absent vs null/clear); route already type-safe, no `: any`. Documented exception (same rationale as chapters/[chId]).
 - ✅ `npx tsc --noEmit` — 0 errors
 - 📝 Commit: `refactor(api): phase 3 batch 4 — zod validation for lessons` (00d5e56)
+
+### 2026-10-17 — Phase 3 Batch 5 Complete ✅ (Groups)
+- ✅ `lib/validators.ts` — rewrote `createGroupSchema`/`updateGroupSchema` to route field names (`titleBn`); removed `sortOrder` (route computes it); `titleEn` kept `nullable().optional()` (no `.min(1)` — avoids tightening `''`→null behavior); added `reorderGroupsSchema`
+- ✅ `groups/route.ts` POST — title check above Zod; `nextOrder` + tutorial-existence checks kept in route
+- ✅ `groups/route.ts` PATCH — `validateBody(reorderGroupsSchema, body)`; cross-checks + `$transaction` + revalidate kept
+- ✅ `groups/[gid]/route.ts` PATCH — light Zod (`updateGroupSchema`) after manual title check; `undefined`-skip semantics preserved (`data.titleEn !== undefined`); DELETE untouched
+- ✅ `npx tsc --noEmit` — 0 errors
+- 📝 Commit: `refactor(api): phase 3 batch 5 — zod validation for groups` (33ad6e5)
+
+### 2026-10-17 — ✅ PHASE 3 COMPLETE (all 5 batches)
+- ✅ Batches 1–5 shipped: Challenges, Quiz, Chapters, Lessons, Groups
+- ✅ All admin POST/PUT/PATCH mutation routes now use `validateBody()` except 3 documented exceptions (`chapters/[chId]`, `lessons/[lid]` = `in body` semantics)
+- ✅ `npx tsc --noEmit` — 0 errors after every batch
+- ✅ Response shapes preserved; business rules stayed in routes
+- 🔜 Next: Phase 4 (final verify + cleanup) — `npm run lint`, `npm run build`, `.bak` cleanup, README/AGENTS notes
