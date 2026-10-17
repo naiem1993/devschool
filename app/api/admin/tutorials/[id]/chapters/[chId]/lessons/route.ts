@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 /**
  * Lesson collection API (nested structure v3)
@@ -37,8 +38,8 @@ export async function GET(
       orderBy: { sortOrder: 'asc' },
     })
     return NextResponse.json(lessons)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'lessons-list')
   }
 }
 
@@ -111,8 +112,8 @@ export async function POST(
     }
 
     return NextResponse.json(created, { status: 201 })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'lessons-create')
   }
 }
 
@@ -161,7 +162,7 @@ export async function PATCH(
     const fresh = await prisma.lesson.findMany({ where: { chapterId: chId }, orderBy: { sortOrder: 'asc' } })
     await revalidateTutorialPaths(id)
     return NextResponse.json(fresh)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'lessons-reorder')
   }
 }

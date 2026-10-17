@@ -7,6 +7,8 @@
  * কোনো API key লাগে না, fair-use limit।
  */
 
+import { getErrorMessage } from './api-error'
+
 export type SupportedLanguage =
   | 'js'
   | 'ts'
@@ -139,14 +141,14 @@ export async function runInPiston(
     }
 
     return { output: '', error: 'Piston API থেকে অপ্রত্যাশিত response' }
-  } catch (e: any) {
+  } catch (e: unknown) {
     clearTimeout(timer)
-    if (e?.name === 'AbortError') {
+    if (e instanceof Error && e.name === 'AbortError') {
       return { output: '', error: `Time limit exceeded (${Math.round(timeoutMs / 1000)}s)` }
     }
     return {
       output: '',
-      error: `Network সমস্যা: ${e?.message || 'Piston API-তে পৌঁছানো যাচ্ছে না'}`,
+      error: `Network সমস্যা: ${getErrorMessage(e) || 'Piston API-তে পৌঁছানো যাচ্ছে না'}`,
     }
   }
 }

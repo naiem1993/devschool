@@ -13,6 +13,8 @@
  *   selector | html = <h1>Hello</h1>
  */
 
+import { getErrorMessage } from './api-error'
+
 export type HtmlTestType = 'text' | 'exists' | 'count' | 'html' | 'attribute'
 
 export type ParsedHtmlTest = {
@@ -160,10 +162,10 @@ export function evaluateHtmlTest(
     }
 
     return { passed: false, message: `❌ অজানা test type` }
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
       passed: false,
-      message: `❌ Selector ভুল: ${test.selector} — ${e?.message || 'invalid'}`,
+      message: `❌ Selector ভুল: ${test.selector} — ${getErrorMessage(e)}`,
     }
   }
 }
@@ -232,10 +234,10 @@ export function evaluateCssTest(
         ? `✅ ${test.selector} { ${test.property}: ${actual} } মিলেছে`
         : `❌ ${test.selector} { ${test.property} } মেলেনি। পাওয়া গেছে: "${actual}", প্রত্যাশিত: "${test.value}"`,
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
       passed: false,
-      message: `❌ CSS check ব্যর্থ: ${e?.message || 'invalid'}`,
+      message: `❌ CSS check ব্যর্থ: ${getErrorMessage(e)}`,
     }
   }
 }

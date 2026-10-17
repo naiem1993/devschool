@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, pending: true, id: review.id }, { status: 201 })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('[api/reviews POST] error:', e)
     return NextResponse.json({ error: E.generic }, { status: 500 })
   }

@@ -6,6 +6,8 @@
  * API Base: https://ce.judge0.com
  */
 
+import { getErrorMessage } from './api-error'
+
 export type SupportedLanguage =
   | 'js'
   | 'ts'
@@ -173,14 +175,14 @@ export async function runInJudge0(
       output: resultData.stdout || '',
       error: resultData.stderr || resultData.message || `Runtime error (status ${statusId})`,
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     clearTimeout(timer)
-    if (e?.name === 'AbortError') {
+    if (e instanceof Error && e.name === 'AbortError') {
       return { output: '', error: `Time limit exceeded` }
     }
     return {
       output: '',
-      error: `Network সমস্যা: ${e?.message || 'Judge0-তে পৌঁছানো যাচ্ছে না'}`,
+      error: `Network সমস্যা: ${getErrorMessage(e) || 'Judge0-তে পৌঁছানো যাচ্ছে না'}`,
     }
   }
 }

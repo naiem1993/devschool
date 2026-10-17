@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 /**
  * একটা Lesson-এর operation
@@ -113,8 +114,8 @@ export async function PATCH(
     }
 
     return NextResponse.json(updated)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'lesson-update')
   }
 }
 
@@ -162,7 +163,7 @@ export async function DELETE(
 
     await revalidateTutorialPaths(id)
     return NextResponse.json({ ok: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'lesson-delete')
   }
 }

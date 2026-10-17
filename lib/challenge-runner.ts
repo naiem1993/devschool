@@ -23,6 +23,7 @@ import {
   parseCssTest,
   evaluateCssTest,
 } from './html-css-sandbox'
+import { getErrorMessage } from './api-error'
 
 export type ChallengeTestCase = {
   id: string
@@ -98,13 +99,13 @@ async function runJsLikeChallenge(
         expected: tc.expectedOutput,
         error: r.error,
       })
-    } catch (e: any) {
+    } catch (e: unknown) {
       results.push({
         id: tc.id,
         passed: false,
         output: '',
         expected: tc.expectedOutput,
-        error: e?.message || String(e),
+        error: getErrorMessage(e),
       })
     }
   }
@@ -260,13 +261,13 @@ async function runRemoteChallenge(
         expected: tc.expectedOutput,
         error: r.error,
       })
-    } catch (e: any) {
+    } catch (e: unknown) {
       results.push({
         id: tc.id,
         passed: false,
         output: '',
         expected: tc.expectedOutput,
-        error: e?.message || String(e),
+        error: getErrorMessage(e),
       })
     }
   }

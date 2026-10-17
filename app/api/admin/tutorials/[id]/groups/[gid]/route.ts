@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
+import { serverError } from '@/lib/api-error'
 
 /**
  * একটা ChapterGroup-এর operation
@@ -35,8 +36,8 @@ export async function PATCH(
       data: { titleBn, ...(titleEn !== undefined ? { titleEn } : {}) },
     })
     return NextResponse.json(updated)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'group-update')
   }
 }
 
@@ -66,7 +67,7 @@ export async function DELETE(
     await prisma.chapterGroup.delete({ where: { id: gid } })
     await revalidateTutorialPaths(id)
     return NextResponse.json({ ok: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    return serverError(e, 'group-delete')
   }
 }
