@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 import { serverError } from '@/lib/api-error'
+import { createLessonSchema, reorderLessonsSchema, validateBody } from '@/lib/validators'
 
 /**
  * Lesson collection API (nested structure v3)
@@ -70,6 +71,13 @@ export async function POST(
   if (!contentBn) return NextResponse.json({ error: 'content দরকার' }, { status: 400 })
   if (!contentEn) return NextResponse.json({ error: 'ইংরেজি content দরকার (জোড়া নিয়ম)' }, { status: 400 })
 
+  const { data, error } = validateBody(createLessonSchema, {
+    titleBn, titleEn, slug, contentBn, contentEn, codeExampleBn, codeExampleEn,
+  })
+  if (error || !data) {
+    return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
+  }
+
   try {
     const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { id: true, tutorialId: true } })
     if (!chapter || chapter.tutorialId !== id) {
@@ -89,13 +97,13 @@ export async function POST(
     const created = await prisma.lesson.create({
       data: {
         chapterId: chId,
-        titleBn,
-        titleEn,
-        slug,
-        contentBn,
-        contentEn,
-        codeExampleBn,
-        codeExampleEn,
+        titleBn: data.titleBn,
+        titleEn: data.titleEn,
+        slug: data.slug,
+        contentBn: data.contentBn,
+        contentEn: data.contentEn,
+        codeExampleBn: data.codeExampleBn ?? null,
+        codeExampleEn: data.codeExampleEn ?? null,
         sortOrder: nextOrder,
       },
     })
@@ -103,11 +111,11 @@ export async function POST(
     // D6a — first lesson হলে chapter-এর slug sync করি
     if (nextOrder === 0) {
       const clash = await prisma.chapter.findFirst({
-        where: { tutorialId: id, slug, NOT: { id: chId } },
+        where: { tutorialId: id, slug: data.slug, NOT: { id: chId } },
         select: { id: true },
       })
       if (!clash) {
-        await prisma.chapter.update({ where: { id: chId }, data: { slug } })
+        await prisma.chapter.update({ where: { id: chId }, data: { slug: data.slug } })
       }
     }
 
@@ -127,11 +135,11 @@ export async function PATCH(
 
   const { id, chId } = await params
   const body = await req.json().catch(() => ({}))
-  const order = body?.order
-
-  if (!Array.isArray(order) || order.some((x) => typeof x !== 'string')) {
+  const { data, error } = validateBody(reorderLessonsSchema, body)
+  if (error || !data) {
     return NextResponse.json({ error: 'order[] (lesson ids) দরকার' }, { status: 400 })
   }
+  const order = data.order
 
   try {
     const chapter = await prisma.chapter.findUnique({ where: { id: chId }, select: { tutorialId: true } })
