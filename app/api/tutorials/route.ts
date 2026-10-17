@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: 'ইনপুট ভ্যালিডেশন ব্যর্থ',
-        details: result.error.issues.map((e: any) => e.message).join(', '),
+        details: result.error.issues.map((e) => e.message).join(', '),
       },
       { status: 400 }
     )

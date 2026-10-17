@@ -287,7 +287,7 @@ export function validateBody<T>(schema: z.ZodType<T>, body: unknown): { data: T 
   if (result.success) {
     return { data: result.data, error: null }
   }
-  return { data: null, error: result.error.issues.map((e: any) => e.message).join(', ') }
+  return { data: null, error: result.error.issues.map((e) => e.message).join(', ') }
 }
 
 /**
@@ -299,7 +299,7 @@ export function validateQuery<T>(schema: z.ZodType<T>, query: Record<string, str
   if (result.success) {
     return { data: result.data, error: null }
   }
-  return { data: null, error: result.error.issues.map((e: any) => e.message).join(', ') }
+  return { data: null, error: result.error.issues.map((e) => e.message).join(', ') }
 }
 
 /**

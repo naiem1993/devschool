@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { idParamSchema } from '@/lib/validators'
 
+/** Client-submitted quiz answer. */
+type AnswerInput = {
+  questionId: string
+  optionId: string
+}
+
 /**
  * GET /api/quizzes/[id]
  * Fetches quiz questions for a tutorial
@@ -100,9 +106,9 @@ export async function POST(
     
     // ─── Calculate score ─────────────────────────────────────────────────────
     let score = 0
-    const results = questions.map((q: any) => {
-      const userAnswer = body.answers.find((a: any) => a.questionId === q.id)
-      const correctOption = q.options.find((o: any) => o.isCorrect)
+    const results = questions.map((q) => {
+      const userAnswer = body.answers.find((a: AnswerInput) => a.questionId === q.id)
+      const correctOption = q.options.find((o) => o.isCorrect)
       const isCorrect = userAnswer?.optionId === correctOption?.id
       
       if (isCorrect) score++

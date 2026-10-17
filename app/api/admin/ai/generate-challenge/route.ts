@@ -121,9 +121,9 @@ export async function POST(req: NextRequest) {
             { status: 422 }
           )
         }
-      } catch (geminiError: any) {
+      } catch (geminiError: unknown) {
         // Gemini API এরর
-        const msg = geminiError?.message || ''
+        const msg = getErrorMessage(geminiError)
         if (msg.includes('API_KEY') || msg.includes('API key')) {
           return NextResponse.json(
             { error: 'Gemini API Key সঠিক নয়। .env চেক করুন।' },

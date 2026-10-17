@@ -112,10 +112,12 @@ export async function GET(request: NextRequest) {
       total: tutorialRows.length + referenceRows.length,
       tookMs: Date.now() - started,
     })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('[api/search] error:', err)
     // If FTS column/index missing, fall back to ILIKE (tutorials only)
-    if (err?.code === '42703' || String(err?.message || '').includes('searchVec')) {
+    const errCode = err && typeof err === 'object' && 'code' in err ? (err as { code: unknown }).code : undefined
+    const errMsg = err instanceof Error ? err.message : String(err)
+    if (errCode === '42703' || errMsg.includes('searchVec')) {
       const tutorials = wantTutorials
         ? await prisma.tutorial.findMany({
             where: {

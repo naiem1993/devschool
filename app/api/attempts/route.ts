@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'missing device id' }, { status: 400 })
   }
 
-  let body: any
+  let body: Record<string, unknown>
   try {
     body = await request.json()
   } catch {

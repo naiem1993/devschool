@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { serverError } from '@/lib/api-error'
 
+/** Test case shape as it arrives from the client (no id yet). */
+type TestCaseInput = {
+  input: unknown
+  expectedOutput: unknown
+  isHidden?: unknown
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { tutorialId, titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, language, difficulty, points, testCases } = await req.json()
@@ -23,7 +30,7 @@ export async function POST(req: NextRequest) {
         difficulty: difficulty || 'Easy',
         points: points || 0,
         testCases: Array.isArray(testCases)
-          ? { create: testCases.map((tc: any, i: number) => ({ input: tc.input, expectedOutput: tc.expectedOutput, isHidden: !!tc.isHidden, testCaseOrder: i })) }
+          ? { create: testCases.map((tc: TestCaseInput, i: number) => ({ input: String(tc.input), expectedOutput: String(tc.expectedOutput), isHidden: !!tc.isHidden, testCaseOrder: i })) }
           : undefined,
       },
       include: { testCases: true },

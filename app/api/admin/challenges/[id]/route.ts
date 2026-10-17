@@ -4,6 +4,13 @@ import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { serverError } from '@/lib/api-error'
 
+/** Test case shape as it arrives from the client (no id yet). */
+type TestCaseInput = {
+  input: unknown
+  expectedOutput: unknown
+  isHidden?: unknown
+}
+
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const c = await prisma.codeChallenge.findUnique({
@@ -36,7 +43,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         language: language || 'js',
         difficulty, points,
         testCases: Array.isArray(testCases)
-          ? { create: testCases.map((tc: any, i: number) => ({ input: tc.input, expectedOutput: tc.expectedOutput, isHidden: !!tc.isHidden, testCaseOrder: i })) }
+          ? { create: testCases.map((tc: TestCaseInput, i: number) => ({ input: String(tc.input), expectedOutput: String(tc.expectedOutput), isHidden: !!tc.isHidden, testCaseOrder: i })) }
           : undefined,
       },
       include: { testCases: true },

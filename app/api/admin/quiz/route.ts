@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { serverError } from '@/lib/api-error'
 
+/** Quiz option shape as it arrives from the client (no id yet). */
+type QuizOptionInput = {
+  textBn: unknown
+  textEn: unknown
+  isCorrect?: unknown
+}
+
 // নতুন কুইজ প্রশ্ন (অপশনসহ)
 export async function POST(req: NextRequest) {
   try {
@@ -9,10 +16,10 @@ export async function POST(req: NextRequest) {
     if (!tutorialId || (!lessonId && !chapterId) || !questionBn || !questionEn || !Array.isArray(options) || options.length < 2) {
       return NextResponse.json({ error: 'tutorialId, (lessonId বা chapterId), questionBn, questionEn, এবং অন্তত ২টি option দরকার' }, { status: 400 })
     }
-    if (!options.every((o: any) => o.textEn && String(o.textEn).trim())) {
+    if (!options.every((o: QuizOptionInput) => o.textEn && String(o.textEn).trim())) {
       return NextResponse.json({ error: 'প্রতিটি option-এর ইংরেজি text দরকার (জোড়া নিয়ম)' }, { status: 400 })
     }
-    if (!options.some((o: any) => o.isCorrect)) {
+    if (!options.some((o: QuizOptionInput) => o.isCorrect)) {
       return NextResponse.json({ error: 'অন্তত একটি সঠিক উত্তর সেট করুন' }, { status: 400 })
     }
     const q = await prisma.quizQuestion.create({
@@ -26,8 +33,8 @@ export async function POST(req: NextRequest) {
         explanationEn: explanationEn ? String(explanationEn).trim() : null,
         orderIndex: orderIndex || 0,
         options: {
-          create: options.map((o: any, i: number) => ({
-            textBn: o.textBn,
+          create: options.map((o: QuizOptionInput, i: number) => ({
+            textBn: String(o.textBn),
             textEn: String(o.textEn).trim(),
             isCorrect: !!o.isCorrect,
             optionOrder: i,

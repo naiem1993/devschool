@@ -4,6 +4,13 @@ import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { serverError } from '@/lib/api-error'
 
+/** Quiz option shape as it arrives from the client (no id yet). */
+type QuizOptionInput = {
+  textBn: unknown
+  textEn: unknown
+  isCorrect?: unknown
+}
+
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const q = await prisma.quizQuestion.findUnique({
@@ -21,7 +28,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!questionBn || !questionEn || !Array.isArray(options)) {
       return NextResponse.json({ error: 'questionBn, questionEn, options — সব দরকার' }, { status: 400 })
     }
-    if (!options.every((o: any) => o.textEn && String(o.textEn).trim())) {
+    if (!options.every((o: QuizOptionInput) => o.textEn && String(o.textEn).trim())) {
       return NextResponse.json({ error: 'প্রতিটি option-এর ইংরেজি text দরকার (জোড়া নিয়ম)' }, { status: 400 })
     }
     await prisma.quizOption.deleteMany({ where: { questionId: id } })
@@ -37,8 +44,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         explanationEn: explanationEn ? String(explanationEn).trim() : null,
         orderIndex,
         options: {
-          create: options.map((o: any, i: number) => ({
-            textBn: o.textBn,
+          create: options.map((o: QuizOptionInput, i: number) => ({
+            textBn: String(o.textBn),
             textEn: String(o.textEn).trim(),
             isCorrect: !!o.isCorrect,
             optionOrder: i,

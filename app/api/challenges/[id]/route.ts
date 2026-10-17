@@ -125,7 +125,7 @@ export async function POST(
     
     // ─── Execute code against test cases (simplified for example) ────────────
     // In production, use a secure code execution service
-    const results = challenge.testCases.map((testCase: any) => ({
+    const results = challenge.testCases.map((testCase) => ({
       testCaseId: testCase.id,
       passed: false, // Placeholder - actual execution logic goes here
       output: '',

@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
+/** Test case shape as it arrives from the client (no id yet). */
+type TestCaseInput = {
+  input: unknown
+  expectedOutput: unknown
+  isHidden?: unknown
+}
+
 /**
  * POST /api/admin/challenges/bulk
  * একসাথে অনেকগুলো CodeChallenge + TestCase সেভ করার জন্য
@@ -39,7 +46,7 @@ export async function POST(req: NextRequest) {
       if (!Array.isArray(c.testCases) || c.testCases.length === 0) {
         return NextResponse.json({ error: `চ্যালেঞ্জ ${n}: অন্তত ১টি test case দরকার` }, { status: 400 })
       }
-      if (!c.testCases.every((t: any) => t.input !== undefined && t.expectedOutput !== undefined)) {
+      if (!c.testCases.every((t: TestCaseInput) => t.input !== undefined && t.expectedOutput !== undefined)) {
         return NextResponse.json({ error: `চ্যালেঞ্জ ${n}: প্রতিটি test case-এ input ও expectedOutput দরকার` }, { status: 400 })
       }
     }
@@ -62,7 +69,7 @@ export async function POST(req: NextRequest) {
             difficulty: c.difficulty || 'Easy',
             points: Number(c.points) || 0,
             testCases: {
-              create: c.testCases.map((t: any, idx: number) => ({
+              create: c.testCases.map((t: TestCaseInput, idx: number) => ({
                 input: String(t.input),
                 expectedOutput: String(t.expectedOutput),
                 isHidden: !!t.isHidden,

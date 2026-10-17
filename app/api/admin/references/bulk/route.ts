@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
             syntaxEn: String(r.syntaxEn).trim(),
             exampleBn: String(r.exampleBn).trim(),
             exampleEn: String(r.exampleEn).trim(),
-            tags: r.tags.map((t: any) => String(t).trim()).filter(Boolean),
+            tags: r.tags.map((t: unknown) => String(t).trim()).filter(Boolean),
             language: r.language ? String(r.language).trim() : null,
           },
         })
