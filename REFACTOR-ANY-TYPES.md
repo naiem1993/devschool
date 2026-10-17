@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + 2 (Quiz) + 3 (Chapters) done, 2 batches remain (2026-10-17)
+> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + 2 (Quiz) + 3 (Chapters) + 4 (Lessons) done, 1 batch remains: Groups (2026-10-17)
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -446,6 +446,8 @@ Before touching any route, **read** it and ask:
 | 7 | `app/api/admin/tutorials/route.ts` | ✅ `createTutorialSchema` | ⬜ Pending | |
 | 8 | `app/api/admin/tutorials/[id]/chapters/route.ts` | ✅ `createChapterSchema` (rewritten) + `reorderChaptersSchema` (new) | ✅ Done | Batch 3 — POST Zod after manual checks; PATCH reorder shape-only, business logic kept |
 | 9 | `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` | — | ⏭️ Skipped (justified) | Batch 3 — `in body` semantics (absent vs null) cannot survive Zod; route already type-safe, no `: any` |
+| 10 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/route.ts` | ✅ `createLessonSchema` (rewritten) + `reorderLessonsSchema` (new) | ✅ Done | Batch 4 — 5 Bangla checks before Zod; reorder shape-only, business logic kept |
+| 11 | `app/api/admin/tutorials/[id]/chapters/[chId]/lessons/[lid]/route.ts` | — | ⏭️ Skipped (justified) | Batch 4 — `in body` semantics; route already type-safe, no `: any` |
 
 ### ⚠️ Phase 3 Warnings
 
@@ -771,3 +773,11 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 - ✅ `npx tsc --noEmit` — 0 errors
 - ✅ Verified: chapters collection uses `const body` + Zod; detail route raw body intentional
 - 📝 Commit: `refactor(api): phase 3 batch 3 — zod validation for chapters` (6c935c9)
+
+### 2026-10-17 — Phase 3 Batch 4 Complete ✅ (Lessons)
+- ✅ `lib/validators.ts` — rewrote `createLessonSchema`/`updateLessonSchema` to route field names (`titleBn`/`contentBn`/`codeExampleBn`); **`titleEn`, `contentBn`, `contentEn` all required** (differs from chapters — route requires all three); added `reorderLessonsSchema`
+- ✅ `lessons/route.ts` POST — 5 Bangla checks kept above Zod; coercion (`normSlug`, trim) stays in route; create + D6a chapter-slug sync use `data.*`
+- ✅ `lessons/route.ts` PATCH — `validateBody(reorderLessonsSchema, body)`; cross-checks + `$transaction` + revalidate kept
+- ⏭️ `lessons/[lid]/route.ts` PATCH — **deliberately skipped**: `in body` semantics (absent vs null/clear); route already type-safe, no `: any`. Documented exception (same rationale as chapters/[chId]).
+- ✅ `npx tsc --noEmit` — 0 errors
+- 📝 Commit: `refactor(api): phase 3 batch 4 — zod validation for lessons` (00d5e56)
