@@ -35,15 +35,17 @@ export const updateTutorialSchema = z.object({
 const urlSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 export const createGroupSchema = z.object({
-  title: z.string().min(1).max(255),
-  titleEn: z.string().min(1).max(255).optional(),
-  sortOrder: z.number().int().optional(),
+  titleBn: z.string().min(1),
+  titleEn: z.string().nullable().optional(),
 })
 
 export const updateGroupSchema = z.object({
-  title: z.string().min(1).max(255).optional(),
-  titleEn: z.string().min(1).max(255).optional(),
-  sortOrder: z.number().int().optional(),
+  titleBn: z.string().min(1),
+  titleEn: z.string().nullable().optional(),
+})
+
+export const reorderGroupsSchema = z.object({
+  order: z.array(z.string().min(1)),
 })
 
 export const createChapterSchema = z.object({

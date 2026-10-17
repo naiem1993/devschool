@@ -4,6 +4,7 @@ import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 import { serverError } from '@/lib/api-error'
+import { updateGroupSchema, validateBody } from '@/lib/validators'
 
 /**
  * একটা ChapterGroup-এর operation
@@ -26,6 +27,11 @@ export async function PATCH(
   const titleEn = body?.titleEn === undefined ? undefined : (String(body.titleEn).trim() || null)
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
 
+  const { data, error } = validateBody(updateGroupSchema, { titleBn, titleEn })
+  if (error || !data) {
+    return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
+  }
+
   try {
     const existing = await prisma.chapterGroup.findUnique({ where: { id: gid } })
     if (!existing || existing.tutorialId !== id) {
@@ -33,7 +39,7 @@ export async function PATCH(
     }
     const updated = await prisma.chapterGroup.update({
       where: { id: gid },
-      data: { titleBn, ...(titleEn !== undefined ? { titleEn } : {}) },
+      data: { titleBn: data.titleBn, ...(data.titleEn !== undefined ? { titleEn: data.titleEn } : {}) },
     })
     return NextResponse.json(updated)
   } catch (e: unknown) {

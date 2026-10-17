@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 import { serverError } from '@/lib/api-error'
+import { createGroupSchema, reorderGroupsSchema, validateBody } from '@/lib/validators'
 
 /**
  * ChapterGroup collection API (nested structure v3)
@@ -38,6 +39,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const titleEn = String(body?.titleEn ?? '').trim() || null
   if (!titleBn) return NextResponse.json({ error: 'title দরকার' }, { status: 400 })
 
+  const { data, error } = validateBody(createGroupSchema, { titleBn, titleEn })
+  if (error || !data) {
+    return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
+  }
+
   try {
     const tutorial = await prisma.tutorial.findUnique({ where: { id }, select: { id: true } })
     if (!tutorial) return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 })
@@ -50,7 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const nextOrder = (last?.sortOrder ?? -1) + 1
 
     const created = await prisma.chapterGroup.create({
-      data: { tutorialId: id, titleBn, titleEn, sortOrder: nextOrder },
+      data: { tutorialId: id, titleBn: data.titleBn, titleEn: data.titleEn ?? null, sortOrder: nextOrder },
     })
     return NextResponse.json(created, { status: 201 })
   } catch (e: unknown) {
@@ -65,11 +71,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params
   const body = await req.json().catch(() => ({}))
-  const order = body?.order
-
-  if (!Array.isArray(order) || order.some((x) => typeof x !== 'string')) {
+  const { data, error } = validateBody(reorderGroupsSchema, body)
+  if (error || !data) {
     return NextResponse.json({ error: 'order[] (group ids) দরকার' }, { status: 400 })
   }
+  const order = data.order
 
   try {
     const existing = await prisma.chapterGroup.findMany({ where: { tutorialId: id }, select: { id: true } })
