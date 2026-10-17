@@ -1,7 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useLocale } from '@/lib/i18n/I18nProvider'
+
+// useLayoutEffect runs BEFORE paint (fixes the flash), but warns on SSR.
+// Fall back to useEffect on the server where effects don't run anyway.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
  * OPTIONAL defensive theme re-sync on locale change.
@@ -24,10 +28,14 @@ import { useLocale } from '@/lib/i18n/I18nProvider'
 export default function ThemeSync() {
   const locale = useLocale()
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     try {
       const saved = localStorage.getItem('theme')
-      document.documentElement.classList.toggle('dark', saved !== 'light')
+      const root = document.documentElement
+      const isDark = saved !== 'light'
+      root.classList.toggle('dark', isDark)
+      root.style.backgroundColor = isDark ? '#050806' : '#f2fbf4'
+      root.style.colorScheme = isDark ? 'dark' : 'light'
     } catch {
       // localStorage unavailable (private mode) — nothing to do
     }

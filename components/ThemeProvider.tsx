@@ -78,6 +78,9 @@ export default function ThemeProvider({ children, forcedTheme }: Props) {
       root.classList.toggle('dark', next === 'dark')
       try {
         localStorage.setItem(STORAGE_KEY, next)
+        // Also mirror to cookie so the server-rendered <html> on the next
+        // navigation already has the correct `.dark` class → no flash.
+        document.cookie = `${STORAGE_KEY}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`
       } catch {
         // ignore
       }

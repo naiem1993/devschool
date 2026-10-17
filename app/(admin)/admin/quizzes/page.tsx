@@ -1,6 +1,7 @@
 import AdminHeader from '@/components/admin/AdminHeader'
 import TerminalCard from '@/components/admin/TerminalCard'
 import LogoutButton from '@/components/admin/LogoutButton'
+import DeleteButton from '@/components/admin/DeleteButton'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
@@ -41,8 +42,9 @@ export default async function QuizzesPage() {
                 <td className="px-4 py-2 text-[#22C55E] max-w-md truncate">{it.questionBn}</td>
                 <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
                 <td className="px-4 py-2 text-[#22C55E]/60">{it._count.options}</td>
-                <td className="px-4 py-2 text-right">
+                <td className="px-4 py-2 text-right space-x-3">
                   <Link href={`/admin/quizzes/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
+                  <DeleteButton endpoint={`/api/admin/quiz/${it.id}`} />
                 </td>
               </tr>
             ))}

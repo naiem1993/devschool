@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site-url";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/config";
@@ -6,6 +7,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
 import ThemeProvider from "@/components/ThemeProvider";
 import ThemeInit from "@/components/ThemeInit";
+import ThemeSync from "@/components/ThemeSync";
 import "../globals.css";
 
 // ============================================================
@@ -40,6 +42,11 @@ try {
   else root.classList.remove('dark');
   root.style.backgroundColor = isDark ? '#050806' : '#f2fbf4';
   root.style.colorScheme = isDark ? 'dark' : 'light';
+  // Mirror localStorage → cookie so server-render on next navigation
+  // already has the correct .dark class (no flash on locale switch).
+  if (t) {
+    document.cookie = 'theme=' + t + '; path=/; max-age=31536000; samesite=lax';
+  }
 } catch (e) {}
 `;
 
@@ -98,10 +105,17 @@ export default async function LocaleRootLayout({
   // এই ভাষার সব UI লেখা লোড করি — নিচে client component-দের মধ্যে ছড়িয়ে দেব
   const dict = await getDictionary(locale);
 
+  // ── Theme from cookie (server-render-এই .dark class বসাই) ──
+  // localStorage শুধু client-এ পড়া যায়, তাই soft navigation (locale switch)
+  // -এ React <html> re-render করলে class wipe হয়ে flash হতো। Cookie দিয়ে
+  // server-এই .dark class ধরে রাখি → flash সম্পূর্ণ বন্ধ।
+  const themeCookie = (await cookies()).get("theme")?.value;
+  const isDark = themeCookie !== "light";
+
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${isDark ? " dark" : ""}`}
       suppressHydrationWarning
     >
       <head>
@@ -121,6 +135,7 @@ export default async function LocaleRootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <I18nProvider locale={locale} dict={dict}>
+            <ThemeSync />
             {children}
           </I18nProvider>
         </ThemeProvider>
