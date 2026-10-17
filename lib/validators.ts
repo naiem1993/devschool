@@ -141,15 +141,26 @@ export const updateReferenceSchema = z.object({
 
 export const createChallengeSchema = z.object({
   tutorialId: z.string().cuid({ message: 'Valid tutorialId is required' }),
-  titleBn: z.string().min(2).max(255),
-  titleEn: z.string().min(2).max(255).optional(),
-  descriptionBn: z.string().optional(),
-  descriptionEn: z.string().optional(),
-  starterCodeBn: z.string().optional(),
-  starterCodeEn: z.string().optional(),
-  solutionBn: z.string().optional(),
-  solutionEn: z.string().optional(),
-  difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Easy'),
+  titleBn: z.string().min(1),
+  titleEn: z.string().min(1),
+  descriptionBn: z.string().min(1),
+  descriptionEn: z.string().min(1),
+  starterCodeBn: z.string().nullable().optional(),
+  starterCodeEn: z.string().nullable().optional(),
+  solutionBn: z.string().nullable().optional(),
+  solutionEn: z.string().nullable().optional(),
+  language: z.string().optional(),
+  difficulty: z.string().optional(),
+  points: z.coerce.number().optional(),
+  testCases: z
+    .array(
+      z.object({
+        input: z.string(),
+        expectedOutput: z.string(),
+        isHidden: z.boolean().optional(),
+      })
+    )
+    .optional(),
 })
 
 export const createTestCaseSchema = z.object({

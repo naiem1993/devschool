@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🚀 Phase 3 Ready — Phase 1+2 shipped & verified (2026-10-17)
+> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) done, 4 batches remain (2026-10-17)
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -437,8 +437,8 @@ Before touching any route, **read** it and ask:
 
 | # | Route | Schema exists? | Status | Notes |
 |---|---|---|---|---|
-| 1 | `app/api/admin/challenges/route.ts` | ✅ `createChallengeSchema` | ⬜ Pending | |
-| 2 | `app/api/admin/challenges/[id]/route.ts` | ✅ `updateTutorialSchema` (?) | ⬜ Pending | Verify schema |
+| 1 | `app/api/admin/challenges/route.ts` | ✅ `createChallengeSchema` (fixed) | ✅ Done | Batch 1 — schema now mirrors route (language/points/testCases added, defaults stay in route) |
+| 2 | `app/api/admin/challenges/[id]/route.ts` | ✅ `createChallengeSchema.partial().omit({tutorialId})` | ✅ Done | Batch 1 — new `updateChallengeSchema`, GET/DELETE untouched |
 | 3 | `app/api/admin/quiz/route.ts` | ✅ `createQuizQuestionSchema` | ⬜ Pending | |
 | 4 | `app/api/admin/quiz/[id]/route.ts` | ✅ `createQuizQuestionSchema` (?) | ⬜ Pending | Verify |
 | 5 | `app/api/admin/references/route.ts` | ✅ `createReferenceSchema` | ⬜ Pending | |
@@ -734,3 +734,17 @@ Append entries here as work completes. This is the history that survives chat se
 - [ ] Committed per batch
 
 _(Add new entries below as you complete each phase. Include date, phase, and any notable issues.)_
+
+### 2026-10-17 — Phase 3 Batch 1 Complete ✅ (Challenges, 3 files)
+- ✅ `lib/validators.ts` — `createChallengeSchema` fixed to mirror route behavior:
+  - `titleBn` → `.min(1)` (was `.min(2).max(255)` — would have been a breaking tightening)
+  - `titleEn`/`descriptionBn`/`descriptionEn` → required `.min(1)` (were wrongly `.optional()`)
+  - added `language`, `difficulty`, `points` (`z.coerce.number()`), `testCases` (inline array schema)
+  - removed `difficulty` enum `.default('Easy')` — defaults belong in route
+- ✅ `challenges/route.ts` POST — `validateBody(createChallengeSchema, body)`; aggregated manual check kept BEFORE Zod (extra #1)
+- ✅ `challenges/[id]/route.ts` PUT — new `updateChallengeSchema = createChallengeSchema.partial().omit({ tutorialId: true })`; GET/DELETE untouched
+- 🎯 Architecture principle confirmed: **Zod validates TYPE/SHAPE; route handles DEFAULTS/FALLBACKS** (`|| 'js'`, `|| 0`, `|| 'Easy'`, `Array.isArray(...)` all stay in route)
+- ✅ `npx tsc --noEmit` — 0 errors
+- ✅ Verified with search: old `TestCaseInput` types gone, old manual `points, testCases } = await req.json()` destructure gone
+- ⚠️ Note: `edit_file` on the POST route failed on large `oldContent` (whitespace match) → switched to `write_file` with full file; safe because file was 43 lines and read fully first
+- 📝 Commit: `refactor(api): phase 3 batch 1 — zod validation for challenges`

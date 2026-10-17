@@ -3,13 +3,9 @@ import prisma from '@/lib/prisma'
 import { requireAdmin, getAdminId } from '@/lib/auth'
 import { verifyPinToken } from '@/lib/pin'
 import { serverError } from '@/lib/api-error'
+import { createChallengeSchema, validateBody } from '@/lib/validators'
 
-/** Test case shape as it arrives from the client (no id yet). */
-type TestCaseInput = {
-  input: unknown
-  expectedOutput: unknown
-  isHidden?: unknown
-}
+const updateChallengeSchema = createChallengeSchema.partial().omit({ tutorialId: true })
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -24,26 +20,32 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
-    const { titleBn, titleEn, descriptionBn, descriptionEn, starterCodeBn, starterCodeEn, solutionBn, solutionEn, language, difficulty, points, testCases } = await req.json()
+    const body = await req.json()
+    const { titleBn, titleEn, descriptionBn, descriptionEn } = body
     if (!titleBn || !titleEn || !descriptionBn || !descriptionEn) {
       return NextResponse.json({ error: 'titleBn, titleEn, descriptionBn, descriptionEn — সব দরকার' }, { status: 400 })
+    }
+    const { data, error } = validateBody(updateChallengeSchema, body)
+    if (error || !data) {
+      return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
     }
     await prisma.testCase.deleteMany({ where: { challengeId: id } })
     const c = await prisma.codeChallenge.update({
       where: { id },
       data: {
-        titleBn,
-        titleEn: titleEn ? String(titleEn).trim() : null,
-        descriptionBn,
-        descriptionEn: descriptionEn ? String(descriptionEn).trim() : null,
-        starterCodeBn: starterCodeBn || null,
-        starterCodeEn: starterCodeEn || null,
-        solutionBn: solutionBn || null,
-        solutionEn: solutionEn || null,
-        language: language || 'js',
-        difficulty, points,
-        testCases: Array.isArray(testCases)
-          ? { create: testCases.map((tc: TestCaseInput, i: number) => ({ input: String(tc.input), expectedOutput: String(tc.expectedOutput), isHidden: !!tc.isHidden, testCaseOrder: i })) }
+        titleBn: data.titleBn,
+        titleEn: data.titleEn ? String(data.titleEn).trim() : null,
+        descriptionBn: data.descriptionBn,
+        descriptionEn: data.descriptionEn ? String(data.descriptionEn).trim() : null,
+        starterCodeBn: data.starterCodeBn || null,
+        starterCodeEn: data.starterCodeEn || null,
+        solutionBn: data.solutionBn || null,
+        solutionEn: data.solutionEn || null,
+        language: data.language || 'js',
+        difficulty: data.difficulty,
+        points: data.points,
+        testCases: Array.isArray(data.testCases)
+          ? { create: data.testCases.map((tc, i) => ({ input: String(tc.input), expectedOutput: String(tc.expectedOutput), isHidden: !!tc.isHidden, testCaseOrder: i })) }
           : undefined,
       },
       include: { testCases: true },
