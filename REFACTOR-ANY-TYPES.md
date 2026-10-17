@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) done, 4 batches remain (2026-10-17)
+> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + Batch 2 (Quiz) done, 3 batches remain (2026-10-17)
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -439,8 +439,8 @@ Before touching any route, **read** it and ask:
 |---|---|---|---|---|
 | 1 | `app/api/admin/challenges/route.ts` | ✅ `createChallengeSchema` (fixed) | ✅ Done | Batch 1 — schema now mirrors route (language/points/testCases added, defaults stay in route) |
 | 2 | `app/api/admin/challenges/[id]/route.ts` | ✅ `createChallengeSchema.partial().omit({tutorialId})` | ✅ Done | Batch 1 — new `updateChallengeSchema`, GET/DELETE untouched |
-| 3 | `app/api/admin/quiz/route.ts` | ✅ `createQuizQuestionSchema` | ⬜ Pending | |
-| 4 | `app/api/admin/quiz/[id]/route.ts` | ✅ `createQuizQuestionSchema` (?) | ⬜ Pending | Verify |
+| 3 | `app/api/admin/quiz/route.ts` | ✅ `createQuizQuestionSchema` (fixed) | ✅ Done | Batch 2 — shared `quizOptionInputSchema`; 3 Bangla business checks kept above Zod |
+| 4 | `app/api/admin/quiz/[id]/route.ts` | ✅ `updateQuizQuestionSchema` (new) | ✅ Done | Batch 2 — no `.partial()`; PUT has no `some(isCorrect)` check (preserved) |
 | 5 | `app/api/admin/references/route.ts` | ✅ `createReferenceSchema` | ⬜ Pending | |
 | 6 | `app/api/admin/references/[id]/route.ts` | ✅ `updateReferenceSchema` | ⬜ Pending | |
 | 7 | `app/api/admin/tutorials/route.ts` | ✅ `createTutorialSchema` | ⬜ Pending | |
@@ -747,4 +747,16 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 - ✅ `npx tsc --noEmit` — 0 errors
 - ✅ Verified with search: old `TestCaseInput` types gone, old manual `points, testCases } = await req.json()` destructure gone
 - ⚠️ Note: `edit_file` on the POST route failed on large `oldContent` (whitespace match) → switched to `write_file` with full file; safe because file was 43 lines and read fully first
-- 📝 Commit: `refactor(api): phase 3 batch 1 — zod validation for challenges`
+- 📝 Commit: `refactor(api): phase 3 batch 1 — zod validation for challenges` (c2f0a27)
+
+### 2026-10-17 — Phase 3 Batch 2 Complete ✅ (Quiz, 3 files)
+- ✅ `lib/validators.ts` — added shared `quizOptionInputSchema`; rewrote `createQuizQuestionSchema`; added `updateQuizQuestionSchema`
+  - `create`: added `lessonId`/`chapterId` (nullable optional), `options` (inline array `.min(2).optional()`); `questionBn`/`questionEn` → required `.min(1)` (were `.min(5)` / optional); removed `orderIndex` default
+  - `update`: separate schema — required `questionBn`/`questionEn`/`options`; optional `tutorialId`/`lessonId`/`chapterId`/`explanationBn`/`explanationEn`/`orderIndex`; **no `.min(2)`** and **no cuid on tutorialId** (would have tightened PUT behavior)
+- ✅ `quiz/route.ts` POST — 3 Bangla business checks kept ABOVE Zod (`lesson/chapter`, every `textEn`, some `isCorrect`); defaults in route (`?? 0`, `|| null`)
+- ✅ `quiz/[id]/route.ts` PUT — Zod after 2 checks; preserved absence of `some(isCorrect)` check
+- 🎯 Same architecture principle: Zod = type/shape; route = defaults + business rules
+- ✅ `npx tsc --noEmit` — 0 errors
+- ✅ Verified with search: old `QuizOptionInput` gone from both files; both use `const body = await req.json()` + `validateBody`
+- 🐛 **Doc-edit quirk:** status-line `edit_file` returned "oldContent not found" yet the change WAS applied (hidden/partial apply). Re-checked via search and left it — did NOT retry. Reinforces rule 1 (always verify).
+- 📝 Commit: `refactor(api): phase 3 batch 2 — zod validation for quiz` (3ffa3cc)
