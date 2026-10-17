@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + Batch 2 (Quiz) done, 3 batches remain (2026-10-17)
+> **Status:** 🔄 Phase 3 In Progress — Batch 1 (Challenges) + 2 (Quiz) + 3 (Chapters) done, 2 batches remain (2026-10-17)
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -444,6 +444,8 @@ Before touching any route, **read** it and ask:
 | 5 | `app/api/admin/references/route.ts` | ✅ `createReferenceSchema` | ⬜ Pending | |
 | 6 | `app/api/admin/references/[id]/route.ts` | ✅ `updateReferenceSchema` | ⬜ Pending | |
 | 7 | `app/api/admin/tutorials/route.ts` | ✅ `createTutorialSchema` | ⬜ Pending | |
+| 8 | `app/api/admin/tutorials/[id]/chapters/route.ts` | ✅ `createChapterSchema` (rewritten) + `reorderChaptersSchema` (new) | ✅ Done | Batch 3 — POST Zod after manual checks; PATCH reorder shape-only, business logic kept |
+| 9 | `app/api/admin/tutorials/[id]/chapters/[chId]/route.ts` | — | ⏭️ Skipped (justified) | Batch 3 — `in body` semantics (absent vs null) cannot survive Zod; route already type-safe, no `: any` |
 
 ### ⚠️ Phase 3 Warnings
 
@@ -760,3 +762,12 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 - ✅ Verified with search: old `QuizOptionInput` gone from both files; both use `const body = await req.json()` + `validateBody`
 - 🐛 **Doc-edit quirk:** status-line `edit_file` returned "oldContent not found" yet the change WAS applied (hidden/partial apply). Re-checked via search and left it — did NOT retry. Reinforces rule 1 (always verify).
 - 📝 Commit: `refactor(api): phase 3 batch 2 — zod validation for quiz` (3ffa3cc)
+
+### 2026-10-17 — Phase 3 Batch 3 Complete ✅ (Chapters)
+- ✅ `lib/validators.ts` — rewrote `createChapterSchema`/`updateChapterSchema` to match route field names (`titleBn`/`contentBn`/`codeExampleBn` etc. — old ones used `title`/`content` and were unused); added `reorderChaptersSchema`
+- ✅ `chapters/route.ts` POST — kept coercion (`normSlug`, trim, empty→null) + 3 Bangla checks in route; then `validateBody(createChapterSchema, coercedValues)`; create uses `data.*`
+- ✅ `chapters/route.ts` PATCH — `validateBody(reorderChaptersSchema, body)` for shape; cross-checks (all ids, no dupes, length) + `$transaction` kept in route; error message preserved
+- ⏭️ `chapters/[chId]/route.ts` PATCH — **deliberately skipped**: `in body` semantics (absent = don't touch, null/'' = clear) cannot survive Zod; route already type-safe (`typeof`/`in` checks), no `: any`. Documented exception.
+- ✅ `npx tsc --noEmit` — 0 errors
+- ✅ Verified: chapters collection uses `const body` + Zod; detail route raw body intentional
+- 📝 Commit: `refactor(api): phase 3 batch 3 — zod validation for chapters` (6c935c9)
