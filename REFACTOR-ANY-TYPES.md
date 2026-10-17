@@ -1,10 +1,60 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** ✅ Phase 2 Complete — `tsc --noEmit` verified with 0 errors (2026-10-17)
+> **Status:** 🚀 Phase 3 Ready — Phase 1+2 shipped & verified (2026-10-17)
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
-> **Estimated Time:** 2-3 hours (spread over multiple sessions)
-> **Risk Level:** 🟡 Medium (touches API routes but no user-facing changes)
+> **Estimated Time (Phase 3 only):** 1-2 hours
+> **Risk Level:** 🟠 Higher (Zod can change request contracts if done carelessly)
+
+---
+
+## 🤖 NEW CHAT HANDOFF — paste this to start Phase 3
+
+If you are a fresh AI session, **copy the prompt below** and paste it into the new chat:
+
+```
+I'm continuing the DevSchool API refactor in a new chat.
+
+STEP 1 — Read `REFACTOR-ANY-TYPES.md` fully before doing anything.
+This file contains: context, prior lessons learned, phase plans, trackers,
+and the Phase 3 handoff.
+
+STEP 2 — Confirm understanding by briefly summarizing:
+- What phases are done
+- What Phase 3 requires
+- The 7 strict rules listed below
+
+STEP 3 — Then start Phase 3 (Zod validation on admin mutation routes).
+
+STRICT RULES (each earned from prior failures):
+1. `files.edit_multiple_files` can silently drop edits even when returning
+   "success" — ALWAYS run `files.search_code` immediately after every batch
+   edit to verify.
+2. When editing the SAME file multiple times, use ONE edit per call (never
+   multiple edits to the same file in a batch).
+3. Use whitespace-independent substrings in `oldContent` (no leading
+   indentation) to survive CRLF/LF/indent mismatches.
+4. Read every target file fully before editing — never edit blind.
+5. After each batch: ask user to run `npx tsc --noEmit`, then verify with
+   `files.search_code`.
+6. Commit after each batch:
+   `git add -A && git commit -m "refactor(api): phase 3 batch N — ..."`
+7. Update `REFACTOR-ANY-TYPES.md` after each batch (status + tracker row +
+   progress log entry).
+
+QUALITY BAR: Top-level senior developer. No shortcuts, no "probably works"
+— verify every step. If uncertain, STOP and ask.
+
+Current state (already done in prior session):
+- 51 files refactored across Phase 1 + Phase 2
+- 4 commits: dc4f470, ae5750f, 78a2d3a, 9f5c6e7
+- `npx tsc --noEmit` passes with 0 errors
+- All runtime smoke tests passed (admin CRUD, quiz submit, challenge run)
+- Production code is 100% free of `: any`
+
+Now: execute Phase 3 per the plan in the file. Present your audit plan
+first, then start Batch 1.
+```
 
 ---
 
@@ -621,6 +671,66 @@ Append entries here as work completes. This is the history that survives chat se
 - ✅ All callback `: any` types replaced with local types or inference
 - ✅ Phase 1 partial-apply gap fixed (3 AI files)
 - ✅ Production code 100% free of `: any`
-- 🎯 Next: git commit + smoke test (quiz submit, challenge run)
+- ✅ Commit `9f5c6e7` (17 files, 137 insertions)
+
+### 2026-10-17 — ✅ SMOKE TEST PASSED
+- ✅ Quiz submit — score calculates correctly
+- ✅ Challenge run — results returned
+- ✅ Admin quiz create — saves with options
+- ✅ Admin challenge create — saves with test cases
+- ✅ Search — FTS + ILIKE fallback working
+- 🎉 **Phase 1 + Phase 2 officially shipped**
+
+### 2026-10-17 — 🎉 SESSION COMPLETE — handed off to next chat
+- ✅ Phase 1 + Phase 2 fully shipped and verified
+- ✅ 4 commits: dc4f470 (Batch 1-4), ae5750f (Batch 5-7), 78a2d3a (smoke fixes), 9f5c6e7 (Phase 2)
+- ✅ 51 files refactored, production code 100% `: any`-free
+- ✅ All smoke tests passed (admin CRUD, quiz submit, challenge run, search)
+- 🚀 **Next session: Phase 3 (Zod validation)** — use the NEW CHAT HANDOFF prompt at the top of this file
+- ⏳ Deferred cleanup (do later): 58 `.bak` files, `console.log` in BulkReferenceImport.tsx:157,162, scripts/*.ts (11 catches)
+
+### 2026-10-17 — Phase 3 scope (for next session)
+**Goal:** Replace manual `req.json()` parsing with Zod `validateBody()` on admin mutation routes.
+
+**Audit-first (mandatory):** Read every `app/api/admin/**/route.ts` POST/PUT/PATCH and classify:
+- Type A: already uses `validateBody()` → **SKIP**
+- Type B: manual destructure + manual checks → **candidate**
+- Type C: `req.json()` with weak/no validation → **high priority**
+
+**Known already-Zod (skip these):**
+- `references/route.ts` POST, `references/[id]/route.ts` PUT
+- `sponsors/route.ts` POST, `sponsors/[id]/route.ts` PUT
+- `tutorials/route.ts` POST, `tutorials/[id]/route.ts` PUT
+- `settings/route.ts` PUT
+- `reviews/[id]/route.ts` PATCH (uses `reviewModerationSchema`)
+
+**Known needs-Zod (candidates):**
+- `challenges/route.ts` POST
+- `challenges/[id]/route.ts` PUT
+- `quiz/route.ts` POST
+- `quiz/[id]/route.ts` PUT
+- `tutorials/[id]/chapters/route.ts` POST
+- `tutorials/[id]/chapters/[chId]/route.ts` PATCH
+- `tutorials/[id]/chapters/[chId]/lessons/route.ts` POST
+- `tutorials/[id]/chapters/[chId]/lessons/[lid]/route.ts` PATCH
+- `tutorials/[id]/groups/route.ts` POST
+- `tutorials/[id]/groups/[gid]/route.ts` PATCH
+
+**⚠️ Critical:** Preserve current response shape + optional fields + error messages. Zod schemas must EXACTLY mirror current behavior — do NOT tighten validation without user approval.
+
+**Suggested batches (one commit per batch):**
+- Batch 1: Challenges (create + update) — 2 files
+- Batch 2: Quiz (create + update) — 2 files
+- Batch 3: Chapters (collection + detail) — 2 files
+- Batch 4: Lessons (collection + detail) — 2 files
+- Batch 5: Groups (collection + detail) — 2 files
+
+**Success criteria:**
+- [ ] Every admin POST/PUT/PATCH uses `validateBody()`
+- [ ] `npx tsc --noEmit` passes with 0 errors
+- [ ] No new `: any` introduced
+- [ ] All admin CRUD flows still work
+- [ ] Response shape unchanged
+- [ ] Committed per batch
 
 _(Add new entries below as you complete each phase. Include date, phase, and any notable issues.)_
