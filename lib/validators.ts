@@ -47,25 +47,29 @@ export const updateGroupSchema = z.object({
 })
 
 export const createChapterSchema = z.object({
-  title: z.string().min(1).max(255),
-  titleEn: z.string().min(1).max(255).optional(),
-  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)'),
-  groupId: z.string().cuid().nullable().optional(),
-  content: z.string().nullable().optional(),
+  titleBn: z.string().min(1),
+  titleEn: z.string().min(1),
+  slug: z.string().min(1),
+  groupId: z.string().nullable().optional(),
+  contentBn: z.string().nullable().optional(),
   contentEn: z.string().nullable().optional(),
-  codeExample: z.string().nullable().optional(),
+  codeExampleBn: z.string().nullable().optional(),
   codeExampleEn: z.string().nullable().optional(),
 })
 
 export const updateChapterSchema = z.object({
-  title: z.string().min(1).max(255).optional(),
-  titleEn: z.string().min(1).max(255).optional(),
-  slug: z.string().min(1).max(255).regex(urlSlug, 'Slug must be URL-safe (lowercase, hyphens)').optional(),
-  groupId: z.string().cuid().nullable().optional(),
-  content: z.string().nullable().optional(),
+  titleBn: z.string().min(1).optional(),
+  titleEn: z.string().nullable().optional(),
+  slug: z.string().min(1).optional(),
+  groupId: z.string().nullable().optional(),
+  contentBn: z.string().nullable().optional(),
   contentEn: z.string().nullable().optional(),
-  codeExample: z.string().nullable().optional(),
+  codeExampleBn: z.string().nullable().optional(),
   codeExampleEn: z.string().nullable().optional(),
+})
+
+export const reorderChaptersSchema = z.object({
+  order: z.array(z.string().min(1)),
 })
 
 export const createLessonSchema = z.object({

@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { revalidateTutorialPaths } from '@/lib/revalidate-tutorial'
 import { serverError } from '@/lib/api-error'
+import { createChapterSchema, reorderChaptersSchema, validateBody } from '@/lib/validators'
 
 /**
  * Chapter collection API (nested structure v3)
@@ -63,6 +64,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!titleEn) return NextResponse.json({ error: 'ইংরেজি title দরকার (জোড়া নিয়ম)' }, { status: 400 })
   if (!slug) return NextResponse.json({ error: 'slug URL-safe হতে হবে (lowercase, hyphens)' }, { status: 400 })
 
+  const { data, error } = validateBody(createChapterSchema, {
+    titleBn, titleEn, slug, groupId, contentBn, contentEn, codeExampleBn, codeExampleEn,
+  })
+  if (error || !data) {
+    return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
+  }
+
   try {
     const tutorial = await prisma.tutorial.findUnique({ where: { id }, select: { id: true } })
     if (!tutorial) return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 })
@@ -85,14 +93,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const created = await prisma.chapter.create({
       data: {
         tutorialId: id,
-        titleBn,
-        titleEn,
-        slug,
-        groupId,
-        contentBn,
-        contentEn,
-        codeExampleBn,
-        codeExampleEn,
+        titleBn: data.titleBn,
+        titleEn: data.titleEn,
+        slug: data.slug,
+        groupId: data.groupId ?? null,
+        contentBn: data.contentBn ?? null,
+        contentEn: data.contentEn ?? null,
+        codeExampleBn: data.codeExampleBn ?? null,
+        codeExampleEn: data.codeExampleEn ?? null,
         sortOrder: nextOrder,
       },
     })
@@ -110,11 +118,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params
   const body = await req.json().catch(() => ({}))
-  const order = body?.order
-
-  if (!Array.isArray(order) || order.some((x) => typeof x !== 'string')) {
+  const { data, error } = validateBody(reorderChaptersSchema, body)
+  if (error || !data) {
     return NextResponse.json({ error: 'order[] (chapter ids) দরকার' }, { status: 400 })
   }
+  const order = data.order
 
   try {
     const existing = await prisma.chapter.findMany({ where: { tutorialId: id }, select: { id: true } })
