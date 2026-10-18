@@ -1,6 +1,6 @@
 # 🎯 Remaining Tasks — DevSchool Cleanup (Post-Refactor)
 
-> **Status:** 🔄 IN PROGRESS — Task 1: Batch 1A + 1B COMPLETE (`app/**` + `components/**` = 0 `: any`). Next: Batch 1C (special cases).
+> **Status:** 🔄 IN PROGRESS — Task 1: Batches 1A + 1B + 1C COMPLETE. Next: Batch 1D (`set-state-in-effect` — highest risk, 26 instances across 18 files).
 > **Created:** 2026-10-18
 > **Owner:** DevSchool Team
 > **Prerequisite:** `REFACTOR-ANY-TYPES.md` is COMPLETE (Phases 0–4b done, `app/api/**` + `lib/**` + UI 100% `: any`/`as any`-free, `tsc` & build pass, pushed to `7e10236`).
@@ -357,7 +357,7 @@ Update this table as work progresses:
 | 1B-2b-3a | ChallengeForm (commit msg says SponsorForm — actually ChallengeForm) | 1 | ✅ Done | `32f8a46` |
 | 1B-2b-3b | QuizForm | 1 | ✅ Done | `ac9c0e1` |
 | 1B-3 | ChallengeWorkspace catch blocks | 1 | ✅ Done | `fbcfe30` |
-| 1C | Special cases (4 unique) | 4 | ⬜ Pending | — |
+| 1C | Special cases: global-error, Header, LessonContent, HomeSearch | 4 | ✅ Done | `d10c7d4` |
 | 1D | `set-state-in-effect` | 18 | ⬜ Pending | — |
 | 1E | `exhaustive-deps` warnings | ~6 | ⬜ Pending | — |
 | 1F | Final verify + build + smoke | — | ⬜ Pending | — |
@@ -485,6 +485,16 @@ Append entries here as work completes.
 - ✅ `npx tsc --noEmit` — 0 errors after final step.
 - 🎓 **Lesson reinforced:** removing `any` surfaced a real live crash (`references` edit page). Every `any` removed is a potential bug caught.
 - ⚠️ **Process note:** one commit message mismatched (`32f8a46`), and one commit skipped tsc (`ac9c0e1`). Both logged honestly here — no history rewrite.
+
+### 2026-10-18 — Batch 1C Complete ✅ (4 special-case files)
+- **`app/global-error.tsx`** — justified `eslint-disable-next-line @next/next/no-html-link-for-pages` on the single `<a href="/">`. Rationale: global-error replaces root layout; router context is unreliable in crash state; `<a>` forces a clean full reload. Also caught + removed a duplicate disable comment from first insert.
+- **`components/Header.tsx`** — moved `BurgerIcon` out of the render body into module scope (was recreated every render → state loss / perf). Zero behavior change; the component had no closure over outer state.
+- **`components/LessonContent.tsx`** — eliminated the mutable `quizMarkerIndex` counter (was `+= 1` during render, `react-hooks/immutability`). Replaced with a precomputed `Map<tokenIndex, quizOrdinal>` built once before render; the quiz branch now does a pure lookup. Behavior identical.
+- **`components/HomeSearch.tsx`** — `useCallback(debounce(fn, 280), [])` → `useMemo(() => debounce(fn, 280), [])` (canonical React + lodash pattern for `react-hooks/use-memo` + `react-hooks/exhaustive-deps` shape rule). `.cancel()` still preserved in the effect cleanup.
+- ✅ All 4 verified with `search_in_file`.
+- ✅ `npx tsc --noEmit` — 0 errors.
+- 📝 Commit: `chore(lint): batch 1C - global-error disable, Header static, LessonContent immutability, HomeSearch use-memo` `d10c7d4`
+- 📊 **Task 1 progress:** 1A ✅ · 1B ✅ · 1C ✅ → next is **1D (`set-state-in-effect`, 26 instances)**, the highest-risk batch.
 
 _(Add new entries below as you complete each batch.)_
 
