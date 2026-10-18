@@ -27,8 +27,6 @@ const TUTORIAL_SLUG = 'html'
 const TUTORIAL_TITLE = 'HTML Tutorial'
 const TUTORIAL_DESCRIPTION =
   'HTML শিখুন একদম শুরু থেকে — বাংলায়, সহজ ভাষায়। ১৫টা chapter, প্রতিটা ছোট ছোট lesson-এ ভাগ করা।'
-const CATEGORY_SLUG = 'web-development'
-const CATEGORY_NAME = 'Web Development'
 
 // ─────────────────────────────────────────────────────────────
 // Slug maps — Bengali titles → clean English URL slugs

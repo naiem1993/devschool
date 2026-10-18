@@ -315,7 +315,7 @@ async function main() {
         siteName: 'DevSchool',
         isDonationEnabled: true,
         isAdsEnabled: true,
-      } as any,
+      },
     },
   })
 
