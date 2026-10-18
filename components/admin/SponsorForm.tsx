@@ -6,11 +6,25 @@ import SponsorImageControl, { type SponsorImageValue } from './SponsorImageContr
 
 const TIERS = ['gold', 'silver', 'bronze', 'partner'] as const
 
+type SponsorFormInitial = {
+  id: string
+  name: string
+  websiteUrl: string | null
+  description: string | null
+  tier: string
+  priority: number
+  isActive: boolean
+  startDate: string | null
+  endDate: string | null
+  imageId: string | null
+  logoUrl: string | null
+}
+
 export default function SponsorForm({
   initial,
   mode = 'create',
 }: {
-  initial?: any
+  initial?: SponsorFormInitial
   mode?: 'create' | 'edit'
 }) {
   const router = useRouter()
@@ -36,7 +50,7 @@ export default function SponsorForm({
     setLoading(true)
     setError('')
 
-    const payload: any = {
+    const payload = {
       name: form.name,
       websiteUrl: form.websiteUrl || '',
       description: form.description || '',
