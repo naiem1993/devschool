@@ -294,7 +294,8 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
             {hero.subtitle}
           </motion.p>
 
-          <motion.div variants={fadeUp}>
+          {/* z-20 keeps the search dropdown above the stats grid (z-10) below */}
+          <motion.div variants={fadeUp} className="relative z-20">
             <HomeSearch tutorials={tutorials} placeholder={hero.searchPlaceholder} />
           </motion.div>
 

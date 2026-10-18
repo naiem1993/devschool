@@ -99,6 +99,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
             q: opts.q,
             type: opts.type,
             limit: '24',
+            locale,
           })
           if (opts.difficulty) params.set('difficulty', opts.difficulty)
           if (opts.language) params.set('language', opts.language)
@@ -118,7 +119,7 @@ export default function SearchClient({ languages }: { languages: string[] }) {
           setIsLoading(false)
         }
       }, 300),
-    []
+    [locale]
   )
 
   // INTENTIONAL: loading state must flip synchronously on query change —

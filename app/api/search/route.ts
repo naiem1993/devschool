@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
   const type = (url.searchParams.get('type') || 'all').toLowerCase()
   const difficulty = (url.searchParams.get('difficulty') || '').trim()
   const language = (url.searchParams.get('language') || '').trim()
+  const isEn = (url.searchParams.get('locale') || 'bn') === 'en'
   const limit = Math.min(Math.max(Number(url.searchParams.get('limit') || 12), 1), 30)
   const offset = Math.max(Number(url.searchParams.get('offset') || 0), 0)
 
@@ -118,16 +119,27 @@ export async function GET(request: NextRequest) {
     const errCode = err && typeof err === 'object' && 'code' in err ? (err as { code: unknown }).code : undefined
     const errMsg = err instanceof Error ? err.message : String(err)
     if (errCode === '42703' || errMsg.includes('searchVec')) {
+      // Fallback path — used when the FTS column/index is missing.
+      // Normalizes to the client contract: { id, title, slug, description,
+      // difficulty, categoryName } for tutorials and { id, title, slug,
+      // syntax, language, categoryName } for references.
       const tutorials = wantTutorials
         ? await prisma.tutorial.findMany({
             where: {
               isPublished: true,
               AND: [
                 {
-                  OR: [
-                    { titleBn: { contains: q, mode: 'insensitive' } },
-                    { descriptionBn: { contains: q, mode: 'insensitive' } },
-                  ],
+                  OR: isEn
+                    ? [
+                        { titleBn: { contains: q, mode: 'insensitive' } },
+                        { titleEn: { contains: q, mode: 'insensitive' } },
+                        { descriptionBn: { contains: q, mode: 'insensitive' } },
+                        { descriptionEn: { contains: q, mode: 'insensitive' } },
+                      ]
+                    : [
+                        { titleBn: { contains: q, mode: 'insensitive' } },
+                        { descriptionBn: { contains: q, mode: 'insensitive' } },
+                      ],
                 },
                 difficulty ? { difficulty } : {},
               ],
@@ -135,8 +147,10 @@ export async function GET(request: NextRequest) {
             select: {
               id: true,
               titleBn: true,
+              titleEn: true,
               slug: true,
               descriptionBn: true,
+              descriptionEn: true,
               difficulty: true,
             },
             take: limit,
@@ -145,15 +159,63 @@ export async function GET(request: NextRequest) {
           })
         : []
 
+      const references = wantReferences
+        ? await prisma.reference.findMany({
+            where: {
+              OR: isEn
+                ? [
+                    { titleBn: { contains: q, mode: 'insensitive' } },
+                    { titleEn: { contains: q, mode: 'insensitive' } },
+                    { syntaxBn: { contains: q, mode: 'insensitive' } },
+                    { syntaxEn: { contains: q, mode: 'insensitive' } },
+                  ]
+                : [
+                    { titleBn: { contains: q, mode: 'insensitive' } },
+                    { syntaxBn: { contains: q, mode: 'insensitive' } },
+                  ],
+              ...(language ? { language } : {}),
+            },
+            select: {
+              id: true,
+              titleBn: true,
+              titleEn: true,
+              slug: true,
+              syntaxBn: true,
+              syntaxEn: true,
+              language: true,
+            },
+            take: limit,
+            skip: offset,
+          })
+        : []
+
+      const pick = (bn: string | null | undefined, en: string | null | undefined, useEn: boolean): string =>
+        (useEn ? (en ?? bn) : (bn ?? en)) ?? ''
+
       return NextResponse.json({
         query: q,
         type,
         tutorials: tutorials.map((t) => ({
-          ...t,
+          id: t.id,
+          title: pick(t.titleBn, t.titleEn, isEn),
+          slug: t.slug,
+          description: isEn
+            ? (t.descriptionEn ?? t.descriptionBn ?? null)
+            : (t.descriptionBn ?? t.descriptionEn ?? null),
+          difficulty: t.difficulty,
+          categoryName: null,
           rank: 0,
         })),
-        references: [],
-        total: tutorials.length,
+        references: references.map((r) => ({
+          id: r.id,
+          title: pick(r.titleBn, r.titleEn, isEn),
+          slug: r.slug,
+          syntax: isEn ? (r.syntaxEn ?? r.syntaxBn ?? null) : (r.syntaxBn ?? r.syntaxEn ?? null),
+          language: r.language,
+          categoryName: null,
+          rank: 0,
+        })),
+        total: tutorials.length + references.length,
         tookMs: Date.now() - started,
         fallback: true,
       })

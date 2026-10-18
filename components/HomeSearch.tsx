@@ -61,7 +61,7 @@ export default function HomeSearch({
           return
         }
         try {
-          const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=8`)
+          const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=8&locale=${locale}`)
           if (res.ok) setResult(await res.json())
           else setResult(null)
         } catch {
@@ -70,7 +70,7 @@ export default function HomeSearch({
           setIsLoading(false)
         }
       }, 280),
-    []
+    [locale]
   )
 
   // INTENTIONAL: flip loading synchronously (debounce takes 280ms to fire).
@@ -135,10 +135,8 @@ export default function HomeSearch({
                         className="block p-3 rounded-xl hover:bg-[#22C55E]/10 dark:hover:bg-slate-800 transition"
                       >
                         <div className="text-sm font-bold text-slate-900 dark:text-white">{t.title}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                          <span className="text-[#15803D] dark:text-[#4ADE80]">{t.categoryName || dict.home.genericCategory}</span>
-                          <span>•</span>
-                          <span>{t.difficulty}</span>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          <span className="capitalize">{t.difficulty}</span>
                         </div>
                         {t.description && (
                           <div className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">

@@ -13,7 +13,6 @@ export interface Tutorial {
   views: number
   duration?: number | null
   rating?: number | null
-  category?: { name: string }
 }
 
 export default function LoadMoreTutorials({ initialTutorials }: { initialTutorials: Tutorial[] }) {
@@ -53,8 +52,8 @@ export default function LoadMoreTutorials({ initialTutorials }: { initialTutoria
               {tutorial.title}
             </h3>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-3">
-              <span className="bg-[#22C55E]/15 dark:bg-[#22C55E]/15 px-2 py-0.5 rounded-full">
-                {tutorial.category?.name || dict.home.genericCategory}
+              <span className="bg-[#22C55E]/15 dark:bg-[#22C55E]/15 px-2 py-0.5 rounded-full capitalize">
+                {tutorial.difficulty}
               </span>
               <span>⭐ {tutorial.rating || 0}</span>
               <span>👁️ {tutorial.views}</span>
