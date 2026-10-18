@@ -11,6 +11,19 @@ type Option = { textBn: string; textEn: string; isCorrect: boolean }
 // কোন location-এ quiz বসবে
 type LocationType = 'lesson' | 'chapter'
 
+type QuizFormInitial = {
+  id: string
+  tutorialId: string
+  lessonId: string
+  chapterId: string
+  questionBn: string
+  questionEn: string
+  explanationBn: string
+  explanationEn: string
+  orderIndex: number
+  options: Option[]
+}
+
 export default function QuizForm({
   initial,
   tutorials,
@@ -18,7 +31,7 @@ export default function QuizForm({
   chapters,
   mode = 'create',
 }: {
-  initial?: any
+  initial?: QuizFormInitial
   tutorials: Tutorial[]
   lessons: Lesson[]
   chapters: Chapter[]
@@ -48,7 +61,7 @@ export default function QuizForm({
 
   const [options, setOptions] = useState<Option[]>(
     initial?.options?.length
-      ? initial.options.map((o: any) => ({
+      ? initial.options.map((o) => ({
           textBn: o.textBn,
           textEn: o.textEn || '',
           isCorrect: o.isCorrect,
@@ -111,7 +124,7 @@ export default function QuizForm({
     setError('')
 
     // location type অনুযায়ী body তৈরি
-    const body: any = {
+    const body = {
       tutorialId: form.tutorialId,
       lessonId: locationType === 'lesson' ? form.lessonId : null,
       chapterId: locationType === 'chapter' ? form.chapterId : null,
