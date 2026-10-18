@@ -222,7 +222,8 @@ export function evaluateCssTest(
 
     const el = elements[0] as HTMLElement
     const computed = iframeWindow.getComputedStyle(el)
-    const actual = (computed as any)[test.property] as string
+    const computedRecord = computed as unknown as Record<string, string | undefined>
+    const actual = computedRecord[test.property] ?? ''
 
     // normalize color values (rgb vs hex)
     const normalize = (v: string) => v.replace(/\s+/g, '').toLowerCase()

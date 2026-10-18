@@ -3,6 +3,7 @@ import { generateText } from '@/lib/ai/gemini'
 import { getErrorMessage, serverError } from '@/lib/api-error'
 import { QUIZ_SYSTEM_PROMPT, buildQuizUserPrompt } from '@/lib/ai/prompts/quiz'
 import { parseQuizzes, looksLikeValidQuizFormat } from '@/lib/ai/validators-quiz'
+import type { QuizParseResult } from '@/lib/ai/validators-quiz'
 
 /**
  * POST /api/admin/ai/generate-quiz
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     // ── Attempt loop ──
     let rawOutput = ''
-    let parsed = { quizzes: [], errors: [] as any[] }
+    let parsed: QuizParseResult = { quizzes: [], errors: [] }
     let attempts = 0
     const maxAttempts = 2
 
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        parsed = parseQuizzes(rawOutput) as any
+        parsed = parseQuizzes(rawOutput)
 
         if (parsed.quizzes.length === numCount && parsed.errors.length === 0) {
           break

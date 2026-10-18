@@ -3,6 +3,7 @@ import { generateText } from '@/lib/ai/gemini'
 import { getErrorMessage, serverError } from '@/lib/api-error'
 import { REFERENCE_SYSTEM_PROMPT, buildReferenceUserPrompt } from '@/lib/ai/prompts/reference'
 import { parseReferences, looksLikeValidReferenceFormat } from '@/lib/ai/validators-reference'
+import type { ReferenceParseResult } from '@/lib/ai/validators-reference'
 
 /**
  * POST /api/admin/ai/generate-reference
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     })
 
     let rawOutput = ''
-    let parsed = { references: [], errors: [] as any[] }
+    let parsed: ReferenceParseResult = { references: [], errors: [] }
     let attempts = 0
     const maxAttempts = 2
 
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        parsed = parseReferences(rawOutput) as any
+        parsed = parseReferences(rawOutput)
 
         if (parsed.references.length === numCount && parsed.errors.length === 0) {
           break

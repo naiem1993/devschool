@@ -6,6 +6,7 @@ import {
   buildChallengeUserPrompt,
 } from '@/lib/ai/prompts/challenge'
 import { parseChallenges, looksLikeValidFormat } from '@/lib/ai/validators'
+import type { ParseResult } from '@/lib/ai/validators'
 
 /**
  * POST /api/admin/ai/generate-challenge
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     // ── First attempt ──
     let rawOutput = ''
-    let parsed = { challenges: [], errors: [] as any[] }
+    let parsed: ParseResult = { challenges: [], errors: [] }
     let attempts = 0
     const maxAttempts = 2
 
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        parsed = parseChallenges(rawOutput) as any
+        parsed = parseChallenges(rawOutput)
 
         // যদি সব চ্যালেঞ্জ সফলভাবে পার্স হয়, তাহলে লুপ ভাঙব
         if (parsed.challenges.length === numCount && parsed.errors.length === 0) {
