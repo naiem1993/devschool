@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
-import HomeSearch from '@/components/HomeSearch';
 import LoadMoreTutorials from '@/components/LoadMoreTutorials';
 import HeroSection from '@/components/HeroSection';
 import ContentComingSoon from '@/components/ContentComingSoon';

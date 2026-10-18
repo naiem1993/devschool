@@ -251,7 +251,6 @@ export default function QuizWidget({ lessonId, questions }: Props) {
   const isCorrect = correctMap[q.id]
   const correctOptionId = correctOptionMap[q.id]
   const explanation = explanationMap[q.id]
-  const userAnswerId = answers[q.id]
 
   // ── UI ────────────────────────────────────────────────────
   return (

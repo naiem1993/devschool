@@ -50,9 +50,8 @@ export default function TryItFullClient({
       setSrc(saved)
       localStorage.removeItem(sessionKey)
     }
-    // Debug: সব tryit keys দেখাও
-    const allKeys = Object.keys(localStorage).filter(k => k.startsWith('tryit'))
-  } catch (err) {
+  } catch {
+    /* ignore */
   }
 }, [sessionKey])
 

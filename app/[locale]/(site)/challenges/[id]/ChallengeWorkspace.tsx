@@ -231,7 +231,6 @@ type TestCase = { id: string; input: string; expectedOutput: string; isHidden: b
 type TestResult = { id: string; passed: boolean; output: string; expected: string; error?: string }
 
 export default function ChallengeWorkspace({
-  challengeId,
   starterCode,
   solution,
   testCases,

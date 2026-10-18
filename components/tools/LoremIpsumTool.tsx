@@ -156,7 +156,6 @@ export default function LoremIpsumTool() {
 
   useEffect(() => {
     setBlocks(generate('paragraphs', 3, true))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const regenerate = () => setBlocks(generate(unit, count, startClassic))

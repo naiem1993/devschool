@@ -86,25 +86,6 @@ export default function SiteSettingsForm({
     setSaved(false)
   }
 
-  const updateFaqItem = (i: number, patch: Partial<FaqItem>) => {
-    setFaq((f) => {
-      const next = [...f.items]
-      next[i] = { ...next[i], ...patch }
-      return { items: next }
-    })
-    setSaved(false)
-  }
-
-  const addFaqItem = () => {
-    setFaq((f) => ({ items: [...f.items, { q: '', a: '' }] }))
-    setSaved(false)
-  }
-
-  const removeFaqItem = (i: number) => {
-    setFaq((f) => ({ items: f.items.filter((_, idx) => idx !== i) }))
-    setSaved(false)
-  }
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -372,7 +353,7 @@ export default function SiteSettingsForm({
               হোমপেজে রিভিউ সেকশন দেখাও
             </span>
             <span className="block mt-1 text-xs text-slate-500 dark:text-slate-400">
-              বন্ধ করলে "লার্নাররা যা বলছেন" সেকশনটা (রেটিং সারসংক্ষেপ, স্লাইডার ও রিভিউ ফর্মসহ) হোমপেজ থেকে পুরোপুরি লুকিয়ে যাবে। ডেটা ডিলিট হবে না — আবার চালু করলে সব ফিরে আসবে।
+              বন্ধ করলে &quot;লার্নাররা যা বলছেন&quot; সেকশনটা (রেটিং সারসংক্ষেপ, স্লাইডার ও রিভিউ ফর্মসহ) হোমপেজ থেকে পুরোপুরি লুকিয়ে যাবে। ডেটা ডিলিট হবে না — আবার চালু করলে সব ফিরে আসবে।
             </span>
           </span>
         </label>
