@@ -805,7 +805,8 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 ### 2026-10-18 — Phase 4 Honesty Audit + Batch 5a/5b ✅
 - 🔍 **`npm run lint` exposed 19 `as any`** that Phase 1/2 searches (`: any`) had missed — the "100% any-free" claims were false. Corrected in 4 places + 2 scope notes (lines 53, 624, 675, 673, 679, 691, 693).
 - ✅ **Batch 5a** (`settings/route.ts`): 12 × `as any` → `as Prisma.InputJsonValue` (added `import type { Prisma }`). Commit `3303c53`.
-- ✅ **Batch 5b** (4 files): 3 AI routes (6 casts) typed via parser return types (`ParseResult`, `QuizParseResult`, `ReferenceParseResult`); `html-css-sandbox.ts` (1 cast) → `Record<string, string | undefined>`.
+- ✅ **Batch 5b** (5 files): 3 AI routes (6 casts) typed via parser return types (`ParseResult`, `QuizParseResult`, `ReferenceParseResult`); `html-css-sandbox.ts` (1 cast) → `Record<string, string | undefined>`; **`judge0-api.ts` (1 `: any`)** → new local `Judge0Response` type (commit `698edfa`).
+- ⚠️ **Self-caught:** my own first draft of this log said "4 files" and claimed lib/ 100% before the judge0 fix — corrected here. Ground truth (post-fix): `: any`/`as any` = 0 in `lib/` and `app/api/`; only `lib/api-error.ts:6` has `: any` inside a code comment.
 - ⚠️ **`html-css-sandbox.ts:226`** — added `?? ''`; real minor behavior change: `undefined` no longer crashes, becomes test-fail instead. Intentionally framed as such (not "pure refactor").
 - ✅ `npx tsc --noEmit` — 0 errors after 5a and 5b.
 - 📊 **Final state:** API routes & lib/ are 100% `: any`/`as any`-free. UI layer (~3 `as any`) and scripts (~20 `: any`) deferred — out of scope.
