@@ -188,7 +188,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
             }))}
             tutorialSlug={challenge.tutorial.slug}
             tutorialTitle={tutorialTitle}
-            language={(challenge as any).language || 'js'}
+            language={challenge.language || 'js'}
           />
         </div>
 
