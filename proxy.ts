@@ -40,7 +40,10 @@ export async function proxy(request: NextRequest) {
   // (১খ) Page protection → /admin/* (login ছাড়া) সব login-এ redirect
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     if (!userId) {
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      const res = NextResponse.redirect(new URL('/admin/login', request.url))
+      // Clear stale/invalid cookie so the user isn't stuck in a redirect loop.
+      res.cookies.delete(ADMIN_COOKIE)
+      return res
     }
   }
 
