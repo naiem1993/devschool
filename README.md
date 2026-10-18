@@ -1,338 +1,329 @@
-# DevSchool Frontend
+<div align="center">
 
-[Next.js 16](https://nextjs.org) + [Prisma](https://prisma.io) + PostgreSQL
+# 🎓 DevSchool
 
-## Prerequisites
+**A full-stack, bilingual programming education platform — built for Bangla-speaking developers who want to learn by doing.**
 
-- **Node.js** 20+
-- **PostgreSQL** 15+ (with `pg_trgm` extension support)
-- **npm** / pnpm / yarn
+Tutorials · Code Challenges · Interactive Quizzes · Live Sandbox · Dev Tools
+
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-149eca?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?logo=prisma)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/license-MIT-green)](#-license)
+
+</div>
 
 ---
 
-## Quick Start
+## ✨ Overview
+
+DevSchool is a production-grade learning platform for mastering programming — **in Bangla and English**. It ships with everything a beginner-to-intermediate developer needs: structured tutorials, hands-on coding challenges, interactive quizzes, a live in-browser sandbox, a growing reference library, and a curated set of developer tools — all inside a fast, accessible, dark/light UI.
+
+Following a **W3Schools-style open-access model**, all public content is freely readable without authentication. Admin operations are protected by a layered security model (HMAC-signed sessions + per-route database checks + a PIN gate for destructive actions).
+
+> **Built with an opinionated, zero-`any` TypeScript codebase.** Every route, component, and helper is strictly typed — no `any`, no `as any`, no `@ts-ignore`. `npm run lint` returns **0 problems** repo-wide.
+
+---
+
+## 🎯 Features
+
+### 🧑‍🎓 For learners
+
+| Feature | Description |
+|---|---|
+| **Bilingual content** | Every tutorial, chapter, lesson, quiz, and reference is available in Bangla and English |
+| **Structured tutorials** | Grouped navigation: tutorials → chapter groups → chapters → lessons, with reading progress |
+| **In-browser playground** | Full HTML/CSS/JS editor with live iframe preview, keyboard shortcuts, and theme sync |
+| **Code challenges** | Execute against visible + hidden test cases; supports JS/TS/HTML/CSS (in-browser) and Python/Java/C++/etc. (remote sandbox) |
+| **Interactive quizzes** | Anti-memorize option shuffle, per-question feedback, explanation, best-score persistence |
+| **Progress page** | Accuracy stats, challenge pass rate, recent activity — device-bound (no login required) |
+| **Reference library** | Quick syntax lookup with tags, language filter, and full-text search |
+| **Dev tools (6)** | Base64 encoder/decoder, image → Base64, image → PDF, JSON formatter/minifier, Lorem Ipsum generator, color picker |
+| **Search** | PostgreSQL full-text search with locale-aware ILIKE fallback (works without `searchVec` column) |
+| **Dark / light theme** | Flash-free switching via server-rendered cookie sync |
+
+### 🛠️ For admins
+
+| Feature | Description |
+|---|---|
+| **Full CRUD** | Tutorials, chapters, groups, lessons, quizzes, challenges, references, sponsors, reviews, site settings |
+| **Bulk import** | Paste-and-parse bulk creation for challenges, quizzes, and references |
+| **AI content generation** | Gemini-powered generation of challenges, quizzes, and references |
+| **Site settings** | Editable hero, footer, FAQ (paired BN/EN), reviews config |
+| **PIN-gated deletes** | Destructive operations require a fresh 2-minute PIN token; 3 failed attempts = permanent lockout |
+| **Review moderation** | Approve / reject user-submitted reviews with 30-day device cooldown |
+| **Sponsor management** | Logo upload with client-side resize, drag-order priority, click tracking |
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer | Choice |
+|---|---|
+| **Framework** | Next.js 16.3.4 (App Router, Turbopack, RSC) |
+| **UI** | React 19.2 · Tailwind CSS v4 · Framer Motion |
+| **Language** | TypeScript 5 (strict mode) |
+| **Database** | PostgreSQL (Supabase) via Prisma 5.22 |
+| **Auth** | Custom HMAC-SHA256 signed cookies (Edge-safe) |
+| **Validation** | Zod 3.23 on every mutation route |
+| **Rich text** | TipTap 3 (admin lesson editor) |
+| **Code editor** | Monaco Editor + iframe sandbox |
+| **PDF** | jsPDF (client-side generation) |
+| **AI** | Google Generative AI (Gemini) |
+| **Markdown** | react-markdown + remark-gfm + rehype-raw |
+| **Icons** | lucide-react |
+
+---
+
+## 🔐 Security Model
+
+DevSchool uses **defense-in-depth** for its admin surface. No single layer is trusted on its own.
+
+```
+                  ┌──────────────────────────────────────────┐
+                  │  1. proxy.ts (Edge middleware)           │
+                  │     • /admin/*      → redirect if no auth│
+                  │     • /api/admin/* → 401 JSON if no auth │
+                  │     • HMAC verify of session cookie      │
+                  └────────────────────┬─────────────────────┘
+                                       ▼
+                  ┌──────────────────────────────────────────┐
+                  │  2. Per-route requireAdmin()             │
+                  │     • Verifies HMAC again                │
+                  │     • Loads AdminUser from DB            │
+                  │     • Rejects if `isActive = false`      │
+                  └────────────────────┬─────────────────────┘
+                                       ▼
+                  ┌──────────────────────────────────────────┐
+                  │  3. PIN gate (destructive ops only)      │
+                  │     • DELETE requires `x-pin-token` hdr  │
+                  │     • Token TTL = 2 minutes              │
+                  │     • 3 failed PINs → permanent lockout  │
+                  └──────────────────────────────────────────┘
+```
+
+**Additional hardening:**
+
+- **Login rate limit** — 5 attempts / minute / IP (in-memory, per-process)
+- **Review cooldown** — 30-day device-bound cooldown to prevent spam
+- **Security headers** — `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`
+- **Constant-time comparison** — HMAC signatures compared in constant time (timing-attack resistant)
+- **PIN stored in env** — never persisted to the DB
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js 20+** and **npm 10+**
+- **PostgreSQL 15+** (local or Supabase)
+- A **Google AI (Gemini)** API key (optional — only for AI generation features)
+
+### 1. Install dependencies
 
 ```bash
-# Install dependencies
 npm install
+```
 
-# Set up environment variables
-cp .env.example .env   # Update DATABASE_URL with your credentials
+`postinstall` runs `prisma generate` automatically.
 
-# Run migrations
-npx prisma migrate dev --name init
+### 2. Configure environment
 
-# Seed demo data
+Create a `.env` file in the project root:
+
+```bash
+# ── Database ─────────────────────────────────────────────
+# Use the pooled URL for runtime, direct URL for migrations.
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/postgres"
+
+# ── Admin auth ───────────────────────────────────────────
+# Generate a random 32+ character secret:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+ADMIN_SECRET_KEY="your-32-plus-char-random-string-here"
+
+# Required for DELETE operations. Any short string works.
+ADMIN_PIN="123456"
+
+# ── AI (optional) ────────────────────────────────────────
+GEMINI_API_KEY="your-gemini-api-key"
+```
+
+### 3. Set up the database
+
+```bash
+# Apply migrations
+npm run db:migrate
+
+# Seed the admin user (creates ADMIN_EMAIL + ADMIN_PASSWORD — check the script for defaults)
+npm run seed:admin
+
+# Optional: seed demo tutorials, challenges, reviews, and the HTML course
 npm run seed
+npm run seed:challenge
+npm run seed:html
+```
 
-# Start dev server
+### 4. Run the dev server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000
+Open **http://localhost:3000** — you should be redirected to `/bn` (locale guard). Admin panel lives at **/admin/login**.
 
 ---
 
-## Database Setup
+## 📜 Available Scripts
 
-### Migration Commands
-
-```bash
-# Create and apply migration (development)
-npx prisma migrate dev --name init
-
-# Apply pending migrations (production)
-npx prisma migrate deploy
-
-# Reset database (WARNING: drops all data)
-npx prisma migrate reset
-
-# Generate Prisma Client
-npx prisma generate
-```
-
-### Prisma Studio (GUI)
-
-```bash
-npx prisma studio
-```
-
-Opens http://localhost:5555 — browse and edit all models visually.
-
-### Schema Design
-
-The database follows an ERD with these models:
-
-| Model | Bangla | Purpose |
-|-------|--------|---------|
-| `Category` | বিষয় | Learning topics (Web Dev, Programming, etc.) |
-| `Tutorial` | টিউটোরিয়াল | Individual lessons |
-| `TutorialContent` | অধ্যায়ভিত্তিক কন্টেন্ট | Chapter-level content per tutorial |
-| `QuizQuestion` | কুইজ প্রশ্ন | MCQ questions per tutorial |
-| `QuizOption` | বিকল্প | Multiple-choice options |
-| `CodeChallenge` | কোড চ্যালেঞ্জ | Programming challenges |
-| `TestCase` | টেস্টকেস | Test inputs/outputs for challenges |
-| `Reference` | রেফারেন্স | Documentation links & syntax cheat sheets |
-| `Donation` | দান | Support donations |
-| `SiteSettings` | সাইট সেটিংস | Admin configuration (JSONB) |
-
-Full schema: [`prisma/schema.prisma`](prisma/schema.prisma)
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start dev server (Turbopack, hot reload) |
+| `npm run build` | Production build |
+| `npm start` | Start production server |
+| `npm run lint` | ESLint (targeting 0 problems) |
+| `npm run typecheck` | `tsc --noEmit` — must be 0 errors |
+| `npm run seed` | Seed demo tutorials, references, quizzes |
+| `npm run seed:admin` | Create / reset the admin user |
+| `npm run seed:challenge` | Seed demo coding challenges |
+| `npm run seed:html` | Seed the HTML course (15 chapters) |
+| `npm run db:migrate` | Apply Prisma migrations |
+| `npm run db:push` | Push schema directly (dev only) |
+| `npm run db:generate` | Regenerate the Prisma client |
+| `npm run diagnose:db` | One-off DB diagnostic (triggers, policies, columns) |
+| `npm run fix:searchvec` | Drop stale `searchVec` triggers |
+| `npm run reset:admin` | Force-reset the admin password |
 
 ---
 
-## API Routes
-
-All routes are Server Components calling Prisma directly.
-
-| Route | Method | Description |
-|-------|--------|-------------|
-| `/api/tutorials` | GET | List tutorials with pagination & search |
-| `/api/tutorials/[slug]` | GET | Single tutorial with contents, quiz, challenges |
-| `/api/categories` | GET | All active categories with tutorial counts |
-| `/api/references/[slug]` | GET | References for a category |
-| `/api/challenges/[id]` | GET | Code challenge with hidden test cases |
-| `/api/challenges/[id]/run` | POST | Run challenge code against test cases |
-| `/api/quizzes/[id]` | GET | Quiz questions (correct answers hidden) |
-| `/api/quizzes/[id]/submit` | POST | Submit quiz answers, get score |
-
-### Query Parameters
-
-**Tutorials list** (`/api/tutorials`):
-```
-? page=1&limit=6          # Pagination (default: 1, 6)
-& sort=createdAt           # Sort field: createdAt, title, viewCount, updatedAt
-& order=desc               # Sort direction: asc, desc
-& q=javascript             # Full-text search (PostgreSQL FTS)
-& category=web-development # Filter by category slug
-& difficulty=beginner      # Filter: beginner, intermediate, advanced
-```
-
-**Examples:**
-```bash
-# Popular tutorials
-GET /api/tutorials?sort=viewCount&order=desc&limit=6
-
-# Search tutorials
-GET /api/tutorials?q=react+hooks
-
-# Beginner web development tutorials
-GET /api/tutorials?category=web-development&difficulty=beginner
-```
-
----
-
-## Validation (Zod)
-
-All API routes use Zod schemas defined in [`lib/validators.ts`](lib/validators.ts):
-
-| Schema | Used For |
-|--------|----------|
-| `createTutorialSchema` | POST /api/tutorials body |
-| `searchSchema` | GET /api/tutorials query params |
-| `paginationSchema` | Pagination across all list endpoints |
-| `slugParamSchema` | Route parameter validation (`[slug]`) |
-| `idParamSchema` | Route parameter validation (`[id]`) |
-| `createQuizQuestionSchema` / `updateQuizQuestionSchema` | Quiz question create / update |
-| `createChallengeSchema` | Creating code challenges (update uses `.partial().omit({ tutorialId })`) |
-| `createChapterSchema` / `updateChapterSchema` / `reorderChaptersSchema` | Chapter CRUD + reorder |
-| `createLessonSchema` / `updateLessonSchema` / `reorderLessonsSchema` | Lesson CRUD + reorder |
-| `createGroupSchema` / `updateGroupSchema` / `reorderGroupsSchema` | Chapter group CRUD + reorder |
-
-### Validating request bodies
-
-Use the `validateBody()` helper for every mutation route:
-
-```typescript
-import { createChallengeSchema, validateBody } from '@/lib/validators'
-
-const body = await req.json()
-const { data, error } = validateBody(createChallengeSchema, body)
-if (error || !data) {
-  return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
-}
-// `data` is now fully typed — no `any`
-```
-
-**Separation of concerns:** Zod validates *type/shape*. Route handlers own *defaults, fallbacks, and business rules* (e.g. `language: data.language || 'js'`, duplicate-slug checks, cross-field rules). Do **not** move those into Zod.
-
----
-
-## API Error Handling
-
-All API routes use the helpers in [`lib/api-error.ts`](lib/api-error.ts):
-
-```typescript
-import { getErrorMessage, serverError } from '@/lib/api-error'
-
-// In a route's catch block — logs server-side, returns safe message to client
-try {
-  // ...
-} catch (e: unknown) {
-  return serverError(e, 'challenges-create')
-}
-
-// In non-route code (lib/) — just extract the message
-try {
-  // ...
-} catch (e: unknown) {
-  const msg = getErrorMessage(e)
-}
-```
-
-Rules:
-- Never write `catch (e: any)` — use `catch (e: unknown)` + `getErrorMessage()`.
-- Never write `: any` or `as any` in `app/api/**` or `lib/**`. If a third-party shape is unknown, declare a local type (e.g. `Judge0Response`) instead of casting to `any`.
-- Prisma JSON fields: cast to `Prisma.InputJsonValue`, not `any`.
-
----
-
-## Query Optimization Patterns
-
-### 1. Select Only Needed Fields
-
-```typescript
-// ❌ Bad — fetches all columns
-const tutorials = await prisma.tutorial.findMany({ where: { isPublished: true } })
-
-// ✅ Good — only fetch what's needed
-const tutorials = await prisma.tutorial.findMany({
-  select: { id: true, title: true, slug: true, viewCount: true },
-  where: { isPublished: true },
-})
-```
-
-### 2. Parallel Queries
-
-```typescript
-const [tutorials, total] = await Promise.all([
-  prisma.tutorial.findMany({ where, skip, take }),
-  prisma.tutorial.count({ where }),
-])
-```
-
-### 3. Atomic Increments
-
-```typescript
-// ❌ Bad — race condition prone
-await prisma.tutorial.update({ where: { id }, data: { viewCount: current + 1 } })
-
-// ✅ Good — atomic database operation
-await prisma.tutorial.update({ where: { id }, data: { viewCount: { increment: 1 } } })
-```
-
-### 4. Hide Sensitive Data from Client
-
-```typescript
-// Don't expose quiz answers or test case outputs
-const quiz = await prisma.quizQuestion.findMany({
-  select: {
-    id: true,
-    question: true,
-    options: {
-      select: {
-        id: true,
-        text: true,
-        isCorrect: false,  // Hidden!
-      },
-    },
-  },
-})
-```
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-frontend/
+.
 ├── app/
-│   ├── api/                    # API routes (Next.js Route Handlers)
-│   │   ├── tutorials/
-│   │   ├── categories/
-│   │   ├── references/
-│   │   ├── challenges/
-│   │   └── quizzes/
-│   ├── categories/[slug]/      # Category detail pages
-│   ├── tutorials/[slug]/       # Tutorial detail pages
-│   ├── layout.tsx              # Root layout
-│   └── page.tsx                # Homepage
-├── components/                 # React components
-│   ├── Header.tsx
-│   ├── Footer.tsx
-│   ├── HeroSection.tsx
-│   ├── HomeSearch.tsx
-│   ├── LoadMoreTutorials.tsx
-│   ├── LessonSidebar.tsx
-│   └── ErrorBoundary.tsx
+│   ├── (admin)/admin/          # Admin panel (protected by proxy.ts)
+│   ├── [locale]/(site)/        # Public site (bn + en)
+│   ├── api/                    # Route handlers (search, auth, CRUD)
+│   ├── global-error.tsx        # Root error boundary
+│   └── layout.tsx              # Root layout with font + theme setup
+│
+├── components/
+│   ├── admin/                  # Admin-only UI (forms, managers, modals)
+│   ├── tools/                  # The 6 dev tools
+│   ├── site/                   # Public site components
+│   └── ui/                     # Shared UI primitives
+│
 ├── lib/
-│   ├── prisma.ts               # Prisma client singleton
-│   └── validators.ts           # Zod validation schemas
+│   ├── i18n/                   # Dictionaries, locale helpers, provider
+│   ├── ai/                     # Gemini client + prompts
+│   ├── api-error.ts            # getErrorMessage / serverError / getErrorCode
+│   ├── auth.ts                 # Server-side auth (Prisma-backed)
+│   ├── auth-token.ts           # Edge-safe HMAC sign/verify
+│   ├── pin.ts                  # PIN gate + lockout logic
+│   ├── validators.ts           # All Zod schemas
+│   └── prisma.ts               # Prisma client singleton
+│
 ├── prisma/
-│   ├── schema.prisma           # Database schema
-│   ├── migrations/             # Migration files
-│   └── seed.ts                 # Demo data seeder
-├── .env                        # Environment variables (NOT committed)
-├── package.json
-└── README.md
+│   ├── schema.prisma           # Data model (17 models)
+│   └── seed*.ts                # Seed scripts
+│
+├── scripts/                    # Dev-only diagnostics and one-off fixes
+├── proxy.ts                    # Edge middleware (auth + locale guard)
+└── next.config.ts              # Security headers, image optimization
 ```
 
 ---
 
-## Security Checklist
+## 🎨 Design System
 
-- [x] `.env` files excluded from git
-- [x] Zod input validation on all POST endpoints
-- [x] Quiz answers (`isCorrect`) hidden from client
-- [x] Test case outputs (`expectedOutput`) hidden from client
-- [x] Challenge solutions not returned in GET responses
-- [x] Rate limiting ready (add middleware when needed)
-- [x] SQL injection protected by Prisma parameterized queries
+- **Neo-brutalist + terminal-inspired** aesthetic — dark mode primary, emerald accent
+- **Monospace typography** for code and labels, **sans-serif** for prose
+- **Motion-aware** — respects `prefers-reduced-motion`
+- **Fully responsive** — mobile-first drawer navigation, sticky desktop sidebar
+- **Accessibility** — semantic HTML, ARIA labels on all interactive controls, `role="status"` live regions
 
 ---
 
-## Deployment
+## 🚢 Deployment
 
-### Production Build
+### Vercel (recommended)
+
+1. Push the repo to GitHub
+2. Import into Vercel
+3. Add the same environment variables from `.env` (use **pooled** URLs from Supabase)
+4. Deploy — Next.js will detect the project automatically
 
 ```bash
-npm run build
-npm start
+# Trigger a redeploy via CLI
+vercel --prod
 ```
 
-### Environment Variables (required)
+### Database
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/devschool` |
-| `NEXT_PUBLIC_API_URL` | Backend API URL (optional) | `http://localhost:5000/api` |
-
-### Post-Install Hook
-
-The `postinstall` script automatically runs `prisma generate && prisma migrate deploy`.
+Use **Supabase** (recommended) or any managed PostgreSQL:
+- `DATABASE_URL` → pooled connection (`:6543`, `pgbouncer=true`)
+- `DIRECT_URL` → direct connection (`:5432`) — used only by migrations
 
 ---
 
-## Troubleshooting
+## 🗺️ Roadmap
 
-| Issue | Solution |
-|-------|----------|
-| `Cannot find module '@prisma/client'` | Run `npm install` in `frontend/` |
-| `Invalid `prisma.Tutorial.findUnique()`` | Run `npx prisma generate` |
-| `database "devschool" does not exist` | Create DB: `createdb devschool` |
-| Migration fails | Check `.env` credentials, then `npx prisma migrate dev` |
-
----
-
-## Professional Tips
-
-- Use **Prisma Studio** (`npx prisma studio`) to browse and debug data visually
-- Keep **migration folder names** as-is — they contain timestamps for rollback tracking
-- Always test migrations on **staging** before applying to production
-- Use `@default` and `@db.*` in Prisma schema for database-level validation
-- Combine Prisma with **React `cache()`** and **ISR** (`revalidate`) for caching
+- [ ] Automated test suite — Vitest for unit + Playwright for E2E (smoke of the 4 critical flows)
+- [ ] Strict Content-Security-Policy (nonce-based)
+- [ ] Admin editor `key={id}` refactor (removes 3 `useEffect` prop→state syncs)
+- [ ] Additional languages (Hindi, Spanish)
+- [ ] Public user accounts with cross-device progress sync
+- [ ] Interactive SQL / Python challenges in-browser (currently remote sandbox only)
 
 ---
 
-## License
+## 🧪 Testing Status
 
-MIT
+The project currently has **no automated test suite** — this is intentional for the MVP phase. All code has been verified by:
+- Strict TypeScript (`tsc --noEmit` — 0 errors)
+- ESLint (0 problems, repo-wide)
+- Production builds (97/97 pages)
+- Manual smoke tests of every user flow (auth, CRUD, search, challenge execution)
+
+Adding Vitest + Playwright is on the roadmap.
+
+---
+
+## 🤝 Contributing
+
+This is a personal learning project, but issues and suggestions are welcome. If you'd like to contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Ensure `npm run lint` and `npm run typecheck` both pass
+4. Commit with a clear message (`feat:`, `fix:`, `chore:`, `docs:`)
+5. Open a pull request
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- **[Next.js](https://nextjs.org/)** — the framework that makes all of this possible
+- **[Supabase](https://supabase.com/)** — managed Postgres
+- **[Prisma](https://www.prisma.io/)** — type-safe database access
+- **[Tailwind CSS](https://tailwindcss.com/)** — utility-first styling
+- **[Vercel](https://vercel.com/)** — deployment platform
+
+---
+
+<div align="center">
+
+**Built with ❤️ for Bangla-speaking developers.**
+
+[Report an issue](https://github.com/YOUR_USERNAME/devschool/issues) · [Request a feature](https://github.com/YOUR_USERNAME/devschool/issues)
+
+</div>
