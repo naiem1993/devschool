@@ -42,7 +42,8 @@
     "framer-motion": "^13.2.0",
     "jspdf": "^4.2.1",
     "lodash": "^4.18.1",
-    "next": "16.3.4",
+    "monaco-editor": "^0.57.0",
+    "next": "^16.4.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-markdown": "^10.1.0",
@@ -58,11 +59,17 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.4.2",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "tsx": "^4.7.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "brace-expansion": "^2.0.2",
+    "braces": "^3.0.3",
+    "dompurify": "^3.4.16",
+    "postcss-selector-parser": "^7.1.6"
   },
   "allowScripts": {
     "@prisma/client@5.22.0": true,
