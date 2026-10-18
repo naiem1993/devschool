@@ -138,6 +138,7 @@ export default function GlobalError({
               >
                 {t.retryBtn}
               </button>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- global-error replaces the root layout, so router context is unreliable in crash state; <a> forces a clean full reload */}
               <a
                 href="/"
                 style={{

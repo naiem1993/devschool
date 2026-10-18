@@ -81,7 +81,18 @@ export default function LessonContent({
   if (tokens.length === 0) return null
 
   const groups = quizGroups ?? []
-  let quizMarkerIndex = -1
+
+  // Precompute which quiz group each [[quiz]] token maps to (render must stay pure)
+  const quizOrdinalByToken = new Map<number, number>()
+  {
+    let ordinal = -1
+    tokens.forEach((tk, idx) => {
+      if (tk.kind === 'quiz') {
+        ordinal += 1
+        quizOrdinalByToken.set(idx, ordinal)
+      }
+    })
+  }
 
   // Markdown code block → TryIt renderer
   const markdownComponents = {
@@ -148,8 +159,8 @@ export default function LessonContent({
           return <LessonLink key={i} href={t.href} label={t.label} color={t.color} />
         }
         if (t.kind === 'quiz') {
-          quizMarkerIndex += 1
-          const group = groups[quizMarkerIndex]
+          const ordinal = quizOrdinalByToken.get(i)
+          const group = ordinal === undefined ? undefined : groups[ordinal]
           if (!group || group.questions.length === 0) return null
           return (
             <QuizWidget

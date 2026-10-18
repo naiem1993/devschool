@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { debounce } from 'lodash'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
@@ -52,23 +52,24 @@ export default function HomeSearch({
   const [result, setResult] = useState<SearchResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const runSearch = useCallback(
-    debounce(async (q: string) => {
-      if (q.trim().length < 2) {
-        setResult(null)
-        setIsLoading(false)
-        return
-      }
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=8`)
-        if (res.ok) setResult(await res.json())
-        else setResult(null)
-      } catch {
-        setResult(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }, 280),
+  const runSearch = useMemo(
+    () =>
+      debounce(async (q: string) => {
+        if (q.trim().length < 2) {
+          setResult(null)
+          setIsLoading(false)
+          return
+        }
+        try {
+          const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=8`)
+          if (res.ok) setResult(await res.json())
+          else setResult(null)
+        } catch {
+          setResult(null)
+        } finally {
+          setIsLoading(false)
+        }
+      }, 280),
     []
   )
 
