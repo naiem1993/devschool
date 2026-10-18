@@ -6,12 +6,29 @@ import { useState } from 'react'
 type Tutorial = { id: string; title: string }
 type TC = { input: string; expectedOutput: string; isHidden: boolean }
 
+type ChallengeFormInitial = {
+  id: string
+  tutorialId: string
+  titleBn: string
+  titleEn: string
+  descriptionBn: string
+  descriptionEn: string
+  starterCodeBn: string
+  starterCodeEn: string
+  solutionBn: string
+  solutionEn: string
+  difficulty: string
+  points: number
+  language: string
+  testCases: TC[]
+}
+
 export default function ChallengeForm({
   initial,
   tutorials,
   mode = 'create',
 }: {
-  initial?: any
+  initial?: ChallengeFormInitial
   tutorials: Tutorial[]
   mode?: 'create' | 'edit'
 }) {
@@ -32,7 +49,7 @@ export default function ChallengeForm({
   })
   const [testCases, setTestCases] = useState<TC[]>(
     initial?.testCases?.length
-      ? initial.testCases.map((t: any) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden }))
+      ? initial.testCases.map((t) => ({ input: t.input, expectedOutput: t.expectedOutput, isHidden: t.isHidden }))
       : [{ input: '', expectedOutput: '', isHidden: false }]
   )
   const [error, setError] = useState('')
