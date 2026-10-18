@@ -1,6 +1,6 @@
 # 🎯 Remaining Tasks — DevSchool Cleanup (Post-Refactor)
 
-> **Status:** 🔄 IN PROGRESS — Task 1 Batch 1A-1 + 1A-2 done (8 files, commits `15c432a`+`2b42f66`). Next: Batch 1A-3.
+> **Status:** 🔄 IN PROGRESS — Task 1 Batch 1A COMPLETE (14 files, 18 problems fixed; commits `15c432a`, `85ab4ee`). Next: Batch 1B (UI `no-explicit-any`).
 > **Created:** 2026-10-18
 > **Owner:** DevSchool Team
 > **Prerequisite:** `REFACTOR-ANY-TYPES.md` is COMPLETE (Phases 0–4b done, `app/api/**` + `lib/**` + UI 100% `: any`/`as any`-free, `tsc` & build pass, pushed to `7e10236`).
@@ -349,7 +349,7 @@ Update this table as work progresses:
 |---|---|---|---|---|
 | 1A-1 | API imports (unused + prefer-const) | 3 | ✅ Done | `15c432a` |
 | 1A-2 | Unused vars (lesson-sidebar, base64, image-to-pdf) | 5 | ✅ Done | `15c432a` |
-| 1A-3 | Remaining unused vars + unescaped entities | ~7 | ⬜ Pending | — |
+| 1A-3 | Remaining unused vars + unescaped entities | 6 | ✅ Done | `85ab4ee` |
 | 1B | UI `no-explicit-any` | 17 | ⬜ Pending | — |
 | 1C | Special cases (4 unique) | 4 | ⬜ Pending | — |
 | 1D | `set-state-in-effect` | 18 | ⬜ Pending | — |
@@ -441,6 +441,18 @@ Append entries here as work completes.
 - ✅ `npx tsc --noEmit` — 0 errors
 - 🎓 **Lesson:** CRLF files can reject multi-line `oldContent`. Prefer single-line anchors. Already added to STRICT RULE 3.
 - 📝 Commit: `15c432a`
+
+### 2026-10-18 — Batch 1A-3 Complete ✅ (6 files) → **Batch 1A FULLY COMPLETE**
+- `app/[locale]/(site)/page.tsx` — removed unused `HomeSearch` import. (⚠️ Note: `components/HomeSearch.tsx` exists but is not rendered on homepage — flagged as possible leftover from a prior refactor, not touched.)
+- `components/tools/LoremIpsumTool.tsx` — removed unused `eslint-disable-next-line react-hooks/exhaustive-deps` (rule no longer fires there).
+- `components/QuizWidget.tsx` — removed dead `userAnswerId` var (JSX uses `answers[qq.id]` directly).
+- `components/TryItFullClient.tsx` — removed debug `allKeys` block + unused `err` catch param.
+- `app/[locale]/(site)/challenges/[id]/ChallengeWorkspace.tsx` — removed unused `challengeId` from destructure (kept type contract — parents unchanged).
+- `components/admin/SiteSettingsForm.tsx` — removed 3 dead named FAQ handlers (`updateFaqItem`/`addFaqItem`/`removeFaqItem`); inline `setFaq` versions in JSX confirmed as the live code. Escaped 2 unescaped ASCII `"` → `&quot;` on line ~356.
+- ✅ All 6 verified with `search_in_file` (expected 0 matches per var).
+- ✅ `npx tsc --noEmit` — 0 errors.
+- 📝 Commit: `chore(lint): batch 1A-3 — 6 more files, 9 problems fixed (unused vars + escape quotes)` `85ab4ee`
+- 📊 **Batch 1A totals:** 14 files touched, 18 problems resolved (no-unused-vars ×~15, prefer-const ×1, no-unescaped-entities ×2, unused-disable ×1). Zero runtime behavior changes — pure dead-code removal + quote escaping.
 
 _(Add new entries below as you complete each batch.)_
 
