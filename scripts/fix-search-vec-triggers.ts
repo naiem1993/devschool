@@ -23,6 +23,21 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+/** Safe error message extractor — no `any` needed. */
+function getErrMsg(e: unknown): string {
+  if (e instanceof Error) return e.message
+  if (typeof e === 'string') return e
+  if (
+    e &&
+    typeof e === 'object' &&
+    'message' in e &&
+    typeof (e as { message: unknown }).message === 'string'
+  ) {
+    return (e as { message: string }).message
+  }
+  return String(e)
+}
+
 async function main() {
   console.log('🔧 Dropping stale searchVec triggers + functions...\n')
 
@@ -37,13 +52,15 @@ async function main() {
     try {
       await prisma.$executeRawUnsafe(s)
       console.log('  ✅', s)
-    } catch (e: any) {
-      console.log('  ⚠️ ', s, '→', e.message)
+    } catch (e: unknown) {
+      console.log('  ⚠️ ', s, '→', getErrMsg(e))
     }
   }
 
   // Verify
-  const triggers = await prisma.$queryRaw<any[]>`
+  const triggers = await prisma.$queryRaw<
+    Array<{ tbl: string; trigger_name: string }>
+  >`
     SELECT event_object_table AS tbl, trigger_name
     FROM information_schema.triggers
     WHERE trigger_schema = 'public'
@@ -51,7 +68,7 @@ async function main() {
   `
   console.log('\n--- Remaining triggers in public schema ---')
   if (triggers.length === 0) console.log('  (none) ✅')
-  else triggers.forEach((x: any) => console.log(`  ${x.tbl} :: ${x.trigger_name}`))
+  else triggers.forEach((x) => console.log(`  ${x.tbl} :: ${x.trigger_name}`))
 
   // Smoke test: raw insert into Tutorial
   console.log('\n--- Smoke test: INSERT into Tutorial ---')
@@ -64,8 +81,8 @@ async function main() {
     console.log('  ✅ Raw insert/upsert works now')
     await prisma.$executeRaw`DELETE FROM "Tutorial" WHERE slug = 'diag-test-slug-2'`
     console.log('  (cleaned up)')
-  } catch (e: any) {
-    console.log('  ❌ Still failing:', e.message)
+  } catch (e: unknown) {
+    console.log('  ❌ Still failing:', getErrMsg(e))
     process.exit(1)
   }
 
