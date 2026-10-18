@@ -183,7 +183,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
     }
     tick()
     return () => clearTimeout(timer)
-  }, [prefersReduced])
+  }, [prefersReduced, dict.heroDemo.typing1, dict.heroDemo.typing2])
 
   // 4) particle canvas
   useEffect(() => {

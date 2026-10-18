@@ -25,7 +25,7 @@ export default function ToolsGrid({ tools }: { tools: DevTool[] }) {
         )
       return matchesCat && matchesQuery
     })
-  }, [tools, query, cat])
+  }, [tools, query, cat, dict.toolPages])
 
   const catKeys = Object.keys(TOOL_CATEGORY_KEYS) as ToolCategory[]
 

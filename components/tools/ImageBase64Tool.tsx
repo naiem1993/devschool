@@ -186,7 +186,7 @@ export default function ImageBase64Tool() {
     } finally {
       setBusy(false)
     }
-  }, [])
+  }, [t])
 
   const clearImage = () => {
     setFile(null)
@@ -232,7 +232,7 @@ export default function ImageBase64Tool() {
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
-  }, [])
+  }, [t])
 
   // ── কপি ─────────────────────────────────────────────────
   const copyText = async (text: string) => {

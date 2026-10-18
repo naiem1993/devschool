@@ -105,13 +105,13 @@ export default function QuizWidget({ lessonId, questions }: Props) {
   }, [bestKey])
 
   const q = questions[current]
-  const orderedOptionIds = optionOrders[current] ?? []
   const orderedOptions = useMemo(() => {
     if (!q) return []
-    return orderedOptionIds
+    const ids = optionOrders[current] ?? []
+    return ids
       .map((id) => q.options.find((o) => o.id === id))
       .filter((x): x is QuizOptionData => !!x)
-  }, [q, orderedOptionIds])
+  }, [q, optionOrders, current])
 
   const correctCount = Object.values(correctMap).filter(Boolean).length
 

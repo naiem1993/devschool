@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getDeviceId } from '@/lib/device'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
@@ -26,7 +26,7 @@ export default function ProgressClient() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -45,13 +45,11 @@ export default function ProgressClient() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
 
-  // INTENTIONAL: side-effect fetch on mount; load() sets loading/error state.
-   
   useEffect(() => {
     load()
-  }, [])
+  }, [load])
 
   if (loading) {
     return (
