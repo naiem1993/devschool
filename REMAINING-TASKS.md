@@ -1,6 +1,6 @@
 # 🎯 Remaining Tasks — DevSchool Cleanup (Post-Refactor)
 
-> **Status:** ✅ **TASK 1 COMPLETE** — `app/**` + `components/**` = 0 lint problems, tsc=0, build 97/97. 3 real runtime bugs found & fixed during smoke test. Next: Task 2 (`scripts/` + `prisma/seed.ts`).
+> **Status:** 🎉 **COMPLETE — Both Tasks Done.** `npm run lint` = **0 problems** (repo-wide). `: any`/`as any` = 0 across `app/**`, `lib/**`, `components/**`, `scripts/**`, `prisma/seed.ts`. `tsc --noEmit` = 0. `npm run build` = 97/97 pages. 4 real runtime bugs found & fixed via smoke testing. Ready to push.
 > **Created:** 2026-10-18
 > **Owner:** DevSchool Team
 > **Prerequisite:** `REFACTOR-ANY-TYPES.md` is COMPLETE (Phases 0–4b done, `app/api/**` + `lib/**` + UI 100% `: any`/`as any`-free, `tsc` & build pass, pushed to `7e10236`).
@@ -366,8 +366,10 @@ Update this table as work progresses:
 
 | Batch | Scope | Files | Status | Committed |
 |---|---|---|---|---|
-| 2A | diagnose-db + db-inspect + test-remote-db | 3 | ⬜ Pending | — |
-| 2B | fix-search-vec + prisma/seed | 2 | ⬜ Pending | — |
+| 2A | diagnose-db.ts (19 `: any` -> 0) | 1 | ✅ Done | `56b7e55` |
+| 2B | fix-search-vec + db-inspect + test-remote (6 `: any` -> 0) | 3 | ✅ Done | `30b2746` |
+| 2C | prisma/seed `as any` + seed-html-course unused vars | 2 | ✅ Done | `51e6af4` |
+| 2D | Final verify (lint=0, tsc=0, build 97/97) + search FTS probe fix | — | ✅ Done | `d6532a2` |
 
 **Status legend:** ⬜ Pending | 🔄 In Progress | ✅ Done | ⚠️ Blocked
 
@@ -528,6 +530,17 @@ Append entries here as work completes.
 - 🎓 **Lesson:** smoke testing is not optional. All 3 bugs were latent before this session — `any` and the wrong types hid them. The lint work didn't introduce them; it *exposed* them by forcing the types to be honest.
 - 📊 **Task 1 final state:** `app/**` + `components/**` lint = 0; `: any`/`as any` = 0 in both; tsc = 0; build = 97/97. Commits during Task 1: 1A (3), 1B (~8), 1C (1), 1D (1), 1E (1), 1F (2), docs (~4).
 - 🔜 **Next:** Task 2 — `scripts/` + `prisma/seed.ts` (26 `: any` errors + 2 unused vars). Dev-only, low risk.
+
+### 2026-10-18 — Task 2 Complete ✅ **🎉 PROJECT DONE**
+- **Batch 2A** (`56b7e55`) — `scripts/diagnose-db.ts` rewritten: 8 `catch (e: any)` → `unknown` via local `getErrMsg()`, 6 `$queryRaw<any[]>` → typed generics, 5 `forEach((x: any))` → inferred from the generic. 19 `: any` → 0.
+- **Batch 2B** (`30b2746`) — `scripts/fix-search-vec-triggers.ts` (4 → 0), `scripts/db-inspect-tutorial.ts` (1 → 0), `scripts/test-remote-db.ts` (1 → 0). All use local `getErrMsg` / `getErrCode` helpers (no cross-file import — scripts are dev-only).
+- **Batch 2C** (`51e6af4`) — `prisma/seed.ts` dropped an unnecessary `as any` (`Json` field accepts a plain object literal); `scripts/seed-html-course.ts` removed orphan `CATEGORY_SLUG` / `CATEGORY_NAME` (the `Category` model was removed 2026-09-21).
+- **Batch 2D — final verify + FTS log-spam fix** (`d6532a2`):
+  - ✅ `npm run lint` = **0 problems** (repo-wide, truly empty output).
+  - ✅ `npx tsc --noEmit` = 0 errors.
+  - ✅ `npm run build` = success, 97/97 pages.
+  - 🐛 **Real bug #4 — FTS log spam:** every `/api/search` request logged a full `PrismaClientKnownRequestError` stack (`column t.searchVec does not exist`). The FTS column was dropped by migration `20260918151014_nested_structure_chapter_lesson`, but the route still attempted FTS first on every call. Fixed with a module-scope probe cache (`hasFtsColumn`): one cheap `information_schema.columns` check, then the route skips FTS entirely when the column is absent. Fallback logic extracted to a reusable `runFallback()`. If a future migration restores `searchVec`, the next cold start auto-detects it. Search now works with **zero error logs**.
+- 🎓 **Lesson:** smoke testing surfaced 4 real production bugs across the two tasks (`search results empty`, `orphan জেনেরিক label`, `dropdown under stat cards`, `FTS log spam`). All were latent before; the lint/type work exposed them by removing the `any` safety blanket.
 
 _(Add new entries below as you complete each batch.)_
 
