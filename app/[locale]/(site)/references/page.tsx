@@ -5,6 +5,7 @@ import ReferencesFilter, { type ReferenceCard } from './ReferencesFilter'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
 import { pickText } from '@/lib/i18n/localize'
+import { getErrorCode } from '@/lib/api-error'
 
 export const revalidate = 300
 
@@ -98,11 +99,12 @@ export default async function ReferencesListingPage({
     languages = Array.from(
       new Set(raw.map((r) => r.language).filter((l): l is string => Boolean(l)))
     ).sort()
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('References listing error:', err)
     dbError = true
-    if (err?.code === 'P1001') errorMessage = dict.references.errNoConn
-    else if (err?.code === 'P2021') errorMessage = dict.references.errNoTable
+    const code = getErrorCode(err)
+    if (code === 'P1001') errorMessage = dict.references.errNoConn
+    else if (code === 'P2021') errorMessage = dict.references.errNoTable
     else errorMessage = dict.references.errGeneric
   }
 

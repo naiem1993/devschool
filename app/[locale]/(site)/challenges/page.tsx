@@ -5,6 +5,7 @@ import ChallengeFilter, { type ChallengeCard } from './ChallengeFilter'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
 import { pickText } from '@/lib/i18n/localize'
+import { getErrorCode } from '@/lib/api-error'
 
 export const revalidate = 300
 
@@ -84,11 +85,12 @@ export default async function ChallengesListingPage({
       }))
       // Rule #4 — null + "" + "   " সব বাদ
       .filter((c) => c.title !== '')
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Challenges listing error:', err)
     dbError = true
-    if (err?.code === 'P1001') errorMessage = dict.challenges.errNoConn
-    else if (err?.code === 'P2021') errorMessage = dict.challenges.errNoTable
+    const code = getErrorCode(err)
+    if (code === 'P1001') errorMessage = dict.challenges.errNoConn
+    else if (code === 'P2021') errorMessage = dict.challenges.errNoTable
     else errorMessage = dict.challenges.errGeneric
   }
 

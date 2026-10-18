@@ -24,7 +24,7 @@ const staggerContainer = {
 
 interface HeroSectionProps {
   hero: HeroContent
-  tutorials: any[]
+  tutorials: unknown[]
   stats: {
     languageCount: number
     tutorialCount: number

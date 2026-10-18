@@ -35,9 +35,10 @@ export default function ProgressClient() {
       const res = await fetch(`/api/attempts/${id}`)
       if (!res.ok) throw new Error('load failed')
       setData(await res.json())
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : typeof e === 'string' ? e : ''
       setError(
-        e?.message === 'device id unavailable'
+        msg === 'device id unavailable'
           ? t.progressUi.errDeviceId
           : t.progressUi.errLoadFailed
       )

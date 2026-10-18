@@ -6,6 +6,7 @@ import { absoluteUrl } from '@/lib/site-url'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionarySync } from '@/lib/i18n/dictionaries'
 import { pickText } from '@/lib/i18n/localize'
+import { getErrorCode } from '@/lib/api-error'
 
 // ─────────────────────────────────────────────────────────────
 //  ISR — revalidate every 5 minutes
@@ -139,12 +140,13 @@ export default async function TutorialsListingPage({
 
     totalChapters = tutorials.reduce((sum, t) => sum + t.chapterCount, 0)
     totalReferences = refCount
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Tutorials listing error:', err)
     dbError = true
-    if (err?.code === 'P1001') {
+    const code = getErrorCode(err)
+    if (code === 'P1001') {
       errorMessage = dict.listing.dbErrNoConn
-    } else if (err?.code === 'P2021') {
+    } else if (code === 'P2021') {
       errorMessage = dict.listing.dbErrNoTable
     } else {
       errorMessage = dict.listing.dbErrGeneric

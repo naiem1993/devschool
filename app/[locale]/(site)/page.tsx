@@ -11,6 +11,9 @@ import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config';
 import { getDictionarySync } from '@/lib/i18n/dictionaries';
 import { pickText } from '@/lib/i18n/localize';
 import { localeHref } from '@/lib/i18n/link';
+import type { ReviewItem } from '@/components/HomeExtras';
+import type { Tutorial as TutorialCard } from '@/components/LoadMoreTutorials';
+import { getErrorCode } from '@/lib/api-error';
 
 // ISR: ৫ মিনিট cache। Home-এ কোনো user-specific data নেই (শুধু public published tutorials),
 // তাই static-safe। প্রতিটা request-এ DB hit হবে না → multi-x fast।
@@ -60,10 +63,10 @@ export default async function HomePage({
   const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
   const dict = getDictionarySync(locale)
 
-  let popularTutorials: any[] = [];
-  let latestTutorials: any[] = [];
-  let allTutorialsForSearch: any[] = [];
-  let reviews: any[] = [];
+  let popularTutorials: TutorialCard[] = [];
+  let latestTutorials: TutorialCard[] = [];
+  let allTutorialsForSearch: unknown[] = [];
+  let reviews: ReviewItem[] = [];
   let allCategoryNames: string[] = [];
   let reviewsCount = 0;
   let reviewsAvg = 0;
@@ -198,13 +201,14 @@ export default async function HomePage({
     allCategoryNames = allTuts
       .map((t) => pickText(locale, t.titleBn, t.titleEn))
       .filter((v): v is string => v !== null);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Database error:', error);
     dbError = true;
 
-    if (error.code === 'P1001') {
+    const code = getErrorCode(error);
+    if (code === 'P1001') {
       errorMessage = dict.home.errNoConn;
-    } else if (error.code === 'P2021') {
+    } else if (code === 'P2021') {
       errorMessage = dict.home.errNoTable;
     } else {
       errorMessage = dict.home.errUnknown;

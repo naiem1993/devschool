@@ -42,6 +42,22 @@ export function getErrorMessage(e: unknown): string {
 }
 
 /**
+ * Extract a stable error code from an unknown thrown value.
+ *
+ * Used mainly to distinguish Prisma error codes (e.g. `P1001` = unreachable DB,
+ * `P2021` = missing table) from other errors — without `: any` or unsafe casts.
+ *
+ * Returns `undefined` when the value has no string `code` property.
+ */
+export function getErrorCode(e: unknown): string | undefined {
+  if (e && typeof e === 'object' && 'code' in e) {
+    const code = (e as { code: unknown }).code
+    if (typeof code === 'string') return code
+  }
+  return undefined
+}
+
+/**
  * Build a standardized 500 response for API routes.
  *
  * @param e       The thrown value (typed as `unknown` for strictness).

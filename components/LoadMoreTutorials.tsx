@@ -5,14 +5,14 @@ import Link from 'next/link'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 import { localeHref } from '@/lib/i18n/link'
 
-interface Tutorial {
+export interface Tutorial {
   id: string
   title: string
   slug: string
   difficulty: string
   views: number
-  duration?: number
-  rating?: number
+  duration?: number | null
+  rating?: number | null
   category?: { name: string }
 }
 
