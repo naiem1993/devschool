@@ -384,14 +384,15 @@ export default function ChallengeWorkspace({
       }
 
       setResults(list)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
       setResults(
         testCases.map((tc) => ({
           id: tc.id,
           passed: false,
           output: '',
           expected: tc.expectedOutput,
-          error: err?.message || String(err),
+          error: msg,
         }))
       )
     } finally {
@@ -408,8 +409,9 @@ export default function ChallengeWorkspace({
     try {
       const r = await runInSandbox(code, '', 'challenge', TIMEOUT_CHALLENGE_MS)
       setCustomOutput(r.error ? `✗ ${r.error}` : r.output || '(no output)')
-    } catch (err: any) {
-      setCustomOutput(`✗ ${err?.message || String(err)}`)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setCustomOutput(`✗ ${msg}`)
     } finally {
       setRuntime(Date.now() - start)
       setRunningCustom(false)
