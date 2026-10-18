@@ -1,6 +1,6 @@
 # 🎯 Refactor Plan: Eliminate `: any` from API Routes
 
-> **Status:** 🎉 COMPLETE — Phases 0–4 done (2026-10-18). `app/api/**` + `lib/**` are 100% `: any`/`as any`-free; build & tsc pass. UI-layer and scripts any-types deferred (out of scope).
+> **Status:** 🎉 COMPLETE — Phases 0–4 + 4b done (2026-10-18). `app/api/**`, `lib/**`, and UI layer are 100% `: any`/`as any`-free; build & tsc pass. Only scripts/prisma `: any` (~20) remain (out of scope).
 > **Created:** 2026-10-17
 > **Owner:** DevSchool Team
 > **Estimated Time (Phase 3 only):** 1-2 hours
@@ -819,5 +819,17 @@ _(Add new entries below as you complete each phase. Include date, phase, and any
 - ✅ Doc overclaims corrected (6 places) — all "100%" claims now scoped and true
 - ✅ 45 `.bak`/`.bak1` files deleted from disk; never tracked by git (`.gitignore` already had `*.bak*`)
 - ✅ `README.md` — documented `validateBody()` pattern, `serverError()`/`getErrorMessage()` error handling, and the new phase-3 schemas; noted the `: any`/`as any` ban in `app/api/**` + `lib/**`
-- ⚠️ Not done (out of scope): UI-layer `as any` (~3), `scripts/*.ts` `: any` (~20), lint's 112 pre-existing errors (mostly React hooks rules)
+- ✅ **UI-layer `as any` — DONE (Phase 4b, commit `c07a952`):** actually 2 (not 3) — `(c as any).language` in admin challenge edit page and `(challenge as any).language` in site detail page, both unnecessary (`CodeChallenge.language` is a real non-nullable `String` field). 3rd cited item was `prisma/seed.ts` (scripts/prisma scope, still out of scope).
+- ⚠️ Still out of scope: `scripts/*.ts` + `prisma/seed.ts` `: any` (~20), lint's 112 pre-existing errors (mostly React hooks rules)
 - 🚀 Next: push to origin (17+ commits ahead); optional follow-up PR for UI/scripts any-types and React hooks lint errors.
+
+### 2026-10-18 — ✅ Phase 4b COMPLETE (UI layer any-types)
+- 🔍 Audit: `.tsx` had **2** `as any` (doc said ~3 — corrected). Both were the same pattern: `language` field on `CodeChallenge`.
+  - `app/(admin)/admin/challenges/[id]/edit/page.tsx:34` — `(c as any).language` → `c.language`
+  - `app/[locale]/(site)/challenges/[id]/page.tsx:191` — `(challenge as any).language` → `challenge.language`
+- ✅ Verified `prisma/schema.prisma:192` — `language String @default("js")` — real non-nullable field, cast was unnecessary (likely a stale workaround)
+- ✅ Both **pure type changes** (zero behavior risk); `|| 'js'` kept as-is (dead-code edge case preserved)
+- ⏭️ `prisma/seed.ts:318` — out of scope (scripts/prisma), left untouched
+- ✅ `npx tsc --noEmit` — 0 errors
+- 📝 Commit: `refactor(ui): phase 4b — UI layer any-types` (c07a952)
+- 📊 **Final ground truth:** `: any` and `as any` = **0** across `app/api/**`, `lib/**`, and UI layer (`app/**/*.tsx`, `components/**/*.tsx`). Only `scripts/*.ts` + `prisma/seed.ts` (~20) remain, intentionally deferred.
