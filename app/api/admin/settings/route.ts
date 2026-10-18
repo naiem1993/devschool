@@ -8,6 +8,7 @@ import { FOOTER_SETTINGS_KEY, FOOTER_EN_SETTINGS_KEY } from '@/lib/footer-conten
 import { REVIEWS_SETTINGS_KEY } from '@/lib/reviews-content'
 import { FAQ_SETTINGS_KEY } from '@/lib/faq-content'
 import { serverError } from '@/lib/api-error'
+import type { Prisma } from '@prisma/client'
 
 export async function GET() {
   const settings = await getSiteSettings()
@@ -41,10 +42,10 @@ export async function PUT(req: NextRequest) {
   try {
     await prisma.siteSettings.upsert({
       where: { key: HERO_SETTINGS_KEY },
-      update: { value: heroRes.data as any },
+      update: { value: heroRes.data as Prisma.InputJsonValue },
       create: {
         key: HERO_SETTINGS_KEY,
-        value: heroRes.data as any,
+        value: heroRes.data as Prisma.InputJsonValue,
         description: 'Homepage hero section content',
       },
     })
@@ -52,20 +53,20 @@ export async function PUT(req: NextRequest) {
     // ইংরেজি hero — /en হোমপেজের জন্য
     await prisma.siteSettings.upsert({
       where: { key: HERO_EN_SETTINGS_KEY },
-      update: { value: heroEnRes.data as any },
+      update: { value: heroEnRes.data as Prisma.InputJsonValue },
       create: {
         key: HERO_EN_SETTINGS_KEY,
-        value: heroEnRes.data as any,
+        value: heroEnRes.data as Prisma.InputJsonValue,
         description: 'Homepage hero section content (English)',
       },
     })
 
     await prisma.siteSettings.upsert({
       where: { key: FOOTER_SETTINGS_KEY },
-      update: { value: footerRes.data as any },
+      update: { value: footerRes.data as Prisma.InputJsonValue },
       create: {
         key: FOOTER_SETTINGS_KEY,
-        value: footerRes.data as any,
+        value: footerRes.data as Prisma.InputJsonValue,
         description: 'Site footer content',
       },
     })
@@ -74,30 +75,30 @@ export async function PUT(req: NextRequest) {
     // পাঠক site এ bn-এর socialLinks ব্যবহার হবে (site-settings.ts দেখুন)
     await prisma.siteSettings.upsert({
       where: { key: FOOTER_EN_SETTINGS_KEY },
-      update: { value: footerEnRes.data as any },
+      update: { value: footerEnRes.data as Prisma.InputJsonValue },
       create: {
         key: FOOTER_EN_SETTINGS_KEY,
-        value: footerEnRes.data as any,
+        value: footerEnRes.data as Prisma.InputJsonValue,
         description: 'Site footer content (English)',
       },
     })
 
     await prisma.siteSettings.upsert({
       where: { key: REVIEWS_SETTINGS_KEY },
-      update: { value: reviewsRes.data as any },
+      update: { value: reviewsRes.data as Prisma.InputJsonValue },
       create: {
         key: REVIEWS_SETTINGS_KEY,
-        value: reviewsRes.data as any,
+        value: reviewsRes.data as Prisma.InputJsonValue,
         description: 'Homepage reviews section toggle',
       },
     })
 
     await prisma.siteSettings.upsert({
       where: { key: FAQ_SETTINGS_KEY },
-      update: { value: faqRes.data as any },
+      update: { value: faqRes.data as Prisma.InputJsonValue },
       create: {
         key: FAQ_SETTINGS_KEY,
-        value: faqRes.data as any,
+        value: faqRes.data as Prisma.InputJsonValue,
         description: 'Homepage FAQ section items',
       },
     })

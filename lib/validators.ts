@@ -32,8 +32,6 @@ export const updateTutorialSchema = z.object({
 
 // ─── Nested Structure Validators (v3) ──────────────────────────────────────────
 
-const urlSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-
 export const createGroupSchema = z.object({
   titleBn: z.string().min(1),
   titleEn: z.string().nullable().optional(),
