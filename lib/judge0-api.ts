@@ -24,6 +24,16 @@ export type SupportedLanguage =
   | 'kotlin'
   | 'swift'
 
+export type Judge0Response = {
+  stdout?: string | null
+  stderr?: string | null
+  compile_output?: string | null
+  message?: string | null
+  status?: { id: number; description: string }
+  time?: string | null
+  memory?: number | null
+}
+
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   js: 'JavaScript',
   ts: 'TypeScript',
@@ -126,7 +136,7 @@ export async function runInJudge0(
     }
 
     // ২. রেজাল্টের জন্য পোল করা (In Queue = 1, Processing = 2)
-    let resultData: any = null
+    let resultData: Judge0Response | null = null
     const pollStart = Date.now()
 
     while (Date.now() - pollStart < timeoutMs + 3000) {
@@ -139,7 +149,7 @@ export async function runInJudge0(
 
       if (!pollRes.ok) continue
 
-      const data = await pollRes.json()
+      const data: Judge0Response = await pollRes.json()
       const statusId = data.status?.id
 
       // 1 = In Queue, 2 = Processing
