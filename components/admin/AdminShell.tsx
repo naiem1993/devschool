@@ -10,6 +10,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Route change হলে drawer auto বন্ধ
+  // INTENTIONAL: imperative close on navigation — no derived state equivalent.
+   
   useEffect(() => {
     setSidebarOpen(false)
   }, [pathname])

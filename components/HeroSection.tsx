@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 // SSR-safe layout effect — থিম sync paint-এর আগে চালাতে চাই
 const useIsoLayoutEffect =
@@ -92,20 +92,25 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
     html: dict.heroDemo.html,
     js: dict.heroDemo.js,
   })
-  const [docSrc, setDocSrc] = useState('')
   const [typedText, setTypedText] = useState('')
   const [prefersReduced, setPrefersReduced] = useState(false)
   const [isDark, setIsDark] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
 
-  // 1) Live preview — টাইপ করলে সাথে সাথে আপডেট
-  useEffect(() => {
-    setDocSrc(buildDoc(code.html, code.css, code.js, isDark))
+  // 1) Live preview — টাইপ করলে সাথে সাথে আপডেট।
+  // Derived state — no effect needed. `isDark` is intentionally excluded
+  // (matches old behavior: theme updates are handled by the separate
+  // theme-sync effect below, not by rebuilding the iframe document).
+  const docSrc = useMemo(
+    () => buildDoc(code.html, code.css, code.js, isDark),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code])
+    [code]
+  )
 
   // 2) motion preference
+  // INTENTIONAL: matchMedia is a browser API — must be read after mount.
+   
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     setPrefersReduced(mq.matches)
@@ -159,6 +164,9 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
   }, [isDark, docSrc])
 
   // 3) typing terminal — শুধু motion allowed হলে
+  // INTENTIONAL: stateful setTimeout animation driver; cannot be derived
+  // from render (each frame advances internal timing counters).
+   
   useEffect(() => {
     if (prefersReduced) { setTypedText(dict.heroDemo.typing1); return }
     const lines = [dict.heroDemo.typing1, dict.heroDemo.typing2]

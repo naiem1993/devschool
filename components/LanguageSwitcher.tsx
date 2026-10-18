@@ -25,6 +25,9 @@ export default function LanguageSwitcher() {
 
   // JS চালু থাকলে query ধরে রাখি
   const [search, setSearch] = useState('');
+  // INTENTIONAL: window.location.search is unavailable during SSR —
+  // reading it after pathname change is the only way to preserve query.
+   
   useEffect(() => {
     setSearch(window.location.search || '');
   }, [pathname]);

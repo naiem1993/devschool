@@ -121,6 +121,11 @@ export default function SearchClient({ languages }: { languages: string[] }) {
     []
   )
 
+  // INTENTIONAL: loading state must flip synchronously on query change —
+  // the debounced fetch itself takes 300ms to start, so the skeleton has
+  // to be visible immediately. This is a derived-then-imperative pattern
+  // that cannot be expressed as pure render math.
+   
   useEffect(() => {
     setIsLoading(query.trim().length >= 2)
     runSearch({ q: query, type, difficulty, language })

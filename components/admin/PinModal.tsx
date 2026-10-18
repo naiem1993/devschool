@@ -15,6 +15,9 @@ export default function PinModal({ open, onClose, onSuccess, itemLabel }: Props)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // INTENTIONAL: modal open reset — clears PIN / error / busy and refocuses.
+  // Imperative and cannot be expressed as pure render math.
+   
   useEffect(() => {
     if (open) {
       setPin('')

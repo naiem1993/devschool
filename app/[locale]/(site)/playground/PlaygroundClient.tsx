@@ -284,6 +284,9 @@ export default function PlaygroundClient() {
   const draggingRef = useRef(false)
 
   // ── Orientation persistence ──
+  // INTENTIONAL: localStorage is unavailable on the server — reading it
+  // in a mount-only effect is the canonical hydration pattern.
+   
   useEffect(() => {
     try {
       const saved = localStorage.getItem('playground:orientation')
@@ -309,6 +312,9 @@ export default function PlaygroundClient() {
     return () => obs.disconnect()
   }, [])
 
+  // INTENTIONAL: localStorage is unavailable server-side — must read
+  // after mount/lang change to hydrate the correct saved code.
+   
   useEffect(() => {
     try {
       const saved = localStorage.getItem(`playground:${lang}`)

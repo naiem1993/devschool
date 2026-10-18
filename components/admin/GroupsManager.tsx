@@ -29,6 +29,10 @@ export default function GroupsManager({
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
+  // INTENTIONAL: prop→state sync. When the parent re-renders with fresh
+  // `initial`, local edits must be replaced. A future refactor should pass
+  // a stable `key` from the parent instead — tracked in the doc.
+   
   useEffect(() => {
     setGroups(initial)
   }, [initial])
@@ -136,7 +140,12 @@ function GroupItem({
   const [titleEn, setTitleEn] = useState(group.titleEn ?? '')
   const [saving, setSaving] = useState(false)
 
+  // INTENTIONAL: per-item prop→state sync. When the selected group changes
+  // (or the parent re-fetches after save), the local title inputs must reset.
+  // `key={group.id}` on the parent would remove these effects — future work.
+   
   useEffect(() => setTitle(group.title), [group.title])
+   
   useEffect(() => setTitleEn(group.titleEn ?? ''), [group.titleEn])
 
   const save = async () => {

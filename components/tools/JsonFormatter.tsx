@@ -152,6 +152,9 @@ export default function JsonFormatter() {
   }, [])
 
   // ── ডিফল্ট status (locale-সাপেক্ষে) ─────────
+  // INTENTIONAL: when locale changes, the currently-idle status must be
+  // updated to the new language. Non-idle statuses are preserved.
+   
   useEffect(() => {
     setStatus((prev) => (prev.kind === 'idle' ? { kind: 'idle', text: t.statusIdle } : prev))
   }, [t.statusIdle])

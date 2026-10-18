@@ -57,6 +57,11 @@ export default function ThemeProvider({ children, forcedTheme }: Props) {
   const [mounted, setMounted] = useState(false)
 
   // Read persisted theme once after mount (skip when forced).
+  // `setState` here is INTENTIONAL — it hydrates React state from
+  // localStorage after first paint so the SSR-rendered <html class="dark">
+  // (applied by ThemeInit) and React stay in sync. Removing it would
+  // cause the toggle icon to be wrong and `mounted` to stay false forever.
+   
   useEffect(() => {
     setMounted(true)
     if (forcedTheme) return

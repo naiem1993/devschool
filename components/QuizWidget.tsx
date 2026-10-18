@@ -75,6 +75,9 @@ export default function QuizWidget({ lessonId, questions }: Props) {
   )
 
   // client mount-এ shuffle (শুধু একবার)
+  // INTENTIONAL: shuffle uses Math.random() which is non-deterministic on
+  // server — running it only after mount prevents SSR/CSR hydration mismatch.
+   
   useEffect(() => {
     setOptionOrders(questions.map((q) => shuffle(q.options.map((o) => o.id))))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,6 +93,8 @@ export default function QuizWidget({ lessonId, questions }: Props) {
   const bestKey = `quiz:best:${lessonId}`
   const [bestPct, setBestPct] = useState<number | null>(null)
 
+  // INTENTIONAL: localStorage is unavailable server-side — read after mount.
+   
   useEffect(() => {
     try {
       const saved = localStorage.getItem(bestKey)

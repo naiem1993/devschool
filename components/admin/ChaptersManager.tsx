@@ -52,6 +52,10 @@ export default function ChaptersManager({
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
+  // INTENTIONAL: prop→state sync. When the parent re-renders with fresh
+  // `initial`, local edits must be replaced. A future refactor should pass
+  // a stable `key` from the parent instead — tracked in the doc.
+   
   useEffect(() => {
     setChapters(initial)
   }, [initial])
@@ -167,6 +171,10 @@ function ChapterCard({
     codeExampleEn: chapter.codeExampleEn || '',
   })
 
+  // INTENTIONAL: per-item prop→state sync. When the selected chapter changes
+  // (or the parent re-fetches after save), the draft editor must reset.
+  // `key={chapter.id}` on the parent would remove this effect — future work.
+   
   useEffect(() => {
     setDraft({
       title: chapter.title,

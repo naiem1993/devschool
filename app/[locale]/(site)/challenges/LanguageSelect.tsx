@@ -51,6 +51,9 @@ export default function LanguageSelect({
     return () => document.removeEventListener('mousedown', onDoc)
   }, [open])
 
+  // INTENTIONAL: resetting local UI state (query + highlight) when the
+  // dropdown opens — this is imperative, not derivable during render.
+   
   useEffect(() => {
     if (!open) return
     setQuery('')

@@ -24,6 +24,8 @@ export default function GlobalError({
   // URL থেকে locale detect — SSR-safe নয়, তাই state + effect
   const [isEn, setIsEn] = useState(false)
 
+  // INTENTIONAL: window.location is unavailable during SSR — read after mount.
+   
   useEffect(() => {
     console.error('[global-error]', error)
     setIsEn(/^\/en(\/|$)/.test(window.location.pathname))

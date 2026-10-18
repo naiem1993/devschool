@@ -154,6 +154,9 @@ export default function LoremIpsumTool() {
     }
   }, [])
 
+  // INTENTIONAL: initial lorem content must be generated client-side after
+  // mount (generate() uses Math.random → non-deterministic on server).
+   
   useEffect(() => {
     setBlocks(generate('paragraphs', 3, true))
   }, [])

@@ -73,6 +73,8 @@ export default function HomeSearch({
     []
   )
 
+  // INTENTIONAL: flip loading synchronously (debounce takes 280ms to fire).
+   
   useEffect(() => {
     if (query.trim().length >= 2) setIsLoading(true)
     runSearch(query)

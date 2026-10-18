@@ -45,6 +45,10 @@ export default function LessonsManager({
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
+  // INTENTIONAL: prop→state sync. When the parent re-renders with fresh
+  // `initial`, local edits must be replaced. A future refactor should pass
+  // a stable `key` from the parent instead — tracked in the doc.
+   
   useEffect(() => {
     setLessons(initial)
   }, [initial])
@@ -160,6 +164,10 @@ function LessonItem({
     codeExampleEn: lesson.codeExampleEn || '',
   })
 
+  // INTENTIONAL: per-item prop→state sync. When the selected lesson changes
+  // (or the parent re-fetches after save), the draft editor must reset.
+  // `key={lesson.id}` on the parent would remove this effect — future work.
+   
   useEffect(() => {
     setDraft({
       title: lesson.title,

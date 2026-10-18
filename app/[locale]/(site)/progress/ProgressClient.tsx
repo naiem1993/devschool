@@ -47,6 +47,8 @@ export default function ProgressClient() {
     }
   }
 
+  // INTENTIONAL: side-effect fetch on mount; load() sets loading/error state.
+   
   useEffect(() => {
     load()
   }, [])

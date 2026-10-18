@@ -42,6 +42,8 @@ export default function TryItFullClient({
   const frameRef = useRef<HTMLIFrameElement | null>(null)
 
   /* 🟢 sessionStorage থেকে inline editor এর কোড লোড করো (মাউন্টে একবার) */
+  // INTENTIONAL: reads sessionStorage on mount (unavailable server-side).
+   
   useEffect(() => {
   if (!sessionKey) return
   try {
