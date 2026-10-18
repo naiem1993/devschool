@@ -132,8 +132,57 @@ All API routes use Zod schemas defined in [`lib/validators.ts`](lib/validators.t
 | `paginationSchema` | Pagination across all list endpoints |
 | `slugParamSchema` | Route parameter validation (`[slug]`) |
 | `idParamSchema` | Route parameter validation (`[id]`) |
-| `createQuizQuestionSchema` | Creating quiz questions |
-| `createChallengeSchema` | Creating code challenges |
+| `createQuizQuestionSchema` / `updateQuizQuestionSchema` | Quiz question create / update |
+| `createChallengeSchema` | Creating code challenges (update uses `.partial().omit({ tutorialId })`) |
+| `createChapterSchema` / `updateChapterSchema` / `reorderChaptersSchema` | Chapter CRUD + reorder |
+| `createLessonSchema` / `updateLessonSchema` / `reorderLessonsSchema` | Lesson CRUD + reorder |
+| `createGroupSchema` / `updateGroupSchema` / `reorderGroupsSchema` | Chapter group CRUD + reorder |
+
+### Validating request bodies
+
+Use the `validateBody()` helper for every mutation route:
+
+```typescript
+import { createChallengeSchema, validateBody } from '@/lib/validators'
+
+const body = await req.json()
+const { data, error } = validateBody(createChallengeSchema, body)
+if (error || !data) {
+  return NextResponse.json({ error: error || 'Invalid request body' }, { status: 400 })
+}
+// `data` is now fully typed — no `any`
+```
+
+**Separation of concerns:** Zod validates *type/shape*. Route handlers own *defaults, fallbacks, and business rules* (e.g. `language: data.language || 'js'`, duplicate-slug checks, cross-field rules). Do **not** move those into Zod.
+
+---
+
+## API Error Handling
+
+All API routes use the helpers in [`lib/api-error.ts`](lib/api-error.ts):
+
+```typescript
+import { getErrorMessage, serverError } from '@/lib/api-error'
+
+// In a route's catch block — logs server-side, returns safe message to client
+try {
+  // ...
+} catch (e: unknown) {
+  return serverError(e, 'challenges-create')
+}
+
+// In non-route code (lib/) — just extract the message
+try {
+  // ...
+} catch (e: unknown) {
+  const msg = getErrorMessage(e)
+}
+```
+
+Rules:
+- Never write `catch (e: any)` — use `catch (e: unknown)` + `getErrorMessage()`.
+- Never write `: any` or `as any` in `app/api/**` or `lib/**`. If a third-party shape is unknown, declare a local type (e.g. `Judge0Response`) instead of casting to `any`.
+- Prisma JSON fields: cast to `Prisma.InputJsonValue`, not `any`.
 
 ---
 
