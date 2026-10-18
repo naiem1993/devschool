@@ -50,3 +50,16 @@ tsc-errors*.txt
 
 # lint report files (temporary — untracked, kept on disk)
 lint-report*.txt
+
+# Local SQLite / scratch files
+*.db
+*.db-journal
+prisma/dev.db
+demo.md
+demo_content.md
+must_read.md
+tree.md
+z.md
+CLAUDE.md
+scripts/cleanup2.mjs
+start-next-devtools-proxy.cmd
