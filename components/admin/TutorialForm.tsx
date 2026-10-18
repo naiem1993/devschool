@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import type { Tutorial } from '@prisma/client'
 
 export default function TutorialForm({
   initial,
   mode = 'create',
 }: {
-  initial?: any
+  initial?: Partial<Tutorial>
   mode?: 'create' | 'edit'
 }) {
   const router = useRouter()

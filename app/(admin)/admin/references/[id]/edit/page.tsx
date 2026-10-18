@@ -29,7 +29,7 @@ export default async function EditReferencePage({ params }: { params: Promise<{ 
             syntaxEn: r.syntaxEn || '',
             exampleBn: r.exampleBn || '',
             exampleEn: r.exampleEn || '',
-            tags: r.tags.join(', '),
+            tags: r.tags,
             language: r.language || 'javascript',
           }}
           tutorials={tutorials.map((t) => ({ id: t.id, title: t.titleBn }))}

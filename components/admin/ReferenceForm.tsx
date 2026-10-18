@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import type { Reference } from '@prisma/client'
 
 type TutorialOption = { id: string; title: string }
 
@@ -10,7 +11,7 @@ export default function ReferenceForm({
   tutorials,
   mode = 'create',
 }: {
-  initial?: any
+  initial?: Partial<Reference>
   tutorials: TutorialOption[]
   mode?: 'create' | 'edit'
 }) {
