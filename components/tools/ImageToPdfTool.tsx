@@ -15,9 +15,6 @@ const MAX_TOTAL_BYTES = 60 * 1024 * 1024 // 60 MB
 const MAX_FILES = 50
 /** এর চেয়ে বড় মাপ হলে ছোট করে আনা হবে (মেমরি রক্ষা) */
 const MAX_DIMENSION = 5000 // px
-/** JPEG কম্প্রেশন কোয়ালিটি */
-const JPEG_QUALITY = 0.92
-
 /** ⚠️ SVG ইচ্ছাকৃতভাবে বাদ — ভেতরে <script>/onload থাকতে পারে */
 type AllowedMime = 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp'
 

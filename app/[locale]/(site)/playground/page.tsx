@@ -32,14 +32,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function PlaygroundPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale: rawLocale } = await params
-  const locale: Locale = isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
-
+export default async function PlaygroundPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
       {/* Full-width editor */}

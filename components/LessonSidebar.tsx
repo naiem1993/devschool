@@ -15,7 +15,6 @@ import { useDict } from '@/lib/i18n/I18nProvider'
 
 export default function LessonSidebar({
   tutorialSlug,
-  tutorialTitle,
   nav,
   active,
 }: {
@@ -66,7 +65,6 @@ export default function LessonSidebar({
   const sections = buildSidebarSections(nav.groups, nav.chapters)
   const activeChapterSlug = active.chapterSlug
   const activeLessonSlug = active.lessonSlug
-  const isHome = !activeChapterSlug
 
   return (
     <>

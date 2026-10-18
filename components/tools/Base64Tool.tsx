@@ -102,9 +102,6 @@ export default function Base64Tool() {
     }
   }, [])
 
-  const tooBig = input.length > MAX_INPUT_LIMIT
-  const busy = !input || tooBig
-
   // ── মূল রূপান্তর ─────────────────────────────────────────
   const convert = useCallback(
     (raw: string, nextMode: Mode, nextUrlSafe: boolean) => {

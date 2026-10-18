@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     // ── ইউনিক slug জেনারেট ──
     const ensureUniqueSlug = async (baseSlug: string, usedInBatch: Set<string>): Promise<string> => {
-      let slug = baseSlug || 'reference'
+      const slug = baseSlug || 'reference'
       let counter = 0
       while (true) {
         const candidate = counter === 0 ? slug : `${slug}-${counter}`

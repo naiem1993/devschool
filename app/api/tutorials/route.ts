@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { paginationSchema, searchSchema, validateQuery } from '@/lib/validators'
+import { searchSchema, validateQuery } from '@/lib/validators'
 
 /**
  * GET /api/tutorials

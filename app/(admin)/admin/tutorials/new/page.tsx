@@ -1,4 +1,3 @@
-import prisma from '@/lib/prisma'
 import TutorialForm from '@/components/admin/TutorialForm'
 import Link from 'next/link'
 
