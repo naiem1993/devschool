@@ -1,6 +1,6 @@
 # 🎯 Remaining Tasks — DevSchool Cleanup (Post-Refactor)
 
-> **Status:** 🔄 IN PROGRESS — Task 1: Batches 1A–1E COMPLETE. `app/**` + `components/**` = 0 lint problems. Next: Batch 1F (final verify + build + smoke test).
+> **Status:** ✅ **TASK 1 COMPLETE** — `app/**` + `components/**` = 0 lint problems, tsc=0, build 97/97. 3 real runtime bugs found & fixed during smoke test. Next: Task 2 (`scripts/` + `prisma/seed.ts`).
 > **Created:** 2026-10-18
 > **Owner:** DevSchool Team
 > **Prerequisite:** `REFACTOR-ANY-TYPES.md` is COMPLETE (Phases 0–4b done, `app/api/**` + `lib/**` + UI 100% `: any`/`as any`-free, `tsc` & build pass, pushed to `7e10236`).
@@ -360,7 +360,7 @@ Update this table as work progresses:
 | 1C | Special cases: global-error, Header, LessonContent, HomeSearch | 4 | ✅ Done | `d10c7d4` |
 | 1D | `set-state-in-effect` — config-level disable (rule incompatible with SSR hydration patterns) | 19 | ✅ Done | `df0fa17` |
 | 1E | `exhaustive-deps` warnings fixed (proper deps, not disable) | 5 | ✅ Done | `42ce908` |
-| 1F | Final verify + build + smoke | — | ⬜ Pending | — |
+| 1F | Final verify + build + smoke (3 real bugs found & fixed) | — | ✅ Done | `75e8dfb`, `806a516` |
 
 ### Task 2: Scripts Cleanup
 
@@ -517,6 +517,17 @@ Append entries here as work completes.
 - ✅ `npx tsc --noEmit` — 0 errors.
 - 📝 Commit: `42ce908` (5 files).
 - 🎯 **Task 1 result:** `npm run lint` → **28 problems (26 errors, 2 warnings)**. All remaining problems are in `scripts/` + `prisma/seed.ts` (Task 2 scope). **`app/**` + `components/**` = 0 problems.**
+
+### 2026-10-18 — Batch 1F Complete ✅ **TASK 1 DONE** (build + smoke + 3 real bugfixes)
+- ✅ `npx tsc --noEmit` — 0 errors.
+- ✅ `npm run build` — success, **97/97 pages**, Turbopack, no boundary/suspense errors.
+- ✅ `npm run lint` — **28 problems total**, all in `scripts/` + `prisma/seed.ts` (Task 2). **`app/**` + `components/**` = 0 problems.**
+- 🐛 **Real bug #1 — search results showed empty cards** (`75e8dfb`): `app/api/search/route.ts` fallback returned `titleBn`/`descriptionBn`/etc, but the client contract is `title`/`description` → titles rendered as `undefined`. Fixed: normalize the fallback payload to the client shape, add locale-aware selection (BN vs EN fields) and **reference search fallback** (was hardcoded empty). `SearchClient` + `HomeSearch` now send `?locale=`.
+- 🐛 **Real bug #2 — "জেনেরিক" pill on cards** (`75e8dfb`): the `Category` model was removed in 2026-09-21, but `HomeSearch` and `LoadMoreTutorials` still fell back to `dict.home.genericCategory`. Replaced with the `difficulty` label (which exists in the schema). Also dropped the orphan `category?: { name: string }` field from `LoadMoreTutorials`'s `Tutorial` type.
+- 🐛 **Real bug #3 — search dropdown rendered *under* the stat cards** (`75e8dfb`, `806a516`): HeroSection's main grid and the stat grid both had `relative z-10`; the stat block came later in DOM so it won. Raised the main grid to `z-20` (search now floats above).
+- 🎓 **Lesson:** smoke testing is not optional. All 3 bugs were latent before this session — `any` and the wrong types hid them. The lint work didn't introduce them; it *exposed* them by forcing the types to be honest.
+- 📊 **Task 1 final state:** `app/**` + `components/**` lint = 0; `: any`/`as any` = 0 in both; tsc = 0; build = 97/97. Commits during Task 1: 1A (3), 1B (~8), 1C (1), 1D (1), 1E (1), 1F (2), docs (~4).
+- 🔜 **Next:** Task 2 — `scripts/` + `prisma/seed.ts` (26 `: any` errors + 2 unused vars). Dev-only, low risk.
 
 _(Add new entries below as you complete each batch.)_
 
