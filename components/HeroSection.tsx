@@ -266,7 +266,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
 
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#22C55E]/18 dark:from-[#22C55E]/25 via-transparent to-transparent pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
         <div className="text-center lg:text-left">
           <motion.div
             variants={fadeUp}
