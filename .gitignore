@@ -63,3 +63,7 @@ z.md
 CLAUDE.md
 scripts/cleanup2.mjs
 start-next-devtools-proxy.cmd
+
+# Local editor settings
+.vscode/
+.idea/
