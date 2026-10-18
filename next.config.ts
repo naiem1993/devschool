@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
 
+  // প্রোডাকশন bundle থেকে console.log/warn/debug সরাও (error রাখো)
+  // → bundle ছোট + client-এ debug leak নেই
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? { exclude: ["error", "warn"] }
+        : false,
+  },
+
   // নিরাপত্তার তালা — সব পেজে
   async headers() {
     return [
