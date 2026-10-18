@@ -46,3 +46,6 @@ next-env.d.ts
 # tsc debug files (temporary — untracked, kept on disk)
 tsc-*.txt
 tsc-errors*.txt
+
+# lint report files (temporary — untracked, kept on disk)
+lint-report*.txt
