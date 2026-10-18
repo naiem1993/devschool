@@ -1,6 +1,6 @@
 # 🎯 Remaining Tasks — DevSchool Cleanup (Post-Refactor)
 
-> **Status:** 🔄 IN PROGRESS — Task 1 Batch 1A COMPLETE (14 files, 18 problems fixed; commits `15c432a`, `85ab4ee`). Next: Batch 1B (UI `no-explicit-any`).
+> **Status:** 🔄 IN PROGRESS — Task 1: Batch 1A COMPLETE (14 files), Batch 1B-1 COMPLETE (8 files). Next: Batch 1B-2 (`components/admin/**`).
 > **Created:** 2026-10-18
 > **Owner:** DevSchool Team
 > **Prerequisite:** `REFACTOR-ANY-TYPES.md` is COMPLETE (Phases 0–4b done, `app/api/**` + `lib/**` + UI 100% `: any`/`as any`-free, `tsc` & build pass, pushed to `7e10236`).
@@ -350,7 +350,9 @@ Update this table as work progresses:
 | 1A-1 | API imports (unused + prefer-const) | 3 | ✅ Done | `15c432a` |
 | 1A-2 | Unused vars (lesson-sidebar, base64, image-to-pdf) | 5 | ✅ Done | `15c432a` |
 | 1A-3 | Remaining unused vars + unescaped entities | 6 | ✅ Done | `85ab4ee` |
-| 1B | UI `no-explicit-any` | 17 | ⬜ Pending | — |
+| 1B-1 | UI typed arrays + app-locale catch blocks + getErrorCode helper | 8 | ✅ Done | `63442f7` |
+| 1B-2 | components/admin/ - forms + generators | 9 | ⬜ Pending | — |
+| 1B-3 | ChallengeWorkspace catch blocks | 1 | ⬜ Pending | — |
 | 1C | Special cases (4 unique) | 4 | ⬜ Pending | — |
 | 1D | `set-state-in-effect` | 18 | ⬜ Pending | — |
 | 1E | `exhaustive-deps` warnings | ~6 | ⬜ Pending | — |
@@ -453,6 +455,20 @@ Append entries here as work completes.
 - ✅ `npx tsc --noEmit` — 0 errors.
 - 📝 Commit: `chore(lint): batch 1A-3 — 6 more files, 9 problems fixed (unused vars + escape quotes)` `85ab4ee`
 - 📊 **Batch 1A totals:** 14 files touched, 18 problems resolved (no-unused-vars ×~15, prefer-const ×1, no-unescaped-entities ×2, unused-disable ×1). Zero runtime behavior changes — pure dead-code removal + quote escaping.
+
+### 2026-10-18 — Batch 1B-1 Complete ✅ (8 files, 10 `: any` resolved + 1 hidden bug)
+- **`lib/api-error.ts`** — added `getErrorCode(e: unknown): string | undefined` helper (Prisma-safe, no `any`). Duplicate JSDoc from first insert caught + fixed.
+- **`app/[locale]/(site)/challenges/page.tsx`** — `catch (err: any)` → `unknown` + `getErrorCode`.
+- **`app/[locale]/(site)/references/page.tsx`** — same pattern.
+- **`app/[locale]/(site)/tutorials/page.tsx`** — same pattern (braces style).
+- **`app/[locale]/(site)/progress/ProgressClient.tsx`** — `catch (e: any)` → `unknown` + inline `instanceof Error` extraction. ⚠️ Initially imported `getErrorMessage` from `@/lib/api-error`, then reverted — client component (`'use client'`) cannot import `next/server` transitively. Documented as deliberate exception.
+- **`app/[locale]/(site)/page.tsx`** — `reviews: any[]` → `ReviewItem[]`; `popularTutorials`/`latestTutorials: any[]` → `TutorialCard[]`; `allTutorialsForSearch: any[]` → `unknown[]` (matches HomeSearch `unknown[]`); `catch (error: any)` → `unknown` + `getErrorCode`.
+- **`components/HeroSection.tsx`** — `tutorials: any[]` → `unknown[]` (aligned with HomeSearch).
+- **`components/LoadMoreTutorials.tsx`** — exported `interface Tutorial` (renamed via alias `TutorialCard` on homepage). **🐛 Bug fix:** `duration`/`rating` were `?: number` but Prisma schema is nullable — changed to `number | null`. Previously hidden by `any[]`. This is the real value of removing `any`.
+- ✅ All 8 verified; `npx tsc --noEmit` — 0 errors after 1 initial failure (nullable type mismatch — fixed).
+- 📝 Commit: `chore(lint): batch 1B-1 - typed homepage arrays, 6 catch blocks, getErrorCode helper` `63442f7`
+- 🎓 **Lesson:** removing `any` surfaces real type bugs. Keep the Prisma nullability in mind — do not coerce `null → undefined` (silent data loss).
+- ⚠️ **Client vs Server import rule:** never import `@/lib/api-error` from `'use client'` files (pulls `next/server` into bundle). For client components, use inline error extraction.
 
 _(Add new entries below as you complete each batch.)_
 
