@@ -103,8 +103,8 @@ export default function SiteSettingsForm({
         const data = await res.json().catch(() => ({}))
         setError(data.error || 'save failed')
       }
-    } catch (e: any) {
-      setError(e?.message || 'network error')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'network error')
     }
     setLoading(false)
   }

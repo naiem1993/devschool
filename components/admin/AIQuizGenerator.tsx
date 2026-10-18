@@ -71,8 +71,8 @@ export default function AIQuizGenerator({ onGenerated, tutorialTitle = '' }: Pro
       setSuccess(
         `✅ ${data.quizzes?.length || 0}টি কুইজ জেনারেট হয়েছে! নিচে প্রিভিউ দেখুন।`
       )
-    } catch (e: any) {
-      setError(e?.message || 'নেটওয়ার্ক সমস্যা')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'নেটওয়ার্ক সমস্যা')
     }
     setLoading(false)
   }

@@ -77,8 +77,8 @@ export default function SponsorImageControl({
         if (!res.ok) throw new Error(data.error || 'Upload failed')
 
         onChange({ imageId: data.imageId, logoUrl: data.url })
-      } catch (e: any) {
-        setError(e?.message || 'Upload failed')
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Upload failed')
       } finally {
         setBusy(false)
       }

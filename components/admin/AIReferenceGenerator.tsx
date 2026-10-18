@@ -70,8 +70,8 @@ export default function AIReferenceGenerator({ onGenerated, tutorialTitle = '' }
       setSuccess(
         `✅ ${data.references?.length || 0}টি রেফারেন্স জেনারেট হয়েছে! নিচে প্রিভিউ দেখুন।`
       )
-    } catch (e: any) {
-      setError(e?.message || 'নেটওয়ার্ক সমস্যা')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'নেটওয়ার্ক সমস্যা')
     }
     setLoading(false)
   }

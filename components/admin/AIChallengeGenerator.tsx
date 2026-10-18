@@ -85,8 +85,8 @@ export default function AIChallengeGenerator({ tutorials, onGenerated }: Props) 
       setSuccess(
         `✅ ${data.challenges?.length || 0}টি চ্যালেঞ্জ জেনারেট হয়েছে! নিচে প্রিভিউ দেখুন।`
       )
-    } catch (e: any) {
-      setError(e?.message || 'নেটওয়ার্ক সমস্যা')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'নেটওয়ার্ক সমস্যা')
     }
     setLoading(false)
   }
