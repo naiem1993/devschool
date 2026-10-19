@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import AdminHeader from '@/components/admin/AdminHeader'
 import DeleteButton from '@/components/admin/DeleteButton'
 import LogoutButton from '@/components/admin/LogoutButton'
@@ -47,8 +48,14 @@ export default async function SponsorsPage() {
               >
                 <td className="px-4 py-3">
                   {s.logoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={s.logoUrl} alt={s.name} className="h-8 w-auto max-w-[80px] object-contain" />
+                    <Image
+                      src={s.logoUrl}
+                      alt={s.name}
+                      width={80}
+                      height={32}
+                      unoptimized
+                      className="h-8 w-auto max-w-[80px] object-contain"
+                    />
                   ) : (
                     <span className="text-slate-400 text-xs">—</span>
                   )}

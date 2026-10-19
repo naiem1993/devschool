@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { cache } from 'react'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import TutorialShell from '@/components/TutorialShell'
@@ -17,6 +18,23 @@ type PageProps = {
 // ১ দিনের safety net: কোনো mutation route revalidate করতে ভুলে গেলে এই auto-refresh ধরবে।
 export const revalidate = 86400
 
+// একই request-এ generateMetadata ও TutorialPage — দুটো থেকেই ডাকা হয়।
+// React cache() থাকায় Prisma কোয়েরি একবারই চলে (double-fetch বন্ধ)।
+const getTutorial = cache(async (slug: string) => {
+  return prisma.tutorial.findUnique({
+    where: { slug, isPublished: true },
+    select: {
+      id: true,
+      slug: true,
+      titleBn: true,
+      titleEn: true,
+      descriptionBn: true,
+      descriptionEn: true,
+      difficulty: true,
+    },
+  })
+})
+
 export async function generateStaticParams() {
   try {
     const tutorials = await prisma.tutorial.findMany({
@@ -33,16 +51,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params
   try {
-    const tutorial = await prisma.tutorial.findUnique({
-      where: { slug },
-      select: {
-        titleBn: true,
-        titleEn: true,
-        descriptionBn: true,
-        descriptionEn: true,
-        difficulty: true,
-      },
-    })
+    const tutorial = await getTutorial(slug)
     if (!tutorial) {
       return {
         title: 'টিউটোরিয়াল পাওয়া যায়নি | DevSchool',
@@ -86,19 +95,8 @@ export default async function TutorialPage({ params }: PageProps) {
   const { locale, slug } = await params
   const t = TRYIT_TEXT[locale === 'bn' ? 'bn' : 'en']
 
-  const tutorial = await prisma.tutorial
-    .findUnique({
-      where: { slug, isPublished: true },
-      select: {
-        id: true,
-        slug: true,
-        titleBn: true,
-        titleEn: true,
-        descriptionBn: true,
-        descriptionEn: true,
-      },
-    })
-    .catch(() => null)
+  // DB error হলে আগের মতোই 404 (metadata তার fallback নেবে), কিন্তু আর double-fetch হবে না।
+  const tutorial = await getTutorial(slug).catch(() => null)
 
   if (!tutorial) notFound()
 

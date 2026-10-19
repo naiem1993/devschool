@@ -253,9 +253,9 @@ export default async function TutorialsListingPage({
           {tutorials.length === 0 ? (
             <div className="ds-card p-12 text-center">
               <div className="text-5xl mb-4">📚</div>
-              <h2 className="text-xl font-bold mb-2">এখনো কোনো টিউটোরিয়াল নেই</h2>
+              <h2 className="text-xl font-bold mb-2">{dict.listing.emptyTutorials}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                শীঘ্রই নতুন টিউটোরিয়াল যুক্ত করা হবে।
+                {dict.listing.emptyTutorialsDesc}
               </p>
             </div>
           ) : (

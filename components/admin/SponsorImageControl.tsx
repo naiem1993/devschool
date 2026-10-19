@@ -1,5 +1,8 @@
 'use client'
 
+// Alias দিয়ে import — নিচের resizeImage()-এ DOM-এর `new Image()` ব্যবহার হয়,
+// সরাসরি `Image` import করলে সেটি shadow হয়ে ছবি resize ভেঙে যেত।
+import NextImage from 'next/image'
 import { useCallback, useRef, useState } from 'react'
 
 /**
@@ -149,8 +152,14 @@ export default function SponsorImageControl({
         {/* Preview */}
         <div className="w-28 h-28 shrink-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center overflow-hidden relative">
           {previewUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={previewUrl} alt="preview" className="max-w-full max-h-full object-contain" />
+            <NextImage
+              src={previewUrl}
+              alt="preview"
+              fill
+              unoptimized
+              sizes="112px"
+              className="object-contain"
+            />
           ) : (
             <span className="text-[10px] text-slate-400 text-center px-2">no image</span>
           )}
