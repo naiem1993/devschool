@@ -3,9 +3,10 @@
  *
  * Design:
  *  - PIN itself lives in env var `ADMIN_PIN` (never stored in DB).
- *  - Lockout state lives in the `PinLockout` singleton DB row so it can be
- *    manually cleared from Supabase/Prisma Studio when the user wants to
- *    unlock (per user's explicit choice — no auto-unlock).
+ *  - Lockout state lives in the `PinLockout` singleton DB row. After
+ *    MAX_PIN_ATTEMPTS wrong tries the lock is held for LOCKOUT_DURATION_MS
+ *    (15 min) and then auto-expires on the next attempt. A correct PIN also
+ *    clears the state immediately.
  *  - After a correct PIN, we issue a short-lived signed token (2 min) using
  *    the same HMAC scheme as the admin session. Delete APIs require this
  *    token via the `x-pin-token` header, so bypassing the modal won't work.
@@ -17,9 +18,10 @@ import { signToken, verifyToken } from '@/lib/auth-token'
 export const PIN_TOKEN_TTL_MS = 2 * 60 * 1000 // 2 minutes
 export const PIN_TOKEN_PREFIX = 'pin:'
 export const MAX_PIN_ATTEMPTS = 3
-// Manual-unlock-only: lockedUntil is set far into the future.
-// User clears it manually from Supabase Studio → PinLockout table.
-const FAR_FUTURE = new Date('9999-12-31T23:59:59.999Z')
+// Time-based lockout (audit #11). A permanent lockout was a DoS footgun: any
+// user who could reach the PIN prompt (or a malicious actor) could lock the
+// admin out until someone manually cleared the PinLockout row.
+export const LOCKOUT_DURATION_MS = 15 * 60 * 1000 // 15 minutes
 
 const SINGLETON = 'singleton'
 
@@ -50,19 +52,28 @@ export async function getLockState(): Promise<LockState> {
 }
 
 export async function recordFailure(): Promise<{ attempts: number; locked: boolean }> {
-  const row = await prisma.pinLockout.upsert({
-    where: { id: SINGLETON },
-    create: { id: SINGLETON, failedAttempts: 1, lockedUntil: null },
-    update: { failedAttempts: { increment: 1 } },
-  })
-  if (row.failedAttempts >= MAX_PIN_ATTEMPTS) {
+  const existing = await ensureRow()
+
+  // If a previous lockout has already expired, the next wrong attempt starts a
+  // fresh count. Without this reset an expired 3-attempt lock would immediately
+  // re-lock on the very next failure.
+  const expired = existing.lockedUntil !== null && existing.lockedUntil.getTime() <= Date.now()
+  const attempts = expired ? 1 : existing.failedAttempts + 1
+
+  if (attempts >= MAX_PIN_ATTEMPTS) {
+    const lockedUntil = new Date(Date.now() + LOCKOUT_DURATION_MS)
     await prisma.pinLockout.update({
       where: { id: SINGLETON },
-      data: { lockedUntil: FAR_FUTURE },
+      data: { failedAttempts: attempts, lockedUntil },
     })
-    return { attempts: row.failedAttempts, locked: true }
+    return { attempts, locked: true }
   }
-  return { attempts: row.failedAttempts, locked: false }
+
+  await prisma.pinLockout.update({
+    where: { id: SINGLETON },
+    data: { failedAttempts: attempts, lockedUntil: null },
+  })
+  return { attempts, locked: false }
 }
 
 export async function clearLockout(): Promise<void> {

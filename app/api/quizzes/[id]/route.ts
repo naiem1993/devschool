@@ -116,7 +116,9 @@ export async function POST(
       return {
         questionId: q.id,
         isCorrect,
-        correctAnswer: correctOption?.textBn,
+        // Never leak the answer for an unanswered question — it lets a client
+        // harvest the answer key by submitting an empty answer set.
+        ...(userAnswer ? { correctAnswer: correctOption?.textBn } : {}),
       }
     })
     

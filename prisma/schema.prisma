@@ -37,7 +37,6 @@ model Tutorial {
   quizzes    QuizQuestion[]
   challenges CodeChallenge[]
 
-  @@index([slug])
   @@index([createdAt])
   @@index([isPublished])
 }
@@ -236,7 +235,6 @@ model Reference {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([slug])
   @@index([tutorialId])
 }
 

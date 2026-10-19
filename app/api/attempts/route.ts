@@ -25,6 +25,11 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // SECURITY (audit #8): `isCorrect` / `passed` below are trusted from the
+    // client. A tampered client can inflate progress stats. This is accepted
+    // for the anonymous MVP, but MUST be replaced by server-side scoring using
+    // the DB answer key (quiz) / a sandboxed executor (challenge) before any
+    // feature depends on these values for gating or rewards.
     if (body.type === 'quiz') {
       const { questionId, selectedId, isCorrect, timeTakenSec } = body
       if (!questionId || typeof isCorrect !== 'boolean') {

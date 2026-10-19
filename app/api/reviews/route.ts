@@ -75,25 +75,32 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const review = await prisma.review.create({
-      data: {
-        name: data.name,
-        role: data.role || null,
-        stars: data.stars,
-        text: data.text,
-        status: 'pending',
-        deviceId: deviceId || null,
-      },
-      select: { id: true },
-    })
-
-    if (deviceId) {
-      await prisma.reviewCooldown.upsert({
-        where: { deviceId },
-        create: { deviceId, lastSubmittedAt: new Date() },
-        update: { lastSubmittedAt: new Date() },
-      })
-    }
+    // Create the review and stamp the cooldown atomically. Previously these ran
+    // separately, so two concurrent requests could both pass the cooldown check
+    // above and each create a review (race condition).
+    const now = new Date()
+    const [review] = await prisma.$transaction([
+      prisma.review.create({
+        data: {
+          name: data.name,
+          role: data.role || null,
+          stars: data.stars,
+          text: data.text,
+          status: 'pending',
+          deviceId: deviceId || null,
+        },
+        select: { id: true },
+      }),
+      ...(deviceId
+        ? [
+            prisma.reviewCooldown.upsert({
+              where: { deviceId },
+              create: { deviceId, lastSubmittedAt: now },
+              update: { lastSubmittedAt: now },
+            }),
+          ]
+        : []),
+    ])
 
     return NextResponse.json({ success: true, pending: true, id: review.id }, { status: 201 })
   } catch (e: unknown) {

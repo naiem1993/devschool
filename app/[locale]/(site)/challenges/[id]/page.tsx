@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { serializeJsonLd } from '@/lib/json-ld'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
@@ -113,7 +114,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
 
         {/* ── Compact breadcrumb bar (full width) ── */}

@@ -42,6 +42,11 @@ export async function requireAdmin(req: NextRequest): Promise<NextResponse | nul
 }
 
 // ---------------- সরল in-memory rate limiter ----------------
+// TODO: Replace with Redis for serverless environments.
+// In-memory buckets are per-process — on Vercel/serverless (multiple warm
+// instances) each instance keeps its own counter, so the effective limit
+// becomes `limit × instanceCount`. Acceptable for a single-node MVP, not for
+// a horizontally scaled deployment.
 type Bucket = { count: number; resetAt: number }
 
 // dev hot-reload-এ একাধিক bucket/interval তৈরি হওয়া ঠেকাতে globalThis-এ রাখা হলো।

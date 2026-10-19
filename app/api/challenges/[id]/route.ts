@@ -40,12 +40,13 @@ export async function GET(
         // ─── Exclude solution from client-side response ──────────────────────
         // solution field is intentionally not selected for security
         testCases: {
+          // Hidden test cases must never reach the client — even their input
+          // can be used to reverse-engineer the expected output.
+          where: { isHidden: false },
           select: {
             id: true,
             input: true,
-            // isHidden test cases don't expose expectedOutput to client
-            // Omitting expectedOutput — not selected = not sent to client
-            isHidden: true,
+            // expectedOutput / isHidden intentionally not selected.
           },
           orderBy: { id: 'asc' },
         },

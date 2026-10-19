@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { serializeJsonLd } from '@/lib/json-ld'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import ReferencesFilter, { type ReferenceCard } from './ReferencesFilter'
@@ -141,7 +142,7 @@ export default async function ReferencesListingPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
 
       <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">

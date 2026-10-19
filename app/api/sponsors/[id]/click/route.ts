@@ -16,8 +16,10 @@ export async function POST(
       where: { id },
       data: isImpression ? { impressions: { increment: 1 } } : { clicks: { increment: 1 } },
     })
-  } catch {
-    // silent — tracking failure কখনো user experience ভাঙবে না
+  } catch (e) {
+    // Tracking failure কখনো user experience ভাঙবে না, কিন্তু log না করলে
+    // silently হারিয়ে যাওয়া impression/click metric debuggable থাকে না।
+    console.error(`[api/sponsors/${id}/click] tracking failed:`, e)
   }
   return NextResponse.json({ ok: true })
 }

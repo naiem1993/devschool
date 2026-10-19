@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { serializeJsonLd } from '@/lib/json-ld'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import ChallengeFilter, { type ChallengeCard } from './ChallengeFilter'
@@ -118,7 +119,7 @@ export default async function ChallengesListingPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100">
         {/* ══════════ HERO — clean black + single green glow ══════════ */}
         <section className="relative overflow-hidden ds-section-head">

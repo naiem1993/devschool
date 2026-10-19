@@ -9,7 +9,7 @@ import { createHash } from 'crypto'
  */
 
 export const MAX_UPLOAD_BYTES = 2 * 1024 * 1024 // 2 MB hard cap (client resize এর পর সাধারণত <200KB)
-export const ALLOWED_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/gif'] as const
+export const ALLOWED_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'] as const
 
 export type DetectedImage = {
   mimeType: string
@@ -40,11 +40,8 @@ export function detectImageType(buf: Buffer): DetectedImage | null {
   ) {
     return { mimeType: 'image/webp', ext: 'webp' }
   }
-  // SVG: text-based — শুরুতে '<' বা '<?xml' বা '<svg'
-  const head = buf.subarray(0, 256).toString('utf8').trimStart().toLowerCase()
-  if (head.startsWith('<svg') || head.startsWith('<?xml') || head.startsWith('<!doctype svg')) {
-    return { mimeType: 'image/svg+xml', ext: 'svg' }
-  }
+  // SVG intentionally NOT supported — a malicious SVG can execute JS (stored XSS).
+  // Any SVG/XML signature falls through to `null` → upload rejected with 415.
   return null
 }
 

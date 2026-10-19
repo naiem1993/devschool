@@ -77,14 +77,10 @@ export async function generateMetadata({
     title: m.title,
     description: m.description,
     metadataBase: new URL(SITE_URL),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        bn: "/bn",
-        en: "/en",
-        "x-default": "/bn",
-      },
-    },
+    // NOTE (audit #12): `alternates.canonical` was intentionally removed here.
+    // A root-layout canonical applies to every sub-page, so each route was
+    // advertising `/{locale}` as its canonical. Canonical URLs are now declared
+    // per-page (see each page.tsx generateMetadata).
   };
 }
 

@@ -36,6 +36,10 @@ export async function GET(
       'Cache-Control': 'public, max-age=31536000, immutable',
       ETag: etag,
       'X-Content-Type-Options': 'nosniff',
+      // Defense-in-depth for any legacy SVG already stored in the DB:
+      // force download instead of inline render, and block all sub-resources.
+      'Content-Disposition': 'attachment',
+      'Content-Security-Policy': "default-src 'none'",
     },
   })
 }

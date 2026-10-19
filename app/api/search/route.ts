@@ -81,6 +81,11 @@ export async function GET(request: NextRequest) {
   const wantTutorials = type === 'all' || type === 'tutorials'
   const wantReferences = type === 'all' || type === 'references'
 
+  // FTS is intentionally DISABLED until a DB migration restores the
+  // `searchVec` column on Tutorial/Reference. Until then probeFtsColumn()
+  // returns false and every request uses the ILIKE fallback below — which is
+  // correct but slower at scale. The FTS query code further down is kept so
+  // that restoring the column re-enables it automatically (no code change).
   const useFts = await probeFtsColumn()
 
   /** ILIKE-based fallback used when the FTS column/index is missing. */

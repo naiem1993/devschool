@@ -71,7 +71,7 @@ export function serverError(e: unknown, context?: string): NextResponse {
   // Full error (incl. stack) goes to the server console, not the client.
   console.error(label, e)
   return NextResponse.json(
-    { error: getErrorMessage(e) },
+    { error: 'Internal server error' },
     { status: 500 }
   )
 }

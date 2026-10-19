@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { searchSchema, validateQuery } from '@/lib/validators'
+import { requireAdmin } from '@/lib/auth'
 
 /**
  * GET /api/tutorials
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     if (q) {
       where.AND = [
-        { titleBn: { search: q } },
+        { titleBn: { contains: q, mode: 'insensitive' } },
         ...(difficulty ? [{ difficulty }] : []),
       ]
     } else {
@@ -86,6 +87,9 @@ export async function GET(request: NextRequest) {
  * Nested structure (v3): chapter/lesson আলাদা API থেকে তৈরি হয়।
  */
 export async function POST(request: NextRequest) {
+  const denied = await requireAdmin(request)
+  if (denied) return denied
+
   const body = await request.json()
 
   const result = await import('@/lib/validators').then((m) =>
