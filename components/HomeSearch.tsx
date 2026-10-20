@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import debounce from 'lodash/debounce'
+import { debounce } from '@/lib/debounce'
 import { useDict, useLocale } from '@/lib/i18n/I18nProvider'
 
 type TutorialHit = {

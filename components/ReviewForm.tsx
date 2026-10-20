@@ -96,12 +96,14 @@ export default function ReviewForm({
           autoComplete="off"
           className="hidden"
           aria-hidden="true"
+          aria-label="Ignore this field"
         />
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1.5">{dict.nameLabel}</label>
+            <label htmlFor="review-name" className="block text-sm font-medium mb-1.5">{dict.nameLabel}</label>
             <input
+              id="review-name"
               required
               minLength={2}
               maxLength={80}
@@ -112,8 +114,9 @@ export default function ReviewForm({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">{dict.roleLabel}</label>
+            <label htmlFor="review-role" className="block text-sm font-medium mb-1.5">{dict.roleLabel}</label>
             <input
+              id="review-role"
               maxLength={80}
               value={role}
               onChange={(e) => setRole(e.target.value)}
@@ -141,8 +144,9 @@ export default function ReviewForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">{dict.textLabel}</label>
+          <label htmlFor="review-text" className="block text-sm font-medium mb-1.5">{dict.textLabel}</label>
           <textarea
+            id="review-text"
             required
             minLength={5}
             maxLength={600}

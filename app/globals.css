@@ -180,6 +180,8 @@ body {
   filter: blur(100px);
   pointer-events: none;
   animation: auroraDrift 24s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 .aurora-orb-1 { width: 560px; height: 560px; background: #22C55E; top: -160px; left: -90px; opacity: .12; }
 .aurora-orb-2 { width: 480px; height: 480px; background: #22C55E; top: 8%; right: -140px; opacity: .08; animation-delay: -7s; }
@@ -247,6 +249,8 @@ body {
 .ds-logo-symbol {
   stroke-dasharray: 26;
   animation: dsLogoDrawErase 5s ease-in-out infinite;
+  will-change: stroke-dashoffset;
+  transform: translateZ(0);
 }
 
 /* ============================================
@@ -260,6 +264,12 @@ html.theme-changing *::before,
 html.theme-changing *::after {
   transition: none !important;
   animation-duration: 0.001ms !important;
+}
+
+/* --- Optimize pulse animation for GPU --- */
+.animate-pulse {
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 /* --- reduced motion — সব animation বন্ধ --- */
