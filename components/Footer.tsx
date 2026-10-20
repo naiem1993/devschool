@@ -105,11 +105,11 @@ export default function Footer({
 
       {/* bottom strip */}
       <div className="relative z-10 border-t border-gray-200 bg-black/[0.015] px-6 py-6 dark:border-white/[0.08] dark:bg-white/[0.015] sm:px-8 lg:px-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 font-mono text-[12.5px] text-gray-500 dark:text-gray-500 sm:flex-row sm:items-center">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 font-mono text-[12.5px] text-gray-500 dark:text-gray-400 sm:flex-row sm:items-center">
           <div>{copyright}</div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <span className="text-gray-400 dark:text-gray-600">
+            <span className="text-gray-400 dark:text-gray-400">
               {footer.donatePrompt}{" "}
               <Link
                 href={footer.donateLinkHref}
@@ -201,7 +201,7 @@ function PlatformPath({ platform }: { platform: SocialPlatform }) {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h4 className="mb-4 text-[11.5px] font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-500">
+      <h4 className="mb-4 text-[11.5px] font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400">
         {title}
       </h4>
       <ul className="flex flex-col gap-3">{children}</ul>

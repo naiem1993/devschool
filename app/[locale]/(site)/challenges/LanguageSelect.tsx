@@ -148,6 +148,7 @@ export default function LanguageSelect({
               onChange={(e) => { setQuery(e.target.value); setHighlight(0) }}
               onKeyDown={onKeyDown}
               placeholder={placeholder}
+              aria-label={label}
               className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#22C55E]"
             />
           </div>

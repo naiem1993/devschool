@@ -333,7 +333,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
               <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
-              <span className="ml-2 text-[11px] font-mono text-slate-500 dark:text-[#5c6b7a]">devschool — bash</span>
+              <span className="ml-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">devschool — bash</span>
             </div>
             <div className="px-4 py-3 font-mono text-[12.5px] text-[#16A34A] dark:text-[#4ADE80]">
               <span className="text-[#15803D] dark:text-[#22C55E]">➜</span>{' '}
@@ -354,14 +354,14 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
                       'font-semibold text-[11px] font-mono px-2.5 py-1.5 rounded-lg border transition ' +
                       (activeTab === f
                         ? 'bg-[#22C55E]/15 text-[#15803D] dark:text-[#4ADE80] border-[#22C55E]/40'
-                        : 'border-slate-200 dark:border-white/10 text-slate-500 dark:text-[#5c6b7a] hover:text-slate-700 dark:hover:text-[#8b98a5]')
+                        : 'border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200')
                     }
                   >
                     {f === 'html' ? 'index.html' : f === 'css' ? 'style.css' : 'app.js'}
                   </button>
                 ))}
               </div>
-              <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-slate-500 dark:text-[#5c6b7a]">
+              <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" /> {dict.heroDemo.liveLabel}
               </span>
             </div>
@@ -376,7 +376,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
             </div>
 
             <div className="px-4 pb-4">
-              <div className="flex items-center justify-between mb-1.5 text-[10px] font-mono text-slate-500 dark:text-[#5c6b7a]">
+              <div className="flex items-center justify-between mb-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1.5">
                   <span className="text-[#15803D] dark:text-[#22C55E]">▸</span> OUTPUT
                 </span>
