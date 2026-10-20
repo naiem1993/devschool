@@ -38,8 +38,8 @@
   --color-slate-100: #e9f1ec;
   --color-slate-200: #d6e2da;   /* border-light */
   --color-slate-300: #b6c5bb;   /* muted-border */
-  --color-slate-400: #8aab9b;   /* muted text */
-  --color-slate-500: #5d7e6e;   /* secondary text */
+  --color-slate-400: #6b8a79;   /* muted text — darkened for WCAG AA */
+  --color-slate-500: #4b6a5b;   /* secondary text — darkened for WCAG AA */
   --color-slate-600: #445f52;   /* body text */
   --color-slate-700: #344b40;   /* strong text */
   --color-slate-800: #1c2a24;   /* dark border */
@@ -213,6 +213,8 @@ body {
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
   animation: gradientSpin 9s linear infinite;
+  will-change: background-position;
+  transform: translateZ(0);
   pointer-events: none;
 }
 
@@ -225,7 +227,7 @@ body {
 .reveal.is-visible { opacity: 1; transform: none; }
 
 /* --- accordion --- */
-.acc-body { max-height: 0; overflow: hidden; transition: max-height .38s cubic-bezier(.4,0,.2,1); }
+.acc-body { max-height: 0; overflow: hidden; transition: max-height .38s cubic-bezier(.4,0,.2,1); will-change: max-height; }
 .acc-open .acc-body { max-height: 260px; }
 .acc-icon { transition: transform .25s; }
 .acc-open .acc-icon { transform: rotate(45deg); }

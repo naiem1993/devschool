@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // SSR-safe layout effect — থিম sync paint-এর আগে চালাতে চাই
 const useIsoLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect
-import { motion, type Transition } from 'framer-motion'
+import { LazyMotion, domAnimation, m, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import HomeSearch from './HomeSearch'
 import { type HeroContent } from '@/lib/hero-content'
@@ -249,7 +249,8 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
   }, [prefersReduced])
 
   return (
-    <motion.section
+    <LazyMotion features={domAnimation}>
+    <m.section
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
@@ -268,15 +269,15 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
         <div className="text-center lg:text-left">
-          <motion.div
+          <m.div
             variants={fadeUp}
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#15803D] dark:text-[#4ADE80] text-xs font-semibold mb-5"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
             {hero.badge}
-          </motion.div>
+          </m.div>
 
-          <motion.h1
+          <m.h1
             variants={fadeUp}
             className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]"
           >
@@ -285,21 +286,21 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
             <span className="bg-gradient-to-r from-[#15803D] via-[#16A34A] to-[#15803D] dark:from-[#86EFAC] dark:via-[#4ADE80] dark:to-[#22C55E] bg-clip-text text-transparent">
               {hero.headingHighlight}
             </span>
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             variants={fadeUp}
             className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed"
           >
             {hero.subtitle}
-          </motion.p>
+          </m.p>
 
           {/* z-20 keeps the search dropdown above the stats grid (z-10) below */}
-          <motion.div variants={fadeUp} className="relative z-20">
+          <m.div variants={fadeUp} className="relative z-20">
             <HomeSearch tutorials={tutorials} placeholder={hero.searchPlaceholder} />
-          </motion.div>
+          </m.div>
 
-          <motion.div variants={fadeUp} className="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
+          <m.div variants={fadeUp} className="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
             <Link
               href={localeHref(locale, hero.cta1Href)}
               className="px-6 py-3.5 bg-[#22C55E] hover:bg-[#4ADE80] text-[#04140a] rounded-2xl font-bold shadow-lg shadow-[#22C55E]/30 hover:scale-[1.04] transition-all duration-200"
@@ -312,20 +313,20 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
             >
               {hero.cta2Label}
             </Link>
-          </motion.div>
+          </m.div>
 
-          <motion.div variants={fadeUp} className="mt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400">
+          <m.div variants={fadeUp} className="mt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400">
             <div className="flex -space-x-2">
               <span className="w-8 h-8 rounded-full bg-[#22C55E]/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👨‍💻</span>
               <span className="w-8 h-8 rounded-full bg-[#22C55E]/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">👩‍💻</span>
               <span className="w-8 h-8 rounded-full bg-purple-500/25 ring-2 ring-[#F2FBF4] dark:ring-[#050806] grid place-items-center text-xs">🧑‍💻</span>
             </div>
             <span className="text-slate-700 dark:text-slate-200 font-semibold">{dict.heroDemo.communityLabel}</span>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* ---------- RIGHT: live editor ---------- */}
-        <motion.div variants={fadeUp} className="relative w-full">
+        <m.div variants={fadeUp} className="relative w-full">
           {/* terminal strip */}
           <div className="rounded-2xl overflow-hidden mb-4 bg-white dark:bg-[#0b0f0d] border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[.02]">
@@ -394,10 +395,10 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
               />
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
 
-      <motion.div
+      <m.div
         variants={fadeUp}
         className="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
       >
@@ -410,7 +411,8 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{hero.statLabels[i]}</div>
           </div>
         ))}
-      </motion.div>
-    </motion.section>
+      </m.div>
+    </m.section>
+    </LazyMotion>
   )
 }

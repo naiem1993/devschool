@@ -93,11 +93,14 @@ export default function HomeSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={finalPlaceholder}
+          aria-label={finalPlaceholder}
           className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
         />
         {query && (
           <button
+            type="button"
             onClick={() => setQuery('')}
+            aria-label={t.clearBtn}
             className="absolute right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 transition"
           >
             {t.clearBtn}
