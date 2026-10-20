@@ -113,9 +113,11 @@ export default function Footer({
               {footer.donatePrompt}{" "}
               <Link
                 href={footer.donateLinkHref}
+                aria-label="Donate to support DevSchool"
                 className="text-[#15803d] underline decoration-[#15803d]/40 underline-offset-2 transition-colors hover:text-[#22C55E] dark:text-[#4ADE80] dark:decoration-[#4ADE80]/40"
               >
                 {footer.donateLinkLabel}
+                <span className="sr-only"> - Donate to support DevSchool</span>
               </Link>
             </span>
             <span className="text-gray-500 dark:text-gray-400">
