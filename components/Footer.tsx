@@ -113,7 +113,7 @@ export default function Footer({
               {footer.donatePrompt}{" "}
               <Link
                 href={footer.donateLinkHref}
-                className="text-[#15803d] transition-colors hover:text-[#22C55E] dark:text-[#4ADE80]"
+                className="text-[#15803d] underline decoration-[#15803d]/40 underline-offset-2 transition-colors hover:text-[#22C55E] dark:text-[#4ADE80] dark:decoration-[#4ADE80]/40"
               >
                 {footer.donateLinkLabel}
               </Link>

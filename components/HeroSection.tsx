@@ -371,6 +371,7 @@ export default function HeroSection({ hero, tutorials, stats }: HeroSectionProps
                 value={code[activeTab]}
                 onChange={(e) => setCode({ ...code, [activeTab]: e.target.value })}
                 spellCheck={false}
+                aria-label="Live code editor"
                 className="w-full h-[150px] resize-none outline-none bg-transparent border-0 text-slate-800 dark:text-[#c9d5e1] font-mono text-[12.5px] leading-relaxed"
               />
             </div>

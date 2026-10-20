@@ -52,7 +52,7 @@ export default function LoadMoreTutorials({ initialTutorials }: { initialTutoria
               {tutorial.title}
             </h3>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-3">
-              <span className="bg-[#22C55E]/15 dark:bg-[#22C55E]/15 px-2 py-0.5 rounded-full capitalize">
+              <span className="bg-[#22C55E]/15 dark:bg-[#22C55E]/20 px-2 py-0.5 rounded-full capitalize font-semibold text-emerald-800 dark:text-emerald-300">
                 {tutorial.difficulty}
               </span>
               <span>⭐ {tutorial.rating || 0}</span>
