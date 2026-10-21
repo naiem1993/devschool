@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
-import { heroSettingsSchema, footerSettingsSchema, reviewsSettingsSchema, faqSettingsSchema, validateBody } from '@/lib/validators'
+import { heroSettingsSchema, footerSettingsSchema, reviewsSettingsSchema, donationSettingsSchema, shopSettingsSchema, faqSettingsSchema, validateBody } from '@/lib/validators'
 import { getSiteSettings } from '@/lib/site-settings'
 import { HERO_SETTINGS_KEY, HERO_EN_SETTINGS_KEY } from '@/lib/hero-content'
 import { FOOTER_SETTINGS_KEY, FOOTER_EN_SETTINGS_KEY } from '@/lib/footer-content'
 import { REVIEWS_SETTINGS_KEY } from '@/lib/reviews-content'
+import { DONATION_SETTINGS_KEY } from '@/lib/donation-content'
+import { SHOP_SETTINGS_KEY } from '@/lib/shop-content'
 import { FAQ_SETTINGS_KEY } from '@/lib/faq-content'
 import { serverError } from '@/lib/api-error'
 import { requireAdmin } from '@/lib/auth'
@@ -39,6 +41,12 @@ export async function PUT(req: NextRequest) {
 
   const reviewsRes = validateBody(reviewsSettingsSchema, body?.reviews)
   if (reviewsRes.error) return NextResponse.json({ error: 'reviews: ' + reviewsRes.error }, { status: 400 })
+
+  const donationRes = validateBody(donationSettingsSchema, body?.donation)
+  if (donationRes.error) return NextResponse.json({ error: 'donation: ' + donationRes.error }, { status: 400 })
+
+  const shopRes = validateBody(shopSettingsSchema, body?.shop)
+  if (shopRes.error) return NextResponse.json({ error: 'shop: ' + shopRes.error }, { status: 400 })
 
   const faqRes = validateBody(faqSettingsSchema, body?.faq)
   if (faqRes.error) return NextResponse.json({ error: 'faq: ' + faqRes.error }, { status: 400 })
@@ -102,6 +110,26 @@ export async function PUT(req: NextRequest) {
       }),
 
       prisma.siteSettings.upsert({
+        where: { key: DONATION_SETTINGS_KEY },
+        update: { value: donationRes.data as Prisma.InputJsonValue },
+        create: {
+          key: DONATION_SETTINGS_KEY,
+          value: donationRes.data as Prisma.InputJsonValue,
+          description: 'Donation section on/off toggle',
+        },
+      }),
+
+      prisma.siteSettings.upsert({
+        where: { key: SHOP_SETTINGS_KEY },
+        update: { value: shopRes.data as Prisma.InputJsonValue },
+        create: {
+          key: SHOP_SETTINGS_KEY,
+          value: shopRes.data as Prisma.InputJsonValue,
+          description: 'Shop section on/off toggle',
+        },
+      }),
+
+      prisma.siteSettings.upsert({
         where: { key: FAQ_SETTINGS_KEY },
         update: { value: faqRes.data as Prisma.InputJsonValue },
         create: {
@@ -123,6 +151,8 @@ export async function PUT(req: NextRequest) {
       footer: footerRes.data,
       footerEn: footerEnRes.data,
       reviews: reviewsRes.data,
+      donation: donationRes.data,
+      shop: shopRes.data,
       faq: faqRes.data,
     })
   } catch (e: unknown) {

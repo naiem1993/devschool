@@ -1,6 +1,5 @@
 import AdminHeader from '@/components/admin/AdminHeader'
-import TerminalCard from '@/components/admin/TerminalCard'
-import LogoutButton from '@/components/admin/LogoutButton'
+import DataCard, { EmptyRow, thClass, trClass, tdClass } from '@/components/admin/DataCard'
 import DeleteButton from '@/components/admin/DeleteButton'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
@@ -13,47 +12,59 @@ export default async function ReferencesPage() {
   })
 
   return (
-    <div>
+    <div className='space-y-6'>
       <AdminHeader
-        title="References"
+        title='References'
         subtitle={`${items.length} entries`}
         action={
-          <div className="flex gap-2">
-            <Link href="/admin/references/new" className="admin-btn">+ new</Link>
-            <Link href="/admin/references/bulk" className="admin-btn">📦 bulk</Link>
-            <LogoutButton />
+          <div className='flex items-center gap-2 flex-wrap'>
+            <Link href='/admin/references/bulk' className='admin-btn-ghost'>Bulk import</Link>
+            <Link href='/admin/references/new' className='admin-btn'>+ New reference</Link>
           </div>
         }
       />
 
-      <TerminalCard cmd='psql devschool -c "SELECT * FROM references"'>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
-              <th className="text-left px-4 py-2">title</th>
-              <th className="text-left px-4 py-2">category</th>
-              <th className="text-left px-4 py-2">language</th>
-              <th className="text-right px-4 py-2">actions</th>
+      <DataCard title='All references' count={items.length}>
+        <table className='w-full text-sm'>
+          <thead className='border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30'>
+            <tr>
+              <th className={thClass}>Title</th>
+              <th className={thClass}>Category</th>
+              <th className={thClass}>Language</th>
+              <th className={thClass + ' text-right'}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {items.map((it) => (
-              <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                <td className="px-4 py-2 text-[#22C55E]">{it.titleBn}</td>
-                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
-                <td className="px-4 py-2 text-[#22C55E]/60">{it.language || '—'}</td>
-                <td className="px-4 py-2 text-right space-x-3">
-                  <Link href={`/admin/references/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
-                  <DeleteButton endpoint={`/api/admin/references/${it.id}`} />
+              <tr key={it.id} className={trClass}>
+                <td className={tdClass + ' font-medium text-slate-900 dark:text-white'}>{it.titleBn}</td>
+                <td className={tdClass}>{it.tutorial.titleBn}</td>
+                <td className={tdClass}>
+                  {it.language ? (
+                    <span className='inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300'>
+                      {it.language}
+                    </span>
+                  ) : (
+                    <span className='text-slate-400 dark:text-slate-600'>&mdash;</span>
+                  )}
+                </td>
+                <td className={tdClass + ' text-right whitespace-nowrap'}>
+                  <div className='flex items-center justify-end gap-1'>
+                    <Link
+                      href={`/admin/references/${it.id}/edit`}
+                      className='inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors'
+                    >
+                      Edit
+                    </Link>
+                    <DeleteButton endpoint={`/api/admin/references/${it.id}`} />
+                  </div>
                 </td>
               </tr>
             ))}
-            {items.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-8 text-center text-[#22C55E]/40">-- no records found --</td></tr>
-            )}
+            {items.length === 0 && <EmptyRow colSpan={4} message='No references yet. Create your first one.' />}
           </tbody>
         </table>
-      </TerminalCard>
+      </DataCard>
     </div>
   )
 }

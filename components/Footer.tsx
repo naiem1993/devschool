@@ -27,10 +27,12 @@ export default function Footer({
   footer = DEFAULT_FOOTER,
   locale,
   dict,
+  donationEnabled = true,
 }: {
   footer?: FooterContent;
   locale: Locale;
   dict: Dictionary;
+  donationEnabled?: boolean;
 }) {
   const year = new Date().getFullYear();
   const copyright = footer.copyright.replace(/\{year\}/g, String(year));
@@ -88,9 +90,14 @@ export default function Footer({
 
           <FooterCol title={t.colSite}>
             <FooterLink href={localeHref(locale, "/about")}>{t.linkAbout}</FooterLink>
+            <FooterLink href={localeHref(locale, "/supporters")}>
+              {locale === 'bn' ? 'সাপোর্টাররা' : 'Supporters'}
+            </FooterLink>
             <FooterLink href="/sitemap.xml">{t.linkSitemap}</FooterLink>
             <FooterLink href="/robots.txt">{t.linkRobots}</FooterLink>
-            <FooterLink href={footer.donateLinkHref}>{footer.donateLinkLabel}</FooterLink>
+            {donationEnabled && (
+              <FooterLink href={footer.donateLinkHref}>{footer.donateLinkLabel}</FooterLink>
+            )}
           </FooterCol>
         </div>
       </div>
@@ -109,17 +116,19 @@ export default function Footer({
           <div>{copyright}</div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <span className="text-gray-400 dark:text-gray-400">
-              {footer.donatePrompt}{" "}
-              <Link
-                href={footer.donateLinkHref}
-                aria-label="Donate to support DevSchool"
-                className="text-[#15803d] underline decoration-[#15803d]/40 underline-offset-2 transition-colors hover:text-[#22C55E] dark:text-[#4ADE80] dark:decoration-[#4ADE80]/40"
-              >
-                {footer.donateLinkLabel}
-                <span className="sr-only"> - Donate to support DevSchool</span>
-              </Link>
-            </span>
+            {donationEnabled && (
+              <span className="text-gray-400 dark:text-gray-400">
+                {footer.donatePrompt}{" "}
+                <Link
+                  href={footer.donateLinkHref}
+                  aria-label="Donate to support DevSchool"
+                  className="text-[#15803d] underline decoration-[#15803d]/40 underline-offset-2 transition-colors hover:text-[#22C55E] dark:text-[#4ADE80] dark:decoration-[#4ADE80]/40"
+                >
+                  {footer.donateLinkLabel}
+                  <span className="sr-only"> - Donate to support DevSchool</span>
+                </Link>
+              </span>
+            )}
             <span className="text-gray-500 dark:text-gray-400">
               {t.madeWith}
               {footer.creditText ? (

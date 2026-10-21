@@ -271,9 +271,10 @@ function LessonItem({
 
       {open && (
         <div className="border-t border-gray-200 dark:border-gray-800 px-3 py-3 space-y-3 bg-gray-50/60 dark:bg-black/20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Title BN + Title EN */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (বাংলা)</label>
               <input
                 value={draft.title}
                 onChange={(e) => setDraft({ ...draft, title: e.target.value })}
@@ -281,37 +282,7 @@ function LessonItem({
               />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
-              <input
-                value={draft.slug}
-                onChange={(e) => setDraft({ ...draft, slug: e.target.value })}
-                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content</label>
-            <RichEditor value={draft.content} onChange={(e) => setDraft({ ...draft, content: e.target.value })} />
-          </div>
-          <div>
-            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (optional)</label>
-            <textarea
-              value={draft.codeExample}
-              onChange={(e) => setDraft({ ...draft, codeExample: e.target.value })}
-              rows={3}
-              className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-            />
-          </div>
-
-          {/* PART 9e — ইংরেজি ভার্সন (optional) */}
-          <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
-            <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-              English (required — /en সাইটে দেখাবে)
-            </p>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                Title (EN)
-              </label>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (English)</label>
               <input
                 value={draft.titleEn}
                 onChange={(e) => setDraft({ ...draft, titleEn: e.target.value })}
@@ -320,19 +291,45 @@ function LessonItem({
                 className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
+            <input
+              value={draft.slug}
+              onChange={(e) => setDraft({ ...draft, slug: e.target.value })}
+              className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
+            />
+          </div>
+
+          {/* Content BN + Content EN */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                Content (EN)
-              </label>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content (বাংলা)</label>
+              <RichEditor value={draft.content} onChange={(e) => setDraft({ ...draft, content: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content (English)</label>
               <RichEditor
                 value={draft.contentEn}
                 onChange={(e) => setDraft({ ...draft, contentEn: e.target.value })}
               />
             </div>
+          </div>
+
+          {/* Code BN + Code EN */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                Code example (EN, optional)
-              </label>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (বাংলা, optional)</label>
+              <textarea
+                value={draft.codeExample}
+                onChange={(e) => setDraft({ ...draft, codeExample: e.target.value })}
+                rows={3}
+                className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (English, optional)</label>
               <textarea
                 value={draft.codeExampleEn}
                 onChange={(e) => setDraft({ ...draft, codeExampleEn: e.target.value })}
@@ -439,9 +436,10 @@ function AddLessonForm({
 
   return (
     <form onSubmit={submit} className="space-y-3 rounded-lg border border-[#22C55E]/30 p-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Title BN + Title EN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (বাংলা)</label>
           <input
             value={title}
             onChange={(e) => {
@@ -454,56 +452,52 @@ function AddLessonForm({
           />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
-          <input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            placeholder="lowercase-hyphen"
-            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content</label>
-        <RichEditor value={content} onChange={(e) => setContent(e.target.value)} />
-      </div>
-      <div>
-        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (optional)</label>
-        <textarea
-          value={codeExample}
-          onChange={(e) => setCodeExample(e.target.value)}
-          rows={3}
-          className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-        />
-      </div>
-
-      {/* PART 9e — ইংরেজি ভার্সন (optional) */}
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (required — /en সাইটে দেখাবে)
-        </p>
-        <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Title (EN)
-          </label>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (English)</label>
           <input
             value={titleEn}
             onChange={(e) => setTitleEn(e.target.value)}
-             required
+            required
             placeholder="e.g. HTML Paragraphs"
             className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
           />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
+        <input
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          placeholder="lowercase-hyphen"
+          className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono"
+        />
+      </div>
+
+      {/* Content BN + Content EN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Content (EN)
-          </label>
-          <RichEditor value={contentEn} onChange={(e) => setContentEn(e.target.value)} />
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content (বাংলা)</label>
+          <RichEditor value={content} onChange={(e) => setContent(e.target.value)} />
         </div>
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Code example (EN, optional)
-          </label>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Content (English)</label>
+          <RichEditor value={contentEn} onChange={(e) => setContentEn(e.target.value)} />
+        </div>
+      </div>
+
+      {/* Code BN + Code EN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (বাংলা, optional)</label>
+          <textarea
+            value={codeExample}
+            onChange={(e) => setCodeExample(e.target.value)}
+            rows={3}
+            className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (English, optional)</label>
           <textarea
             value={codeExampleEn}
             onChange={(e) => setCodeExampleEn(e.target.value)}

@@ -1,6 +1,5 @@
 import AdminHeader from '@/components/admin/AdminHeader'
-import TerminalCard from '@/components/admin/TerminalCard'
-import LogoutButton from '@/components/admin/LogoutButton'
+import DataCard, { EmptyRow, thClass, trClass, tdClass } from '@/components/admin/DataCard'
 import DeleteButton from '@/components/admin/DeleteButton'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
@@ -13,49 +12,57 @@ export default async function ChallengesPage() {
   })
 
   return (
-    <div>
+    <div className='space-y-6'>
       <AdminHeader
-        title="Challenges"
+        title='Challenges'
         subtitle={`${items.length} code challenges`}
         action={
-          <div className="flex gap-2">
-            <Link href="/admin/challenges/new" className="admin-btn">+ new</Link>
-            <Link href="/admin/challenges/bulk" className="admin-btn">📥 bulk</Link>
-            <LogoutButton />
+          <div className='flex items-center gap-2 flex-wrap'>
+            <Link href='/admin/challenges/bulk' className='admin-btn-ghost'>Bulk import</Link>
+            <Link href='/admin/challenges/new' className='admin-btn'>+ New challenge</Link>
           </div>
         }
       />
 
-      <TerminalCard cmd='psql devschool -c "SELECT * FROM code_challenges"'>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
-              <th className="text-left px-4 py-2">title</th>
-              <th className="text-left px-4 py-2">tutorial</th>
-              <th className="text-left px-4 py-2">difficulty</th>
-              <th className="text-left px-4 py-2">points</th>
-              <th className="text-right px-4 py-2">actions</th>
+      <DataCard title='All challenges' count={items.length}>
+        <table className='w-full text-sm'>
+          <thead className='border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30'>
+            <tr>
+              <th className={thClass}>Title</th>
+              <th className={thClass}>Tutorial</th>
+              <th className={thClass}>Difficulty</th>
+              <th className={thClass}>Points</th>
+              <th className={thClass + ' text-right'}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {items.map((it) => (
-              <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                <td className="px-4 py-2 text-[#22C55E]">{it.titleBn}</td>
-                <td className="px-4 py-2 text-cyan-400/70">{it.tutorial.titleBn}</td>
-                <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
-                <td className="px-4 py-2 text-cyan-400">{it.points}</td>
-                <td className="px-4 py-2 text-right space-x-3">
-                  <Link href={`/admin/challenges/${it.id}/edit`} className="text-cyan-400 hover:text-[#22C55E]">edit →</Link>
-                  <DeleteButton endpoint={`/api/admin/challenges/${it.id}`} />
+              <tr key={it.id} className={trClass}>
+                <td className={tdClass + ' font-medium text-slate-900 dark:text-white'}>{it.titleBn}</td>
+                <td className={tdClass}>{it.tutorial.titleBn}</td>
+                <td className={tdClass}>
+                  <span className='inline-flex items-center rounded-md bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400'>
+                    {it.difficulty}
+                  </span>
+                </td>
+                <td className={tdClass + ' font-semibold text-slate-900 dark:text-white'}>{it.points}</td>
+                <td className={tdClass + ' text-right whitespace-nowrap'}>
+                  <div className='flex items-center justify-end gap-1'>
+                    <Link
+                      href={`/admin/challenges/${it.id}/edit`}
+                      className='inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors'
+                    >
+                      Edit
+                    </Link>
+                    <DeleteButton endpoint={`/api/admin/challenges/${it.id}`} />
+                  </div>
                 </td>
               </tr>
             ))}
-            {items.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-[#22C55E]/40">-- no records found --</td></tr>
-            )}
+            {items.length === 0 && <EmptyRow colSpan={5} message='No challenges yet.' />}
           </tbody>
         </table>
-      </TerminalCard>
+      </DataCard>
     </div>
   )
 }

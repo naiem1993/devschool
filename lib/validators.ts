@@ -202,12 +202,17 @@ export const createTestCaseSchema = z.object({
 // ─── Donation Validators ───────────────────────────────────────────────────────
 
 export const createDonationSchema = z.object({
-  donorName: z.string().min(1).max(150),
-  amount: z.number().positive({ message: 'Amount must be positive' }),
+  donorName: z.string().trim().max(150).optional().or(z.literal('')),
+  donorEmail: z.string().trim().email('Invalid email').max(200).optional().or(z.literal('')),
+  amount: z.coerce.number().positive({ message: 'Amount must be positive' }),
   currency: z.string().length(3).default('BDT'),
-  message: z.string().max(500).optional(),
+  transactionId: z.string().trim().max(150).optional().or(z.literal('')),
+  status: z.enum(['pending', 'completed', 'failed']).default('completed'),
+  message: z.string().trim().max(500).optional().or(z.literal('')),
   isPublic: z.boolean().default(false),
 })
+
+export const updateDonationSchema = createDonationSchema.partial()
 
 // ─── Review Validators ─────────────────────────────────────────────────────────
 
@@ -306,6 +311,16 @@ export const reviewsSettingsSchema = z.object({
   enabled: z.boolean(),
 })
 
+/** Donation section toggle — SiteSettings key='donation' */
+export const donationSettingsSchema = z.object({
+  enabled: z.boolean(),
+})
+
+/** Shop section toggle — SiteSettings key='shop' */
+export const shopSettingsSchema = z.object({
+  enabled: z.boolean(),
+})
+
 /** FAQ section content — SiteSettings key='faq' (PART 9j — bn+en paired) */
 export const faqSettingsSchema = z.object({
   items: z
@@ -383,4 +398,72 @@ export const updateSponsorSchema = createSponsorSchema.partial()
 
 export const trackClickSchema = z.object({
   sponsorId: z.string().cuid(),
+})
+
+// ─── Affiliate Link Validators ─────────────────────────────────────────────────
+
+export const AFFILIATE_CATEGORIES = ['hosting', 'course', 'tools', 'book', 'other'] as const
+
+/** Affiliate URL — শুধু http(s) allow (internal path নয়, কারণ এগুলো external product) */
+const affiliateUrl = z
+  .string()
+  .trim()
+  .url('Must be a valid URL')
+  .max(1000)
+  .refine((v) => /^https?:\/\//i.test(v), 'Only http(s) URLs are allowed')
+
+/** imageUrl — external URL বা internal path ('' = none) */
+const affiliateImageUrl = z
+  .string()
+  .trim()
+  .max(1000)
+  .refine(
+    (v) => v === '' || v.startsWith('/') || /^https?:\/\//i.test(v),
+    'Must be an http(s) URL or an internal path'
+  )
+  .optional()
+
+export const createAffiliateLinkSchema = z.object({
+  titleBn: z.string().trim().min(2).max(200),
+  titleEn: z.string().trim().max(200).optional().or(z.literal('')),
+  descriptionBn: z.string().trim().max(600).optional().or(z.literal('')),
+  descriptionEn: z.string().trim().max(600).optional().or(z.literal('')),
+  url: affiliateUrl,
+  imageUrl: affiliateImageUrl,
+  category: z.string().trim().min(1).max(50).default('other'),
+  priceLabel: z.string().trim().max(60).optional().or(z.literal('')),
+  badge: z.string().trim().max(40).optional().or(z.literal('')),
+  isActive: z.boolean().default(true),
+  priority: z.number().int().min(0).max(999).default(0),
+})
+
+export const updateAffiliateLinkSchema = createAffiliateLinkSchema.partial()
+
+export const affiliateClickSchema = z.object({
+  id: z.string().cuid(),
+})
+
+// ─── Affiliate Category Validators ─────────────────────────────────────────────
+
+const categorySlug = z
+  .string()
+  .trim()
+  .min(2)
+  .max(50)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-safe (lowercase, dash-separated)')
+
+export const createAffiliateCategorySchema = z.object({
+  slug: categorySlug,
+  nameBn: z.string().trim().min(1).max(80),
+  nameEn: z.string().trim().max(80).optional().or(z.literal('')),
+  icon: z.string().trim().max(20).optional().or(z.literal('')),
+  description: z.string().trim().max(300).optional().or(z.literal('')),
+  sortOrder: z.coerce.number().int().min(0).max(999).default(0),
+  isActive: z.boolean().default(true),
+})
+
+export const updateAffiliateCategorySchema = createAffiliateCategorySchema.partial()
+
+export const reorderAffiliateCategoriesSchema = z.object({
+  order: z.array(z.string().cuid()),
 })

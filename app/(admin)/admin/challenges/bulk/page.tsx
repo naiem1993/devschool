@@ -10,7 +10,7 @@ export default async function BulkChallengePage() {
   })
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className='w-full max-w-5xl mx-auto'>
       <Link href="/admin/challenges" className="text-sm text-[#15803d] hover:underline">
         ← ফিরে যান
       </Link>

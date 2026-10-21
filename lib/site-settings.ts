@@ -11,6 +11,8 @@ import type { Locale } from '@/lib/i18n/config'
 import { DEFAULT_FOOTER, DEFAULT_FOOTER_EN, FOOTER_SETTINGS_KEY, FOOTER_EN_SETTINGS_KEY, mergeFooter, type FooterContent } from '@/lib/footer-content'
 import { DEFAULT_REVIEWS, REVIEWS_SETTINGS_KEY, mergeReviews, type ReviewsSettings } from '@/lib/reviews-content'
 import { DEFAULT_FAQ, DEFAULT_FAQ_EN, FAQ_SETTINGS_KEY, mergeFaq, type FaqSettings, type FaqItem } from '@/lib/faq-content'
+import { DEFAULT_DONATION, DONATION_SETTINGS_KEY, mergeDonation, type DonationSettings } from '@/lib/donation-content'
+import { DEFAULT_SHOP, SHOP_SETTINGS_KEY, mergeShop, type ShopSettings } from '@/lib/shop-content'
 
 /**
  * DB থেকে hero settings পড়ে — locale-নির্ভর।
@@ -79,6 +81,30 @@ export async function getFooterSettings(
   }
 }
 
+/** DB থেকে shop settings পড়ে। fail হলে silent default (enabled=true)। */
+export async function getShopSettings(): Promise<ShopSettings> {
+  try {
+    const row = await prisma.siteSettings.findUnique({ where: { key: SHOP_SETTINGS_KEY } })
+    if (!row) return DEFAULT_SHOP
+    return mergeShop(row.value)
+  } catch (e) {
+    console.error('[site-settings] getShopSettings failed — using defaults:', e)
+    return DEFAULT_SHOP
+  }
+}
+
+/** DB থেকে donation settings পড়ে। fail হলে silent default (enabled=true)। */
+export async function getDonationSettings(): Promise<DonationSettings> {
+  try {
+    const row = await prisma.siteSettings.findUnique({ where: { key: DONATION_SETTINGS_KEY } })
+    if (!row) return DEFAULT_DONATION
+    return mergeDonation(row.value)
+  } catch (e) {
+    console.error('[site-settings] getDonationSettings failed — using defaults:', e)
+    return DEFAULT_DONATION
+  }
+}
+
 /** DB থেকে reviews settings পড়ে। fail হলে silent default (enabled=true)। */
 export async function getReviewsSettings(): Promise<ReviewsSettings> {
   try {
@@ -140,17 +166,21 @@ export async function getSiteSettings(): Promise<{
   footer: FooterContent
   footerEn: FooterContent
   reviews: ReviewsSettings
+  donation: DonationSettings
+  shop: ShopSettings
   faq: FaqSettings
 }> {
-  const [hero, heroEn, footer, footerEn, reviews, faqRow] = await Promise.all([
+  const [hero, heroEn, footer, footerEn, reviews, donation, shop, faqRow] = await Promise.all([
     getHeroSettings('bn').then((h) => h ?? DEFAULT_HERO_BN),
     getHeroSettings('en'),
     getFooterSettings('bn'),
     getFooterSettings('en'),
     getReviewsSettings(),
+    getDonationSettings(),
+    getShopSettings(),
     prisma.siteSettings.findUnique({ where: { key: FAQ_SETTINGS_KEY } }),
   ])
   // admin form-এ paired view দরকার (qEn/aEn সহ) — তাই mergeFaq সরাসরি
   const faq = faqRow ? mergeFaq(faqRow.value, DEFAULT_FAQ) : DEFAULT_FAQ
-  return { hero, heroEn, footer, footerEn, reviews, faq }
+  return { hero, heroEn, footer, footerEn, reviews, donation, shop, faq }
 }

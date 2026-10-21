@@ -154,178 +154,204 @@ export default function QuizForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
-      {/* ── Tutorial ── */}
-      <div>
-        <label className="admin-label">&gt; Tutorial</label>
-        <select
-          className="admin-input"
-          value={form.tutorialId}
-          onChange={(e) => onTutorialChange(e.target.value)}
-          required
-        >
-          {tutorials.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* ── Location Type ── */}
-      <div>
-        <label className="admin-label">&gt; কোথায় দেখাবে?</label>
-        <div className="flex gap-3">
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+    <form onSubmit={onSubmit} className="space-y-6">
+      {/* ── Settings Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Tutorial</label>
+            <select
+              className="admin-input"
+              value={form.tutorialId}
+              onChange={(e) => onTutorialChange(e.target.value)}
+              required
+            >
+              {tutorials.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="admin-label">Order Index (marker number)</label>
             <input
-              type="radio"
-              name="locationType"
-              checked={locationType === 'lesson'}
-              onChange={() => onLocationTypeChange('lesson')}
-              className="accent-[#22C55E]"
+              type="number"
+              min={1}
+              className="admin-input"
+              value={form.orderIndex}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, orderIndex: Number(e.target.value) || 1 }))
+              }
+              required
             />
-            <span>Lesson (nested chapter)</span>
-          </label>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
-            <input
-              type="radio"
-              name="locationType"
-              checked={locationType === 'chapter'}
-              onChange={() => onLocationTypeChange('chapter')}
-              className="accent-[#22C55E]"
-            />
-            <span>Chapter (single-page)</span>
-          </label>
-        </div>
-      </div>
-
-      {/* ── Lesson / Chapter select ── */}
-      {locationType === 'lesson' ? (
-        <div>
-          <label className="admin-label">&gt; Lesson</label>
-          <select
-            className="admin-input"
-            value={form.lessonId}
-            onChange={(e) => setForm((f) => ({ ...f, lessonId: e.target.value }))}
-            required
-          >
-            <option value="">— Lesson বেছে নিন —</option>
-            {availableLessons.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.title}
-              </option>
-            ))}
-          </select>
-          {availableLessons.length === 0 && (
-            <p className="text-[10px] text-amber-500 mt-1">
-              এই tutorial-এ কোনো nested lesson নেই। Chapter mode চেষ্টা করুন।
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">
+              content-এ প্রথম{' '}
+              <code className="px-1 rounded bg-slate-100 dark:bg-slate-800">[[quiz]]</code> = 1, দ্বিতীয় = 2, তৃতীয় = 3 ...
             </p>
+          </div>
+        </div>
+
+        <div>
+          <label className="admin-label">কোথায় দেখাবে?</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+            <label
+              className={
+                'flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-colors ' +
+                (locationType === 'lesson'
+                  ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600')
+              }
+            >
+              <input
+                type="radio"
+                name="locationType"
+                checked={locationType === 'lesson'}
+                onChange={() => onLocationTypeChange('lesson')}
+                className="accent-emerald-500"
+              />
+              <div>
+                <div className="text-sm font-medium text-slate-900 dark:text-white">Lesson</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">nested chapter-এর ভিতরে</div>
+              </div>
+            </label>
+            <label
+              className={
+                'flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-colors ' +
+                (locationType === 'chapter'
+                  ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600')
+              }
+            >
+              <input
+                type="radio"
+                name="locationType"
+                checked={locationType === 'chapter'}
+                onChange={() => onLocationTypeChange('chapter')}
+                className="accent-emerald-500"
+              />
+              <div>
+                <div className="text-sm font-medium text-slate-900 dark:text-white">Chapter</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">single-page chapter</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          {locationType === 'lesson' ? (
+            <>
+              <label className="admin-label">Lesson</label>
+              <select
+                className="admin-input"
+                value={form.lessonId}
+                onChange={(e) => setForm((f) => ({ ...f, lessonId: e.target.value }))}
+                required
+              >
+                <option value="">— Lesson বেছে নিন —</option>
+                {availableLessons.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.title}
+                  </option>
+                ))}
+              </select>
+              {availableLessons.length === 0 && (
+                <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">
+                  এই tutorial-এ কোনো nested lesson নেই। Chapter mode চেষ্টা করুন।
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <label className="admin-label">Chapter (single-page)</label>
+              <select
+                className="admin-input"
+                value={form.chapterId}
+                onChange={(e) => setForm((f) => ({ ...f, chapterId: e.target.value }))}
+                required
+              >
+                <option value="">— Chapter বেছে নিন —</option>
+                {availableChapters.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.title}
+                  </option>
+                ))}
+              </select>
+              {availableChapters.length === 0 && (
+                <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">
+                  এই tutorial-এ কোনো single-page chapter নেই। Lesson mode চেষ্টা করুন।
+                </p>
+              )}
+            </>
           )}
         </div>
-      ) : (
-        <div>
-          <label className="admin-label">&gt; Chapter (single-page)</label>
-          <select
-            className="admin-input"
-            value={form.chapterId}
-            onChange={(e) => setForm((f) => ({ ...f, chapterId: e.target.value }))}
-            required
-          >
-            <option value="">— Chapter বেছে নিন —</option>
-            {availableChapters.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title}
-              </option>
-            ))}
-          </select>
-          {availableChapters.length === 0 && (
-            <p className="text-[10px] text-amber-500 mt-1">
-              এই tutorial-এ কোনো single-page chapter নেই। Lesson mode চেষ্টা করুন।
-            </p>
-          )}
+      </div>
+
+      {/* ── Question Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Question</h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Question (বাংলা)</label>
+            <textarea
+              className="admin-input"
+              rows={3}
+              value={form.questionBn}
+              onChange={(e) => setForm((f) => ({ ...f, questionBn: e.target.value }))}
+              required
+            />
+          </div>
+          <div>
+            <label className="admin-label">Question (English)</label>
+            <textarea
+              className="admin-input"
+              rows={3}
+              value={form.questionEn}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, questionEn: e.target.value }))
+              }
+              required
+            />
+          </div>
         </div>
-      )}
 
-      {/* ── Order ── */}
-      <div>
-        <label className="admin-label">&gt; Order Index (marker number)</label>
-        <input
-          type="number"
-          min={1}
-          className="admin-input"
-          value={form.orderIndex}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, orderIndex: Number(e.target.value) || 1 }))
-          }
-          required
-        />
-        <p className="text-[10px] text-gray-500 mt-1">
-          content-এ প্রথম{' '}
-          <code className="px-1 rounded bg-gray-200 dark:bg-gray-800">[[quiz]]</code> = 1,
-          দ্বিতীয় = 2, তৃতীয় = 3 ...
-        </p>
-      </div>
-
-      {/* ── Question ── */}
-      <div>
-        <label className="admin-label">&gt; Question (BN)</label>
-        <textarea
-          className="admin-input"
-          rows={2}
-          value={form.questionBn}
-          onChange={(e) => setForm((f) => ({ ...f, questionBn: e.target.value }))}
-          required
-        />
-      </div>
-      <div>
-        <label className="admin-label">&gt; Explanation (BN, optional)</label>
-        <textarea
-          className="admin-input"
-          rows={2}
-          value={form.explanationBn || ''}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, explanationBn: e.target.value }))
-          }
-        />
-      </div>
-
-      {/* ── English ── */}
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (required — /en সাইটে দেখাবে)
-        </p>
-        <div>
-          <label className="admin-label">&gt; Question (EN)</label>
-          <textarea
-            className="admin-input"
-            rows={2}
-            value={form.questionEn}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, questionEn: e.target.value }))
-            }
-            required
-          />
-        </div>
-        <div>
-          <label className="admin-label">&gt; Explanation (EN, optional)</label>
-          <textarea
-            className="admin-input"
-            rows={2}
-            value={form.explanationEn}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, explanationEn: e.target.value }))
-            }
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Explanation (বাংলা, optional)</label>
+            <textarea
+              className="admin-input"
+              rows={3}
+              value={form.explanationBn || ''}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, explanationBn: e.target.value }))
+              }
+            />
+          </div>
+          <div>
+            <label className="admin-label">Explanation (English, optional)</label>
+            <textarea
+              className="admin-input"
+              rows={3}
+              value={form.explanationEn}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, explanationEn: e.target.value }))
+              }
+            />
+          </div>
         </div>
       </div>
 
-      {/* ── Options ── */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="admin-label mb-0">&gt; Options (সঠিকটায় radio দিন)</span>
+      {/* ── Options Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Options</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">সঠিক উত্তরে radio দিন</p>
+          </div>
           <button
             type="button"
-            className="text-xs text-cyan-400 hover:text-[#22C55E]"
+            className="admin-btn-ghost"
             onClick={() =>
               setOptions((o) => [
                 ...o,
@@ -333,31 +359,55 @@ export default function QuizForm({
               ])
             }
           >
-            + add
+            + Add option
           </button>
         </div>
-        <div className="space-y-2">
+
+        <div className="space-y-3">
           {options.map((opt, i) => (
             <div
               key={i}
-              className="space-y-1 border border-gray-200 dark:border-gray-800 rounded p-2"
+              className={
+                'rounded-xl border p-4 space-y-3 transition-colors ' +
+                (opt.isCorrect
+                  ? 'border-emerald-400 dark:border-emerald-500/50 bg-emerald-50/50 dark:bg-emerald-500/5'
+                  : 'border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/20')
+              }
             >
-              <div className="flex gap-2 items-center">
-                <input
-                  type="radio"
-                  name="correct"
-                  checked={opt.isCorrect}
-                  className="accent-[#22C55E]"
-                  onChange={() =>
-                    setOptions((o) =>
-                      o.map((x, j) => ({ ...x, isCorrect: j === i }))
-                    )
-                  }
-                />
+              <div className="flex items-center justify-between gap-3">
+                <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+                  <input
+                    type="radio"
+                    name="correct"
+                    checked={opt.isCorrect}
+                    className="accent-emerald-500 w-4 h-4"
+                    onChange={() =>
+                      setOptions((o) =>
+                        o.map((x, j) => ({ ...x, isCorrect: j === i }))
+                      )
+                    }
+                  />
+                  <span className={opt.isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}>
+                    {opt.isCorrect ? '✓ Correct answer' : 'Mark as correct'}
+                  </span>
+                </label>
+                {options.length > 2 && (
+                  <button
+                    type="button"
+                    className="text-xs font-medium text-rose-600 dark:text-rose-400 hover:underline"
+                    onClick={() =>
+                      setOptions((o) => o.filter((_, j) => j !== i))
+                    }
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 <input
                   className="admin-input"
                   value={opt.textBn}
-                  placeholder={`option ${i + 1} (BN)`}
+                  placeholder={`Option ${i + 1} (বাংলা)`}
                   onChange={(e) =>
                     setOptions((o) =>
                       o.map((x, j) =>
@@ -367,47 +417,37 @@ export default function QuizForm({
                   }
                   required
                 />
-                {options.length > 2 && (
-                  <button
-                    type="button"
-                    className="text-red-500/70 hover:text-red-500 text-xs"
-                    onClick={() =>
-                      setOptions((o) => o.filter((_, j) => j !== i))
-                    }
-                  >
-                    rm
-                  </button>
-                )}
-              </div>
-              <input
-                className="admin-input"
-                value={opt.textEn}
-                placeholder={`option ${i + 1} (EN)`}
-                onChange={(e) =>
-                  setOptions((o) =>
-                    o.map((x, j) =>
-                      j === i ? { ...x, textEn: e.target.value } : x
+                <input
+                  className="admin-input"
+                  value={opt.textEn}
+                  placeholder={`Option ${i + 1} (English)`}
+                  onChange={(e) =>
+                    setOptions((o) =>
+                      o.map((x, j) =>
+                        j === i ? { ...x, textEn: e.target.value } : x
+                      )
                     )
-                  )
-                }
-                required
-              />
+                  }
+                  required
+                />
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {error && <div className="admin-error">[!] {error}</div>}
+      {error && <div className="admin-error">{error}</div>}
+
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={loading} className="admin-btn">
-          {loading ? '> saving...' : '$ save'}
+          {loading ? 'Saving...' : 'Save quiz'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/admin/quizzes')}
           className="admin-btn-ghost"
         >
-          $ cancel
+          Cancel
         </button>
       </div>
     </form>

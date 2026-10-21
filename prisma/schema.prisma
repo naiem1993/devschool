@@ -259,6 +259,59 @@ model Donation {
 }
 
 // ==========================================
+//  AFFILIATELINK — donate page-এ দেখানো affiliate products
+//  Admin থেকে CRUD করা যায়। Click tracking আছে (কোন product চলছে বোঝার জন্য)।
+//  category দিয়ে public page-এ filter tab বানানো হয়।
+// ==========================================
+model AffiliateLink {
+  id          String   @id @default(cuid())
+  titleBn     String   @map("title")
+  titleEn     String?
+  descriptionBn String? @map("description")
+  descriptionEn String?
+  /// affiliate target URL (external, https)
+  url         String
+  /// product image/logo — external URL বা internal path
+  imageUrl    String?
+  /// "hosting" | "course" | "tools" | "book" | "other" — free-form, filter tab এ ব্যবহার হয়
+  category    String   @default("tools")
+  /// optional price label (যেমন "৳500/mo", "Free")
+  priceLabel  String?
+  /// badge যেমন "Popular", "Best value"
+  badge       String?
+  isActive    Boolean  @default(true)
+  /// higher = first
+  priority    Int      @default(0)
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, priority])
+  @@index([category])
+}
+
+// ==========================================
+//  AFFILIATECATEGORY — shop-এর category (admin থেকে control)
+//  AffiliateLink.category = এই model-এর slug (string reference, FK নেই —
+//  slug change হলেও পুরনো link orphan হয়ে যাবে না, সহজ রাখতে)
+//  icon = emoji, nameBn/En = display name, sortOrder = grid-এ ক্রম
+// ==========================================
+model AffiliateCategory {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  nameBn      String   @map("name")
+  nameEn      String?
+  icon        String?  @default("📦")
+  description String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+// ==========================================
 //  SITESETTINGS
 // ==========================================
 model SiteSettings {

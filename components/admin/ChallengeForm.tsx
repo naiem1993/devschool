@@ -75,128 +75,151 @@ export default function ChallengeForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-3xl">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="admin-label">&gt; Tutorial</label>
-          <select className="admin-input" value={form.tutorialId} onChange={(e) => setForm((f) => ({ ...f, tutorialId: e.target.value }))} required>
-            {tutorials.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="admin-label">&gt; Difficulty</label>
-          <select className="admin-input" value={form.difficulty} onChange={(e) => setForm((f) => ({ ...f, difficulty: e.target.value }))}>
-            <option>Easy</option><option>Medium</option><option>Hard</option>
-          </select>
-        </div>
-        <div>
-          <label className="admin-label">&gt; Language</label>
-          <select className="admin-input" value={form.language} onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}>
-            <optgroup label="🌐 Browser">
-              <option value="js">JavaScript</option>
-              <option value="ts">TypeScript</option>
-              <option value="html">HTML</option>
-              <option value="css">CSS</option>
-            </optgroup>
-            <optgroup label="☁️ Remote API">
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-              <option value="go">Go</option>
-              <option value="rust">Rust</option>
-              <option value="php">PHP</option>
-              <option value="csharp">C#</option>
-              <option value="kotlin">Kotlin</option>
-              <option value="swift">Swift</option>
-            </optgroup>
-          </select>
-        </div>
-      </div>
-      <div>
-        <label className="admin-label">&gt; Title</label>
-        <input className="admin-input" value={form.titleBn} onChange={(e) => setForm((f) => ({ ...f, titleBn: e.target.value }))} required />
-      </div>
-      <div>
-        <label className="admin-label">&gt; Description</label>
-        <textarea className="admin-input" rows={3} value={form.descriptionBn} onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))} required />
-      </div>
-
-      {/* PART 9g — ইংরেজি ভার্সন (optional) */}
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (required — /en সাইটে দেখাবে)
-        </p>
-        <div>
-          <label className="admin-label">&gt; Title (EN)</label>
-          <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Reverse a string" required />
-        </div>
-        <div>
-          <label className="admin-label">&gt; Description (EN)</label>
-          <textarea className="admin-input" rows={3} value={form.descriptionEn} onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))} required />
+    <form onSubmit={onSubmit} className="space-y-6">
+      {/* ── Settings Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div>
+            <label className="admin-label">Tutorial</label>
+            <select className="admin-input" value={form.tutorialId} onChange={(e) => setForm((f) => ({ ...f, tutorialId: e.target.value }))} required>
+              {tutorials.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="admin-label">Difficulty</label>
+            <select className="admin-input" value={form.difficulty} onChange={(e) => setForm((f) => ({ ...f, difficulty: e.target.value }))}>
+              <option>Easy</option><option>Medium</option><option>Hard</option>
+            </select>
+          </div>
+          <div>
+            <label className="admin-label">Language</label>
+            <select className="admin-input" value={form.language} onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}>
+              <optgroup label="Browser">
+                <option value="js">JavaScript</option>
+                <option value="ts">TypeScript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+              </optgroup>
+              <optgroup label="Remote API">
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="c">C</option>
+                <option value="go">Go</option>
+                <option value="rust">Rust</option>
+                <option value="php">PHP</option>
+                <option value="csharp">C#</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="swift">Swift</option>
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label className="admin-label">Points</label>
+            <input type="number" className="admin-input" value={form.points} onChange={(e) => setForm((f) => ({ ...f, points: Number(e.target.value) }))} />
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          Starter Code (শিক্ষার্থী শুরুতেই যা দেখবে)
-        </p>
-        <div>
-          <label className="admin-label">&gt; Starter Code (BN)</label>
-          <textarea className="admin-input font-mono text-xs" rows={5} value={form.starterCodeBn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeBn: e.target.value }))} />
+      {/* ── Content Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Challenge details</h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Title (বাংলা)</label>
+            <input className="admin-input" value={form.titleBn} onChange={(e) => setForm((f) => ({ ...f, titleBn: e.target.value }))} required />
+          </div>
+          <div>
+            <label className="admin-label">Title (English)</label>
+            <input className="admin-input" value={form.titleEn} onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))} placeholder="e.g. Reverse a string" required />
+          </div>
         </div>
-        <div>
-          <label className="admin-label">&gt; Starter Code (EN)</label>
-          <textarea className="admin-input font-mono text-xs" rows={5} value={form.starterCodeEn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeEn: e.target.value }))} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Description (বাংলা)</label>
+            <textarea className="admin-input" rows={4} value={form.descriptionBn} onChange={(e) => setForm((f) => ({ ...f, descriptionBn: e.target.value }))} required />
+          </div>
+          <div>
+            <label className="admin-label">Description (English)</label>
+            <textarea className="admin-input" rows={4} value={form.descriptionEn} onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))} required />
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-4 space-y-4">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          Solution (সম্পূর্ণ সমাধান — Reveal করলে দেখাবে)
-        </p>
+      {/* ── Starter Code Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-4">
         <div>
-          <label className="admin-label">&gt; Solution (BN)</label>
-          <textarea className="admin-input font-mono text-xs" rows={5} value={form.solutionBn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionBn: e.target.value }))} />
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">Starter Code</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">শিক্ষার্থী শুরুতেই যা দেখবে</p>
         </div>
-        <div>
-          <label className="admin-label">&gt; Solution (EN)</label>
-          <textarea className="admin-input font-mono text-xs" rows={5} value={form.solutionEn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionEn: e.target.value }))} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Starter Code (বাংলা)</label>
+            <textarea className="admin-input font-mono text-xs" rows={6} value={form.starterCodeBn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeBn: e.target.value }))} />
+          </div>
+          <div>
+            <label className="admin-label">Starter Code (English)</label>
+            <textarea className="admin-input font-mono text-xs" rows={6} value={form.starterCodeEn || ''} onChange={(e) => setForm((f) => ({ ...f, starterCodeEn: e.target.value }))} />
+          </div>
         </div>
-      </div>
-      <div>
-        <label className="admin-label">&gt; Points</label>
-        <input type="number" className="admin-input" value={form.points} onChange={(e) => setForm((f) => ({ ...f, points: Number(e.target.value) }))} />
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="admin-label mb-0">&gt; Test Cases</span>
-          <button type="button" className="text-xs text-cyan-400 hover:text-[#22C55E]" onClick={() => setTestCases((t) => [...t, { input: '', expectedOutput: '', isHidden: false }])}>+ add</button>
+      {/* ── Solution Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">Solution</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">সম্পূর্ণ সমাধান — Reveal করলে দেখাবে</p>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Solution (বাংলা)</label>
+            <textarea className="admin-input font-mono text-xs" rows={6} value={form.solutionBn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionBn: e.target.value }))} />
+          </div>
+          <div>
+            <label className="admin-label">Solution (English)</label>
+            <textarea className="admin-input font-mono text-xs" rows={6} value={form.solutionEn || ''} onChange={(e) => setForm((f) => ({ ...f, solutionEn: e.target.value }))} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Test Cases Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Test Cases</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Input ও expected output</p>
+          </div>
+          <button type="button" className="admin-btn-ghost" onClick={() => setTestCases((t) => [...t, { input: '', expectedOutput: '', isHidden: false }])}>+ Add test case</button>
         </div>
         <div className="space-y-3">
           {testCases.map((tc, i) => (
-            <div key={i} className="border border-[#22C55E]/20 rounded p-3 space-y-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <input className="admin-input" placeholder="input" value={tc.input} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, input: e.target.value } : x))} />
-                <input className="admin-input" placeholder="expected output" value={tc.expectedOutput} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, expectedOutput: e.target.value } : x))} />
+            <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/20 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Test case #{i + 1}</span>
+                {testCases.length > 1 && (
+                  <button type="button" className="text-xs font-medium text-rose-600 dark:text-rose-400 hover:underline" onClick={() => setTestCases((a) => a.filter((_, j) => j !== i))}>Remove</button>
+                )}
               </div>
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-xs text-[#22C55E]/80 font-mono">
-                  <input type="checkbox" className="accent-[#22C55E]" checked={tc.isHidden} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, isHidden: e.target.checked } : x))} />
-                  hidden
-                </label>
-                {testCases.length > 1 && <button type="button" className="text-red-500/70 hover:text-red-500 text-xs" onClick={() => setTestCases((a) => a.filter((_, j) => j !== i))}>rm</button>}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <input className="admin-input font-mono text-xs" placeholder="input" value={tc.input} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, input: e.target.value } : x))} />
+                <input className="admin-input font-mono text-xs" placeholder="expected output" value={tc.expectedOutput} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, expectedOutput: e.target.value } : x))} />
               </div>
+              <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                <input type="checkbox" className="accent-emerald-500" checked={tc.isHidden} onChange={(e) => setTestCases((a) => a.map((x, j) => j === i ? { ...x, isHidden: e.target.checked } : x))} />
+                Hidden test case (শিক্ষার্থী দেখবে না)
+              </label>
             </div>
           ))}
         </div>
       </div>
 
-      {error && <div className="admin-error">[!] {error}</div>}
+      {error && <div className="admin-error">{error}</div>}
+
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={loading} className="admin-btn">{loading ? '> saving...' : '$ save'}</button>
-        <button type="button" onClick={() => router.push('/admin/challenges')} className="admin-btn-ghost">$ cancel</button>
+        <button type="submit" disabled={loading} className="admin-btn">{loading ? 'Saving...' : 'Save challenge'}</button>
+        <button type="button" onClick={() => router.push('/admin/challenges')} className="admin-btn-ghost">Cancel</button>
       </div>
     </form>
   )

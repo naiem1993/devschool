@@ -291,15 +291,30 @@ function ChapterCard({
 
       {open && (
         <div className="border-t border-gray-200 dark:border-gray-800 px-4 py-4 space-y-3 bg-gray-50/60 dark:bg-black/20">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="sm:col-span-1">
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+          {/* Title BN + Title EN side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (বাংলা)</label>
               <input
                 value={draft.title}
                 onChange={(e) => setDraft({ ...draft, title: e.target.value })}
                 className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
               />
             </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (English)</label>
+              <input
+                value={draft.titleEn}
+                onChange={(e) => setDraft({ ...draft, titleEn: e.target.value })}
+                placeholder="e.g. HTML Paragraphs"
+                required
+                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+          </div>
+
+          {/* Slug + Group side by side */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
               <input
@@ -327,60 +342,44 @@ function ChapterCard({
 
           {!nested && (
             <>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                  Content (single-page)
-                </label>
-                <RichEditor
-                  value={draft.content}
-                  onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                  Code example (optional)
-                </label>
-                <textarea
-                  value={draft.codeExample}
-                  onChange={(e) => setDraft({ ...draft, codeExample: e.target.value })}
-                  rows={3}
-                  className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-                />
-              </div>
-            </>
-          )}
-
-          {/* PART 9d — ইংরেজি ভার্সন (optional) */}
-          <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
-            <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-              English (required — /en সাইটে দেখাবে)
-            </p>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                Title (EN)
-              </label>
-              <input
-                value={draft.titleEn}
-                onChange={(e) => setDraft({ ...draft, titleEn: e.target.value })}
-                placeholder="e.g. HTML Paragraphs"
-                required
-                className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-              />
-            </div>
-            {!nested && (
-              <>
+              {/* Content BN + Content EN side by side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                    Content (EN)
+                    Content (বাংলা)
+                  </label>
+                  <RichEditor
+                    value={draft.content}
+                    onChange={(e) => setDraft({ ...draft, content: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                    Content (English)
                   </label>
                   <RichEditor
                     value={draft.contentEn}
                     onChange={(e) => setDraft({ ...draft, contentEn: e.target.value })}
                   />
                 </div>
+              </div>
+
+              {/* Code example BN + EN side by side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-                    Code example (EN, optional)
+                    Code example (বাংলা, optional)
+                  </label>
+                  <textarea
+                    value={draft.codeExample}
+                    onChange={(e) => setDraft({ ...draft, codeExample: e.target.value })}
+                    rows={3}
+                    className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
+                    Code example (English, optional)
                   </label>
                   <textarea
                     value={draft.codeExampleEn}
@@ -389,9 +388,9 @@ function ChapterCard({
                     className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                   />
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
 
           <button
             type="button"
@@ -477,9 +476,10 @@ function AddChapterForm({
       className="rounded-xl border border-dashed border-[#22C55E]/40 p-4 space-y-3"
     >
       <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">+ নতুন Chapter</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Title BN + Title EN + Slug + Group */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title</label>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (বাংলা)</label>
           <input
             value={title}
             onChange={(e) => {
@@ -492,6 +492,18 @@ function AddChapterForm({
             className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
           />
         </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Title (English)</label>
+          <input
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder="e.g. HTML Paragraphs"
+            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Slug</label>
           <input
@@ -518,48 +530,35 @@ function AddChapterForm({
         </div>
       </div>
 
-      <div>
-        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-          Content (single-page chapter-এর জন্য; খালি রাখলে lesson যোগ করতে পারবেন)
-        </label>
-        <RichEditor value={content} onChange={(e) => setContent(e.target.value)} />
-      </div>
-      <div>
-        <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (optional)</label>
-        <textarea
-          value={codeExample}
-          onChange={(e) => setCodeExample(e.target.value)}
-          rows={3}
-          className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-        />
-      </div>
-
-      {/* PART 9d — ইংরেজি ভার্সন (optional) */}
-      <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-700 p-3 space-y-3">
-        <p className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
-          English (optional — /en সাইটে দেখাবে)
-        </p>
+      {/* Content BN + Content EN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Title (EN)
+            Content (বাংলা — single-page chapter-এর জন্য; খালি রাখলে lesson যোগ করতে পারবেন)
           </label>
-          <input
-            value={titleEn}
-            onChange={(e) => setTitleEn(e.target.value)}
-            placeholder="e.g. HTML Paragraphs"
-            className="w-full text-sm px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-          />
+          <RichEditor value={content} onChange={(e) => setContent(e.target.value)} />
         </div>
         <div>
           <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Content (EN)
+            Content (English, optional)
           </label>
           <RichEditor value={contentEn} onChange={(e) => setContentEn(e.target.value)} />
         </div>
+      </div>
+
+      {/* Code BN + Code EN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">
-            Code example (EN, optional)
-          </label>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (বাংলা, optional)</label>
+          <textarea
+            value={codeExample}
+            onChange={(e) => setCodeExample(e.target.value)}
+            rows={3}
+            className="w-full text-xs font-mono px-2 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest font-mono text-gray-500 mb-1">Code example (English, optional)</label>
           <textarea
             value={codeExampleEn}
             onChange={(e) => setCodeExampleEn(e.target.value)}

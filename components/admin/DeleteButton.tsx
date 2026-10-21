@@ -38,9 +38,18 @@ export default function DeleteButton({
       <button
         onClick={() => setPinOpen(true)}
         disabled={busy}
-        className="text-xs font-mono transition text-red-500/60 hover:text-red-500 disabled:opacity-40"
+        className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors disabled:opacity-40"
       >
-        {busy ? '...' : 'rm'}
+        {busy ? (
+          '...'
+        ) : (
+          <>
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            </svg>
+            Delete
+          </>
+        )}
       </button>
       <PinModal
         open={pinOpen}

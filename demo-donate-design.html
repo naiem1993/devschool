@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — DevSchool</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class' }
+</script>
+<style>
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #050806;
+    color: #f8fafc;
+  }
+  .font-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+  
+  /* Ambient glow */
+  .ambient-glow {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    z-index: 0;
+  }
+  
+  /* Subtle grid background */
+  .grid-bg {
+    background-image: 
+      linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 40%, transparent 100%);
+  }
+  
+  /* Card shine on hover */
+  .card-shine {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-shine::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(600px circle at var(--x, 50%) var(--y, 0%), rgba(255,255,255,0.06), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .card-shine:hover::before { opacity: 1; }
+  
+  /* Green glow button */
+  .btn-glow {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4), 0 4px 20px -4px rgba(34, 197, 94, 0.3);
+    transition: all 0.3s;
+  }
+  .btn-glow:hover {
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15), 0 8px 30px -4px rgba(34, 197, 94, 0.5);
+    transform: translateY(-2px);
+  }
+  
+  /* Divider with gradient */
+  .divider-grad {
+    background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.2), transparent);
+    height: 1px;
+  }
+  
+  /* Code inline */
+  .code-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #4ADE80;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  
+  /* Pulse dot */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+  
+  /* Copy feedback */
+  .copy-btn:hover .copy-icon { opacity: 1; }
+  .copy-icon { opacity: 0; transition: opacity 0.2s; }
+  
+  /* Header pill nav */
+  .header-pill {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+</style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+
+<!-- ═══════════ AMBIENT BACKGROUNDS ═══════════ -->
+<div class="ambient-glow w-[500px] h-[500px] bg-emerald-500" style="top: -100px; left: 50%; transform: translateX(-50%);"></div>
+<div class="ambient-glow w-[400px] h-[400px] bg-emerald-600" style="top: 40%; left: -150px; opacity: 0.15;"></div>
+<div class="ambient-glow w-[400px] h-[400px] bg-emerald-700" style="top: 60%; right: -150px; opacity: 0.12;"></div>
+
+<!-- Grid overlay -->
+<div class="fixed inset-0 grid-bg pointer-events-none" style="z-index: 1;"></div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="relative" style="z-index: 10;">
+  <div class="max-w-5xl mx-auto px-6 py-6">
+    <div class="flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-black text-[#04140a] text-lg group-hover:scale-105 transition-transform">D</div>
+        <div>
+          <div class="text-sm font-bold tracking-tight"><span class="text-emerald-400">Dev</span>School</div>
+          <div class="text-[9px] text-slate-500 uppercase tracking-[0.2em] font-medium">Learn &amp; Code</div>
+        </div>
+      </a>
+      <a href="#" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+        <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN CONTENT ═══════════ -->
+<main class="relative max-w-5xl mx-auto px-6 pt-12 pb-24" style="z-index: 10;">
+
+  <!-- ─────────── HERO ─────────── -->
+  <div class="text-center mb-16 animate-fade-up">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+      100% Free · No Paywalls · Open Source
+    </div>
+    
+    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.02] mb-6">
+      Keep DevSchool<br/>
+      <span class="bg-gradient-to-r from-emerald-300 via-emerald-400 to-emerald-500 bg-clip-text text-transparent">alive &amp; free</span>
+    </h1>
+    
+    <p class="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
+      Every lesson, challenge, and resource — free forever. Choose the way that works for you to keep it running.
+    </p>
+  </div>
+
+  <!-- ─────────── TWO CARDS ─────────── -->
+  <div class="grid md:grid-cols-2 gap-5 mb-12">
+
+    <!-- ─── DONATE CARD ─── -->
+    <div class="card-shine relative rounded-3xl bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/[0.06] p-7 hover:border-emerald-500/30 animate-fade-up delay-1" style="backdrop-filter: blur(20px);">
+      
+      <!-- Top badge -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+          <span class="text-xs">💝</span>
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Option 01</span>
+        </div>
+        <span class="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Direct</span>
+      </div>
+      
+      <!-- Title -->
+      <h2 class="text-2xl font-bold tracking-tight mb-2">Send a Donation</h2>
+      <p class="text-sm text-slate-400 leading-relaxed mb-6">
+        100% goes directly to server costs, domain renewal, and content production.
+      </p>
+      
+      <!-- Payment methods -->
+      <div class="space-y-2.5">
+        
+        <!-- bKash -->
+        <button class="copy-btn w-full flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-[#E2136E]/40 transition-all group text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-[#E2136E]/10 border border-[#E2136E]/20 flex items-center justify-center">
+              <span class="text-sm font-black text-[#E2136E]">b</span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">bKash</div>
+              <div class="text-[10px] text-slate-500 font-mono">Personal Account</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="font-mono text-xs font-semibold text-[#E2136E] group-hover:text-[#f06292] transition-colors">01700-000000</div>
+            <svg class="w-3.5 h-3.5 text-slate-500 copy-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </div>
+        </button>
+        
+        <!-- Nagad -->
+        <button class="copy-btn w-full flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-[#F58220]/40 transition-all group text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-[#F58220]/10 border border-[#F58220]/20 flex items-center justify-center">
+              <span class="text-sm font-black text-[#F58220]">N</span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">Nagad</div>
+              <div class="text-[10px] text-slate-500 font-mono">Personal Account</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="font-mono text-xs font-semibold text-[#F58220] group-hover:text-[#ffa34d] transition-colors">01700-000000</div>
+            <svg class="w-3.5 h-3.5 text-slate-500 copy-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </div>
+        </button>
+        
+        <!-- Rocket -->
+        <button class="copy-btn w-full flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-[#8C3494]/40 transition-all group text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-[#8C3494]/10 border border-[#8C3494]/20 flex items-center justify-center">
+              <span class="text-sm font-black text-[#8C3494]">R</span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">Rocket</div>
+              <div class="text-[10px] text-slate-500 font-mono">Personal Account</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="font-mono text-xs font-semibold text-[#8C3494] group-hover:text-[#b968c1] transition-colors">01700-000000-1</div>
+            <svg class="w-3.5 h-3.5 text-slate-500 copy-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </div>
+        </button>
+        
+      </div>
+      
+      <!-- Footer note -->
+      <p class="text-[11px] text-slate-500 mt-5 leading-relaxed">
+        💌 After sending, share your Transaction ID — we&rsquo;ll add your name to the thank-you page.
+      </p>
+    </div>
+
+    <!-- ─── SHOP CARD ─── -->
+    <div class="card-shine relative rounded-3xl bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/[0.06] p-7 hover:border-emerald-500/30 animate-fade-up delay-2" style="backdrop-filter: blur(20px);">
+      
+      <!-- Top badge -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+          <span class="text-xs">🛒</span>
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Option 02</span>
+        </div>
+        <span class="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Affiliate</span>
+      </div>
+      
+      <!-- Title -->
+      <h2 class="text-2xl font-bold tracking-tight mb-2">Shop My Picks</h2>
+      <p class="text-sm text-slate-400 leading-relaxed mb-6">
+        Products I personally use and vouch for. Your price stays the same.
+      </p>
+      
+      <!-- Product list -->
+      <div class="space-y-2.5">
+        
+        <a href="#" class="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-emerald-500/40 transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-base shrink-0">🌐</div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold truncate">Hostinger Hosting</div>
+            <div class="text-[10px] text-slate-500 truncate">Best value for beginners</div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-xs font-bold text-emerald-400">৳500</div>
+            <div class="text-[10px] text-slate-500 group-hover:text-emerald-400 transition-colors">Visit →</div>
+          </div>
+        </a>
+        
+        <a href="#" class="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-emerald-500/40 transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-base shrink-0">📚</div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold truncate">Clean Code</div>
+            <div class="text-[10px] text-slate-500 truncate">The classic dev book</div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-xs font-bold text-emerald-400">৳1200</div>
+            <div class="text-[10px] text-slate-500 group-hover:text-emerald-400 transition-colors">Visit →</div>
+          </div>
+        </a>
+        
+        <a href="#" class="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-emerald-500/40 transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-base shrink-0">👕</div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold truncate">Dev T-Shirt</div>
+            <div class="text-[10px] text-slate-500 truncate">Wear your passion</div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-xs font-bold text-emerald-400">৳800</div>
+            <div class="text-[10px] text-slate-500 group-hover:text-emerald-400 transition-colors">Visit →</div>
+          </div>
+        </a>
+        
+      </div>
+      
+      <!-- View all button -->
+      <a href="#" class="mt-4 flex items-center justify-center gap-1.5 w-full py-3 rounded-xl bg-emerald-500 text-[#04140a] text-sm font-bold btn-glow">
+        Browse All Picks
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ─────────── TRUST STRIP ─────────── -->
+  <div class="animate-fade-up delay-3">
+    <div class="divider-grad mb-8"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto text-center">
+      <div>
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 mb-3">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div class="text-sm font-semibold mb-1">Secure</div>
+        <div class="text-xs text-slate-500">Direct payment methods</div>
+      </div>
+      <div>
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 mb-3">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </div>
+        <div class="text-sm font-semibold mb-1">No Extra Cost</div>
+        <div class="text-xs text-slate-500">Your price stays the same</div>
+      </div>
+      <div>
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 mb-3">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="text-sm font-semibold mb-1">Instant Impact</div>
+        <div class="text-xs text-slate-500">Server costs today</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── BOTTOM NOTE ─────────── -->
+  <div class="text-center mt-16 animate-fade-up delay-4">
+    <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+      💚 Shop links are affiliate — DevSchool earns a small commission at no extra cost to you.<br/>
+      <span class="text-slate-600">Every contribution, big or small, keeps this free for thousands of learners.</span>
+    </p>
+  </div>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="relative border-t border-white/[0.06]" style="z-index: 10;">
+  <div class="max-w-5xl mx-auto px-6 py-8">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div>&copy; 2026 DevSchool · Made with 💚 in Bangladesh</div>
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-emerald-400 transition-colors">Privacy</a>
+        <a href="#" class="hover:text-emerald-400 transition-colors">Terms</a>
+        <a href="#" class="hover:text-emerald-400 transition-colors">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Card mouse tracking for shine effect
+  document.querySelectorAll('.card-shine').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--y', `${e.clientY - rect.top}px`);
+    });
+  });
+
+  // Copy button feedback
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const num = btn.querySelector('.font-mono.text-xs').textContent.trim();
+      navigator.clipboard.writeText(num.replace(/-/g, '')).then(() => {
+        const icon = btn.querySelector('.copy-icon');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>';
+        icon.style.color = '#22C55E';
+        icon.style.opacity = '1';
+        setTimeout(() => {
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>';
+          icon.style.color = '';
+          icon.style.opacity = '';
+        }, 1500);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

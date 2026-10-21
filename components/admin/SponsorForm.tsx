@@ -80,113 +80,127 @@ export default function SponsorForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
-      <div>
-        <label className="admin-label">&gt; Sponsor Name</label>
-        <input
-          className="admin-input"
-          value={form.name}
-          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          required
-          placeholder="Acme Corp"
-        />
+    <form onSubmit={onSubmit} className="space-y-6">
+      {/* ── Basic Info Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Basic info</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Sponsor Name</label>
+            <input
+              className="admin-input"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              required
+              placeholder="Acme Corp"
+            />
+          </div>
+          <div>
+            <label className="admin-label">Website URL (click target)</label>
+            <input
+              className="admin-input"
+              value={form.websiteUrl}
+              onChange={(e) => setForm((f) => ({ ...f, websiteUrl: e.target.value }))}
+              placeholder="https://acme.com"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="admin-label">Description (optional)</label>
+          <textarea
+            className="admin-input"
+            rows={3}
+            value={form.description}
+            onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="admin-label">&gt; Logo / Image</label>
+      {/* ── Logo Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">Logo / Image</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Upload বা URL paste করুন</p>
+        </div>
         <SponsorImageControl value={image} onChange={setImage} />
       </div>
 
-      <div>
-        <label className="admin-label">&gt; Website URL (click target)</label>
-        <input
-          className="admin-input"
-          value={form.websiteUrl}
-          onChange={(e) => setForm((f) => ({ ...f, websiteUrl: e.target.value }))}
-          placeholder="https://acme.com"
-        />
-        <p className="text-[11px] text-slate-400 mt-1">
-          Sponsor logo-তে ক্লিক করলে এখানে যাবে।
-        </p>
-      </div>
+      {/* ── Meta Card ── */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f151c] p-5 sm:p-6 space-y-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Meta</h2>
 
-      <div>
-        <label className="admin-label">&gt; Description (optional)</label>
-        <textarea
-          className="admin-input"
-          rows={2}
-          value={form.description}
-          onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-        />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Tier</label>
+            <select
+              className="admin-input"
+              value={form.tier}
+              onChange={(e) => setForm((f) => ({ ...f, tier: e.target.value }))}
+            >
+              {TIERS.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="admin-label">Priority (higher = first)</label>
+            <input
+              type="number"
+              className="admin-input"
+              value={form.priority}
+              onChange={(e) => setForm((f) => ({ ...f, priority: Number(e.target.value) }))}
+            />
+          </div>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="admin-label">&gt; Tier</label>
-          <select
-            className="admin-input"
-            value={form.tier}
-            onChange={(e) => setForm((f) => ({ ...f, tier: e.target.value }))}
-          >
-            {TIERS.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className="admin-label">Start date (optional)</label>
+            <input
+              type="date"
+              className="admin-input"
+              value={form.startDate}
+              onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label className="admin-label">End date (optional)</label>
+            <input
+              type="date"
+              className="admin-input"
+              value={form.endDate}
+              onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))}
+            />
+          </div>
         </div>
-        <div>
-          <label className="admin-label">&gt; Priority (higher = first)</label>
-          <input
-            type="number"
-            className="admin-input"
-            value={form.priority}
-            onChange={(e) => setForm((f) => ({ ...f, priority: Number(e.target.value) }))}
-          />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="admin-label">&gt; Start date (optional)</label>
-          <input
-            type="date"
-            className="admin-input"
-            value={form.startDate}
-            onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
-          />
-        </div>
-        <div>
-          <label className="admin-label">&gt; End date (optional)</label>
-          <input
-            type="date"
-            className="admin-input"
-            value={form.endDate}
-            onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))}
-          />
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="accent-emerald-500 w-4 h-4"
+              checked={form.isActive}
+              onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
+            />
+            Active (public-এ দেখাবে)
+          </label>
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={form.isActive}
-          onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-        />
-        <span>Active (public-এ দেখাবে)</span>
-      </label>
+      {error && <div className="admin-error">{error}</div>}
 
-      {error && <div className="admin-error">[!] {error}</div>}
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={loading} className="admin-btn">
-          {loading ? '&gt; saving...' : '$ save'}
+          {loading ? 'Saving...' : 'Save sponsor'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/admin/sponsors')}
           className="admin-btn-ghost"
         >
-          $ cancel
+          Cancel
         </button>
       </div>
     </form>

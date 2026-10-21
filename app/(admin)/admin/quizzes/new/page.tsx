@@ -35,7 +35,7 @@ export default async function NewQuizPage() {
   ])
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
+    <div className='w-full max-w-5xl mx-auto'>
       <Link href="/admin/quizzes" className="text-sm text-[#15803d] hover:underline">
         ← ফিরে যান
       </Link>

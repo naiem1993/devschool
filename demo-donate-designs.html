@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevSchool — Donate Page Designs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class' }
+  document.documentElement.classList.add('dark')
+</script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Bengali', sans-serif; background: #050806; color: #fff; }
+  .glow { box-shadow: 0 0 40px -10px rgba(34,197,94,0.4); }
+  .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card-hover:hover { transform: translateY(-4px); border-color: rgba(34,197,94,0.5); box-shadow: 0 20px 40px -15px rgba(34,197,94,0.25); }
+  .tab-btn { transition: all 0.2s; }
+  .tab-btn.active { background: #22C55E; color: #04140a; }
+  .design-section { display: none; }
+  .design-section.active { display: block; }
+  .bg-grid { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0); background-size: 32px 32px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #050806; }
+  ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: #22C55E; }
+</style>
+</head>
+<body class="bg-[#050806] text-white min-h-screen">
+
+<!-- ═══════════ SWITCHER ═══════════ -->
+<div class="sticky top-0 z-50 bg-[#050806]/95 backdrop-blur-xl border-b border-white/10">
+  <div class="max-w-5xl mx-auto px-6 py-4">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-black text-[#04140a]">D</div>
+        <div>
+          <div class="text-sm font-bold tracking-tight"><span class="text-[#22C55E]">Dev</span>School</div>
+          <div class="text-[10px] text-slate-500 uppercase tracking-widest">Design Preview</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 p-1 bg-white/5 rounded-full border border-white/10">
+        <button onclick="switchDesign(1)" class="design-tab tab-btn active px-4 py-2 rounded-full text-sm font-semibold" data-design="1">Split View</button>
+        <button onclick="switchDesign(2)" class="design-tab tab-btn px-4 py-2 rounded-full text-sm font-semibold text-slate-400" data-design="2">Feature Cards</button>
+        <button onclick="switchDesign(3)" class="design-tab tab-btn px-4 py-2 rounded-full text-sm font-semibold text-slate-400" data-design="3">Linear Minimal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DESIGN 1: SPLIT VIEW                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="design-1" class="design-section active bg-grid">
+  <div class="max-w-7xl mx-auto px-6 py-16">
+    <!-- Hero -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        100% Free Forever
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.05] mb-4">
+        Two ways to<br/>
+        <span class="text-[#22C55E]">support DevSchool</span>
+      </h1>
+      <p class="text-slate-400 max-w-xl mx-auto">
+        Donate directly, or shop through my handpicked picks — both keep the site free.
+      </p>
+    </div>
+
+    <!-- Split layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- LEFT: Donate -->
+      <div class="relative rounded-3xl border border-pink-500/20 bg-gradient-to-br from-pink-500/5 to-transparent p-8 overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 blur-3xl rounded-full -z-10"></div>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-2xl">💝</div>
+          <div>
+            <h2 class="text-xl font-bold">Donate Directly</h2>
+            <p class="text-xs text-slate-400">100% goes to the site</p>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-pink-500/40 transition-all cursor-pointer group">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full bg-[#E2136E]"></div>
+              <div>
+                <div class="text-sm font-bold">bKash</div>
+                <div class="text-[10px] text-slate-500">Personal</div>
+              </div>
+            </div>
+            <div class="font-mono text-sm font-bold text-[#E2136E] group-hover:text-pink-300 transition-colors">01700-000000</div>
+          </div>
+          <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-orange-500/40 transition-all cursor-pointer group">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full bg-[#F58220]"></div>
+              <div>
+                <div class="text-sm font-bold">Nagad</div>
+                <div class="text-[10px] text-slate-500">Personal</div>
+              </div>
+            </div>
+            <div class="font-mono text-sm font-bold text-[#F58220] group-hover:text-orange-300 transition-colors">01700-000000</div>
+          </div>
+          <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-purple-500/40 transition-all cursor-pointer group">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full bg-[#8C3494]"></div>
+              <div>
+                <div class="text-sm font-bold">Rocket</div>
+                <div class="text-[10px] text-slate-500">Personal</div>
+              </div>
+            </div>
+            <div class="font-mono text-sm font-bold text-[#8C3494] group-hover:text-purple-300 transition-colors">01700-000000-1</div>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-5 text-center">
+          After sending, share the transaction ID — we will add your name to the thank-you list.
+        </p>
+      </div>
+
+      <!-- RIGHT: Shop -->
+      <div class="relative rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent p-8 overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 blur-3xl rounded-full -z-10"></div>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-2xl">🛒</div>
+          <div>
+            <h2 class="text-xl font-bold">My Picks</h2>
+            <p class="text-xs text-slate-400">Handpicked, tested by me</p>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <a href="#" class="block p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-emerald-500/40 card-hover">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl">🌐</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold truncate">Hostinger Hosting</div>
+                <div class="text-[11px] text-slate-500 truncate">Best value for beginners</div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs font-bold text-[#22C55E]">৳500/mo</div>
+                <div class="text-[10px] text-slate-500">Visit →</div>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="block p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-emerald-500/40 card-hover">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl">📚</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold truncate">Clean Code (Book)</div>
+                <div class="text-[11px] text-slate-500 truncate">Must-read for devs</div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs font-bold text-[#22C55E]">৳1200</div>
+                <div class="text-[10px] text-slate-500">Visit →</div>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="block p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-emerald-500/40 card-hover">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl">👕</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold truncate">Dev T-Shirt</div>
+                <div class="text-[11px] text-slate-500 truncate">Code in Bangla, wear in style</div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs font-bold text-[#22C55E]">৳800</div>
+                <div class="text-[10px] text-slate-500">Visit →</div>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="block text-center py-3 rounded-xl bg-emerald-500 text-[#04140a] font-bold text-sm hover:bg-emerald-400 transition-colors mt-4">
+            Explore All Picks →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-slate-500 mt-8 max-w-md mx-auto">
+      💚 Affiliate links support DevSchool at no extra cost to you.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DESIGN 2: FEATURE CARDS                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="design-2" class="design-section bg-grid">
+  <div class="max-w-6xl mx-auto px-6 py-20">
+    <!-- Hero -->
+    <div class="text-center mb-16">
+      <div class="text-6xl mb-6">💚</div>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.05] mb-6">
+        Choose how to<br/>
+        <span class="text-[#22C55E]">support us</span>
+      </h1>
+      <p class="text-slate-400 max-w-lg mx-auto text-lg">
+        Two simple ways. Both keep DevSchool free forever.
+      </p>
+    </div>
+
+    <!-- Two feature cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card 1: Donate -->
+      <div class="group relative rounded-3xl border border-white/10 bg-gradient-to-br from-pink-500/10 via-transparent to-transparent p-8 md:p-10 overflow-hidden card-hover cursor-pointer">
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-pink-500/20 blur-3xl rounded-full"></div>
+        <div class="relative">
+          <div class="text-5xl mb-6">💝</div>
+          <h2 class="text-3xl font-black mb-3">Donate</h2>
+          <p class="text-slate-400 mb-8 leading-relaxed">
+            Your small contribution helps keep the site running. bKash, Nagad & Rocket supported.
+          </p>
+          <button class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#04140a] font-bold hover:bg-pink-100 transition-all group-hover:gap-3">
+            Donate Now
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2: Shop -->
+      <div class="group relative rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent p-8 md:p-10 overflow-hidden card-hover cursor-pointer">
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-emerald-500/20 blur-3xl rounded-full"></div>
+        <div class="relative">
+          <div class="text-5xl mb-6">🛒</div>
+          <h2 class="text-3xl font-black mb-3">Shop My Picks</h2>
+          <p class="text-slate-400 mb-8 leading-relaxed">
+            Handpicked products I personally use. Buy through them — price stays the same for you.
+          </p>
+          <button class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#22C55E] text-[#04140a] font-bold hover:bg-emerald-400 transition-all group-hover:gap-3">
+            Explore Products
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+      <div class="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+        <div class="text-2xl mb-2">🔒</div>
+        <div class="text-sm font-semibold">100% Secure</div>
+        <div class="text-xs text-slate-500 mt-1">Direct payment methods</div>
+      </div>
+      <div class="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+        <div class="text-2xl mb-2">💚</div>
+        <div class="text-sm font-semibold">No Extra Cost</div>
+        <div class="text-xs text-slate-500 mt-1">Your price stays the same</div>
+      </div>
+      <div class="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+        <div class="text-2xl mb-2">⚡</div>
+        <div class="text-sm font-semibold">Instant Effect</div>
+        <div class="text-xs text-slate-500 mt-1">Helps right away</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DESIGN 3: LINEAR MINIMAL                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="design-3" class="design-section bg-grid">
+  <div class="max-w-4xl mx-auto px-6 py-20">
+    <!-- Compact hero -->
+    <div class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/30"></div>
+        <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Support Page</span>
+        <div class="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/30"></div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">
+        How you can <span class="text-[#22C55E]">help</span>
+      </h1>
+      <p class="text-slate-400">
+        Choose what works for you — every bit helps keep DevSchool free.
+      </p>
+    </div>
+
+    <!-- Section: Donate -->
+    <div class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs font-mono text-pink-400">01 / DONATE</span>
+        <div class="h-px flex-1 bg-pink-500/20"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20 hover:border-pink-500/50 transition-all cursor-pointer text-center">
+          <div class="text-xl mb-1">💳</div>
+          <div class="text-xs font-bold mb-1">bKash</div>
+          <div class="font-mono text-[11px] text-[#E2136E]">01700-000000</div>
+        </div>
+        <div class="p-4 rounded-xl bg-orange-500/5 border border-orange-500/20 hover:border-orange-500/50 transition-all cursor-pointer text-center">
+          <div class="text-xl mb-1">💳</div>
+          <div class="text-xs font-bold mb-1">Nagad</div>
+          <div class="font-mono text-[11px] text-[#F58220]">01700-000000</div>
+        </div>
+        <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer text-center">
+          <div class="text-xl mb-1">💳</div>
+          <div class="text-xs font-bold mb-1">Rocket</div>
+          <div class="font-mono text-[11px] text-[#8C3494]">01700-00000-1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="flex items-center gap-4 my-12">
+      <div class="h-px flex-1 bg-white/10"></div>
+      <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">OR</span>
+      <div class="h-px flex-1 bg-white/10"></div>
+    </div>
+
+    <!-- Section: Shop -->
+    <div>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs font-mono text-emerald-400">02 / SHOP</span>
+        <div class="h-px flex-1 bg-emerald-500/20"></div>
+        <span class="text-xs text-slate-500">Handpicked</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="#" class="group p-5 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shrink-0">🌐</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-bold text-sm">Hostinger</h3>
+                <span class="text-xs font-bold text-emerald-400 shrink-0">৳500/mo</span>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">Best value hosting for beginners. I use it for all my projects.</p>
+              <div class="mt-2 text-[11px] font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">Visit Store →</div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="group p-5 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shrink-0">📚</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-bold text-sm">Clean Code (Book)</h3>
+                <span class="text-xs font-bold text-emerald-400 shrink-0">৳1200</span>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">The book every developer should read at least once.</p>
+              <div class="mt-2 text-[11px] font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">Visit Store →</div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="group p-5 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shrink-0">👕</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-bold text-sm">Dev T-Shirt</h3>
+                <span class="text-xs font-bold text-emerald-400 shrink-0">৳800</span>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">Wear your code passion — designed for Bangla devs.</p>
+              <div class="mt-2 text-[11px] font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">Visit Store →</div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="group p-5 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shrink-0">📱</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-bold text-sm">Dev Gadget</h3>
+                <span class="text-xs font-bold text-emerald-400 shrink-0">৳1500</span>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">The exact gadget I use daily for coding.</p>
+              <div class="mt-2 text-[11px] font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">Visit Store →</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-slate-500 mt-12 leading-relaxed">
+      💚 Shop links are affiliate — your price stays the same, DevSchool gets a small commission.
+    </p>
+  </div>
+</section>
+
+<script>
+  function switchDesign(n) {
+    document.querySelectorAll('.design-section').forEach(el => el.classList.remove('active'))
+    document.getElementById('design-' + n).classList.add('active')
+    document.querySelectorAll('.design-tab').forEach(el => {
+      el.classList.remove('active')
+      el.classList.add('text-slate-400')
+    })
+    const active = document.querySelector(`.design-tab[data-design="${n}"]`)
+    active.classList.add('active')
+    active.classList.remove('text-slate-400')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+</script>
+
+</body>
+</html>

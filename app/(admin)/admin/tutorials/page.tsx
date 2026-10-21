@@ -1,6 +1,5 @@
 import AdminHeader from '@/components/admin/AdminHeader'
-import TerminalCard from '@/components/admin/TerminalCard'
-import LogoutButton from '@/components/admin/LogoutButton'
+import DataCard, { EmptyRow, thClass, trClass, tdClass } from '@/components/admin/DataCard'
 import DeleteButton from '@/components/admin/DeleteButton'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
@@ -17,30 +16,27 @@ export default async function TutorialsPage() {
   })
 
   return (
-    <div>
+    <div className='space-y-6'>
       <AdminHeader
-        title="Tutorials"
+        title='Tutorials'
         subtitle={`${items.length} records`}
         action={
-          <div className="flex gap-2">
-            <Link href="/admin/tutorials/new" className="admin-btn">
-              + new
-            </Link>
-            <LogoutButton />
+          <div className='flex items-center gap-2 flex-wrap'>
+            <Link href='/admin/tutorials/new' className='admin-btn'>+ New tutorial</Link>
           </div>
         }
       />
 
-      <TerminalCard cmd='psql devschool -c "SELECT * FROM tutorials"'>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-[#22C55E]/20 text-[#22C55E]/60 uppercase tracking-widest text-[10px]">
-              <th className="text-left px-4 py-2">title</th>
-              <th className="text-left px-4 py-2">difficulty</th>
-              <th className="text-left px-4 py-2">chapters</th>
-              <th className="text-left px-4 py-2">groups</th>
-              <th className="text-left px-4 py-2">published</th>
-              <th className="text-right px-4 py-2">actions</th>
+      <DataCard title='All tutorials' count={items.length}>
+        <table className='w-full text-sm'>
+          <thead className='border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30'>
+            <tr>
+              <th className={thClass}>Title</th>
+              <th className={thClass}>Difficulty</th>
+              <th className={thClass}>Chapters</th>
+              <th className={thClass}>Groups</th>
+              <th className={thClass}>Status</th>
+              <th className={thClass + ' text-right'}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -48,75 +44,73 @@ export default async function TutorialsPage() {
               const chapterCount = it._count.chapters
               const groupCount = it._count.groups
               return (
-                <tr key={it.id} className="border-b border-[#22C55E]/10 hover:bg-[#22C55E]/5 transition">
-                  <td className="px-4 py-2 text-[#22C55E]">{it.titleBn}</td>
-                  <td className="px-4 py-2 text-[#22C55E]/60">{it.difficulty}</td>
-
-                  <td className="px-4 py-2">
-                    {chapterCount > 0 ? (
-                      <Link
-                        href={`/admin/tutorials/${it.id}/chapters`}
-                        className="text-[#22C55E]/80 hover:text-[#4ADE80] transition"
-                        title="Chapters manage করো"
-                      >
-                        📚 {chapterCount}
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/admin/tutorials/${it.id}/chapters`}
-                        className="text-amber-500 hover:text-amber-400 transition"
-                        title="এখনো কোনো chapter নেই — যোগ করো"
-                      >
-                        ⚠ 0
-                      </Link>
-                    )}
+                <tr key={it.id} className={trClass}>
+                  <td className={tdClass + ' font-medium text-slate-900 dark:text-white'}>{it.titleBn}</td>
+                  <td className={tdClass}>
+                    <span className='inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300 capitalize'>
+                      {it.difficulty}
+                    </span>
                   </td>
-
-                  <td className="px-4 py-2 text-[#22C55E]/60">
+                  <td className={tdClass}>
                     <Link
                       href={`/admin/tutorials/${it.id}/chapters`}
-                      className="hover:text-[#4ADE80] transition"
-                      title="Groups manage করো"
+                      className={
+                        'inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md transition-colors ' +
+                        (chapterCount > 0
+                          ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/15'
+                          : 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/15')
+                      }
+                      title='Manage chapters'
+                    >
+                      {chapterCount > 0 ? chapterCount : '0 (add)'}
+                    </Link>
+                  </td>
+                  <td className={tdClass}>
+                    <Link
+                      href={`/admin/tutorials/${it.id}/chapters`}
+                      className='text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
+                      title='Manage groups'
                     >
                       {groupCount}
                     </Link>
                   </td>
-
-                  <td className="px-4 py-2">
+                  <td className={tdClass}>
                     {it.isPublished ? (
-                      <span className="text-[#22C55E]">● live</span>
+                      <span className='inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400'>
+                        <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
+                        Live
+                      </span>
                     ) : (
-                      <span className="text-red-500/70">○ draft</span>
+                      <span className='inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-400'>
+                        <span className='w-1.5 h-1.5 rounded-full bg-slate-400' />
+                        Draft
+                      </span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-right space-x-3 whitespace-nowrap">
-                    <Link
-                      href={`/admin/tutorials/${it.id}/chapters`}
-                      className="text-[#22C55E]/70 hover:text-[#4ADE80]"
-                    >
-                      📚 chapters
-                    </Link>
-                    <Link
-                      href={`/admin/tutorials/${it.id}/edit`}
-                      className="text-cyan-400 hover:text-[#22C55E]"
-                    >
-                      ✎ edit
-                    </Link>
-                    <DeleteButton endpoint={`/api/admin/tutorials/${it.id}`} />
+                  <td className={tdClass + ' text-right whitespace-nowrap'}>
+                    <div className='flex items-center justify-end gap-1'>
+                      <Link
+                        href={`/admin/tutorials/${it.id}/chapters`}
+                        className='inline-flex items-center text-xs font-medium px-2 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors'
+                      >
+                        Chapters
+                      </Link>
+                      <Link
+                        href={`/admin/tutorials/${it.id}/edit`}
+                        className='inline-flex items-center text-xs font-medium px-2 py-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors'
+                      >
+                        Edit
+                      </Link>
+                      <DeleteButton endpoint={`/api/admin/tutorials/${it.id}`} />
+                    </div>
                   </td>
                 </tr>
               )
             })}
-            {items.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-[#22C55E]/40">
-                  -- no records found --
-                </td>
-              </tr>
-            )}
+            {items.length === 0 && <EmptyRow colSpan={6} message='No tutorials yet. Create your first one.' />}
           </tbody>
         </table>
-      </TerminalCard>
+      </DataCard>
     </div>
   )
 }

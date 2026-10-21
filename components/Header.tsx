@@ -20,7 +20,7 @@ function BurgerIcon({ open }: { open: boolean }) {
   );
 }
 
-export default function Header() {
+export default function Header({ donationEnabled = true }: { donationEnabled?: boolean }) {
   const pathname = usePathname();
   const dict = useDict();
   const locale = useLocale();
@@ -130,6 +130,29 @@ export default function Header() {
     </button>
   );
 
+  /* 💚 Support Us — শুধু donation চালু থাকলে দেখাবে (professional pill button) */
+  const SupportButton = donationEnabled ? (
+    <Link
+      href={localeHref(locale, '/donate')}
+      aria-label="Support DevSchool"
+      className="group hidden sm:inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full bg-[#22C55E] text-[#04140a] text-sm font-bold shadow-md shadow-[#22C55E]/30 hover:bg-[#4ADE80] hover:shadow-lg hover:shadow-[#22C55E]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+    >
+      <span className="text-base leading-none group-hover:scale-110 transition-transform">💚</span>
+      <span>Support Us</span>
+    </Link>
+  ) : null;
+
+  /* 💚 Mobile — compact heart icon (small screens) */
+  const SupportButtonMobile = donationEnabled ? (
+    <Link
+      href={localeHref(locale, '/donate')}
+      aria-label="Support DevSchool"
+      className="sm:hidden inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#22C55E] text-[#04140a] shadow-md shadow-[#22C55E]/30 hover:bg-[#4ADE80] transition-colors shrink-0"
+    >
+      <span className="text-base leading-none">💚</span>
+    </Link>
+  ) : null;
+
   const MobileMenuLinks = (
     <>
       {navLinks.map((link) => {
@@ -172,6 +195,8 @@ export default function Header() {
               {DesktopNav}
 
               <div className="flex items-center gap-2 shrink-0">
+                {SupportButton}
+                {SupportButtonMobile}
                 <LanguageSwitcher />
                 <ThemeToggle />
               </div>
@@ -207,6 +232,8 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {SupportButton}
+            {SupportButtonMobile}
             <LanguageSwitcher />
             <ThemeToggle />
           </div>

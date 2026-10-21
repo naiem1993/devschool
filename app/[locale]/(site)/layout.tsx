@@ -3,7 +3,7 @@ import Footer from '@/components/Footer'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import SponsorRail, { type PublicSponsor } from '@/components/SponsorRail'
 import LanguageTabsServer from '@/components/LanguageTabsServer'
-import { getFooterSettings } from '@/lib/site-settings'
+import { getFooterSettings, getDonationSettings } from '@/lib/site-settings'
 import prisma from '@/lib/prisma'
 import { isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n/dictionaries'
@@ -53,11 +53,14 @@ export default async function SiteLayout({
     sponsors = []
   }
 
-  const footer = await getFooterSettings(locale)
+  const [footer, donationSettings] = await Promise.all([
+    getFooterSettings(locale),
+    getDonationSettings(),
+  ])
 
   return (
     <>
-      <Header />
+      <Header donationEnabled={donationSettings.enabled} />
       {/* w3schools-style language tabs — Header-এর ঠিক নিচে second row।
           sticky + top value LanguageTabs নিজেই handle করে (home-এ pill nav-এর
           জন্য আলাদা top দরকার), তাই এখানে কোনো wrapper div নেই। */}
@@ -66,7 +69,7 @@ export default async function SiteLayout({
         <main className="flex-1">{children}</main>
       </ErrorBoundary>
       <SponsorRail sponsors={sponsors} />
-      <Footer footer={footer} locale={locale} dict={dict} />
+      <Footer footer={footer} locale={locale} dict={dict} donationEnabled={donationSettings.enabled} />
     </>
   )
 }

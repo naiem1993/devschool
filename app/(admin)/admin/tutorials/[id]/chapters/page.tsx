@@ -71,7 +71,7 @@ export default async function ChaptersPage({
   const totalLessons = chapterRows.reduce((n, c) => n + c.lessons.length, 0)
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className='w-full'>
       <Link href="/admin/tutorials" className="text-sm text-[#15803d] hover:underline">
         ← ফিরে যান
       </Link>
